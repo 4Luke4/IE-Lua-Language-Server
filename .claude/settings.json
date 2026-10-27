@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(npm ci)",
+      "Bash(npm install)",
+      "Bash(npm run compile)",
+      "Bash(npm run watch)",
+      "Bash(npm run check-types)",
+      "Bash(npm run lint)",
+      "Bash(npm run lint -- --fix)",
+      "Bash(npm run test:unit)",
+      "Bash(npm test)",
+      "Bash(npm run package)",
+      "Bash(npm version:*)",
+      "Bash(npx @vscode/vsce ls)",
+      "Bash(npx @vscode/vsce package:*)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "WebFetch(domain:code.visualstudio.com)",
+      "WebFetch(domain:microsoft.github.io)"
+    ],
+    "ask": [
+      "Bash(npm install:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
+    ],
+    "deny": [
+      "Bash(npx @vscode/vsce publish:*)",
+      "Bash(vsce publish:*)",
+      "Bash(npx ovsx publish:*)",
+      "Bash(ovsx publish:*)",
+      "Bash(npm publish:*)",
+      "Edit(dist/**)",
+      "Edit(package-lock.json)",
+      "Read(.env)",
+      "Read(.env.*)"
+    ]
+  }
+}

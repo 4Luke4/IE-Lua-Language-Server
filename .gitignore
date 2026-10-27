@@ -1,0 +1,37 @@
+# Local planning notes
+plan.md
+
+# Sample files
+/samples/
+
+# --- IDE ---
+*.iml
+.idea/
+misc.xml
+deploymentTargetDropDown.xml
+render.experimental.xml
+
+# --- Python tooling ---
+__pycache__/
+*.py[codz]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# --- Environment files ---
+.env
+.envrc
+
+# --- OS and editor noise ---
+*.log
+*~
+*.tmp
+.directory
+.Trash-*
+.fuse_hidden*
+.nfs*
+nohup.out
+.DS_Store
+Thumbs.db
