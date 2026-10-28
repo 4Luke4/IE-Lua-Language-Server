@@ -37,6 +37,10 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   its declaration, and from a global to every assignment to it (`x = …`, `function x()`). In
   `.menu` files globals are shared by all Lua chunks, locals stay in their own chunk. No result
   for the implicit `self`, for globals the document never assigns, or for table fields.
+- Find references (`textDocument/references`) within the document, with the same matching as
+  go to definition: the uses of a local, including the implicit `self` of a method, or every use
+  of a global across the Lua chunks of the document. `includeDeclaration` decides whether the
+  local's declaration, or the assignments to the global, are included.
 - Error-tolerant Lua 5.2 parser and scope analysis (`src/server/syntax/`), checked against the
   official compiler by a differential test; it publishes no diagnostics of its own.
 - Localization of the manifest and UI strings into all 14 VS Code display languages

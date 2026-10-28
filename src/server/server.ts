@@ -14,6 +14,7 @@ import * as definition from './features/definition.ts';
 import * as diagnostics from './features/diagnostics.ts';
 import * as documentSymbols from './features/documentSymbols.ts';
 import * as foldingRanges from './features/foldingRanges.ts';
+import * as references from './features/references.ts';
 import { SettingsStore } from './settingsStore.ts';
 import { loadLua52 } from './validation/lua52.ts';
 
@@ -51,6 +52,7 @@ connection.onInitialize((params) => {
     kinds: folding?.foldingRangeKind?.valueSet,
   });
   definition.register(connection, documents, { cache: parsed });
+  references.register(connection, documents, { cache: parsed });
   return {
     capabilities: {
       textDocumentSync: {
@@ -61,6 +63,7 @@ connection.onInitialize((params) => {
       documentSymbolProvider: { label: 'IE Lua' },
       foldingRangeProvider: true,
       definitionProvider: true,
+      referencesProvider: true,
     },
     serverInfo: { name: 'IE Lua Language Server' },
   };
