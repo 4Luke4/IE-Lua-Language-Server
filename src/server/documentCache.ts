@@ -31,6 +31,7 @@ export class ParsedDocumentCache {
     this.entries.delete(uri);
   }
 
+  /** Number of cached documents (for logging and tests). */
   get size(): number {
     return this.entries.size;
   }

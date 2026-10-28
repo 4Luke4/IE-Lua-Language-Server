@@ -7,9 +7,9 @@ async function foldsOf(file: string): Promise<string[]> {
   await vscode.window.showTextDocument(await vscode.workspace.openTextDocument(uri));
   const ranges = await vscode.commands.executeCommand<vscode.FoldingRange[] | undefined>('vscode.executeFoldingRangeProvider', uri);
   assert.ok(ranges, 'no folding range provider answered');
-  return ranges
-    .map((r) => `${r.start}-${r.end}${r.kind === vscode.FoldingRangeKind.Comment ? ' comment' : ''}`)
-    .sort((a, b) => Number.parseInt(a, 10) - Number.parseInt(b, 10));
+  return [...ranges]
+    .sort((a, b) => a.start - b.start)
+    .map((r) => `${r.start}-${r.end}${r.kind === vscode.FoldingRangeKind.Comment ? ' comment' : ''}`);
 }
 
 suite('Folding ranges', () => {
