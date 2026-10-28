@@ -12,6 +12,7 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 import { ParsedDocumentCache } from './documentCache.ts';
 import * as diagnostics from './features/diagnostics.ts';
 import * as documentSymbols from './features/documentSymbols.ts';
+import * as foldingRanges from './features/foldingRanges.ts';
 import { SettingsStore } from './settingsStore.ts';
 import { loadLua52 } from './validation/lua52.ts';
 
@@ -42,6 +43,12 @@ connection.onInitialize((params) => {
     cache: parsed,
     hierarchical: params.capabilities.textDocument?.documentSymbol?.hierarchicalDocumentSymbolSupport === true,
   });
+  const folding = params.capabilities.textDocument?.foldingRange;
+  foldingRanges.register(connection, documents, {
+    cache: parsed,
+    rangeLimit: folding?.rangeLimit,
+    kinds: folding?.foldingRangeKind?.valueSet,
+  });
   return {
     capabilities: {
       textDocumentSync: {
@@ -50,6 +57,7 @@ connection.onInitialize((params) => {
         save: { includeText: false },
       },
       documentSymbolProvider: { label: 'IE Lua' },
+      foldingRangeProvider: true,
     },
     serverInfo: { name: 'IE Lua Language Server' },
   };

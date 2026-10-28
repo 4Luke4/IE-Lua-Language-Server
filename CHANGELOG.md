@@ -28,6 +28,11 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   Editor*): functions and methods at any depth, top-level locals, the first assignment to each
   global, and named table fields; in `.menu` files, each `menu` block by its `name`, holding the
   Lua symbols inside it. Flat `SymbolInformation` for clients without hierarchical support.
+- Folding ranges (`textDocument/foldingRange`): function bodies, `do`/`while`/`for`/`repeat`,
+  each `if`/`elseif`/`else` clause, multi-line tables, call arguments and long strings, long
+  comments and runs of `--` lines; in `.menu` files every `{ … }` block, `` `…` `` blocks and
+  `"…"` scripts, plus the Lua inside them. The closing line stays visible. Honors the client's
+  `rangeLimit` and supported kinds.
 - Error-tolerant Lua 5.2 parser and scope analysis (`src/server/syntax/`), checked against the
   official compiler by a differential test; it publishes no diagnostics of its own.
 - Localization of the manifest and UI strings into all 14 VS Code display languages
