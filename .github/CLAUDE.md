@@ -29,7 +29,7 @@ Scoped notes for workflows, Dependabot and templates. The root `CLAUDE.md` still
 | `ci.yml` | PR, push to main, dispatch | checks, VSIX artifact, integration tests (min + stable VS Code), WASM reproducibility |
 | `commitlint.yml` | PR, dispatch | Conventional Commits for commits and PR title (Dependabot exempt) |
 | `codeql.yml` | PR, push, weekly | code scanning (`actions`, `javascript-typescript`) |
-| `release.yml` | dispatch → PR; push of `VERSION` | prepare release PR; publish GitHub release (environment `release`) |
+| `release.yml` | dispatch → PR; push of `VERSION` by a `chore(release):` merge | prepare release PR; publish GitHub release (environment `release`) |
 | `dependabot-automerge.yml` | Dependabot PR | auto-merge low-risk updates after required checks |
 | `eeex-docs-sync*.yml` | weekly, staggered | refresh `data/eeex/*.json` from the published EEex docs |
 | `stale.yml` | weekly | stale issues/PRs |
