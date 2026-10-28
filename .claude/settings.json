@@ -20,7 +20,13 @@
       "Bash(git diff:*)",
       "Bash(git log:*)",
       "WebFetch(domain:code.visualstudio.com)",
-      "WebFetch(domain:microsoft.github.io)"
+      "WebFetch(domain:microsoft.github.io)",
+      "Bash(npm run check-l10n)",
+      "Bash(npm run notices)",
+      "Bash(npm run notices -- --check)",
+      "Bash(npm run build:wasm -- --check)",
+      "Bash(npx vsce ls --no-dependencies)",
+      "Bash(npx @vscode/vsce ls --no-dependencies)"
     ],
     "ask": [
       "Bash(npm install:*)",
@@ -31,6 +37,7 @@
     "deny": [
       "Bash(npx @vscode/vsce publish:*)",
       "Bash(vsce publish:*)",
+      "Bash(npx vsce publish:*)",
       "Bash(npx ovsx publish:*)",
       "Bash(ovsx publish:*)",
       "Bash(npm publish:*)",

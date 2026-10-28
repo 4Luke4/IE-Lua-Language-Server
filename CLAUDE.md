@@ -11,10 +11,10 @@
 |---|---|
 | Name | `IE Lua Language Server` |
 | Publisher | `infinity-engine-tools` |
-| Purpose | `<one-sentence description of what the extension does>` |
+| Purpose | Lua 5.2 language support (diagnostics now; more LSP features planned) for Infinity Engine EE `.lua` files and the Lua embedded in `.menu` files, usable from VS Code and other LSP editors |
 | Language | TypeScript (strict) |
 | Bundler | esbuild (two bundles: client + language server) |
-| Minimum VS Code | `^1.90.0` (see `engines.vscode` in `package.json`) |
+| Minimum VS Code | `^1.91.0` (see `engines.vscode` in `package.json`; required by `vscode-languageclient` ≥ 10) |
 | Distribution | Private — packaged as `.vsix`, **never published** to any marketplace |
 
 ---
@@ -31,11 +31,17 @@
 │   │   └── lsp.ts           # LanguageClient setup and lifecycle
 │   ├── server/              # Language server (separate Node process)
 │   │   ├── server.ts        # Connection, capabilities, handlers
-│   │   └── features/        # completion.ts, diagnostics.ts, hover.ts, ...
+│   │   ├── features/        # completion.ts, diagnostics.ts, hover.ts, ...
+│   │   └── validation/      # Pure analysis logic (no LSP imports) — unit-tested directly
 │   └── shared/              # Types/constants used by BOTH sides — no vscode imports
 ├── test/
 │   ├── unit/                # Pure logic, runs in plain Node (no VS Code)
-│   └── integration/         # Runs inside VS Code via @vscode/test-cli
+│   ├── integration/         # Runs inside VS Code via @vscode/test-cli
+│   └── fixtures/workspace/  # Original fixtures only — never copy game files
+├── third_party/lua52/       # Official Lua 5.2.4 → WASM (reproducible build; dist/ is generated)
+├── data/eeex/               # Generated EEex docs index (names + links only; see scripts/eeex-docs/)
+├── scripts/                 # Repo tooling in TypeScript (`.mts`, run by Node's type stripping)
+├── docs/editors/            # Setup guides for non-VS Code editors
 ├── dist/                    # esbuild output — generated, never edit
 ├── esbuild.mjs              # Build script
 ├── package.json             # Manifest: contributes, activationEvents, scripts
@@ -60,7 +66,10 @@ The server runs in a separate process where the `vscode` module does not exist.
 | Unit tests | `npm run test:unit` |
 | Integration tests | `npm test` |
 | Production bundle | `npm run package` |
-| Build VSIX | `npx @vscode/vsce package --no-dependencies` |
+| Localization check | `npm run check-l10n` |
+| Third-party notices | `npm run notices` (after `npm run package`; `-- --check` in CI) |
+| Rebuild Lua WASM | `npm run build:wasm` (needs pinned emsdk; see CONTRIBUTING.md) |
+| Build VSIX | `npx @vscode/vsce package --no-dependencies --changelog-path docs/CHANGELOG.vsix.md` |
 
 **Definition of done for any change:** `check-types`, `lint` and `test:unit` all pass.
 Run integration tests when touching activation, commands, configuration or the LSP wiring.
@@ -96,7 +105,7 @@ esbuild does **not** type-check. Always run `npm run check-types` — a green bu
 - `vscode` is always an esbuild **external**. Never bundle it, never add it to `dependencies`.
 - `@types/vscode` version must match `engines.vscode` — bump both together, never one alone.
 - Prefer `async`/`await`; every promise is awaited or explicitly `void`-ed. Honor `CancellationToken`s.
-- Command IDs: `<extension-name>.<verbCamelCase>`. Setting keys: `<extension-name>.<area>.<name>`.
+- Command IDs: `ieLua.<verbCamelCase>`. Setting keys: `ieLua.<area>.<name>`.
 - User-facing strings go through `vscode.l10n.t()` (client) — keeps localization possible later.
 - No new runtime dependency without stating why in the commit message; check its size impact on the bundle.
 
@@ -127,11 +136,14 @@ esbuild does **not** type-check. Always run `npm run check-types` — a green bu
 ## 8. Packaging (Private VSIX)
 
 - `package.json` contains `"private": true`. **Never run `vsce publish` or `ovsx publish`.**
-- Build with `npm run package` then `npx @vscode/vsce package --no-dependencies` (dependencies are bundled by esbuild).
+- Build with `npm run package` then `npx @vscode/vsce package --no-dependencies --changelog-path docs/CHANGELOG.vsix.md`
+  (dependencies are bundled by esbuild; the VSIX ships the user-facing changelog).
 - `.vscodeignore` must exclude `src/`, `test/`, `node_modules/`, source maps, and config files.
   Verify with `npx @vscode/vsce ls` before handing over a VSIX.
 - Install locally with `code --install-extension <file>.vsix`.
-- Bump `version` (SemVer) and update `CHANGELOG.md` for every VSIX handed out.
+- Releases go through `.github/workflows/release.yml` (see CONTRIBUTING.md › Releases): it computes the version
+  (even minor = stable, odd minor = pre-release) and keeps `VERSION`, `package.json`, `CHANGELOG.md` and
+  `docs/CHANGELOG.vsix.md` in sync. Add entries under `## [Unreleased]` in both changelogs with each change.
 
 ---
 
