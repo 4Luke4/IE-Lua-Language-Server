@@ -1,0 +1,22 @@
+# Normalize all text to LF in the repository and working tree.
+* text=auto eol=lf
+
+# Windows-only scripts keep CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary assets.
+*.png  binary
+*.jpg  binary
+*.ico  binary
+*.wasm binary
+*.vsix binary
+*.blend binary
+
+# Generated or vendored content: collapsed in diffs, excluded from language stats.
+third_party/lua52/dist/**  linguist-generated=true
+data/eeex/**.json          linguist-generated=true
+package-lock.json          linguist-generated=true -diff
+
+# Third-party upstream sources.
+third_party/**             linguist-vendored=true
