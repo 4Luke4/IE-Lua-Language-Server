@@ -81,4 +81,16 @@ describe('server/syntax/scope', () => {
   it('ignores field names in table constructors and member accesses', () => {
     assert.deepEqual(globalNames('t = { name = value, [key] = 1 } u = t.name'), ['t', 'value', 'key', 'u']);
   });
+
+  it('records assignment targets and `function x()` names as writes', () => {
+    //            0         1         2         3         4
+    //            0123456789012345678901234567890123456789012345678
+    const source = 'local a a, t.f, b = 1 function g() end a = b + g';
+    const writes = [...analyze(source).writes].map((identifier) => `${identifier.name}@${String(identifier.start)}`);
+    assert.deepEqual(writes, ['a@8', 'b@16', 'g@31', 'a@39']);
+  });
+
+  it('does not record declarations, reads or function paths with fields or methods as writes', () => {
+    assert.deepEqual([...analyze('local x = y function t.f() end function t:m() end print(x)').writes], []);
+  });
 });

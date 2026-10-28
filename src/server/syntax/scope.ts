@@ -28,12 +28,19 @@ export interface ScopeAnalysis {
   readonly resolved: ReadonlyMap<Ast.Identifier, Declaration>;
   /** Identifiers that name globals, by name, in source order. */
   readonly globals: ReadonlyMap<string, readonly Ast.Identifier[]>;
+  /**
+   * Identifiers that are assigned a value without being declared: the targets of
+   * `x = …` and the name of `function x()`. Local or global; declaring
+   * identifiers are not included (see `declarations`).
+   */
+  readonly writes: ReadonlySet<Ast.Identifier>;
 }
 
 export function analyzeScopes(chunk: Ast.Chunk): ScopeAnalysis {
   const declarations: Declaration[] = [];
   const resolved = new Map<Ast.Identifier, Declaration>();
   const globals = new Map<string, Ast.Identifier[]>();
+  const writes = new Set<Ast.Identifier>();
   const scopes: Map<string, Declaration>[] = [];
 
   const declare = (kind: DeclarationKind, name: string, identifier: Ast.Identifier | undefined): void => {
@@ -95,7 +102,11 @@ export function analyzeScopes(chunk: Ast.Chunk): ScopeAnalysis {
       case 'FunctionDeclaration': {
         // Only the first name is a variable; the rest are field names.
         const [first] = node.path;
-        if (first) use(first);
+        if (first) {
+          use(first);
+          // `function x()` assigns x; `function x.y()` and `function x:m()` only read it.
+          if (node.path.length === 1 && node.method === undefined) writes.add(first);
+        }
         func(node.func, node.method !== undefined);
         break;
       }
@@ -103,6 +114,9 @@ export function analyzeScopes(chunk: Ast.Chunk): ScopeAnalysis {
         // No declaration happens in between, so visiting in source order is exact.
         expressions(node.targets);
         expressions(node.values);
+        for (const target of node.targets) {
+          if (target.kind === 'Identifier') writes.add(target);
+        }
         break;
       case 'CallStatement':
         visitExpression(node.call);
@@ -206,5 +220,5 @@ export function analyzeScopes(chunk: Ast.Chunk): ScopeAnalysis {
   scoped(() => {
     block(chunk.body);
   });
-  return { declarations, resolved, globals };
+  return { declarations, resolved, globals, writes };
 }
