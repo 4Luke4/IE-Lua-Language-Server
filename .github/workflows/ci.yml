@@ -151,6 +151,11 @@ jobs:
         with:
           path: .vscode-test
           key: vscode-test-${{ runner.os }}-${{ steps.vscode.outputs.version }}
+      # `npm test` runs this as its `pretest` script; calling vscode-test directly
+      # (to pick one label) skips it, and without the bundled tests in
+      # out/test/integration/ the run would find no test files.
+      - name: Build extension and integration tests
+        run: npm run pretest
       - name: Run integration tests
         run: xvfb-run -a npx vscode-test --label "${{ matrix.label }}"
 

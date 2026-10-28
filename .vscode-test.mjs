@@ -10,7 +10,8 @@ const config = (label, version) => ({
   workspaceFolder: 'test/fixtures/workspace',
   // Isolated user data and extensions: never depend on the developer's own setup.
   launchArgs: ['--disable-extensions', '--disable-workspace-trust'],
-  mocha: { ui: 'tdd', timeout: 20000, forbidOnly: true },
+  // failZero: a run that finds no tests (e.g. tests not built) fails instead of passing.
+  mocha: { ui: 'tdd', timeout: 20000, forbidOnly: true, failZero: true },
 });
 
 export default defineConfig([

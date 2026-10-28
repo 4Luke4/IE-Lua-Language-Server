@@ -50,3 +50,5 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   committed `VERSION` as the first stable release (a pre-release before it would be 1.1.0).
 - The Release workflow publishes only for merged `chore(release): …` pull requests, not for any
   other push that changes `VERSION`.
+- CI integration jobs build the tests before running them, and a test run that finds no tests now
+  fails. Until now the CI integration jobs ran 0 tests and passed.
