@@ -4,12 +4,15 @@
 # 1. "Run workflow" (choose pre-release or stable) → job `prepare`:
 #    computes the next version from git tags + Conventional Commits
 #    (scripts/release/), updates VERSION, package.json, package-lock.json,
-#    CHANGELOG.md and docs/CHANGELOG.vsix.md, and opens a release pull request.
+#    CHANGELOG.md and docs/CHANGELOG.vsix.md, packages the VSIX to record its
+#    installed size for the README badge (.github/badges/install-size.json),
+#    and opens a release pull request.
 # 2. Merging that pull request changes VERSION on main → job `publish`
 #    (environment `release`): verifies the version, runs the checks, packages the
 #    VSIX and creates the tag and the GitHub (pre-)release. Other pushes that
 #    touch VERSION (for example a manual version reset) skip `publish`: it runs
-#    only for the squash commit of a `chore(release): …` pull request.
+#    only for the squash commit of a `chore(release): …` pull request. It also
+#    checks that the committed install-size badge matches the VSIX it publishes.
 #
 # Version rules (VS Code): plain major.minor.patch; even minor = stable,
 # odd minor = pre-release (packaged with `vsce package --pre-release`).
@@ -60,6 +63,18 @@ jobs:
         env:
           CHANNEL: ${{ inputs.channel }}
         run: node scripts/release/cli.mts prepare --channel "$CHANNEL"
+      - name: Production bundle
+        run: npm run package
+      - name: Record the installed size of the VSIX
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          CHANNEL: ${{ steps.version.outputs.channel }}
+        run: |
+          flags=()
+          if [ "$CHANNEL" = "pre-release" ]; then flags+=(--pre-release); fi
+          vsix="$RUNNER_TEMP/ie-lua-language-server-$VERSION.vsix"
+          npx vsce package --no-dependencies --changelog-path docs/CHANGELOG.vsix.md "${flags[@]}" --out "$vsix"
+          node scripts/release/cli.mts install-size --vsix "$vsix" --write
       - name: Open release pull request
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -75,7 +90,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -c "$branch"
-          git add VERSION package.json package-lock.json CHANGELOG.md docs/CHANGELOG.vsix.md
+          git add VERSION package.json package-lock.json CHANGELOG.md docs/CHANGELOG.vsix.md .github/badges/install-size.json
           git commit -m "chore(release): $TAG"
           git push origin "$branch"
           gh pr create --base main --head "$branch" --title "chore(release): $TAG" --body \
@@ -136,6 +151,10 @@ jobs:
           hash="$(sha256sum "$vsix" | cut -d ' ' -f 1)"
           echo "SHA-256 of $vsix: $hash"
           printf '\n**SHA-256** of `%s`: `%s`\n' "$vsix" "$hash" >> "$RUNNER_TEMP/notes.md"
+      - name: Install-size badge matches the VSIX
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: node scripts/release/cli.mts install-size --vsix "ie-lua-language-server-$VERSION.vsix" --check --notes "$RUNNER_TEMP/notes.md"
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

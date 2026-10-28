@@ -94,7 +94,14 @@ jobs:
       - name: Third-party notices are current
         run: npm run notices -- --check
       - name: Package VSIX
-        run: npx vsce package --no-dependencies --changelog-path docs/CHANGELOG.vsix.md --out ie-lua-language-server.vsix
+        env:
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: |
+          flags=()
+          # Release branches are packaged exactly as the Release workflow will publish them
+          # (odd minor = pre-release), so that the install-size check below sees the same bytes.
+          if [[ "$BRANCH" == release/v* ]] && (( $(cut -d . -f 2 VERSION) % 2 == 1 )); then flags+=(--pre-release); fi
+          npx vsce package --no-dependencies --changelog-path docs/CHANGELOG.vsix.md "${flags[@]}" --out ie-lua-language-server.vsix
       - name: VSIX contents
         run: |
           npx vsce ls --no-dependencies | tee vsix-files.txt
@@ -104,6 +111,9 @@ jobs:
             printf '::error title=VSIX contents::Unexpected files in the VSIX (update .vscodeignore):\n%s\n' "$unexpected"
             exit 1
           fi
+      - name: Install-size badge matches the VSIX (release branches)
+        if: startsWith(github.head_ref || github.ref_name, 'release/v')
+        run: node scripts/release/cli.mts install-size --vsix ie-lua-language-server.vsix --check
       - name: Upload VSIX
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:

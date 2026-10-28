@@ -65,6 +65,11 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   committed `VERSION` as the first stable release (a pre-release before it would be 1.1.0).
 - The Release workflow publishes only for merged `chore(release): …` pull requests, not for any
   other push that changes `VERSION`.
+- The Release workflow records the installed size of each release for the README's install-size
+  badge (`.github/badges/install-size.json`, a shields.io endpoint): the size VS Code shows in the
+  extension's details, computed from the VSIX exactly as VS Code installs it
+  (`scripts/release/vsix.mts`). CI checks it on release branches and the publish job against the
+  VSIX it publishes; the exact byte count goes in the release notes.
 - GitHub releases have the VSIX as their only asset; its SHA-256 moved from a separate
   `.vsix.sha256` file into the release notes, so the download count covers VSIX downloads only.
 - CI integration jobs build the tests before running them, and a test run that finds no tests now
