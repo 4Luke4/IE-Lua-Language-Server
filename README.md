@@ -3,6 +3,8 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/4Luke4/IE-Lua-Language-Server/ci.yml?branch=main&label=CI&logo=github)](https://github.com/4Luke4/IE-Lua-Language-Server/actions/workflows/ci.yml)
 [![CodeQL](https://img.shields.io/github/actions/workflow/status/4Luke4/IE-Lua-Language-Server/codeql.yml?branch=main&label=CodeQL&logo=github)](https://github.com/4Luke4/IE-Lua-Language-Server/actions/workflows/codeql.yml)
 [![Release](https://img.shields.io/github/v/release/4Luke4/IE-Lua-Language-Server?include_prereleases&sort=semver&label=release)](https://github.com/4Luke4/IE-Lua-Language-Server/releases)
+[![Downloads](https://img.shields.io/github/downloads/4Luke4/IE-Lua-Language-Server/total?label=downloads&logo=github)](https://github.com/4Luke4/IE-Lua-Language-Server/releases)
+[![Install size](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2F4Luke4%2FIE-Lua-Language-Server%2Fmain%2F.github%2Fbadges%2Finstall-size.json)](#installation)
 [![License: proprietary](https://img.shields.io/badge/license-proprietary-informational)](LICENSE.md)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-fe5196?logo=conventionalcommits&logoColor=white)](https://www.conventionalcommits.org/en/v1.0.0/)
 
@@ -48,6 +50,10 @@ This extension is distributed privately as a `.vsix` file.
    ```
 
 Requires VS Code **1.91** or later.
+
+The *downloads* badge counts downloads of the `.vsix` files of all releases, as reported by
+GitHub; GitHub does not say who downloads, so maintainers' own downloads are included. The
+*install size* badge shows the size VS Code reports for the latest release once installed.
 
 ## Settings
 
