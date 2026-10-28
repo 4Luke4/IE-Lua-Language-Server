@@ -1,0 +1,23 @@
+# Weekly check of the "EEex Functions" section of the EEex documentation
+# (https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/index.html).
+# Schedules of the three sync workflows are staggered so they never hit the
+# Read the Docs API at the same time (it throttles bursts with HTTP 429).
+name: "EEex docs sync: EEex Functions"
+
+on:
+  schedule:
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    uses: ./.github/workflows/eeex-docs-sync.yml
+    with:
+      section: eeex-functions

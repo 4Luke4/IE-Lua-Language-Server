@@ -1,0 +1,150 @@
+{
+  "name": "ie-lua-language-server",
+  "displayName": "%displayName%",
+  "description": "%description%",
+  "version": "0.0.0",
+  "private": true,
+  "publisher": "infinity-engine-tools",
+  "author": "4Luke4",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "homepage": "https://github.com/4Luke4/IE-Lua-Language-Server#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/4Luke4/IE-Lua-Language-Server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/4Luke4/IE-Lua-Language-Server/issues"
+  },
+  "icon": "images/icon.png",
+  "categories": [
+    "Programming Languages",
+    "Linters"
+  ],
+  "keywords": [
+    "lua",
+    "infinity engine",
+    "baldur's gate",
+    "icewind dale",
+    "planescape",
+    "eeex",
+    "menu"
+  ],
+  "engines": {
+    "vscode": "^1.91.0",
+    "node": ">=24"
+  },
+  "l10n": "./l10n",
+  "main": "./dist/client/extension.js",
+  "activationEvents": [
+    "onLanguage:lua"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "ie-menu",
+        "aliases": [
+          "Infinity Engine Menu",
+          "ie-menu"
+        ],
+        "extensions": [
+          ".menu"
+        ],
+        "configuration": "./language-configuration/ie-menu.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "ie-menu",
+        "scopeName": "source.ie-menu",
+        "path": "./syntaxes/ie-menu.tmLanguage.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.lua": "lua",
+          "meta.embedded.inline.lua": "lua"
+        }
+      }
+    ],
+    "commands": [
+      {
+        "command": "ieLua.validateDocument",
+        "title": "%command.validateDocument.title%",
+        "category": "%category%"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "ieLua.validateDocument",
+          "when": "editorLangId == lua || editorLangId == ie-menu"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "%configuration.title%",
+      "properties": {
+        "ieLua.validate.mode": {
+          "type": "string",
+          "default": "save",
+          "enum": [
+            "manual",
+            "save",
+            "type",
+            "saveAndType"
+          ],
+          "enumDescriptions": [
+            "%configuration.validate.mode.manual%",
+            "%configuration.validate.mode.save%",
+            "%configuration.validate.mode.type%",
+            "%configuration.validate.mode.saveAndType%"
+          ],
+          "markdownDescription": "%configuration.validate.mode.description%",
+          "scope": "resource"
+        },
+        "ieLua.validate.debounce": {
+          "type": "integer",
+          "default": 300,
+          "minimum": 0,
+          "maximum": 10000,
+          "markdownDescription": "%configuration.validate.debounce.description%",
+          "scope": "resource"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "package": "node esbuild.mjs --production",
+    "check-types": "tsc --noEmit -p .",
+    "lint": "eslint --max-warnings 0 .",
+    "test:unit": "mocha",
+    "pretest": "node esbuild.mjs --tests",
+    "test": "vscode-test",
+    "check-l10n": "node scripts/check-l10n.mts",
+    "build:wasm": "node third_party/lua52/build.mts",
+    "notices": "node scripts/third-party-notices.mts"
+  },
+  "dependencies": {
+    "vscode-languageclient": "11.0.0",
+    "vscode-languageserver": "11.0.0",
+    "vscode-languageserver-protocol": "3.18.5",
+    "vscode-languageserver-textdocument": "1.0.16"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "21.2.4",
+    "@commitlint/config-conventional": "21.2.4",
+    "@eslint/js": "10.0.1",
+    "@types/mocha": "10.0.10",
+    "@types/node": "20.19.43",
+    "@types/vscode": "1.91.0",
+    "@vscode/l10n-dev": "0.0.35",
+    "@vscode/test-cli": "0.0.15",
+    "@vscode/test-electron": "3.1.0",
+    "@vscode/vsce": "4.0.0",
+    "esbuild": "0.28.2",
+    "eslint": "10.13.0",
+    "mocha": "12.0.3",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.1"
+  }
+}

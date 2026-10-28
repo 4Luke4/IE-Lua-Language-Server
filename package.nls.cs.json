@@ -1,0 +1,13 @@
+{
+  "displayName": "IE Lua Language Server",
+  "description": "Podpora jazyka Lua 5.2 pro hry Infinity Engine Enhanced Edition: diagnostika syntaxe souborů .lua a kódu Lua vloženého v souborech .menu.",
+  "category": "IE Lua",
+  "command.validateDocument.title": "Ověřit aktuální soubor",
+  "configuration.title": "IE Lua",
+  "configuration.validate.mode.description": "Určuje, kdy se ověřují soubory Lua a kód Lua v souborech `.menu`. Spuštěním příkazu **IE Lua: Ověřit aktuální soubor** můžete soubor ověřit na vyžádání v libovolném režimu.",
+  "configuration.validate.mode.manual": "Ověřovat jen při spuštění příkazu **IE Lua: Ověřit aktuální soubor**.",
+  "configuration.validate.mode.save": "Ověřovat při uložení souboru.",
+  "configuration.validate.mode.type": "Ověřovat během psaní, po `#ieLua.validate.debounce#` ms bez změn.",
+  "configuration.validate.mode.saveAndType": "Ověřovat během psaní a při uložení souboru.",
+  "configuration.validate.debounce.description": "Prodleva v milisekundách od poslední změny do ověření, když má `#ieLua.validate.mode#` hodnotu `type` nebo `saveAndType`."
+}

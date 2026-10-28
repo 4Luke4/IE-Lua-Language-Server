@@ -1,0 +1,6 @@
+{
+  "Open a Lua or Infinity Engine menu file to validate it.": "Pokud chcete soubor ověřit, otevřete soubor Lua nebo soubor nabídky Infinity Engine.",
+  "IE Lua: no problems found.": "IE Lua: Nenašly se žádné problémy.",
+  "IE Lua: {0} problem(s) found.": "IE Lua: Počet nalezených problémů: {0}.",
+  "IE Lua: validation failed. See the \"IE Lua\" output for details.": "IE Lua: Ověření se nezdařilo. Podrobnosti najdete ve výstupu „IE Lua“."
+}

@@ -1,0 +1,13 @@
+{
+  "displayName": "IE Lua Language Server",
+  "description": "Infinity Engine Enhanced Edition 게임용 Lua 5.2 언어 지원: .lua 파일 및 .menu 파일에 포함된 Lua의 구문 진단.",
+  "category": "IE Lua",
+  "command.validateDocument.title": "현재 파일 유효성 검사",
+  "configuration.title": "IE Lua",
+  "configuration.validate.mode.description": "Lua 파일과 `.menu` 파일의 Lua 유효성을 검사하는 시점을 제어합니다. 모든 모드에서 **IE Lua: 현재 파일 유효성 검사**를 실행하여 필요할 때 유효성을 검사할 수 있습니다.",
+  "configuration.validate.mode.manual": "**IE Lua: 현재 파일 유효성 검사**를 실행할 때만 유효성을 검사합니다.",
+  "configuration.validate.mode.save": "파일을 저장할 때 유효성을 검사합니다.",
+  "configuration.validate.mode.type": "입력하는 동안 `#ieLua.validate.debounce#`밀리초 동안 변경이 없으면 유효성을 검사합니다.",
+  "configuration.validate.mode.saveAndType": "입력하는 동안과 파일을 저장할 때 유효성을 검사합니다.",
+  "configuration.validate.debounce.description": "`#ieLua.validate.mode#`이(가) `type` 또는 `saveAndType`인 경우 마지막 변경 후 유효성 검사까지의 지연 시간(밀리초)입니다."
+}

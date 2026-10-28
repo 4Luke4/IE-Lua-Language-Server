@@ -1,0 +1,13 @@
+{
+  "displayName": "IE Lua Language Server",
+  "description": "適用於 Infinity Engine Enhanced Edition 遊戲的 Lua 5.2 語言支援：.lua 檔案以及 .menu 檔案中內嵌之 Lua 程式碼的語法診斷。",
+  "category": "IE Lua",
+  "command.validateDocument.title": "驗證目前的檔案",
+  "configuration.title": "IE Lua",
+  "configuration.validate.mode.description": "控制何時驗證 Lua 檔案以及 `.menu` 檔案中的 Lua 程式碼。在任何模式下，皆可執行 **IE Lua: 驗證目前的檔案** 以視需要進行驗證。",
+  "configuration.validate.mode.manual": "只在執行 **IE Lua: 驗證目前的檔案** 時驗證。",
+  "configuration.validate.mode.save": "在儲存檔案時驗證。",
+  "configuration.validate.mode.type": "在輸入時驗證，於 `#ieLua.validate.debounce#` 毫秒內沒有變更後進行。",
+  "configuration.validate.mode.saveAndType": "在輸入時及儲存檔案時驗證。",
+  "configuration.validate.debounce.description": "當 `#ieLua.validate.mode#` 為 `type` 或 `saveAndType` 時，最後一次變更到開始驗證之間的延遲時間 (毫秒)。"
+}

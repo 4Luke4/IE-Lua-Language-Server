@@ -1,0 +1,1287 @@
+{
+  "section": "eeex-functions",
+  "title": "EEex Functions",
+  "upstream": {
+    "repository": "https://github.com/Bubb13/EEex-Docs",
+    "buildCommit": "2b175c02656e12ba22fa56c311d564e41bd0cae4",
+    "sourceCommit": "2b175c02656e12ba22fa56c311d564e41bd0cae4"
+  },
+  "entries": [
+    {
+      "name": "EEex_AIBase_AddScriptingObjectUpdatedListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/AIBase/index.html#eeex-aibase-addscriptingobjectupdatedlistener"
+    },
+    {
+      "name": "EEex_AIBase_GetScriptLevel",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/AIBase/index.html#eeex-aibase-getscriptlevel"
+    },
+    {
+      "name": "EEex_AIBase_GetScriptLevelResRef",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/AIBase/index.html#eeex-aibase-getscriptlevelresref"
+    },
+    {
+      "name": "EEex_AIBase_GetStoredScriptingTarget",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/AIBase/index.html#eeex-aibase-getstoredscriptingtarget"
+    },
+    {
+      "name": "EEex_AIBase_SetScriptLevel",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/AIBase/index.html#eeex-aibase-setscriptlevel"
+    },
+    {
+      "name": "EEex_AIBase_SetScriptLevelResRef",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/AIBase/index.html#eeex-aibase-setscriptlevelresref"
+    },
+    {
+      "name": "EEex_AIBase_SetStoredScriptingTarget",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/AIBase/index.html#eeex-aibase-setstoredscriptingtarget"
+    },
+    {
+      "name": "EEex_Action_AddEnabledSpriteStartedActionListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Action/index.html#eeex-action-addenabledspritestartedactionlistener"
+    },
+    {
+      "name": "EEex_Action_AddSpriteStartedActionListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Action/index.html#eeex-action-addspritestartedactionlistener"
+    },
+    {
+      "name": "EEex_Action_AddSpriteStartedNextActionListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Action/index.html#eeex-action-addspritestartednextactionlistener"
+    },
+    {
+      "name": "EEex_Action_ExecuteResponseStringOnAIBaseInstantly",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Action/index.html#eeex-action-executeresponsestringonaibaseinstantly"
+    },
+    {
+      "name": "EEex_Action_ExecuteScriptFileResponseAsAIBaseInstantly",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Action/index.html#eeex-action-executescriptfileresponseasaibaseinstantly"
+    },
+    {
+      "name": "EEex_Action_FreeScriptFile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Action/index.html#eeex-action-freescriptfile"
+    },
+    {
+      "name": "EEex_Action_NextSpellToPoint",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Action/index.html#eeex-action-nextspelltopoint"
+    },
+    {
+      "name": "EEex_Action_ParseResponseString",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Action/index.html#eeex-action-parseresponsestring"
+    },
+    {
+      "name": "EEex_Action_QueueResponseStringOnAIBase",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Action/index.html#eeex-action-queueresponsestringonaibase"
+    },
+    {
+      "name": "EEex_Action_QueueScriptFileResponseOnAIBase",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Action/index.html#eeex-action-queuescriptfileresponseonaibase"
+    },
+    {
+      "name": "EEex_Actionbar_AddButtonsUpdatedListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Actionbar/index.html#eeex-actionbar-addbuttonsupdatedlistener"
+    },
+    {
+      "name": "EEex_Actionbar_AddListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Actionbar/index.html#eeex-actionbar-addlistener"
+    },
+    {
+      "name": "EEex_Actionbar_GetArray",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Actionbar/index.html#eeex-actionbar-getarray"
+    },
+    {
+      "name": "EEex_Actionbar_GetLastState",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Actionbar/index.html#eeex-actionbar-getlaststate"
+    },
+    {
+      "name": "EEex_Actionbar_GetOp214ButtonDataIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Actionbar/index.html#eeex-actionbar-getop214buttondataiterator"
+    },
+    {
+      "name": "EEex_Actionbar_GetSpellButtonData",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Actionbar/index.html#eeex-actionbar-getspellbuttondata"
+    },
+    {
+      "name": "EEex_Actionbar_GetSpellButtonDataIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Actionbar/index.html#eeex-actionbar-getspellbuttondataiterator"
+    },
+    {
+      "name": "EEex_Actionbar_GetState",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Actionbar/index.html#eeex-actionbar-getstate"
+    },
+    {
+      "name": "EEex_Actionbar_IsThievingHotkeyOpeningSpecialAbilities",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Actionbar/index.html#eeex-actionbar-isthievinghotkeyopeningspecialabilities"
+    },
+    {
+      "name": "EEex_Actionbar_RestoreLastState",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Actionbar/index.html#eeex-actionbar-restorelaststate"
+    },
+    {
+      "name": "EEex_Actionbar_RunWithListenersSuppressed",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Actionbar/index.html#eeex-actionbar-runwithlistenerssuppressed"
+    },
+    {
+      "name": "EEex_Actionbar_SetButton",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Actionbar/index.html#eeex-actionbar-setbutton"
+    },
+    {
+      "name": "EEex_Actionbar_SetState",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Actionbar/index.html#eeex-actionbar-setstate"
+    },
+    {
+      "name": "EEex_Actionbar_SuppressListeners",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Actionbar/index.html#eeex-actionbar-suppresslisteners"
+    },
+    {
+      "name": "EEex_Area_CountAllOfTypeInRange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Area/index.html#eeex-area-countalloftypeinrange"
+    },
+    {
+      "name": "EEex_Area_CountAllOfTypeStringInRange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Area/index.html#eeex-area-countalloftypestringinrange"
+    },
+    {
+      "name": "EEex_Area_CreateVisualEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Area/index.html#eeex-area-createvisualeffect"
+    },
+    {
+      "name": "EEex_Area_ForAllOfTypeInRange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Area/index.html#eeex-area-foralloftypeinrange"
+    },
+    {
+      "name": "EEex_Area_ForAllOfTypeStringInRange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Area/index.html#eeex-area-foralloftypestringinrange"
+    },
+    {
+      "name": "EEex_Area_GetAllOfTypeInRange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Area/index.html#eeex-area-getalloftypeinrange"
+    },
+    {
+      "name": "EEex_Area_GetAllOfTypeStringInRange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Area/index.html#eeex-area-getalloftypestringinrange"
+    },
+    {
+      "name": "EEex_Area_GetNearestOpenPosition",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Area/index.html#eeex-area-getnearestopenposition"
+    },
+    {
+      "name": "EEex_Area_GetVariableInt",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Area/index.html#eeex-area-getvariableint"
+    },
+    {
+      "name": "EEex_Area_GetVariableString",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Area/index.html#eeex-area-getvariablestring"
+    },
+    {
+      "name": "EEex_Area_GetVisible",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Area/index.html#eeex-area-getvisible"
+    },
+    {
+      "name": "EEex_Area_SetVariableInt",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Area/index.html#eeex-area-setvariableint"
+    },
+    {
+      "name": "EEex_Area_SetVariableString",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Area/index.html#eeex-area-setvariablestring"
+    },
+    {
+      "name": "EEex_Debug_DumpScriptEncoding",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Debug/index.html#eeex-debug-dumpscriptencoding"
+    },
+    {
+      "name": "EEex_GameObject_ApplyEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameObject/index.html#eeex-gameobject-applyeffect"
+    },
+    {
+      "name": "EEex_GameObject_AttachVisualEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameObject/index.html#eeex-gameobject-attachvisualeffect"
+    },
+    {
+      "name": "EEex_GameObject_CastUserType",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameObject/index.html#eeex-gameobject-castusertype"
+    },
+    {
+      "name": "EEex_GameObject_Get",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameObject/index.html#eeex-gameobject-get"
+    },
+    {
+      "name": "EEex_GameObject_GetAllSelectedIDs",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameObject/index.html#eeex-gameobject-getallselectedids"
+    },
+    {
+      "name": "EEex_GameObject_GetClass",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameObject/index.html#eeex-gameobject-getclass"
+    },
+    {
+      "name": "EEex_GameObject_GetSelected",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameObject/index.html#eeex-gameobject-getselected"
+    },
+    {
+      "name": "EEex_GameObject_GetSelectedID",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameObject/index.html#eeex-gameobject-getselectedid"
+    },
+    {
+      "name": "EEex_GameObject_GetUnderCursor",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameObject/index.html#eeex-gameobject-getundercursor"
+    },
+    {
+      "name": "EEex_GameObject_GetUnderCursorID",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameObject/index.html#eeex-gameobject-getundercursorid"
+    },
+    {
+      "name": "EEex_GameObject_IsSprite",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameObject/index.html#eeex-gameobject-issprite"
+    },
+    {
+      "name": "EEex_GameObject_IsSpriteID",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameObject/index.html#eeex-gameobject-isspriteid"
+    },
+    {
+      "name": "EEex_GameObject_IterateSelected",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameObject/index.html#eeex-gameobject-iterateselected"
+    },
+    {
+      "name": "EEex_GameObject_IterateSelectedIDs",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameObject/index.html#eeex-gameobject-iterateselectedids"
+    },
+    {
+      "name": "EEex_GameState_AddAfterIncludesListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameState/index.html#eeex-gamestate-addafterincludeslistener"
+    },
+    {
+      "name": "EEex_GameState_AddBeforeIncludesListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameState/index.html#eeex-gamestate-addbeforeincludeslistener"
+    },
+    {
+      "name": "EEex_GameState_AddDestroyedListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameState/index.html#eeex-gamestate-adddestroyedlistener"
+    },
+    {
+      "name": "EEex_GameState_AddInitializedListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameState/index.html#eeex-gamestate-addinitializedlistener"
+    },
+    {
+      "name": "EEex_GameState_AddShutdownListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameState/index.html#eeex-gamestate-addshutdownlistener"
+    },
+    {
+      "name": "EEex_GameState_GetGlobalInt",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameState/index.html#eeex-gamestate-getglobalint"
+    },
+    {
+      "name": "EEex_GameState_GetGlobalString",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameState/index.html#eeex-gamestate-getglobalstring"
+    },
+    {
+      "name": "EEex_GameState_GetInputMode",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameState/index.html#eeex-gamestate-getinputmode"
+    },
+    {
+      "name": "EEex_GameState_SetGlobalInt",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameState/index.html#eeex-gamestate-setglobalint"
+    },
+    {
+      "name": "EEex_GameState_SetGlobalString",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameState/index.html#eeex-gamestate-setglobalstring"
+    },
+    {
+      "name": "EEex_GameState_SetInputMode",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameState/index.html#eeex-gamestate-setinputmode"
+    },
+    {
+      "name": "EEex_GameState_TogglePause",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameState/index.html#eeex-gamestate-togglepause"
+    },
+    {
+      "name": "EEex_GameState_WouldWorldScreenProcessInput",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/GameState/index.html#eeex-gamestate-wouldworldscreenprocessinput"
+    },
+    {
+      "name": "EEex_Key_AddPressedListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Key/index.html#eeex-key-addpressedlistener"
+    },
+    {
+      "name": "EEex_Key_AddReleasedListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Key/index.html#eeex-key-addreleasedlistener"
+    },
+    {
+      "name": "EEex_Key_EnterCaptureMode",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Key/index.html#eeex-key-entercapturemode"
+    },
+    {
+      "name": "EEex_Key_ExitCaptureMode",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Key/index.html#eeex-key-exitcapturemode"
+    },
+    {
+      "name": "EEex_Key_GetFromName",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Key/index.html#eeex-key-getfromname"
+    },
+    {
+      "name": "EEex_Key_GetName",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Key/index.html#eeex-key-getname"
+    },
+    {
+      "name": "EEex_Key_GetPressedCount",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Key/index.html#eeex-key-getpressedcount"
+    },
+    {
+      "name": "EEex_Key_GetPressedStack",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Key/index.html#eeex-key-getpressedstack"
+    },
+    {
+      "name": "EEex_Key_IsDown",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Key/index.html#eeex-key-isdown"
+    },
+    {
+      "name": "EEex_Keybinds_Cast",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Keybinds/index.html#eeex-keybinds-cast"
+    },
+    {
+      "name": "EEex_Keybinds_CastTwoStep",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Keybinds/index.html#eeex-keybinds-casttwostep"
+    },
+    {
+      "name": "EEex_Keybinds_Get",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Keybinds/index.html#eeex-keybinds-get"
+    },
+    {
+      "name": "EEex_Keybinds_IsSatisfied",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Keybinds/index.html#eeex-keybinds-issatisfied"
+    },
+    {
+      "name": "EEex_Keybinds_Reset",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Keybinds/index.html#eeex-keybinds-reset"
+    },
+    {
+      "name": "EEex_Keybinds_SelectPortrait",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Keybinds/index.html#eeex-keybinds-selectportrait"
+    },
+    {
+      "name": "EEex_Keybinds_Update",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Keybinds/index.html#eeex-keybinds-update"
+    },
+    {
+      "name": "EEex_Menu_AddAfterMainFileLoadedListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-addaftermainfileloadedlistener"
+    },
+    {
+      "name": "EEex_Menu_AddAfterMainFileReloadedListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-addaftermainfilereloadedlistener"
+    },
+    {
+      "name": "EEex_Menu_AddAfterUtilLoadedListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-addafterutilloadedlistener"
+    },
+    {
+      "name": "EEex_Menu_AddBeforeListRendersItemListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-addbeforelistrendersitemlistener"
+    },
+    {
+      "name": "EEex_Menu_AddBeforeMainFileLoadedListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-addbeforemainfileloadedlistener"
+    },
+    {
+      "name": "EEex_Menu_AddBeforeMainFileReloadedListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-addbeforemainfilereloadedlistener"
+    },
+    {
+      "name": "EEex_Menu_AddBeforeUIItemRenderListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-addbeforeuiitemrenderlistener"
+    },
+    {
+      "name": "EEex_Menu_AddMainFileLoadedListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-addmainfileloadedlistener"
+    },
+    {
+      "name": "EEex_Menu_AddTranslationLoadedListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-addtranslationloadedlistener"
+    },
+    {
+      "name": "EEex_Menu_AddWindowSizeChangedListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-addwindowsizechangedlistener"
+    },
+    {
+      "name": "EEex_Menu_CreateTemplateFromCopy",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-createtemplatefromcopy"
+    },
+    {
+      "name": "EEex_Menu_DestroyAllTemplates",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-destroyalltemplates"
+    },
+    {
+      "name": "EEex_Menu_DestroyInjectedTemplate",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-destroyinjectedtemplate"
+    },
+    {
+      "name": "EEex_Menu_Eval",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-eval"
+    },
+    {
+      "name": "EEex_Menu_Find",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-find"
+    },
+    {
+      "name": "EEex_Menu_GetArea",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-getarea"
+    },
+    {
+      "name": "EEex_Menu_GetItem",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-getitem"
+    },
+    {
+      "name": "EEex_Menu_GetItemArea",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-getitemarea"
+    },
+    {
+      "name": "EEex_Menu_GetItemFunction",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-getitemfunction"
+    },
+    {
+      "name": "EEex_Menu_GetItemVariant",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-getitemvariant"
+    },
+    {
+      "name": "EEex_Menu_GetMousePos",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-getmousepos"
+    },
+    {
+      "name": "EEex_Menu_GetTextWidthHeight",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-gettextwidthheight"
+    },
+    {
+      "name": "EEex_Menu_GetUIItemArea",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-getuiitemarea"
+    },
+    {
+      "name": "EEex_Menu_GetUIMenuArea",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-getuimenuarea"
+    },
+    {
+      "name": "EEex_Menu_InjectTemplate",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-injecttemplate"
+    },
+    {
+      "name": "EEex_Menu_InjectTemplateInstance",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-injecttemplateinstance"
+    },
+    {
+      "name": "EEex_Menu_IsCursorWithin",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-iscursorwithin"
+    },
+    {
+      "name": "EEex_Menu_IsCursorWithinRect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-iscursorwithinrect"
+    },
+    {
+      "name": "EEex_Menu_IsNative",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-isnative"
+    },
+    {
+      "name": "EEex_Menu_LoadFile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-loadfile"
+    },
+    {
+      "name": "EEex_Menu_ScaleX",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-scalex"
+    },
+    {
+      "name": "EEex_Menu_ScaleXY",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-scalexy"
+    },
+    {
+      "name": "EEex_Menu_ScaleY",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-scaley"
+    },
+    {
+      "name": "EEex_Menu_SetForceScrollbarRender",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-setforcescrollbarrender"
+    },
+    {
+      "name": "EEex_Menu_SetItemExtraScrollbarPad",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-setitemextrascrollbarpad"
+    },
+    {
+      "name": "EEex_Menu_SetItemFunction",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-setitemfunction"
+    },
+    {
+      "name": "EEex_Menu_SetItemScrollbarPadCollapses",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-setitemscrollbarpadcollapses"
+    },
+    {
+      "name": "EEex_Menu_SetItemVariant",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-setitemvariant"
+    },
+    {
+      "name": "EEex_Menu_SetTemplateArea",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-settemplatearea"
+    },
+    {
+      "name": "EEex_Menu_StoreTemplateInstance",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-storetemplateinstance"
+    },
+    {
+      "name": "EEex_Menu_TranslateXYFromGame",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-translatexyfromgame"
+    },
+    {
+      "name": "EEex_Menu_UnscaleX",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-unscalex"
+    },
+    {
+      "name": "EEex_Menu_UnscaleXY",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-unscalexy"
+    },
+    {
+      "name": "EEex_Menu_UnscaleY",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Menu/index.html#eeex-menu-unscaley"
+    },
+    {
+      "name": "EEex_Object_AddToArea",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Object/index.html#eeex-object-addtoarea"
+    },
+    {
+      "name": "EEex_Object_EvalAsAIBase",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Object/index.html#eeex-object-evalasaibase"
+    },
+    {
+      "name": "EEex_Object_EvalStringAsAIBase",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Object/index.html#eeex-object-evalstringasaibase"
+    },
+    {
+      "name": "EEex_Object_ParseString",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Object/index.html#eeex-object-parsestring"
+    },
+    {
+      "name": "EEex_Opcode_AddDeferredListsResolvedListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Opcode/index.html#eeex-opcode-adddeferredlistsresolvedlistener"
+    },
+    {
+      "name": "EEex_Opcode_AddListsResolvedListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Opcode/index.html#eeex-opcode-addlistsresolvedlistener"
+    },
+    {
+      "name": "EEex_Options_AddTab",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Options/index.html#eeex-options-addtab"
+    },
+    {
+      "name": "EEex_Options_Check",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Options/index.html#eeex-options-check"
+    },
+    {
+      "name": "EEex_Options_Close",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Options/index.html#eeex-options-close"
+    },
+    {
+      "name": "EEex_Options_Get",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Options/index.html#eeex-options-get"
+    },
+    {
+      "name": "EEex_Options_MarshalKeybind",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Options/index.html#eeex-options-marshalkeybind"
+    },
+    {
+      "name": "EEex_Options_Open",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Options/index.html#eeex-options-open"
+    },
+    {
+      "name": "EEex_Options_Option.new",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Options/index.html#eeex-options-option-new"
+    },
+    {
+      "name": "EEex_Options_Register",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Options/index.html#eeex-options-register"
+    },
+    {
+      "name": "EEex_Options_Set",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Options/index.html#eeex-options-set"
+    },
+    {
+      "name": "EEex_Options_UnmarshalKeybind",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Options/index.html#eeex-options-unmarshalkeybind"
+    },
+    {
+      "name": "EEex_Projectile_CastUserType",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Projectile/index.html#eeex-projectile-castusertype"
+    },
+    {
+      "name": "EEex_Projectile_GetStartingPos",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Projectile/index.html#eeex-projectile-getstartingpos"
+    },
+    {
+      "name": "EEex_Projectile_GetStartingPosForID",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Projectile/index.html#eeex-projectile-getstartingposforid"
+    },
+    {
+      "name": "EEex_Projectile_GetType",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Projectile/index.html#eeex-projectile-gettype"
+    },
+    {
+      "name": "EEex_Projectile_IsOfType",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Projectile/index.html#eeex-projectile-isoftype"
+    },
+    {
+      "name": "EEex_Projectile_RegisterGlobalMutator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Projectile/index.html#eeex-projectile-registerglobalmutator"
+    },
+    {
+      "name": "EEex_Resource_Demand",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-demand"
+    },
+    {
+      "name": "EEex_Resource_ExtToType",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-exttotype"
+    },
+    {
+      "name": "EEex_Resource_ExtToUserType",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-exttousertype"
+    },
+    {
+      "name": "EEex_Resource_Fetch",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-fetch"
+    },
+    {
+      "name": "EEex_Resource_Find2DAColumnIndex",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-find2dacolumnindex"
+    },
+    {
+      "name": "EEex_Resource_Find2DAColumnLabel",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-find2dacolumnlabel"
+    },
+    {
+      "name": "EEex_Resource_Find2DARowIndex",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-find2darowindex"
+    },
+    {
+      "name": "EEex_Resource_Find2DARowLabel",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-find2darowlabel"
+    },
+    {
+      "name": "EEex_Resource_Free2DA",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-free2da"
+    },
+    {
+      "name": "EEex_Resource_FreeIDS",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-freeids"
+    },
+    {
+      "name": "EEex_Resource_FreeScript",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-freescript"
+    },
+    {
+      "name": "EEex_Resource_Get2DAColumnLabel",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-get2dacolumnlabel"
+    },
+    {
+      "name": "EEex_Resource_Get2DADefault",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-get2dadefault"
+    },
+    {
+      "name": "EEex_Resource_Get2DADimensions",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-get2dadimensions"
+    },
+    {
+      "name": "EEex_Resource_Get2DARowColumnsByLabelIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-get2darowcolumnsbylabeliterator"
+    },
+    {
+      "name": "EEex_Resource_Get2DARowColumnsIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-get2darowcolumnsiterator"
+    },
+    {
+      "name": "EEex_Resource_Get2DARowLabel",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-get2darowlabel"
+    },
+    {
+      "name": "EEex_Resource_Get2DARowTableIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-get2darowtableiterator"
+    },
+    {
+      "name": "EEex_Resource_Get2DARowValuesIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-get2darowvaluesiterator"
+    },
+    {
+      "name": "EEex_Resource_GetAt2DALabels",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-getat2dalabels"
+    },
+    {
+      "name": "EEex_Resource_GetAt2DAPoint",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-getat2dapoint"
+    },
+    {
+      "name": "EEex_Resource_GetCItemAbility",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-getcitemability"
+    },
+    {
+      "name": "EEex_Resource_GetIDSCount",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-getidscount"
+    },
+    {
+      "name": "EEex_Resource_GetIDSEntry",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-getidsentry"
+    },
+    {
+      "name": "EEex_Resource_GetIDSLine",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-getidsline"
+    },
+    {
+      "name": "EEex_Resource_GetIDSStart",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-getidsstart"
+    },
+    {
+      "name": "EEex_Resource_GetItemAbility",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-getitemability"
+    },
+    {
+      "name": "EEex_Resource_GetMax2DAIndices",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-getmax2daindices"
+    },
+    {
+      "name": "EEex_Resource_GetSpellAbility",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-getspellability"
+    },
+    {
+      "name": "EEex_Resource_GetSpellAbilityForLevel",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-getspellabilityforlevel"
+    },
+    {
+      "name": "EEex_Resource_GetStoreItemsIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-getstoreitemsiterator"
+    },
+    {
+      "name": "EEex_Resource_GetValidSpellsIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-getvalidspellsiterator"
+    },
+    {
+      "name": "EEex_Resource_IDSHasID",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-idshasid"
+    },
+    {
+      "name": "EEex_Resource_ItemCategoryIDSToSymbol",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-itemcategoryidstosymbol"
+    },
+    {
+      "name": "EEex_Resource_ItemCategorySymbolToIDS",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-itemcategorysymboltoids"
+    },
+    {
+      "name": "EEex_Resource_Iterate2DAColumnIndex",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-iterate2dacolumnindex"
+    },
+    {
+      "name": "EEex_Resource_Iterate2DAColumnLabel",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-iterate2dacolumnlabel"
+    },
+    {
+      "name": "EEex_Resource_Iterate2DARowIndex",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-iterate2darowindex"
+    },
+    {
+      "name": "EEex_Resource_Iterate2DARowLabel",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-iterate2darowlabel"
+    },
+    {
+      "name": "EEex_Resource_IterateIDSEntries",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-iterateidsentries"
+    },
+    {
+      "name": "EEex_Resource_IterateUnpackedIDSEntries",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-iterateunpackedidsentries"
+    },
+    {
+      "name": "EEex_Resource_KitIDSToSymbol",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-kitidstosymbol"
+    },
+    {
+      "name": "EEex_Resource_KitSymbolToIDS",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-kitsymboltoids"
+    },
+    {
+      "name": "EEex_Resource_Load2DA",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-load2da"
+    },
+    {
+      "name": "EEex_Resource_LoadIDS",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-loadids"
+    },
+    {
+      "name": "EEex_Resource_LoadScript",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Resource/index.html#eeex-resource-loadscript"
+    },
+    {
+      "name": "EEex_Script_GetResRef",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Script/index.html#eeex-script-getresref"
+    },
+    {
+      "name": "EEex_Script_IsPlayerScript",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Script/index.html#eeex-script-isplayerscript"
+    },
+    {
+      "name": "EEex_Sprite_AddAlterBaseWeaponDamageListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-addalterbaseweapondamagelistener"
+    },
+    {
+      "name": "EEex_Sprite_AddBlockWeaponHitListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-addblockweaponhitlistener"
+    },
+    {
+      "name": "EEex_Sprite_AddLoadedListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-addloadedlistener"
+    },
+    {
+      "name": "EEex_Sprite_AddMarshalHandlers",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-addmarshalhandlers"
+    },
+    {
+      "name": "EEex_Sprite_AddQuickListCountsResetListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-addquicklistcountsresetlistener"
+    },
+    {
+      "name": "EEex_Sprite_AddQuickListNotifyRemovedListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-addquicklistnotifyremovedlistener"
+    },
+    {
+      "name": "EEex_Sprite_AddQuickListsCheckedListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-addquicklistscheckedlistener"
+    },
+    {
+      "name": "EEex_Sprite_AddSpellDisableStateChangedListener",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-addspelldisablestatechangedlistener"
+    },
+    {
+      "name": "EEex_Sprite_CountAllOfTypeInRange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-countalloftypeinrange"
+    },
+    {
+      "name": "EEex_Sprite_CountAllOfTypeStringInRange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-countalloftypestringinrange"
+    },
+    {
+      "name": "EEex_Sprite_CreateCopy",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-createcopy"
+    },
+    {
+      "name": "EEex_Sprite_CreateFromResref",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-createfromresref"
+    },
+    {
+      "name": "EEex_Sprite_DisplayTextRef",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-displaytextref"
+    },
+    {
+      "name": "EEex_Sprite_ForAllOfTypeInRange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-foralloftypeinrange"
+    },
+    {
+      "name": "EEex_Sprite_ForAllOfTypeStringInRange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-foralloftypestringinrange"
+    },
+    {
+      "name": "EEex_Sprite_GetActiveStats",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getactivestats"
+    },
+    {
+      "name": "EEex_Sprite_GetAllOfTypeInRange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getalloftypeinrange"
+    },
+    {
+      "name": "EEex_Sprite_GetAllOfTypeStringInRange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getalloftypestringinrange"
+    },
+    {
+      "name": "EEex_Sprite_GetAllSelected",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getallselected"
+    },
+    {
+      "name": "EEex_Sprite_GetAllSelectedIDs",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getallselectedids"
+    },
+    {
+      "name": "EEex_Sprite_GetCastTimer",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getcasttimer"
+    },
+    {
+      "name": "EEex_Sprite_GetCastTimerPercentage",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getcasttimerpercentage"
+    },
+    {
+      "name": "EEex_Sprite_GetCasterLevelForSpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getcasterlevelforspell"
+    },
+    {
+      "name": "EEex_Sprite_GetCharacterIndex",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getcharacterindex"
+    },
+    {
+      "name": "EEex_Sprite_GetContingencyTimer",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getcontingencytimer"
+    },
+    {
+      "name": "EEex_Sprite_GetContingencyTimerPercentage",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getcontingencytimerpercentage"
+    },
+    {
+      "name": "EEex_Sprite_GetExtendedStat",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getextendedstat"
+    },
+    {
+      "name": "EEex_Sprite_GetFromUUID",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getfromuuid"
+    },
+    {
+      "name": "EEex_Sprite_GetInPortrait",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getinportrait"
+    },
+    {
+      "name": "EEex_Sprite_GetInPortraitID",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getinportraitid"
+    },
+    {
+      "name": "EEex_Sprite_GetKnownInnateSpellsIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getknowninnatespellsiterator"
+    },
+    {
+      "name": "EEex_Sprite_GetKnownInnateSpellsWithAbilityIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getknowninnatespellswithabilityiterator"
+    },
+    {
+      "name": "EEex_Sprite_GetKnownMageSpellsIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getknownmagespellsiterator"
+    },
+    {
+      "name": "EEex_Sprite_GetKnownMageSpellsWithAbilityIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getknownmagespellswithabilityiterator"
+    },
+    {
+      "name": "EEex_Sprite_GetKnownPriestSpellsIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getknownpriestspellsiterator"
+    },
+    {
+      "name": "EEex_Sprite_GetKnownPriestSpellsWithAbilityIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getknownpriestspellswithabilityiterator"
+    },
+    {
+      "name": "EEex_Sprite_GetLauncher",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getlauncher"
+    },
+    {
+      "name": "EEex_Sprite_GetLocalInt",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getlocalint"
+    },
+    {
+      "name": "EEex_Sprite_GetLocalString",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getlocalstring"
+    },
+    {
+      "name": "EEex_Sprite_GetModalState",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getmodalstate"
+    },
+    {
+      "name": "EEex_Sprite_GetModalTimer",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getmodaltimer"
+    },
+    {
+      "name": "EEex_Sprite_GetModalTimerPercentage",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getmodaltimerpercentage"
+    },
+    {
+      "name": "EEex_Sprite_GetName",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getname"
+    },
+    {
+      "name": "EEex_Sprite_GetNameRef",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getnameref"
+    },
+    {
+      "name": "EEex_Sprite_GetNumCharacters",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getnumcharacters"
+    },
+    {
+      "name": "EEex_Sprite_GetPersonalSpace",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getpersonalspace"
+    },
+    {
+      "name": "EEex_Sprite_GetPortraitIndex",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getportraitindex"
+    },
+    {
+      "name": "EEex_Sprite_GetSelected",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getselected"
+    },
+    {
+      "name": "EEex_Sprite_GetSelectedID",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getselectedid"
+    },
+    {
+      "name": "EEex_Sprite_GetSpellButtonDataIteratorFrom2DA",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getspellbuttondataiteratorfrom2da"
+    },
+    {
+      "name": "EEex_Sprite_GetSpellState",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getspellstate"
+    },
+    {
+      "name": "EEex_Sprite_GetSpellsWithAbilityIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getspellswithabilityiterator"
+    },
+    {
+      "name": "EEex_Sprite_GetStat",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getstat"
+    },
+    {
+      "name": "EEex_Sprite_GetState",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getstate"
+    },
+    {
+      "name": "EEex_Sprite_GetUUID",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getuuid"
+    },
+    {
+      "name": "EEex_Sprite_GetValidKnownInnateSpellsIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getvalidknowninnatespellsiterator"
+    },
+    {
+      "name": "EEex_Sprite_GetValidKnownMageSpellsIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getvalidknownmagespellsiterator"
+    },
+    {
+      "name": "EEex_Sprite_GetValidKnownPriestSpellsIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getvalidknownpriestspellsiterator"
+    },
+    {
+      "name": "EEex_Sprite_GetValidSpellsWithAbilityIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-getvalidspellswithabilityiterator"
+    },
+    {
+      "name": "EEex_Sprite_IterateSelected",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-iterateselected"
+    },
+    {
+      "name": "EEex_Sprite_IterateSelectedIDs",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-iterateselectedids"
+    },
+    {
+      "name": "EEex_Sprite_LoadedWithUUIDCallback",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-loadedwithuuidcallback"
+    },
+    {
+      "name": "EEex_Sprite_OpenOp214Interface",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-openop214interface"
+    },
+    {
+      "name": "EEex_Sprite_SetLocalInt",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-setlocalint"
+    },
+    {
+      "name": "EEex_Sprite_SetLocalString",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Sprite/index.html#eeex-sprite-setlocalstring"
+    },
+    {
+      "name": "EEex_Test_2DAFunctions",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Test/index.html#eeex-test-2dafunctions"
+    },
+    {
+      "name": "EEex_Test_IDSFunctions",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Test/index.html#eeex-test-idsfunctions"
+    },
+    {
+      "name": "EEex_Trigger_EvalConditionalStringAsAIBase",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Trigger/index.html#eeex-trigger-evalconditionalstringasaibase"
+    },
+    {
+      "name": "EEex_Trigger_EvalScriptFileConditionalAsAIBase",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Trigger/index.html#eeex-trigger-evalscriptfileconditionalasaibase"
+    },
+    {
+      "name": "EEex_Trigger_ParseConditionalString",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Trigger/index.html#eeex-trigger-parseconditionalstring"
+    },
+    {
+      "name": "EEex_UncapFPS_SetVSyncEnabled",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/UncapFPS/index.html#eeex-uncapfps-setvsyncenabled"
+    },
+    {
+      "name": "EEex_Utility_AlphanumericCompare",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-alphanumericcompare"
+    },
+    {
+      "name": "EEex_Utility_AlphanumericSortTable",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-alphanumericsorttable"
+    },
+    {
+      "name": "EEex_Utility_ApplyIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-applyiterator"
+    },
+    {
+      "name": "EEex_Utility_AugmentIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-augmentiterator"
+    },
+    {
+      "name": "EEex_Utility_CallIfExists",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-callifexists"
+    },
+    {
+      "name": "EEex_Utility_CallSuper",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-callsuper"
+    },
+    {
+      "name": "EEex_Utility_ChainIteratorGenerators",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-chainiteratorgenerators"
+    },
+    {
+      "name": "EEex_Utility_ChainIteratorGeneratorsTable",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-chainiteratorgeneratorstable"
+    },
+    {
+      "name": "EEex_Utility_ChainIterators",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-chainiterators"
+    },
+    {
+      "name": "EEex_Utility_ChainIteratorsTable",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-chainiteratorstable"
+    },
+    {
+      "name": "EEex_Utility_CollectIteratorValue",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-collectiteratorvalue"
+    },
+    {
+      "name": "EEex_Utility_CollectIteratorValues",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-collectiteratorvalues"
+    },
+    {
+      "name": "EEex_Utility_DeepCopy",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-deepcopy"
+    },
+    {
+      "name": "EEex_Utility_Default",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-default"
+    },
+    {
+      "name": "EEex_Utility_Eval",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-eval"
+    },
+    {
+      "name": "EEex_Utility_FilterIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-filteriterator"
+    },
+    {
+      "name": "EEex_Utility_Find",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-find"
+    },
+    {
+      "name": "EEex_Utility_FreeCPtrList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-freecptrlist"
+    },
+    {
+      "name": "EEex_Utility_GetMicroseconds",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-getmicroseconds"
+    },
+    {
+      "name": "EEex_Utility_GetOrCreate",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-getorcreate"
+    },
+    {
+      "name": "EEex_Utility_GetOrCreateTable",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-getorcreatetable"
+    },
+    {
+      "name": "EEex_Utility_IterateCPtrList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-iteratecptrlist"
+    },
+    {
+      "name": "EEex_Utility_IterateMapAsSorted",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-iteratemapassorted"
+    },
+    {
+      "name": "EEex_Utility_MapIteratorValues",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-mapiteratorvalues"
+    },
+    {
+      "name": "EEex_Utility_MapToSortedTable",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-maptosortedtable"
+    },
+    {
+      "name": "EEex_Utility_Merge",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-merge"
+    },
+    {
+      "name": "EEex_Utility_MutateIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-mutateiterator"
+    },
+    {
+      "name": "EEex_Utility_NewScope",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-newscope"
+    },
+    {
+      "name": "EEex_Utility_ProcessIteratorValues",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-processiteratorvalues"
+    },
+    {
+      "name": "EEex_Utility_RangeIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-rangeiterator"
+    },
+    {
+      "name": "EEex_Utility_RemoveValue",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-removevalue"
+    },
+    {
+      "name": "EEex_Utility_SelectIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-selectiterator"
+    },
+    {
+      "name": "EEex_Utility_Split",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-split"
+    },
+    {
+      "name": "EEex_Utility_Switch",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-switch"
+    },
+    {
+      "name": "EEex_Utility_TableIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-tableiterator"
+    },
+    {
+      "name": "EEex_Utility_Ternary",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-ternary"
+    },
+    {
+      "name": "EEex_Utility_TryCatch",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-trycatch"
+    },
+    {
+      "name": "EEex_Utility_TryFinally",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-tryfinally"
+    },
+    {
+      "name": "EEex_Utility_TryIgnore",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-tryignore"
+    },
+    {
+      "name": "EEex_Utility_ValuesIterator",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Utility/index.html#eeex-utility-valuesiterator"
+    },
+    {
+      "name": "EEex_Variable_Find",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Variable/index.html#eeex-variable-find"
+    },
+    {
+      "name": "EEex_Variable_GetInt",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Variable/index.html#eeex-variable-getint"
+    },
+    {
+      "name": "EEex_Variable_GetOrCreate",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Variable/index.html#eeex-variable-getorcreate"
+    },
+    {
+      "name": "EEex_Variable_GetString",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Variable/index.html#eeex-variable-getstring"
+    },
+    {
+      "name": "EEex_Variable_SetInt",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Variable/index.html#eeex-variable-setint"
+    },
+    {
+      "name": "EEex_Variable_SetString",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EEex%20Functions/Variable/index.html#eeex-variable-setstring"
+    }
+  ]
+}

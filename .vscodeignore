@@ -1,0 +1,17 @@
+# Everything not listed in `files` below is excluded from the VSIX.
+# Verify with `npx @vscode/vsce ls` before handing out a package.
+**
+
+!dist/client/extension.js
+!dist/server/server.js
+!package.json
+!package.nls.json
+!package.nls.*.json
+!l10n/**
+!language-configuration/**
+!syntaxes/**
+!images/icon.png
+!README.md
+!docs/CHANGELOG.vsix.md
+!LICENSE.md
+!THIRD_PARTY_NOTICES.md

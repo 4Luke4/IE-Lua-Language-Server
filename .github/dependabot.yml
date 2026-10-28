@@ -1,0 +1,40 @@
+# https://docs.github.com/en/code-security/dependabot/working-with-dependabot/dependabot-options-reference
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: build
+      include: scope
+    labels: [dependencies]
+    ignore:
+      # Must equal engines.vscode; both are bumped together by hand (CLAUDE.md §5).
+      - dependency-name: "@types/vscode"
+      # Must match the Node.js major of the oldest supported VS Code (Electron 29 → Node 20).
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+    groups:
+      # One pull request for all low-risk development tooling updates.
+      dev-dependencies:
+        dependency-type: development
+        update-types: [minor, patch]
+      # vscode-languageclient/-server/-protocol must keep matching versions.
+      language-server:
+        patterns: ["vscode-languageclient", "vscode-languageserver", "vscode-languageserver-*"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    commit-message:
+      prefix: ci
+      include: scope
+    labels: [dependencies]
+    groups:
+      actions:
+        patterns: ["*"]

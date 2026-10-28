@@ -1,0 +1,33 @@
+
+# <type>[optional scope][!]: <description>
+#
+# [optional body]
+#
+# [optional footer(s)]
+#
+# ---------------------------------------------------------------------------
+# Conventional Commits 1.0.0 — https://www.conventionalcommits.org/en/v1.0.0/
+#
+# Types (enforced by commitlint, see commitlint.config.mjs):
+#   feat      A new feature                         -> MINOR bump
+#   fix       A bug fix                             -> PATCH bump
+#   docs      Documentation only
+#   style     Formatting, no code change
+#   refactor  Code change that neither fixes a bug nor adds a feature
+#   perf      Performance improvement
+#   test      Adding or correcting tests
+#   build     Build system, dependencies, packaging
+#   ci        CI configuration and workflows
+#   chore     Maintenance that does not touch src/ or test/
+#   revert    Reverts a previous commit
+#
+# Breaking changes: add "!" after type/scope AND/OR a footer
+#   BREAKING CHANGE: <description>                  -> MAJOR bump
+#
+# Rules:
+#   - Description: imperative mood, lower case, no trailing period, <= 100 chars header.
+#   - Body: explain *what* and *why*, wrapped at 100 columns.
+#   - Footers: "Refs: #123", "Closes: #123", "BREAKING CHANGE: ...".
+#
+# Enable this template locally with:
+#   git config commit.template .gitmessage

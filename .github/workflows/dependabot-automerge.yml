@@ -1,0 +1,50 @@
+# Enables auto-merge (squash) on low-risk Dependabot pull requests. GitHub only
+# merges once every required status check has passed (repository ruleset), so
+# nothing lands without green CI.
+#
+# Low risk:
+# - development dependencies: patch and minor updates;
+# - runtime dependencies: patch updates;
+# - GitHub Actions: patch and minor updates.
+# Everything else (major updates, runtime minors) needs a human review.
+name: Dependabot auto-merge
+
+on: pull_request
+
+permissions:
+  contents: read
+
+jobs:
+  automerge:
+    name: Enable auto-merge
+    if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == '4Luke4/IE-Lua-Language-Server'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - id: metadata
+        uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
+      - name: Decide
+        id: decide
+        env:
+          ECOSYSTEM: ${{ steps.metadata.outputs.package-ecosystem }}
+          DEPENDENCY_TYPE: ${{ steps.metadata.outputs.dependency-type }}
+          UPDATE_TYPE: ${{ steps.metadata.outputs.update-type }}
+          NAMES: ${{ steps.metadata.outputs.dependency-names }}
+        run: |
+          low_risk=false
+          case "$ECOSYSTEM:$DEPENDENCY_TYPE:$UPDATE_TYPE" in
+            npm_and_yarn:direct:development:version-update:semver-patch|npm_and_yarn:direct:development:version-update:semver-minor) low_risk=true ;;
+            npm_and_yarn:direct:production:version-update:semver-patch) low_risk=true ;;
+            github_actions:*:version-update:semver-patch|github_actions:*:version-update:semver-minor) low_risk=true ;;
+          esac
+          echo "$NAMES: ecosystem=$ECOSYSTEM type=$DEPENDENCY_TYPE update=$UPDATE_TYPE -> low risk: $low_risk"
+          echo "low_risk=$low_risk" >> "$GITHUB_OUTPUT"
+      - name: Enable auto-merge
+        if: steps.decide.outputs.low_risk == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: gh pr merge --auto --squash "$PR_URL"

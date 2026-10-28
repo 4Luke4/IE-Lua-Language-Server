@@ -20,12 +20,12 @@ Applies to code running in the VS Code extension host.
 
 ## Configuration
 - All reads go through `src/client/config.ts`, which exposes typed getters whose defaults mirror `package.json`.
-- React to changes with `workspace.onDidChangeConfiguration` and `e.affectsConfiguration('<extension-name>.<key>')`.
+- React to changes with `workspace.onDidChangeConfiguration` and `e.affectsConfiguration('ieLua.<key>')`.
 - Settings the server needs are forwarded via `synchronize.configurationSection` or answered through
   `workspace/configuration` requests — never re-read ad hoc.
 
 ## Logging
-- One `window.createOutputChannel('<Extension Name>', { log: true })` shared across the client.
+- One `window.createOutputChannel('IE Lua', { log: true })` shared across the client.
 - Never `console.log` in shipped code.
 
 ## Don'ts

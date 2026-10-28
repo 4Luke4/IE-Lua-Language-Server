@@ -4,6 +4,21 @@ plan.md
 # Sample files
 /samples/
 
+# --- Node / build output ---
+node_modules/
+/dist/
+/out/
+*.vsix
+*.tsbuildinfo
+coverage/
+.vscode-test/
+
+# --- Local toolchains and download caches (emsdk, actionlint, Lua sources) ---
+.cache/
+
+# --- Personal Claude Code overrides ---
+CLAUDE.local.md
+
 # --- IDE ---
 *.iml
 .idea/
@@ -35,3 +50,7 @@ venv/
 nohup.out
 .DS_Store
 Thumbs.db
+
+# Scratch files created by integration tests.
+test/fixtures/workspace/.tmp/
+test/fixtures/workspace/.vscode/

@@ -1,0 +1,6 @@
+{
+  "Open a Lua or Infinity Engine menu file to validate it.": "Nyisson meg egy Lua-fájlt vagy Infinity Engine-menüfájlt az ellenőrzéshez.",
+  "IE Lua: no problems found.": "IE Lua: Nem található probléma.",
+  "IE Lua: {0} problem(s) found.": "IE Lua: Talált problémák száma: {0}.",
+  "IE Lua: validation failed. See the \"IE Lua\" output for details.": "IE Lua: Az ellenőrzés sikertelen. A részleteket az „IE Lua” kimenetben találja."
+}

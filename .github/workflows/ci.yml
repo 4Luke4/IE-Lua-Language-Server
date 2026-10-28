@@ -1,0 +1,198 @@
+# Checks for every pull request and every push to main.
+#
+# Cost control:
+# - One Linux runner per job; jobs that only matter for some paths are skipped
+#   by the `changes` job (workflow-level `paths:` filters are not used because a
+#   skipped workflow never reports, which blocks required status checks).
+# - npm, VS Code test builds and emsdk are cached.
+# - Superseded pull request runs are cancelled.
+# Failures are reported as file/line annotations (setup-node's tsc and ESLint
+# problem matchers, and `::error` lines from scripts/).
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  # Lets automation (release and docs-sync pull requests, opened with GITHUB_TOKEN,
+  # which does not trigger `pull_request` workflows) run the checks on its branch.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    outputs:
+      code: ${{ steps.diff.outputs.code }}
+      wasm: ${{ steps.diff.outputs.wasm }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - id: diff
+        name: List changed paths
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          # Push to main, pull request: diff against the base. Manual runs and the
+          # first push of a branch (all-zero `before`) check everything.
+          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ] || ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            echo "No usable base commit; running every job."
+            echo "code=true" >> "$GITHUB_OUTPUT"
+            echo "wasm=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          changed="$(git diff --name-only "$BASE" HEAD)"
+          printf 'Changed files:\n%s\n' "$changed"
+          # Documentation-only changes skip the build and test jobs.
+          if printf '%s\n' "$changed" | grep -qvE '^(docs/.*|[^/]*\.md|\.github/ISSUE_TEMPLATE/.*|\.github/pull_request_template\.md|LICENSE\.md)$'; then
+            echo "code=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "code=false" >> "$GITHUB_OUTPUT"
+          fi
+          if printf '%s\n' "$changed" | grep -qE '^(third_party/lua52/|\.github/workflows/ci\.yml$)'; then
+            echo "wasm=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "wasm=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  checks:
+    name: Type-check, lint, unit tests, package
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Type-check
+        run: npm run check-types
+      - name: Lint
+        run: npm run lint
+      - name: Unit tests
+        run: npm run test:unit
+      - name: Localization
+        run: npm run check-l10n
+      - name: Production bundle
+        run: npm run package
+      - name: Third-party notices are current
+        run: npm run notices -- --check
+      - name: Package VSIX
+        run: npx vsce package --no-dependencies --changelog-path docs/CHANGELOG.vsix.md --out ie-lua-language-server.vsix
+      - name: VSIX contents
+        run: |
+          npx vsce ls --no-dependencies | tee vsix-files.txt
+          # Fail on anything outside the allow-list in .vscodeignore.
+          unexpected="$(grep -vE '^(package\.json|package\.nls(\.[a-z-]+)?\.json|README\.md|docs/CHANGELOG\.vsix\.md|LICENSE\.md|THIRD_PARTY_NOTICES\.md|images/icon\.png|dist/(client/extension|server/server)\.js|l10n/bundle\.l10n(\.[a-z-]+)?\.json|language-configuration/ie-menu\.json|syntaxes/ie-menu\.tmLanguage\.json)$' vsix-files.txt || true)"
+          if [ -n "$unexpected" ]; then
+            printf '::error title=VSIX contents::Unexpected files in the VSIX (update .vscodeignore):\n%s\n' "$unexpected"
+            exit 1
+          fi
+      - name: Upload VSIX
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: vsix
+          path: ie-lua-language-server.vsix
+          retention-days: 7
+          if-no-files-found: error
+
+  integration:
+    name: Integration tests (VS Code ${{ matrix.label }})
+    needs: [changes, checks]
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        # Labels from .vscode-test.mjs: lowest supported version and current stable.
+        label: [minimum, stable]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - id: vscode
+        name: Resolve VS Code version
+        env:
+          LABEL: ${{ matrix.label }}
+        run: |
+          if [ "$LABEL" = "stable" ]; then
+            # Same endpoint @vscode/test-electron uses to resolve "stable".
+            version="$(curl -fsSL https://update.code.visualstudio.com/api/releases/stable | node -e 'process.stdin.once("data",d=>console.log(JSON.parse(d)[0]))')"
+          else
+            version="$(node -e 'console.log(require("./package.json").engines.vscode.replace(/^\^/, ""))')"
+          fi
+          echo "Testing against VS Code $version"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - name: Cache VS Code
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .vscode-test
+          key: vscode-test-${{ runner.os }}-${{ steps.vscode.outputs.version }}
+      - name: Run integration tests
+        run: xvfb-run -a npx vscode-test --label "${{ matrix.label }}"
+
+  wasm:
+    name: Lua 5.2 WASM is reproducible
+    needs: changes
+    if: needs.changes.outputs.wasm == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - id: emsdk
+        name: Read pinned Emscripten version
+        run: |
+          version="$(sed -nE "s/^const EMSCRIPTEN_VERSION = '([0-9.]+)';.*/\1/p" third_party/lua52/build.mts)"
+          if [ -z "$version" ]; then
+            echo "::error file=third_party/lua52/build.mts,title=WASM::EMSCRIPTEN_VERSION not found"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - name: Cache emsdk and Lua sources
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            .cache/emsdk
+            .cache/lua
+          key: emsdk-${{ runner.os }}-${{ steps.emsdk.outputs.version }}
+      - name: Install emsdk ${{ steps.emsdk.outputs.version }}
+        env:
+          VERSION: ${{ steps.emsdk.outputs.version }}
+        run: |
+          if [ ! -x .cache/emsdk/emsdk ]; then
+            git clone --depth 1 --branch "$VERSION" https://github.com/emscripten-core/emsdk.git .cache/emsdk
+          fi
+          .cache/emsdk/emsdk install "$VERSION"
+          .cache/emsdk/emsdk activate "$VERSION"
+      - name: Rebuild and compare
+        run: |
+          source .cache/emsdk/emsdk_env.sh
+          npm run build:wasm -- --check

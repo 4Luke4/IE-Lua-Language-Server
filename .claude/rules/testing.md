@@ -13,7 +13,8 @@ paths:
 ## Integration Tests (`test/integration/`)
 - Run inside VS Code through `@vscode/test-cli` + `@vscode/test-electron` (`npm test`).
 - Open fixtures from `test/fixtures/` — never depend on the developer's own workspace or settings.
-- Await activation explicitly: `await vscode.extensions.getExtension('<publisher>.<name>')!.activate()`.
+- Await activation explicitly: `await vscode.extensions.getExtension('infinity-engine-tools.ie-lua-language-server')!.activate()`
+  (or the `activateExtension()` helper in `test/integration/helpers.ts`).
 - For LSP features, wait for a concrete signal (diagnostics changed, provider returned) instead of fixed `sleep`s.
 - Clean up: close editors and restore any settings changed during the test.
 
