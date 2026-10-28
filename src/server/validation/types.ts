@@ -9,6 +9,11 @@ export interface LuaChunk {
    * validated as `return <expression>`.
    */
   readonly kind: 'statements' | 'expression';
+  /**
+   * Where the chunk comes from: a whole `.lua` file (`file`), a `` `…` `` block of
+   * a .menu file (`block`), or a `"…"` property value of a .menu file (`property`).
+   */
+  readonly origin: 'file' | 'block' | 'property';
   /** Offset of the first character of the Lua text in the document. */
   readonly offset: number;
   /** The Lua text exactly as it appears in the document. */

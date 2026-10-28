@@ -28,7 +28,7 @@ export function documentKind(uri: string, languageId: string): DocumentKind {
  */
 export function validateText(text: string, kind: DocumentKind, lua: Lua52Checker): Problem[] {
   if (kind === 'lua') {
-    return validateChunk({ kind: 'statements', offset: 0, text }, lua);
+    return validateChunk({ kind: 'statements', origin: 'file', offset: 0, text }, lua);
   }
   const { chunks, problems } = extractMenuLua(text);
   return [...problems, ...chunks.flatMap((chunk) => validateChunk(chunk, lua))];
