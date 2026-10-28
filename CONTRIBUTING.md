@@ -29,6 +29,7 @@ server (port 6009).
 | `src/client/` | VS Code extension host code: activation, command, settings, language client |
 | `src/server/` | Language server (separate Node process; no `vscode` import) |
 | `src/server/validation/` | Pure validation logic, unit-tested without LSP or VS Code |
+| `src/server/syntax/` | Error-tolerant Lua 5.2 parser, scope analysis, document symbols and folding (pure; checked against the official compiler by `test/unit/server/syntax/differential.test.ts`) |
 | `src/shared/` | Types and constants used by both sides |
 | `third_party/lua52/` | Reproducible build of the official Lua 5.2.4 compiler to WebAssembly |
 | `data/eeex/` | Generated EEex documentation index (names and links) |
@@ -118,7 +119,8 @@ Nothing is ever published to a marketplace (`"private": true`; `vsce publish` is
 1. Make sure both changelogs describe the changes under `## [Unreleased]`.
 2. Run the **Release** workflow (*Actions › Release › Run workflow*) and choose **pre-release** or
    **stable**. It computes the next version (odd minor for pre-releases, even minor for stable,
-   always higher than every earlier release), updates `VERSION`, `package.json`, `package-lock.json`
+   always higher than every earlier release; the very first stable release is the committed
+   `VERSION`, 1.0.0, and a pre-release before it would be 1.1.0), updates `VERSION`, `package.json`, `package-lock.json`
    and both changelogs, and opens a `chore(release): vX.Y.Z` pull request.
 3. Review and merge that pull request. The workflow then verifies the version, runs the checks,
    packages the VSIX and creates the tag and the GitHub release (environment `release`).

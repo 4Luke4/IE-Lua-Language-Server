@@ -3,8 +3,8 @@
 All notable changes for users of the extension. The format is based on
 [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/).
 
-Versions with an **odd** middle number (for example 0.**1**.0) are pre-releases;
-versions with an **even** middle number (for example 0.**2**.0) are stable releases.
+Versions with an **odd** middle number (for example 1.**1**.0) are pre-releases;
+versions with an **even** middle number (for example 1.**2**.0) are stable releases.
 
 ## [Unreleased]
 
@@ -17,6 +17,11 @@ versions with an **even** middle number (for example 0.**2**.0) are stable relea
 - **Choose when files are checked** with the *IE Lua › Validate: Mode* setting: on save
   (the default), while typing, both, or only on request.
 - **Check a file on request** with the **IE Lua: Validate Current File** command.
+- **Outline and breadcrumbs.** Functions, variables and table fields of Lua files, and each menu
+  of a `.menu` file by name, appear in the Outline view, the breadcrumbs and
+  **Go to Symbol in Editor**.
+- **Code folding that follows the code.** Fold functions, loops, each branch of an `if`, tables,
+  comments, and every block and script of a `.menu` file.
 - **Available in 14 languages**, following your VS Code display language.
 - **Works in other editors too**: setup guides for Sublime Text, Neovim, Emacs, JetBrains
   IDEs, Helix, Zed, Kate, Notepad++ and Geany are on the project page.

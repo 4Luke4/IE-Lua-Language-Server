@@ -24,6 +24,17 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
 - Settings `ieLua.validate.mode` (`manual`, `save` (default), `type`, `saveAndType`) and
   `ieLua.validate.debounce` (default 300 ms).
 - Command **IE Lua: Validate Current File** (`ieLua.validateDocument`).
+- Document symbols (`textDocument/documentSymbol`; outline, breadcrumbs, *Go to Symbol in
+  Editor*): functions and methods at any depth, top-level locals, the first assignment to each
+  global, and named table fields; in `.menu` files, each `menu` block by its `name`, holding the
+  Lua symbols inside it. Flat `SymbolInformation` for clients without hierarchical support.
+- Folding ranges (`textDocument/foldingRange`): function bodies, `do`/`while`/`for`/`repeat`,
+  each `if`/`elseif`/`else` clause, multi-line tables, call arguments and long strings, long
+  comments and runs of `--` lines; in `.menu` files every `{ … }` block, `` `…` `` blocks and
+  `"…"` scripts, plus the Lua inside them. The closing line stays visible. Honors the client's
+  `rangeLimit` and supported kinds.
+- Error-tolerant Lua 5.2 parser and scope analysis (`src/server/syntax/`), checked against the
+  official compiler by a differential test; it publishes no diagnostics of its own.
 - Localization of the manifest and UI strings into all 14 VS Code display languages
   (machine-produced; review welcome).
 - Setup guides for Sublime Text, Neovim, Emacs, JetBrains IDEs, Helix, Zed, Kate, Notepad++ and Geany.
@@ -35,3 +46,9 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
 ### Changed
 
 - Minimum VS Code version is 1.91.0 (required by `vscode-languageclient` 10 and later).
+- Versioning starts at 1.0.0: when no release exists yet, the Release workflow ships the
+  committed `VERSION` as the first stable release (a pre-release before it would be 1.1.0).
+- The Release workflow publishes only for merged `chore(release): …` pull requests, not for any
+  other push that changes `VERSION`.
+- CI integration jobs build the tests before running them, and a test run that finds no tests now
+  fails. Until now the CI integration jobs ran 0 tests and passed.

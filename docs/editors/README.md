@@ -57,3 +57,13 @@ node /path/to/server.js --stdio
   | `saveAndType` | both |
 
   Outside VS Code there is no "Validate Current File" command, so prefer `type` or `saveAndType`.
+
+## 4. What you get
+
+| Feature | LSP request | Notes |
+| --- | --- | --- |
+| Syntax errors | `textDocument/publishDiagnostics` | When `validate.mode` says so (see above). |
+| Document symbols (outline) | `textDocument/documentSymbol` | Nested when the editor supports it, otherwise a flat list with container names. |
+| Folding | `textDocument/foldingRange` | Whole lines; the closing line of each construct stays visible. |
+
+Symbols and folding always reflect the current text, whatever `validate.mode` is.

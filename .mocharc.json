@@ -4,5 +4,6 @@
   "extension": ["ts"],
   "reporter": "spec",
   "forbidOnly": true,
+  "fail-zero": true,
   "timeout": 5000
 }

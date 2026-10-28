@@ -7,7 +7,9 @@
 #    CHANGELOG.md and docs/CHANGELOG.vsix.md, and opens a release pull request.
 # 2. Merging that pull request changes VERSION on main → job `publish`
 #    (environment `release`): verifies the version, runs the checks, packages the
-#    VSIX and creates the tag and the GitHub (pre-)release.
+#    VSIX and creates the tag and the GitHub (pre-)release. Other pushes that
+#    touch VERSION (for example a manual version reset) skip `publish`: it runs
+#    only for the squash commit of a `chore(release): …` pull request.
 #
 # Version rules (VS Code): plain major.minor.patch; even minor = stable,
 # odd minor = pre-release (packaged with `vsce package --pre-release`).
@@ -85,7 +87,12 @@ jobs:
 
   publish:
     name: Publish GitHub release
-    if: github.event_name == 'push'
+    # `prepare` opens release pull requests with one commit and a title that are
+    # both `chore(release): vX.Y.Z`; the squash merge (title: COMMIT_OR_PR_TITLE)
+    # therefore starts with that prefix. Any other push touching VERSION is skipped.
+    if: >-
+      github.event_name == 'push' &&
+      startsWith(github.event.head_commit.message, 'chore(release): ')
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: release

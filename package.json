@@ -2,7 +2,7 @@
   "name": "ie-lua-language-server",
   "displayName": "%displayName%",
   "description": "%description%",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "publisher": "infinity-engine-tools",
   "author": "4Luke4",

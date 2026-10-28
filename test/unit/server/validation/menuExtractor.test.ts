@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { extractMenuLua } from '../../../../src/server/validation/menuExtractor.ts';
+import { extractMenuLua, type MenuBlock } from '../../../../src/server/validation/menuExtractor.ts';
 
 /** Returns [kind, text] pairs and checks every chunk's offset points at its text. */
 function chunksOf(menu: string): [string, string][] {
@@ -69,5 +69,47 @@ describe('server/validation/menuExtractor', () => {
   it('reports an unterminated double-quoted string', () => {
     const { problems } = extractMenuLua('action "x()');
     assert.deepEqual(problems.map((p) => [p.code, p.start]), [['menu-unterminated-string', 7]]);
+  });
+
+  describe('blocks', () => {
+    /** keyword(name)[children] per block; `!` marks a block that is never closed. */
+    function outline(blocks: readonly MenuBlock[]): string {
+      return blocks
+        .map((b) => `${b.keyword?.text ?? '?'}${b.name ? `(${b.name.text})` : ''}${b.close === undefined ? '!' : ''}${b.children.length > 0 ? `[${outline(b.children)}]` : ''}`)
+        .join(' ');
+    }
+
+    it('records nested blocks with their keyword, on the same line or the line before', () => {
+      const menu = "menu\n{\n\tname 'MAIN'\n\tbutton {\n\t\taction \"f()\"\n\t}\n\tlabel\n\t{\n\t}\n}\nmenu\n{\n}\n";
+      assert.equal(outline(extractMenuLua(menu).blocks), 'menu(MAIN)[button label] menu');
+    });
+
+    it('records the offsets of the keyword, the braces and the name', () => {
+      const menu = 'menu\n{\n\tname "M"\n}';
+      const [block] = extractMenuLua(menu).blocks;
+      assert.ok(block?.keyword && block.name && block.close !== undefined);
+      assert.equal(menu.slice(block.keyword.start, block.keyword.end), 'menu');
+      assert.equal(menu[block.open], '{');
+      assert.equal(menu[block.close], '}');
+      assert.equal(menu.slice(block.name.start, block.name.end), 'M');
+    });
+
+    it('takes only a name property directly inside the block, and only the first one', () => {
+      const menu = "menu\n{\n\tbutton\n\t{\n\t\tname 'B'\n\t}\n\tname 'M'\n\tname 'IGNORED'\n}";
+      assert.equal(outline(extractMenuLua(menu).blocks), 'menu(M)[button(B)]');
+    });
+
+    it('ignores braces inside strings, comments and Lua blocks', () => {
+      const menu = "menu\n{\n\ttext \"{\"\n\t-- }\n\taction \"t = {}\"\n}\n`x = {}`";
+      assert.equal(outline(extractMenuLua(menu).blocks), 'menu');
+    });
+
+    it('leaves unclosed blocks open and ignores unmatched closing braces', () => {
+      assert.equal(outline(extractMenuLua('}\nmenu\n{\n\tbutton\n\t{\n').blocks), 'menu![button!]');
+    });
+  });
+
+  it('tells backtick blocks from property values', () => {
+    assert.deepEqual(extractMenuLua('`a()`\naction "b()"').chunks.map((c) => c.origin), ['block', 'property']);
   });
 });

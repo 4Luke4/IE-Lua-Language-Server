@@ -11,8 +11,8 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
 `.menu` files such as `UI.MENU`.
 
 > [!NOTE]
-> This is an early version. It currently provides **syntax diagnostics**; completion, hover,
-> navigation, formatting and more are planned.
+> This is an early version. It currently provides **syntax diagnostics**, **document symbols**
+> and **folding**; completion, hover, navigation, formatting and more are planned.
 
 ## Features
 
@@ -22,6 +22,11 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
   `enabled "…"` and `<property> lua "…"` expressions is checked, and errors point to the right line
   of the `.menu` file. Upper-case names like `UI.MENU` are recognized, with Lua highlighting.
 - **You decide when files are checked:** on save (default), while typing, both, or only on request.
+- **Outline and breadcrumbs.** Functions, methods, top-level variables and table fields of Lua files,
+  and each menu of a `.menu` file by its `name`, in the Outline view, the breadcrumbs and
+  **Go to Symbol in Editor**. Works while the file still has syntax errors.
+- **Folding that follows the code:** functions, loops, each `if`/`elseif`/`else` branch, tables,
+  comments, and every `{ … }` block and Lua script of a `.menu` file.
 - **Available in 14 languages**, following your VS Code display language.
 - **Works in other editors** through the Language Server Protocol.
 
@@ -70,8 +75,9 @@ Start with the [common steps](docs/editors/README.md).
 
 ## Release channels
 
-Versions follow VS Code's convention: an **even** middle number (0.**2**.0) is a stable release,
-an **odd** one (0.**1**.0) is a pre-release. See [CHANGELOG.md](CHANGELOG.md).
+Versions follow VS Code's convention: an **even** middle number (1.**2**.0) is a stable release,
+an **odd** one (1.**1**.0) is a pre-release. The first stable release is 1.0.0.
+See [CHANGELOG.md](CHANGELOG.md).
 
 ## Contributing and support
 

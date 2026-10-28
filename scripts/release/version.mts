@@ -108,3 +108,31 @@ export function nextVersion(latest: Version, bump: Bump, channel: Channel): Vers
   }
   return { ...latest, patch: latest.patch + 1 };
 }
+
+/**
+ * Version of the next release.
+ *
+ * - First release (no `vX.Y.Z` tag yet), stable: the committed version itself, so
+ *   the first stable release is whatever VERSION says (1.0.0). It must already
+ *   have an even minor; the bump only proves that there is something to release.
+ * - First release, pre-release: the next odd line above the committed version
+ *   (1.0.0 → 1.1.0), so a later stable release can never be lower than it.
+ * - Otherwise: `nextVersion` from the highest tag.
+ *
+ * Throws a `RangeError` with an actionable message when the committed version
+ * cannot be released on the stable channel as is.
+ */
+export function releaseVersion(latestTag: Version | undefined, committed: Version, bump: Bump, channel: Channel): Version {
+  if (latestTag !== undefined) {
+    return nextVersion(latestTag, bump, channel);
+  }
+  if (channel === 'pre-release') {
+    return nextVersion(committed, bump, channel);
+  }
+  if (channelOf(committed) !== 'stable') {
+    throw new RangeError(
+      `The first stable release uses VERSION as is, but ${formatVersion(committed)} has an odd minor (pre-release). Set VERSION to a version with an even minor, for example ${formatVersion({ major: committed.major, minor: committed.minor + 1, patch: 0 })}.`,
+    );
+  }
+  return committed;
+}
