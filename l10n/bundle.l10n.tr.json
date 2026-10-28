@@ -1,0 +1,6 @@
+{
+  "Open a Lua or Infinity Engine menu file to validate it.": "Doğrulamak için bir Lua dosyası veya Infinity Engine menü dosyası açın.",
+  "IE Lua: no problems found.": "IE Lua: Sorun bulunamadı.",
+  "IE Lua: {0} problem(s) found.": "IE Lua: {0} sorun bulundu.",
+  "IE Lua: validation failed. See the \"IE Lua\" output for details.": "IE Lua: Doğrulama başarısız oldu. Ayrıntılar için \"IE Lua\" çıkışına bakın."
+}

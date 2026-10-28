@@ -1,0 +1,13 @@
+{
+  "displayName": "IE Lua Language Server",
+  "description": "Lua 5.2-Sprachunterstützung für die Infinity Engine Enhanced Edition-Spiele: Syntaxdiagnose für .lua-Dateien und den in .menu-Dateien eingebetteten Lua-Code.",
+  "category": "IE Lua",
+  "command.validateDocument.title": "Aktuelle Datei überprüfen",
+  "configuration.title": "IE Lua",
+  "configuration.validate.mode.description": "Steuert, wann Lua-Dateien und der Lua-Code in `.menu`-Dateien überprüft werden. Führen Sie **IE Lua: Aktuelle Datei überprüfen** aus, um in jedem Modus bei Bedarf zu überprüfen.",
+  "configuration.validate.mode.manual": "Nur überprüfen, wenn **IE Lua: Aktuelle Datei überprüfen** ausgeführt wird.",
+  "configuration.validate.mode.save": "Beim Speichern einer Datei überprüfen.",
+  "configuration.validate.mode.type": "Während der Eingabe überprüfen, nachdem `#ieLua.validate.debounce#` Millisekunden lang keine Änderungen erfolgt sind.",
+  "configuration.validate.mode.saveAndType": "Während der Eingabe und beim Speichern einer Datei überprüfen.",
+  "configuration.validate.debounce.description": "Verzögerung in Millisekunden nach der letzten Änderung vor der Überprüfung, wenn `#ieLua.validate.mode#` auf `type` oder `saveAndType` festgelegt ist."
+}

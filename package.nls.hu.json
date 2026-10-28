@@ -1,0 +1,13 @@
+{
+  "displayName": "IE Lua Language Server",
+  "description": "Lua 5.2 nyelvi támogatás az Infinity Engine Enhanced Edition játékokhoz: szintaktikai diagnosztika .lua fájlokhoz és a .menu fájlokba ágyazott Lua-kódhoz.",
+  "category": "IE Lua",
+  "command.validateDocument.title": "Aktuális fájl ellenőrzése",
+  "configuration.title": "IE Lua",
+  "configuration.validate.mode.description": "Meghatározza, hogy mikor történjen a Lua-fájlok és a `.menu` fájlokban lévő Lua-kód ellenőrzése. Bármelyik módban igény szerint ellenőrizhet az **IE Lua: Aktuális fájl ellenőrzése** parancs futtatásával.",
+  "configuration.validate.mode.manual": "Ellenőrzés csak az **IE Lua: Aktuális fájl ellenőrzése** parancs futtatásakor.",
+  "configuration.validate.mode.save": "Ellenőrzés fájl mentésekor.",
+  "configuration.validate.mode.type": "Ellenőrzés gépelés közben, ha `#ieLua.validate.debounce#` ezredmásodpercig nem történt módosítás.",
+  "configuration.validate.mode.saveAndType": "Ellenőrzés gépelés közben és fájl mentésekor.",
+  "configuration.validate.debounce.description": "Késleltetés ezredmásodpercben az utolsó módosítás és az ellenőrzés között, ha az `#ieLua.validate.mode#` értéke `type` vagy `saveAndType`."
+}

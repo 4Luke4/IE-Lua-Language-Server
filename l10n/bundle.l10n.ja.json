@@ -1,0 +1,6 @@
+{
+  "Open a Lua or Infinity Engine menu file to validate it.": "検証するには、Lua ファイルまたは Infinity Engine のメニュー ファイルを開いてください。",
+  "IE Lua: no problems found.": "IE Lua: 問題は見つかりませんでした。",
+  "IE Lua: {0} problem(s) found.": "IE Lua: {0} 件の問題が見つかりました。",
+  "IE Lua: validation failed. See the \"IE Lua\" output for details.": "IE Lua: 検証に失敗しました。詳細については、\"IE Lua\" の出力を参照してください。"
+}

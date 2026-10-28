@@ -1,0 +1,13 @@
+{
+  "displayName": "IE Lua Language Server",
+  "description": "Lua 5.2 language support for the Infinity Engine Enhanced Edition games: syntax diagnostics for .lua files and the Lua embedded in .menu files.",
+  "category": "IE Lua",
+  "command.validateDocument.title": "Validate Current File",
+  "configuration.title": "IE Lua",
+  "configuration.validate.mode.description": "Controls when Lua files and the Lua in `.menu` files are validated. Run **IE Lua: Validate Current File** to validate on demand in any mode.",
+  "configuration.validate.mode.manual": "Validate only when **IE Lua: Validate Current File** is run.",
+  "configuration.validate.mode.save": "Validate when a file is saved.",
+  "configuration.validate.mode.type": "Validate while typing, after `#ieLua.validate.debounce#` milliseconds without changes.",
+  "configuration.validate.mode.saveAndType": "Validate while typing and when a file is saved.",
+  "configuration.validate.debounce.description": "Delay in milliseconds after the last change before validating, when `#ieLua.validate.mode#` is `type` or `saveAndType`."
+}

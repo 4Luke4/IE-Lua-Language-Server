@@ -1,0 +1,6 @@
+{
+  "Open a Lua or Infinity Engine menu file to validate it.": "Abra um arquivo Lua ou um arquivo de menu do Infinity Engine para validá-lo.",
+  "IE Lua: no problems found.": "IE Lua: nenhum problema encontrado.",
+  "IE Lua: {0} problem(s) found.": "IE Lua: {0} problema(s) encontrado(s).",
+  "IE Lua: validation failed. See the \"IE Lua\" output for details.": "IE Lua: falha na validação. Consulte a saída \"IE Lua\" para obter detalhes."
+}
