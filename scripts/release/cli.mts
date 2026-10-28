@@ -1,8 +1,9 @@
 // Release automation used by .github/workflows/release.yml (also runnable locally).
 //
 //   node scripts/release/cli.mts prepare --channel <pre-release|stable>
-//       Computes the next version from git tags + Conventional Commits, then updates
-//       VERSION, package.json, package-lock.json, CHANGELOG.md and docs/CHANGELOG.vsix.md.
+//       Computes the next version from git tags + Conventional Commits (the first
+//       stable release is VERSION itself), then updates VERSION, package.json,
+//       package-lock.json, CHANGELOG.md and docs/CHANGELOG.vsix.md.
 //   node scripts/release/cli.mts verify [--notes <file>]
 //       Checks that the committed version is consistent and not yet released, and
 //       optionally writes the CHANGELOG.md section of that version to <file>.
@@ -19,8 +20,8 @@ import {
   compareVersions,
   formatVersion,
   latestTaggedVersion,
-  nextVersion,
   parseVersion,
+  releaseVersion,
   type Channel,
   type Version,
 } from './version.mts';
@@ -87,7 +88,6 @@ function prepare(channel: Channel): void {
   const current = committedVersion();
   const allTags = tags();
   const latest = latestTaggedVersion(allTags);
-  const baseline = latest ?? current;
   if (latest && compareVersions(current, latest) !== 0) {
     fail(`VERSION is ${formatVersion(current)} but the latest tag is v${formatVersion(latest)}. Run prepare only from a commit where they match.`);
   }
@@ -106,7 +106,12 @@ function prepare(channel: Channel): void {
   if (!bump) {
     fail(`No feat/fix/perf/revert or breaking commit since ${latest ? `v${formatVersion(latest)}` : 'the first commit'}; there is nothing to release.`);
   }
-  const next = formatVersion(nextVersion(baseline, bump, channel));
+  let next: string;
+  try {
+    next = formatVersion(releaseVersion(latest, current, bump, channel));
+  } catch (error) {
+    fail(error instanceof Error ? error.message : String(error));
+  }
   const date = new Date().toISOString().slice(0, 10);
   const previousTag = latest ? `v${formatVersion(latest)}` : undefined;
 

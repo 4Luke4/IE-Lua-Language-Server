@@ -3,8 +3,8 @@
 All notable changes for users of the extension. The format is based on
 [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/).
 
-Versions with an **odd** middle number (for example 0.**1**.0) are pre-releases;
-versions with an **even** middle number (for example 0.**2**.0) are stable releases.
+Versions with an **odd** middle number (for example 1.**1**.0) are pre-releases;
+versions with an **even** middle number (for example 1.**2**.0) are stable releases.
 
 ## [Unreleased]
 

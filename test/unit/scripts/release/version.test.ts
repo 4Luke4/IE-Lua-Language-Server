@@ -6,6 +6,7 @@ import {
   latestTaggedVersion,
   nextVersion,
   parseVersion,
+  releaseVersion,
   type Bump,
   type Channel,
 } from '../../../../scripts/release/version.mts';
@@ -88,6 +89,39 @@ describe('scripts/release/version', () => {
           }
         }
       }
+    });
+  });
+
+  describe('releaseVersion', () => {
+    const release = (latestTag: string | undefined, committed: string, bump: Bump, channel: Channel) =>
+      formatVersion(releaseVersion(latestTag === undefined ? undefined : v(latestTag), v(committed), bump, channel));
+
+    it('releases the committed version as the first stable release, whatever the bump', () => {
+      for (const bump of ['major', 'minor', 'patch'] as const) {
+        assert.equal(release(undefined, '1.0.0', bump, 'stable'), '1.0.0', bump);
+      }
+    });
+
+    it('opens the odd line above the committed version for a first pre-release', () => {
+      assert.equal(release(undefined, '1.0.0', 'minor', 'pre-release'), '1.1.0');
+      assert.equal(release(undefined, '1.0.0', 'patch', 'pre-release'), '1.1.0');
+      assert.equal(release(undefined, '1.0.0', 'major', 'pre-release'), '2.1.0');
+    });
+
+    it('refuses a first stable release from an odd (pre-release) minor', () => {
+      assert.throws(() => releaseVersion(undefined, v('1.1.0'), 'minor', 'stable'), (error: unknown) => {
+        assert.ok(error instanceof RangeError);
+        assert.match(error.message, /1\.1\.0 has an odd minor.*for example 1\.2\.0/);
+        return true;
+      });
+    });
+
+    it('follows nextVersion from the latest tag once a release exists', () => {
+      assert.equal(release('1.0.0', '1.0.0', 'patch', 'stable'), '1.0.1');
+      assert.equal(release('1.0.0', '1.0.0', 'minor', 'stable'), '1.2.0');
+      assert.equal(release('1.0.0', '1.0.0', 'minor', 'pre-release'), '1.1.0');
+      assert.equal(release('1.1.0', '1.1.0', 'patch', 'stable'), '1.2.0');
+      assert.equal(release('1.0.0', '1.0.0', 'major', 'stable'), '2.0.0');
     });
   });
 });

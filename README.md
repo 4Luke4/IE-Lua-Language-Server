@@ -70,8 +70,9 @@ Start with the [common steps](docs/editors/README.md).
 
 ## Release channels
 
-Versions follow VS Code's convention: an **even** middle number (0.**2**.0) is a stable release,
-an **odd** one (0.**1**.0) is a pre-release. See [CHANGELOG.md](CHANGELOG.md).
+Versions follow VS Code's convention: an **even** middle number (1.**2**.0) is a stable release,
+an **odd** one (1.**1**.0) is a pre-release. The first stable release is 1.0.0.
+See [CHANGELOG.md](CHANGELOG.md).
 
 ## Contributing and support
 

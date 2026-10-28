@@ -118,7 +118,8 @@ Nothing is ever published to a marketplace (`"private": true`; `vsce publish` is
 1. Make sure both changelogs describe the changes under `## [Unreleased]`.
 2. Run the **Release** workflow (*Actions › Release › Run workflow*) and choose **pre-release** or
    **stable**. It computes the next version (odd minor for pre-releases, even minor for stable,
-   always higher than every earlier release), updates `VERSION`, `package.json`, `package-lock.json`
+   always higher than every earlier release; the very first stable release is the committed
+   `VERSION`, 1.0.0, and a pre-release before it would be 1.1.0), updates `VERSION`, `package.json`, `package-lock.json`
    and both changelogs, and opens a `chore(release): vX.Y.Z` pull request.
 3. Review and merge that pull request. The workflow then verifies the version, runs the checks,
    packages the VSIX and creates the tag and the GitHub release (environment `release`).

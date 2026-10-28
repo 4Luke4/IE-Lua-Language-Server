@@ -35,3 +35,7 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
 ### Changed
 
 - Minimum VS Code version is 1.91.0 (required by `vscode-languageclient` 10 and later).
+- Versioning starts at 1.0.0: when no release exists yet, the Release workflow ships the
+  committed `VERSION` as the first stable release (a pre-release before it would be 1.1.0).
+- The Release workflow publishes only for merged `chore(release): …` pull requests, not for any
+  other push that changes `VERSION`.
