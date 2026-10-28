@@ -129,9 +129,13 @@ jobs:
         run: |
           flags=()
           if [ "$CHANNEL" = "pre-release" ]; then flags+=(--pre-release); fi
-          npx vsce package --no-dependencies --changelog-path docs/CHANGELOG.vsix.md "${flags[@]}" \
-            --out "ie-lua-language-server-$VERSION.vsix"
-          sha256sum "ie-lua-language-server-$VERSION.vsix" | tee "ie-lua-language-server-$VERSION.vsix.sha256"
+          vsix="ie-lua-language-server-$VERSION.vsix"
+          npx vsce package --no-dependencies --changelog-path docs/CHANGELOG.vsix.md "${flags[@]}" --out "$vsix"
+          # The checksum goes in the release notes, not in a second asset: the VSIX is then the
+          # only asset, so the downloads badge (all assets of all releases) counts VSIX downloads.
+          hash="$(sha256sum "$vsix" | cut -d ' ' -f 1)"
+          echo "SHA-256 of $vsix: $hash"
+          printf '\n**SHA-256** of `%s`: `%s`\n' "$vsix" "$hash" >> "$RUNNER_TEMP/notes.md"
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -142,4 +146,4 @@ jobs:
           flags=()
           if [ "$CHANNEL" = "pre-release" ]; then flags+=(--prerelease); else flags+=(--latest); fi
           gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --notes-file "$RUNNER_TEMP/notes.md" "${flags[@]}" \
-            "ie-lua-language-server-$VERSION.vsix" "ie-lua-language-server-$VERSION.vsix.sha256"
+            "ie-lua-language-server-$VERSION.vsix"

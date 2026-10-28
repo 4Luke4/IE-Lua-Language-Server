@@ -123,7 +123,8 @@ Nothing is ever published to a marketplace (`"private": true`; `vsce publish` is
    `VERSION`, 1.0.0, and a pre-release before it would be 1.1.0), updates `VERSION`, `package.json`, `package-lock.json`
    and both changelogs, and opens a `chore(release): vX.Y.Z` pull request.
 3. Review and merge that pull request. The workflow then verifies the version, runs the checks,
-   packages the VSIX and creates the tag and the GitHub release (environment `release`).
+   packages the VSIX and creates the tag and the GitHub release (environment `release`). The VSIX
+   is the release's only asset; its SHA-256 is at the end of the release notes.
 
 ## Repository settings (maintainers)
 
