@@ -11,8 +11,9 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
 `.menu` files such as `UI.MENU`.
 
 > [!NOTE]
-> This is an early version. It currently provides **syntax diagnostics**, **document symbols**
-> and **folding**; completion, hover, navigation, formatting and more are planned.
+> This is an early version. It currently provides **syntax diagnostics**, **document symbols**,
+> **folding**, **go to definition**, **find references** and **rename** within a file; completion,
+> hover, workspace-wide navigation, formatting and more are planned.
 
 ## Features
 
@@ -27,6 +28,10 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
   **Go to Symbol in Editor**. Works while the file still has syntax errors.
 - **Folding that follows the code:** functions, loops, each `if`/`elseif`/`else` branch, tables,
   comments, and every `{ … }` block and Lua script of a `.menu` file.
+- **Go to Definition, Find All References and Rename Symbol** for variables within a file. Locals
+  follow Lua's scoping rules; globals are followed across all the Lua of a `.menu` file. Rename
+  refuses, and says why, when it could change what the code does: a name already in use nearby,
+  a reserved word, or a global that is defined outside the file.
 - **Available in 14 languages**, following your VS Code display language.
 - **Works in other editors** through the Language Server Protocol.
 
