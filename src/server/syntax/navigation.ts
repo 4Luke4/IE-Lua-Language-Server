@@ -83,13 +83,9 @@ export function targetAt(document: ParsedDocument, offset: number): TargetHit | 
   };
 }
 
-/** Every identifier naming the global `name`, in document order. */
-function globalUses(document: ParsedDocument, name: string): Ast.Identifier[] {
-  return document.chunks.flatMap(({ scopes }) => scopes.globals.get(name) ?? []);
-}
-
-function isGlobalWrite(document: ParsedDocument, identifier: Ast.Identifier): boolean {
-  return document.chunks.some(({ scopes }) => scopes.writes.has(identifier));
+/** Every identifier naming the global `name`, in document order, with whether it assigns the global. */
+function globalUses(document: ParsedDocument, name: string): { identifier: Ast.Identifier; isWrite: boolean }[] {
+  return document.chunks.flatMap(({ scopes }) => (scopes.globals.get(name) ?? []).map((identifier) => ({ identifier, isWrite: scopes.writes.has(identifier) })));
 }
 
 /**
@@ -102,7 +98,9 @@ export function definitions(document: ParsedDocument, target: NavigationTarget):
   if (target.kind === 'local') {
     return target.declaration.identifier ? [target.declaration.identifier] : [];
   }
-  return globalUses(document, target.name).filter((identifier) => isGlobalWrite(document, identifier));
+  return globalUses(document, target.name)
+    .filter((use) => use.isWrite)
+    .map((use) => use.identifier);
 }
 
 /**
@@ -115,6 +113,7 @@ export function references(document: ParsedDocument, target: NavigationTarget, i
     const all = includeDeclaration && identifier ? [identifier, ...uses] : [...uses];
     return all.sort((a, b) => a.start - b.start);
   }
-  const uses = globalUses(document, target.name);
-  return includeDeclaration ? uses : uses.filter((identifier) => !isGlobalWrite(document, identifier));
+  return globalUses(document, target.name)
+    .filter((use) => includeDeclaration || !use.isWrite)
+    .map((use) => use.identifier);
 }
