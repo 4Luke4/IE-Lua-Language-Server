@@ -1,0 +1,76 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Infinity Engine Menu",
+  "scopeName": "source.ie-menu",
+  "comment": "Lua regions mirror src/server/validation/menuExtractor.ts: `…` blocks, <property> lua \"…\", and the action*/onOpen/onClose/enabled properties. Element keywords are those used in the game's UI.MENU.",
+  "patterns": [
+    { "include": "#comment" },
+    { "include": "#lua-block" },
+    { "include": "#lua-property" },
+    { "include": "#lua-expression" },
+    { "include": "#element" },
+    { "include": "#string-double" },
+    { "include": "#string-single" },
+    { "include": "#number" },
+    { "include": "#property" }
+  ],
+  "repository": {
+    "comment": {
+      "match": "--.*$",
+      "name": "comment.line.double-dash.ie-menu"
+    },
+    "lua-block": {
+      "begin": "`",
+      "end": "`",
+      "beginCaptures": { "0": { "name": "punctuation.section.embedded.begin.ie-menu" } },
+      "endCaptures": { "0": { "name": "punctuation.section.embedded.end.ie-menu" } },
+      "contentName": "meta.embedded.block.lua",
+      "patterns": [{ "include": "source.lua" }]
+    },
+    "lua-property": {
+      "begin": "(?i)^\\s*(action(?:alt|dbl|drag|enter|exit|hold|scroll|simpledrag|simpledrop|update)?|onopen|onclose|enabled)\\b",
+      "beginCaptures": { "1": { "name": "keyword.other.property.ie-menu" } },
+      "end": "(?<=\")",
+      "patterns": [
+        { "include": "#comment" },
+        { "include": "#lua-string" }
+      ]
+    },
+    "lua-expression": {
+      "begin": "\\b(lua)\\s*(?=\")",
+      "beginCaptures": { "1": { "name": "storage.modifier.lua.ie-menu" } },
+      "end": "(?<=\")",
+      "patterns": [{ "include": "#lua-string" }]
+    },
+    "lua-string": {
+      "begin": "\"",
+      "end": "\"",
+      "beginCaptures": { "0": { "name": "punctuation.section.embedded.begin.ie-menu" } },
+      "endCaptures": { "0": { "name": "punctuation.section.embedded.end.ie-menu" } },
+      "contentName": "meta.embedded.inline.lua",
+      "patterns": [{ "include": "source.lua" }]
+    },
+    "element": {
+      "match": "^\\s*(button|column|edit|handle|label|list|map|menu|movie|slider|template|text)\\s*$",
+      "captures": { "1": { "name": "storage.type.element.ie-menu" } }
+    },
+    "string-double": {
+      "begin": "\"",
+      "end": "\"",
+      "name": "string.quoted.double.ie-menu"
+    },
+    "string-single": {
+      "begin": "'",
+      "end": "'",
+      "name": "string.quoted.single.ie-menu"
+    },
+    "number": {
+      "match": "(?<![\\w.])-?\\d+(?:\\.\\d+)?\\b",
+      "name": "constant.numeric.ie-menu"
+    },
+    "property": {
+      "match": "^\\s*([A-Za-z_][A-Za-z_]*)",
+      "captures": { "1": { "name": "variable.other.property.ie-menu" } }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+-- Original fixture (upper-case extension on purpose).
+menu
+{
+	name 'FIXTURE'
+	button
+	{
+		enabled "ready =="
+		action
+		"
+			Infinity_PopMenu()
+		"
+	}
+}
