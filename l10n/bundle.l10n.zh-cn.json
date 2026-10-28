@@ -1,4 +1,11 @@
 {
+  "Only the names of local and global variables can be renamed.": "只能重命名局部变量和全局变量的名称。",
+  "The implicit \"self\" of a method has no declaration and cannot be renamed.": "方法的隐式 \"self\" 没有声明，无法重命名。",
+  "This global is never assigned in this file. It is defined elsewhere (another file, the game or EEex), so it cannot be renamed here.": "此全局变量在此文件中从未被赋值。它在其他位置定义（其他文件、游戏或 EEex），因此无法在此处重命名。",
+  "Fix the syntax errors first: names in code that does not parse cannot all be found.": "请先修复语法错误：在无法解析的代码中无法找到所有名称。",
+  "The new name is not a valid Lua name: use letters, digits and underscores, and do not start with a digit.": "新名称不是有效的 Lua 名称：请使用字母、数字和下划线，并且不要以数字开头。",
+  "The new name is a reserved word in Lua.": "新名称是 Lua 的保留字。",
+  "Renaming would change what another name in this file refers to.": "重命名会改变此文件中另一个名称所引用的对象。",
   "Open a Lua or Infinity Engine menu file to validate it.": "请打开 Lua 文件或 Infinity Engine 菜单文件以进行验证。",
   "IE Lua: no problems found.": "IE Lua: 未发现问题。",
   "IE Lua: {0} problem(s) found.": "IE Lua: 发现 {0} 个问题。",

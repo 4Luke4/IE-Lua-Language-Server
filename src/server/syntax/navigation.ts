@@ -24,18 +24,20 @@ export interface TargetHit {
   readonly identifier: Ast.Identifier;
 }
 
-interface IndexEntry {
+export interface VariableOccurrence {
   readonly identifier: Ast.Identifier;
+  /** Index in `ParsedDocument.chunks` of the chunk the identifier is in. */
   readonly chunkIndex: number;
 }
 
 /** Variable identifiers of each document, sorted by offset; dropped with the document. */
-const indexes = new WeakMap<ParsedDocument, readonly IndexEntry[]>();
+const indexes = new WeakMap<ParsedDocument, readonly VariableOccurrence[]>();
 
-function variableIndex(document: ParsedDocument): readonly IndexEntry[] {
+/** Every identifier that names a variable (local or global), sorted by offset. */
+export function variableIndex(document: ParsedDocument): readonly VariableOccurrence[] {
   let index = indexes.get(document);
   if (!index) {
-    const entries: IndexEntry[] = [];
+    const entries: VariableOccurrence[] = [];
     document.chunks.forEach(({ scopes }, chunkIndex) => {
       for (const identifier of scopes.resolved.keys()) entries.push({ identifier, chunkIndex });
       for (const uses of scopes.globals.values()) {
@@ -59,7 +61,7 @@ export function targetAt(document: ParsedDocument, offset: number): TargetHit | 
   // one starting exactly at `offset` wins over one ending there.
   let low = 0;
   let high = index.length - 1;
-  let found: IndexEntry | undefined;
+  let found: VariableOccurrence | undefined;
   while (low <= high) {
     const middle = (low + high) >> 1;
     const entry = index[middle];

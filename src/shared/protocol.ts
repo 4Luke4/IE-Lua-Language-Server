@@ -29,3 +29,31 @@ export interface ValidateDocumentResult {
 export const ValidateDocumentRequest = new RequestType<ValidateDocumentParams, ValidateDocumentResult, void>(
   'ieLua/validateDocument',
 );
+
+/** Why the server refuses a `textDocument/prepareRename` or `textDocument/rename` request. */
+export type RenameRefusal =
+  | 'notAVariable'
+  | 'implicitSelf'
+  | 'globalNotDefinedHere'
+  | 'syntaxErrors'
+  | 'invalidName'
+  | 'reservedWord'
+  | 'conflict';
+
+/**
+ * The `ResponseError.message` of each refusal (code `RequestFailed`), shown as
+ * is by other editors. LSP declares no error data for these requests, and
+ * vscode-languageclient passes only the message of a failed prepareRename on,
+ * so the VS Code client recognizes a refusal by its exact text to localize it.
+ * Hence no placeholders.
+ */
+export const RENAME_REFUSAL_MESSAGES: Readonly<Record<RenameRefusal, string>> = {
+  notAVariable: 'Only the names of local and global variables can be renamed.',
+  implicitSelf: 'The implicit "self" of a method has no declaration and cannot be renamed.',
+  globalNotDefinedHere:
+    'This global is never assigned in this file. It is defined elsewhere (another file, the game or EEex), so it cannot be renamed here.',
+  syntaxErrors: 'Fix the syntax errors first: names in code that does not parse cannot all be found.',
+  invalidName: 'The new name is not a valid Lua name: use letters, digits and underscores, and do not start with a digit.',
+  reservedWord: 'The new name is a reserved word in Lua.',
+  conflict: 'Renaming would change what another name in this file refers to.',
+};

@@ -41,6 +41,13 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   go to definition: the uses of a local, including the implicit `self` of a method, or every use
   of a global across the Lua chunks of the document. `includeDeclaration` decides whether the
   local's declaration, or the assignments to the global, are included.
+- Rename (`textDocument/prepareRename`, `textDocument/rename`) within the document, for locals
+  and for globals the document assigns. Refused, with a reason localized in VS Code: anything
+  that is not a variable, the implicit `self`, globals the document never assigns (defined in
+  another file, the game or EEex), code with syntax errors where the variable can occur, new names
+  that are not Lua names or are reserved words, and any rename that would change what a name
+  refers to (checked by re-analyzing the renamed text). Edits are versioned when the client
+  supports `documentChanges`.
 - Error-tolerant Lua 5.2 parser and scope analysis (`src/server/syntax/`), checked against the
   official compiler by a differential test; it publishes no diagnostics of its own.
 - Localization of the manifest and UI strings into all 14 VS Code display languages

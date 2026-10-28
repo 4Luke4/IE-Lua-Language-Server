@@ -15,6 +15,7 @@ import * as diagnostics from './features/diagnostics.ts';
 import * as documentSymbols from './features/documentSymbols.ts';
 import * as foldingRanges from './features/foldingRanges.ts';
 import * as references from './features/references.ts';
+import * as rename from './features/rename.ts';
 import { SettingsStore } from './settingsStore.ts';
 import { loadLua52 } from './validation/lua52.ts';
 
@@ -53,6 +54,8 @@ connection.onInitialize((params) => {
   });
   definition.register(connection, documents, { cache: parsed });
   references.register(connection, documents, { cache: parsed });
+  rename.register(connection, documents, { cache: parsed, documentChanges: workspace?.workspaceEdit?.documentChanges === true });
+  const prepareRename = params.capabilities.textDocument?.rename?.prepareSupport === true;
   return {
     capabilities: {
       textDocumentSync: {
@@ -64,6 +67,8 @@ connection.onInitialize((params) => {
       foldingRangeProvider: true,
       definitionProvider: true,
       referencesProvider: true,
+      // Without prepareSupport the client must not be sent `prepareProvider` (LSP 3.17).
+      renameProvider: prepareRename ? { prepareProvider: true } : true,
     },
     serverInfo: { name: 'IE Lua Language Server' },
   };

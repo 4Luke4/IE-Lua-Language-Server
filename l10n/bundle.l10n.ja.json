@@ -1,4 +1,11 @@
 {
+  "Only the names of local and global variables can be renamed.": "名前を変更できるのは、ローカル変数とグローバル変数の名前だけです。",
+  "The implicit \"self\" of a method has no declaration and cannot be renamed.": "メソッドの暗黙の \"self\" には宣言がないため、名前を変更できません。",
+  "This global is never assigned in this file. It is defined elsewhere (another file, the game or EEex), so it cannot be renamed here.": "このグローバル変数はこのファイルで一度も代入されていません。別の場所 (別のファイル、ゲーム、または EEex) で定義されているため、ここでは名前を変更できません。",
+  "Fix the syntax errors first: names in code that does not parse cannot all be found.": "先に構文エラーを修正してください。解析できないコードでは、すべての名前を見つけることはできません。",
+  "The new name is not a valid Lua name: use letters, digits and underscores, and do not start with a digit.": "新しい名前は有効な Lua の名前ではありません。英字、数字、アンダースコアを使用し、数字で始めないでください。",
+  "The new name is a reserved word in Lua.": "新しい名前は Lua の予約語です。",
+  "Renaming would change what another name in this file refers to.": "名前を変更すると、このファイル内の別の名前が参照する対象が変わります。",
   "Open a Lua or Infinity Engine menu file to validate it.": "検証するには、Lua ファイルまたは Infinity Engine のメニュー ファイルを開いてください。",
   "IE Lua: no problems found.": "IE Lua: 問題は見つかりませんでした。",
   "IE Lua: {0} problem(s) found.": "IE Lua: {0} 件の問題が見つかりました。",
