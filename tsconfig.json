@@ -1,0 +1,29 @@
+{
+  // Type-checking only (`npm run check-types`). esbuild produces the bundles and
+  // Node's native type stripping runs unit tests and repository scripts, so
+  // every file must use erasable syntax and explicit `.ts` import extensions.
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
+    "noEmit": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "exactOptionalPropertyTypes": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "types": ["node", "mocha", "vscode"]
+  },
+  "include": ["src", "test", "scripts", "third_party/lua52/*.mts", "third_party/lua52/dist/*.d.ts"]
+}

@@ -1,0 +1,4 @@
+{
+  "//": "Marks the TypeScript sources as ES modules for Node's native type stripping (unit tests). esbuild still emits CommonJS bundles.",
+  "type": "module"
+}

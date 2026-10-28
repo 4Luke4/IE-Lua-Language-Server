@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json.schemastore.org/mocharc.json",
+  "spec": ["test/unit/**/*.test.ts"],
+  "extension": ["ts"],
+  "reporter": "spec",
+  "forbidOnly": true,
+  "timeout": 5000
+}
