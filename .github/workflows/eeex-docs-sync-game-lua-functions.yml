@@ -1,0 +1,23 @@
+# Weekly check of the "EE Game Lua Functions" section of the EEex documentation
+# (https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Lua%20Functions/index.html).
+# Schedules of the three sync workflows are staggered so they never hit the
+# Read the Docs API at the same time (it throttles bursts with HTTP 429).
+name: "EEex docs sync: EE Game Lua Functions"
+
+on:
+  schedule:
+    - cron: "37 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    uses: ./.github/workflows/eeex-docs-sync.yml
+    with:
+      section: game-lua-functions

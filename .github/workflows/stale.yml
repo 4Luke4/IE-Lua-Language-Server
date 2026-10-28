@@ -1,27 +1,43 @@
-# This workflow warns and then closes issues and PRs that have had no activity for a specified amount of time.
-#
-# You can adjust the behavior by modifying this file.
-# For more information, see:
-# https://github.com/actions/stale
-name: Mark stale issues and pull requests
+# Marks inactive issues and pull requests as stale, then closes them.
+# Anything labelled `pinned` or `security`, and issues in a milestone, are never touched.
+name: Stale
 
 on:
   schedule:
-  - cron: '44 19 * * *'
+    - cron: "44 19 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   stale:
-
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     permissions:
       issues: write
       pull-requests: write
-
     steps:
-    - uses: actions/stale@v5
-      with:
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
-        stale-issue-message: 'Stale issue message'
-        stale-pr-message: 'Stale pull request message'
-        stale-issue-label: 'no-issue-activity'
-        stale-pr-label: 'no-pr-activity'
+      - uses: actions/stale@4391f3da665fdf50b6810c1a66712fb9ba21aa93 # v11.0.0
+        with:
+          days-before-stale: 60
+          days-before-close: 14
+          stale-issue-label: stale
+          stale-pr-label: stale
+          exempt-issue-labels: pinned,security
+          exempt-pr-labels: pinned,security
+          exempt-all-milestones: true
+          exempt-draft-pr: true
+          stale-issue-message: >
+            This issue has had no activity for 60 days, so it is now marked as stale.
+            It will be closed in 14 days unless there is new activity.
+            If it still matters to you, please add a comment with any new details.
+          stale-pr-message: >
+            This pull request has had no activity for 60 days, so it is now marked as stale.
+            It will be closed in 14 days unless it is updated.
+          close-issue-message: >
+            Closed after 14 days without activity since it was marked as stale.
+            Feel free to reopen it if the problem still exists.
+          close-pr-message: >
+            Closed after 14 days without activity since it was marked as stale.
+            Feel free to reopen it when you continue working on it.

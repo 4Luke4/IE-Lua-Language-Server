@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/4Luke4/IE-Lua-Language-Server/security/advisories/new
+    about: Please report security problems privately, not as public issues.
+  - name: Using the server in other editors
+    url: https://github.com/4Luke4/IE-Lua-Language-Server/tree/main/docs/editors
+    about: Setup guides for Sublime Text, Neovim, Emacs, JetBrains IDEs, Helix, Zed, Kate, Notepad++ and Geany.

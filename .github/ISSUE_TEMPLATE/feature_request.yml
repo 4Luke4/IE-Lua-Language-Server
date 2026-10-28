@@ -1,0 +1,40 @@
+name: Feature request
+description: Suggest an improvement or a new feature.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: Describe what you are trying to do and what makes it hard today.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: How would you like it to work? Examples of Lua or `.menu` code are welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you have considered
+  - type: dropdown
+    id: editor
+    attributes:
+      label: Editor
+      multiple: true
+      options:
+        - VS Code
+        - Sublime Text
+        - Neovim
+        - Emacs
+        - JetBrains IDE
+        - Helix
+        - Zed
+        - Kate
+        - Notepad++
+        - Geany
+        - Other

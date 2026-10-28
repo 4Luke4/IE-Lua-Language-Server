@@ -1,0 +1,73 @@
+name: Bug report
+description: Something does not work as described.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a problem. **Security issues:** please do not use this form;
+        follow [SECURITY.md](https://github.com/4Luke4/IE-Lua-Language-Server/blob/main/SECURITY.md) instead.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Minimal example
+      description: The smallest `.lua` or `.menu` content that shows the problem. Please do not paste files from the games themselves; write a short example instead.
+      render: lua
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Extension version
+      description: "VS Code: Extensions view › IE Lua Language Server. Other editors: the version of the release you downloaded."
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: editor
+    attributes:
+      label: Editor
+      options:
+        - VS Code
+        - Sublime Text
+        - Neovim
+        - Emacs
+        - JetBrains IDE
+        - Helix
+        - Kate
+        - Notepad++
+        - Geany
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: editor-version
+    attributes:
+      label: Editor version and operating system
+      placeholder: "VS Code 1.143.1, Windows 11"
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Validation mode (ieLua.validate.mode)
+      options:
+        - save (default)
+        - type
+        - saveAndType
+        - manual
+        - I don't know
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: "VS Code: View › Output › IE Lua. Other editors: the language server log."
+      render: text
