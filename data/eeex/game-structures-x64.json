@@ -1,0 +1,4255 @@
+{
+  "section": "game-structures-x64",
+  "title": "EE Game Structures (x64)",
+  "upstream": {
+    "repository": "https://github.com/Bubb13/EEex-Docs",
+    "buildCommit": "2b175c02656e12ba22fa56c311d564e41bd0cae4",
+    "sourceCommit": "391d6ab94731dcf20f931593e78f97f201be4c3c"
+  },
+  "entries": [
+    {
+      "name": "ARE",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/File%20Formats/index.html#are"
+    },
+    {
+      "name": "BAM",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/File%20Formats/index.html#bam"
+    },
+    {
+      "name": "BAMHEADERV2",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#bamheaderv2"
+    },
+    {
+      "name": "BIF",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/File%20Formats/index.html#bif"
+    },
+    {
+      "name": "C2DArray",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/C2/index.html#c2darray"
+    },
+    {
+      "name": "CAIAction",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#caiaction"
+    },
+    {
+      "name": "CAICondition",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#caicondition"
+    },
+    {
+      "name": "CAIConditionResponse",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#caiconditionresponse"
+    },
+    {
+      "name": "CAIGroup",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#caigroup"
+    },
+    {
+      "name": "CAIId",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#caiid"
+    },
+    {
+      "name": "CAIIdList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#caiidlist"
+    },
+    {
+      "name": "CAINonPlayerScript",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#cainonplayerscript"
+    },
+    {
+      "name": "CAIObjectType",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#caiobjecttype"
+    },
+    {
+      "name": "CAIPlayerScript",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#caiplayerscript"
+    },
+    {
+      "name": "CAIResponse",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#cairesponse"
+    },
+    {
+      "name": "CAIResponseSet",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#cairesponseset"
+    },
+    {
+      "name": "CAIScript",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#caiscript"
+    },
+    {
+      "name": "CAIScriptFile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#caiscriptfile"
+    },
+    {
+      "name": "CAITrigger",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#caitrigger"
+    },
+    {
+      "name": "CAIUtil",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#caiutil"
+    },
+    {
+      "name": "CAOEEntry",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#caoeentry"
+    },
+    {
+      "name": "CAOEEntry::AOEType",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#caoeentry-aoetype"
+    },
+    {
+      "name": "CAbilityData",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#cabilitydata"
+    },
+    {
+      "name": "CAbilityId",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#cabilityid"
+    },
+    {
+      "name": "CApplyEffectList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#capplyeffectlist"
+    },
+    {
+      "name": "CAreaFile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#careafile"
+    },
+    {
+      "name": "CAreaFileCharacterEntryPoint",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#careafilecharacterentrypoint"
+    },
+    {
+      "name": "CAreaFileContainer",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#careafilecontainer"
+    },
+    {
+      "name": "CAreaFileCreature",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#careafilecreature"
+    },
+    {
+      "name": "CAreaFileDoorObject",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#careafiledoorobject"
+    },
+    {
+      "name": "CAreaFileHeader",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#careafileheader"
+    },
+    {
+      "name": "CAreaFileOffsets",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#careafileoffsets"
+    },
+    {
+      "name": "CAreaFileProjectileObject",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#careafileprojectileobject"
+    },
+    {
+      "name": "CAreaFileRandomMonsterSpawningPoint",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#careafilerandommonsterspawningpoint"
+    },
+    {
+      "name": "CAreaFileRestEncounter",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#careafilerestencounter"
+    },
+    {
+      "name": "CAreaFileSoundObject",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#careafilesoundobject"
+    },
+    {
+      "name": "CAreaFileStaticObject",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#careafilestaticobject"
+    },
+    {
+      "name": "CAreaFileTiledObject",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#careafiletiledobject"
+    },
+    {
+      "name": "CAreaFileTriggerObject",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#careafiletriggerobject"
+    },
+    {
+      "name": "CAreaPoint",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#careapoint"
+    },
+    {
+      "name": "CAreaSoundsAndMusic",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#careasoundsandmusic"
+    },
+    {
+      "name": "CAreaUserNote",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#careausernote"
+    },
+    {
+      "name": "CAreaVariable",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CA/index.html#careavariable"
+    },
+    {
+      "name": "CBaldurChitin",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CB/index.html#cbaldurchitin"
+    },
+    {
+      "name": "CBaldurEngine",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CB/index.html#cbaldurengine"
+    },
+    {
+      "name": "CBaldurMessage",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CB/index.html#cbaldurmessage"
+    },
+    {
+      "name": "CBaldurProjector",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CB/index.html#cbaldurprojector"
+    },
+    {
+      "name": "CBiographyFile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CB/index.html#cbiographyfile"
+    },
+    {
+      "name": "CBlood",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CB/index.html#cblood"
+    },
+    {
+      "name": "CBloodPool",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CB/index.html#cbloodpool"
+    },
+    {
+      "name": "CBmpFile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CB/index.html#cbmpfile"
+    },
+    {
+      "name": "CBounceEntry",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CB/index.html#cbounceentry"
+    },
+    {
+      "name": "CBounceList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CB/index.html#cbouncelist"
+    },
+    {
+      "name": "CButtonData",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CB/index.html#cbuttondata"
+    },
+    {
+      "name": "CCacheStatus",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#ccachestatus"
+    },
+    {
+      "name": "CCallbackBase",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#ccallbackbase"
+    },
+    {
+      "name": "CCharacterFile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#ccharacterfile"
+    },
+    {
+      "name": "CChatBuffer",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#cchatbuffer"
+    },
+    {
+      "name": "CChitin",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#cchitin"
+    },
+    {
+      "name": "CClosure",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#cclosure"
+    },
+    {
+      "name": "CCmdTarget",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#ccmdtarget"
+    },
+    {
+      "name": "CColorEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#ccoloreffect"
+    },
+    {
+      "name": "CColorEffects",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#ccoloreffects"
+    },
+    {
+      "name": "CColorRange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#ccolorrange"
+    },
+    {
+      "name": "CColorRanges",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#ccolorranges"
+    },
+    {
+      "name": "CContingency",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#ccontingency"
+    },
+    {
+      "name": "CContingencyList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#ccontingencylist"
+    },
+    {
+      "name": "CContingencySpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#ccontingencyspell"
+    },
+    {
+      "name": "CCreatureFile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#ccreaturefile"
+    },
+    {
+      "name": "CCreatureFileEquipment",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#ccreaturefileequipment"
+    },
+    {
+      "name": "CCreatureFileHeader",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#ccreaturefileheader"
+    },
+    {
+      "name": "CCreatureFileItem",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#ccreaturefileitem"
+    },
+    {
+      "name": "CCreatureFileKnownSpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#ccreaturefileknownspell"
+    },
+    {
+      "name": "CCreatureFileMemorizedSpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#ccreaturefilememorizedspell"
+    },
+    {
+      "name": "CCreatureFileMemorizedSpellLevel",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#ccreaturefilememorizedspelllevel"
+    },
+    {
+      "name": "CCreatureFileOffsets",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#ccreaturefileoffsets"
+    },
+    {
+      "name": "CCriticalEntry",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#ccriticalentry"
+    },
+    {
+      "name": "CCriticalEntryList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#ccriticalentrylist"
+    },
+    {
+      "name": "CCrypt",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CC/index.html#ccrypt"
+    },
+    {
+      "name": "CDLC",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CD/index.html#cdlc"
+    },
+    {
+      "name": "CDLC_Content",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CD/index.html#cdlc-content"
+    },
+    {
+      "name": "CDWordArray",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CD/index.html#cdwordarray"
+    },
+    {
+      "name": "CDeathSound",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CD/index.html#cdeathsound"
+    },
+    {
+      "name": "CDerivedStats",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CD/index.html#cderivedstats"
+    },
+    {
+      "name": "CDerivedStatsTemplate",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CD/index.html#cderivedstatstemplate"
+    },
+    {
+      "name": "CDialogFile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CD/index.html#cdialogfile"
+    },
+    {
+      "name": "CDialogFile_ActionScript",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CD/index.html#cdialogfile-actionscript"
+    },
+    {
+      "name": "CDialogFile_Dialog",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CD/index.html#cdialogfile-dialog"
+    },
+    {
+      "name": "CDialogFile_Header",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CD/index.html#cdialogfile-header"
+    },
+    {
+      "name": "CDialogFile_Reply",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CD/index.html#cdialogfile-reply"
+    },
+    {
+      "name": "CDialogFile_ReplyConditional",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CD/index.html#cdialogfile-replyconditional"
+    },
+    {
+      "name": "CDialogFile_StartingConditional",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CD/index.html#cdialogfile-startingconditional"
+    },
+    {
+      "name": "CDungeonMaster",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CD/index.html#cdungeonmaster"
+    },
+    {
+      "name": "CException",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CE/index.html#cexception"
+    },
+    {
+      "name": "CExportCharacterHeader",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CE/index.html#cexportcharacterheader"
+    },
+    {
+      "name": "CFeedbackEntry",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CF/index.html#cfeedbackentry"
+    },
+    {
+      "name": "CFile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CF/index.html#cfile"
+    },
+    {
+      "name": "CFileException",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CF/index.html#cfileexception"
+    },
+    {
+      "name": "CFileFind",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CF/index.html#cfilefind"
+    },
+    {
+      "name": "CFileReaderParms",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CF/index.html#cfilereaderparms"
+    },
+    {
+      "name": "CFileStatus",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CF/index.html#cfilestatus"
+    },
+    {
+      "name": "CFileView",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CF/index.html#cfileview"
+    },
+    {
+      "name": "CFixedAlloc",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CF/index.html#cfixedalloc"
+    },
+    {
+      "name": "CFixedAlloc::CNode",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CF/index.html#cfixedalloc-cnode"
+    },
+    {
+      "name": "CFog",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CF/index.html#cfog"
+    },
+    {
+      "name": "CGameAIArea",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameaiarea"
+    },
+    {
+      "name": "CGameAIBase",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameaibase"
+    },
+    {
+      "name": "CGameAIGame",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameaigame"
+    },
+    {
+      "name": "CGameAbilityList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameabilitylist"
+    },
+    {
+      "name": "CGameAddMapNote",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameaddmapnote"
+    },
+    {
+      "name": "CGameAnimation",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameanimation"
+    },
+    {
+      "name": "CGameAnimationType",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameanimationtype"
+    },
+    {
+      "name": "CGameAnimationTypeAmbient",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameanimationtypeambient"
+    },
+    {
+      "name": "CGameAnimationTypeAmbientStatic",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameanimationtypeambientstatic"
+    },
+    {
+      "name": "CGameAnimationTypeCharacter",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameanimationtypecharacter"
+    },
+    {
+      "name": "CGameAnimationTypeCharacterOld",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameanimationtypecharacterold"
+    },
+    {
+      "name": "CGameAnimationTypeEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameanimationtypeeffect"
+    },
+    {
+      "name": "CGameAnimationTypeFlying",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameanimationtypeflying"
+    },
+    {
+      "name": "CGameAnimationTypeMonster",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameanimationtypemonster"
+    },
+    {
+      "name": "CGameAnimationTypeMonsterAnkheg",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameanimationtypemonsterankheg"
+    },
+    {
+      "name": "CGameAnimationTypeMonsterIcewind",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameanimationtypemonstericewind"
+    },
+    {
+      "name": "CGameAnimationTypeMonsterLarge",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameanimationtypemonsterlarge"
+    },
+    {
+      "name": "CGameAnimationTypeMonsterLarge16",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameanimationtypemonsterlarge16"
+    },
+    {
+      "name": "CGameAnimationTypeMonsterLayered",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameanimationtypemonsterlayered"
+    },
+    {
+      "name": "CGameAnimationTypeMonsterLayeredSpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameanimationtypemonsterlayeredspell"
+    },
+    {
+      "name": "CGameAnimationTypeMonsterMulti",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameanimationtypemonstermulti"
+    },
+    {
+      "name": "CGameAnimationTypeMonsterMultiNew",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameanimationtypemonstermultinew"
+    },
+    {
+      "name": "CGameAnimationTypeMonsterOld",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameanimationtypemonsterold"
+    },
+    {
+      "name": "CGameAnimationTypeMonsterQuadrant",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameanimationtypemonsterquadrant"
+    },
+    {
+      "name": "CGameAnimationTypeTownStatic",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameanimationtypetownstatic"
+    },
+    {
+      "name": "CGameArea",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamearea"
+    },
+    {
+      "name": "CGameArea::m_cWalkableRenderCache_t",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamearea-unnamed-type-m-cwalkablerendercache"
+    },
+    {
+      "name": "CGameAreaClairvoyanceEntry",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameareaclairvoyanceentry"
+    },
+    {
+      "name": "CGameAreaNotes",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameareanotes"
+    },
+    {
+      "name": "CGameButtonList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamebuttonlist"
+    },
+    {
+      "name": "CGameChunk",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamechunk"
+    },
+    {
+      "name": "CGameContainer",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamecontainer"
+    },
+    {
+      "name": "CGameDialogEntry",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamedialogentry"
+    },
+    {
+      "name": "CGameDialogIdentifier",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamedialogidentifier"
+    },
+    {
+      "name": "CGameDialogReply",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamedialogreply"
+    },
+    {
+      "name": "CGameDialogSprite",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamedialogsprite"
+    },
+    {
+      "name": "CGameDoor",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamedoor"
+    },
+    {
+      "name": "CGameEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffect"
+    },
+    {
+      "name": "CGameEffectAC",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectac"
+    },
+    {
+      "name": "CGameEffectAIChange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectaichange"
+    },
+    {
+      "name": "CGameEffectAddInnateAbility",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectaddinnateability"
+    },
+    {
+      "name": "CGameEffectAlignmentChange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectalignmentchange"
+    },
+    {
+      "name": "CGameEffectAlignmentReversal",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectalignmentreversal"
+    },
+    {
+      "name": "CGameEffectAnimationChange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectanimationchange"
+    },
+    {
+      "name": "CGameEffectApplyEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectapplyeffect"
+    },
+    {
+      "name": "CGameEffectApplyEffectEquipItem",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectapplyeffectequipitem"
+    },
+    {
+      "name": "CGameEffectApplyEffectEquipItemType",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectapplyeffectequipitemtype"
+    },
+    {
+      "name": "CGameEffectApplySpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectapplyspell"
+    },
+    {
+      "name": "CGameEffectApplySpellOnMove",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectapplyspellonmove"
+    },
+    {
+      "name": "CGameEffectAssassination",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectassassination"
+    },
+    {
+      "name": "CGameEffectAttackNo",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectattackno"
+    },
+    {
+      "name": "CGameEffectAuraCleansing",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectauracleansing"
+    },
+    {
+      "name": "CGameEffectAwaken",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectawaken"
+    },
+    {
+      "name": "CGameEffectBackStabMod",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectbackstabmod"
+    },
+    {
+      "name": "CGameEffectBackStabSpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectbackstabspell"
+    },
+    {
+      "name": "CGameEffectBardSong",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectbardsong"
+    },
+    {
+      "name": "CGameEffectBase",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectbase"
+    },
+    {
+      "name": "CGameEffectBerserk",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectberserk"
+    },
+    {
+      "name": "CGameEffectBerserkStage1",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectberserkstage1"
+    },
+    {
+      "name": "CGameEffectBerserkStage2",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectberserkstage2"
+    },
+    {
+      "name": "CGameEffectBlindness",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectblindness"
+    },
+    {
+      "name": "CGameEffectBlur",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectblur"
+    },
+    {
+      "name": "CGameEffectBounceEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectbounceeffect"
+    },
+    {
+      "name": "CGameEffectBounceLevel",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectbouncelevel"
+    },
+    {
+      "name": "CGameEffectBounceLevelDecrement",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectbounceleveldecrement"
+    },
+    {
+      "name": "CGameEffectBounceProjectile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectbounceprojectile"
+    },
+    {
+      "name": "CGameEffectBounceSchool",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectbounceschool"
+    },
+    {
+      "name": "CGameEffectBounceSchoolDecrement",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectbounceschooldecrement"
+    },
+    {
+      "name": "CGameEffectBounceSecondaryType",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectbouncesecondarytype"
+    },
+    {
+      "name": "CGameEffectBounceSecondaryTypeDecrement",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectbouncesecondarytypedecrement"
+    },
+    {
+      "name": "CGameEffectBounceSpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectbouncespell"
+    },
+    {
+      "name": "CGameEffectCHR",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectchr"
+    },
+    {
+      "name": "CGameEffectCON",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcon"
+    },
+    {
+      "name": "CGameEffectCalm",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcalm"
+    },
+    {
+      "name": "CGameEffectCannotSaveOrRest",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcannotsaveorrest"
+    },
+    {
+      "name": "CGameEffectCastSpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcastspell"
+    },
+    {
+      "name": "CGameEffectCastSpellPoint",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcastspellpoint"
+    },
+    {
+      "name": "CGameEffectCastingFailure",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcastingfailure"
+    },
+    {
+      "name": "CGameEffectCastingGlow",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcastingglow"
+    },
+    {
+      "name": "CGameEffectCastingLevelBonus",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcastinglevelbonus"
+    },
+    {
+      "name": "CGameEffectChangeStatic",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectchangestatic"
+    },
+    {
+      "name": "CGameEffectChangeWeather",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectchangeweather"
+    },
+    {
+      "name": "CGameEffectChaosShield",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectchaosshield"
+    },
+    {
+      "name": "CGameEffectCharm",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcharm"
+    },
+    {
+      "name": "CGameEffectCheckForBerserk",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcheckforberserk"
+    },
+    {
+      "name": "CGameEffectClairvoyance",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectclairvoyance"
+    },
+    {
+      "name": "CGameEffectClassStringOverride",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectclassstringoverride"
+    },
+    {
+      "name": "CGameEffectCleanAir",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcleanair"
+    },
+    {
+      "name": "CGameEffectColorChange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcolorchange"
+    },
+    {
+      "name": "CGameEffectColorGlowDissipate",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcolorglowdissipate"
+    },
+    {
+      "name": "CGameEffectColorGlowPulse",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcolorglowpulse"
+    },
+    {
+      "name": "CGameEffectColorGlowSolid",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcolorglowsolid"
+    },
+    {
+      "name": "CGameEffectColorLightSolid",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcolorlightsolid"
+    },
+    {
+      "name": "CGameEffectColorTintSolid",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcolortintsolid"
+    },
+    {
+      "name": "CGameEffectConfusion",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectconfusion"
+    },
+    {
+      "name": "CGameEffectContingencyInstance",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcontingencyinstance"
+    },
+    {
+      "name": "CGameEffectContingencyStart",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcontingencystart"
+    },
+    {
+      "name": "CGameEffectCopySelf",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcopyself"
+    },
+    {
+      "name": "CGameEffectCreateItem",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcreateitem"
+    },
+    {
+      "name": "CGameEffectCreateWeapon",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcreateweapon"
+    },
+    {
+      "name": "CGameEffectCriticalHitBonus",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcriticalhitbonus"
+    },
+    {
+      "name": "CGameEffectCriticalHitSpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcriticalhitspell"
+    },
+    {
+      "name": "CGameEffectCriticalMissModifier",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcriticalmissmodifier"
+    },
+    {
+      "name": "CGameEffectCriticalMissSpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcriticalmissspell"
+    },
+    {
+      "name": "CGameEffectCureBlindness",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcureblindness"
+    },
+    {
+      "name": "CGameEffectCureDeafness",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcuredeafness"
+    },
+    {
+      "name": "CGameEffectCureDisease",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcuredisease"
+    },
+    {
+      "name": "CGameEffectCureFeebleMindedness",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcurefeeblemindedness"
+    },
+    {
+      "name": "CGameEffectCurePoison",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcurepoison"
+    },
+    {
+      "name": "CGameEffectCurseApplyEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectcurseapplyeffect"
+    },
+    {
+      "name": "CGameEffectDEX",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdex"
+    },
+    {
+      "name": "CGameEffectDamage",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdamage"
+    },
+    {
+      "name": "CGameEffectDamageLuck",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdamageluck"
+    },
+    {
+      "name": "CGameEffectDamageMod",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdamagemod"
+    },
+    {
+      "name": "CGameEffectDamageVisualEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdamagevisualeffect"
+    },
+    {
+      "name": "CGameEffectDeafness",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdeafness"
+    },
+    {
+      "name": "CGameEffectDeath",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdeath"
+    },
+    {
+      "name": "CGameEffectDefrost",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdefrost"
+    },
+    {
+      "name": "CGameEffectDestroyItem",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdestroyitem"
+    },
+    {
+      "name": "CGameEffectDestroySelf",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdestroyself"
+    },
+    {
+      "name": "CGameEffectDestroyWeapon",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdestroyweapon"
+    },
+    {
+      "name": "CGameEffectDetectAlignment",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdetectalignment"
+    },
+    {
+      "name": "CGameEffectDetectIllusion",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdetectillusion"
+    },
+    {
+      "name": "CGameEffectDetectTraps",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdetecttraps"
+    },
+    {
+      "name": "CGameEffectDisableButton",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdisablebutton"
+    },
+    {
+      "name": "CGameEffectDisableCircle",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdisablecircle"
+    },
+    {
+      "name": "CGameEffectDisableSpellType",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdisablespelltype"
+    },
+    {
+      "name": "CGameEffectDisease",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdisease"
+    },
+    {
+      "name": "CGameEffectDisintegrate",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdisintegrate"
+    },
+    {
+      "name": "CGameEffectDispelEffects",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdispeleffects"
+    },
+    {
+      "name": "CGameEffectDispelInvisible",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdispelinvisible"
+    },
+    {
+      "name": "CGameEffectDispelSanctuary",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdispelsanctuary"
+    },
+    {
+      "name": "CGameEffectDispelSchool",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdispelschool"
+    },
+    {
+      "name": "CGameEffectDispelSchoolOne",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdispelschoolone"
+    },
+    {
+      "name": "CGameEffectDispelSecondaryType",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdispelsecondarytype"
+    },
+    {
+      "name": "CGameEffectDispelSecondaryTypeOne",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdispelsecondarytypeone"
+    },
+    {
+      "name": "CGameEffectDisplayString",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdisplaystring"
+    },
+    {
+      "name": "CGameEffectDither",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdither"
+    },
+    {
+      "name": "CGameEffectDoNotDraw",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdonotdraw"
+    },
+    {
+      "name": "CGameEffectDrainChargeFromAllItems",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdrainchargefromallitems"
+    },
+    {
+      "name": "CGameEffectDurationCasting",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectdurationcasting"
+    },
+    {
+      "name": "CGameEffectEnableButton",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectenablebutton"
+    },
+    {
+      "name": "CGameEffectEndNonDetection",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectendnondetection"
+    },
+    {
+      "name": "CGameEffectEntangle",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectentangle"
+    },
+    {
+      "name": "CGameEffectEquipWeapon",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectequipweapon"
+    },
+    {
+      "name": "CGameEffectEvadeAreaOfEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectevadeareaofeffect"
+    },
+    {
+      "name": "CGameEffectExistanceDelayOverride",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectexistancedelayoverride"
+    },
+    {
+      "name": "CGameEffectExplore",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectexplore"
+    },
+    {
+      "name": "CGameEffectFamiliarBlock",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectfamiliarblock"
+    },
+    {
+      "name": "CGameEffectFatigue",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectfatigue"
+    },
+    {
+      "name": "CGameEffectFeebleMindedness",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectfeeblemindedness"
+    },
+    {
+      "name": "CGameEffectFile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectfile"
+    },
+    {
+      "name": "CGameEffectFindFamiliar",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectfindfamiliar"
+    },
+    {
+      "name": "CGameEffectFistDamageBonus",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectfistdamagebonus"
+    },
+    {
+      "name": "CGameEffectFistTHAC0Bonus",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectfistthac0bonus"
+    },
+    {
+      "name": "CGameEffectFloatText",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectfloattext"
+    },
+    {
+      "name": "CGameEffectForceSurge",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectforcesurge"
+    },
+    {
+      "name": "CGameEffectForceVisible",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectforcevisible"
+    },
+    {
+      "name": "CGameEffectFreedom",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectfreedom"
+    },
+    {
+      "name": "CGameEffectGold",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectgold"
+    },
+    {
+      "name": "CGameEffectGreasePool",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectgreasepool"
+    },
+    {
+      "name": "CGameEffectHaste",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffecthaste"
+    },
+    {
+      "name": "CGameEffectHaste2",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffecthaste2"
+    },
+    {
+      "name": "CGameEffectHeal",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectheal"
+    },
+    {
+      "name": "CGameEffectHideInShadows",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffecthideinshadows"
+    },
+    {
+      "name": "CGameEffectHighLevelAbility",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffecthighlevelability"
+    },
+    {
+      "name": "CGameEffectHitMod",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffecthitmod"
+    },
+    {
+      "name": "CGameEffectHitPoints",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffecthitpoints"
+    },
+    {
+      "name": "CGameEffectHitPointsOnDeath",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffecthitpointsondeath"
+    },
+    {
+      "name": "CGameEffectHoldCreature",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectholdcreature"
+    },
+    {
+      "name": "CGameEffectHoldCreatureSpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectholdcreaturespell"
+    },
+    {
+      "name": "CGameEffectINT",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectint"
+    },
+    {
+      "name": "CGameEffectIdentify",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectidentify"
+    },
+    {
+      "name": "CGameEffectIgnoreDialogPause",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectignoredialogpause"
+    },
+    {
+      "name": "CGameEffectIgnoreDrainDeath",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectignoredraindeath"
+    },
+    {
+      "name": "CGameEffectIgnoreReputationBreak",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectignorereputationbreak"
+    },
+    {
+      "name": "CGameEffectImmuneToTracking",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectimmunetotracking"
+    },
+    {
+      "name": "CGameEffectImmuneToWeapon",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectimmunetoweapon"
+    },
+    {
+      "name": "CGameEffectImmunityLevelDecrement",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectimmunityleveldecrement"
+    },
+    {
+      "name": "CGameEffectImmunitySchool",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectimmunityschool"
+    },
+    {
+      "name": "CGameEffectImmunitySchoolDecrement",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectimmunityschooldecrement"
+    },
+    {
+      "name": "CGameEffectImmunitySecondaryType",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectimmunitysecondarytype"
+    },
+    {
+      "name": "CGameEffectImmunitySecondaryTypeDecrement",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectimmunitysecondarytypedecrement"
+    },
+    {
+      "name": "CGameEffectImmunitySpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectimmunityspell"
+    },
+    {
+      "name": "CGameEffectImmunitySpellIWD",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectimmunityspelliwd"
+    },
+    {
+      "name": "CGameEffectImmunityToBackstab",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectimmunitytobackstab"
+    },
+    {
+      "name": "CGameEffectImmunityToDisplayString",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectimmunitytodisplaystring"
+    },
+    {
+      "name": "CGameEffectImmunityToEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectimmunitytoeffect"
+    },
+    {
+      "name": "CGameEffectImmunityToPortraitIcon",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectimmunitytoportraiticon"
+    },
+    {
+      "name": "CGameEffectImmunityToProjectile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectimmunitytoprojectile"
+    },
+    {
+      "name": "CGameEffectImmunityToSequester",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectimmunitytosequester"
+    },
+    {
+      "name": "CGameEffectImmunityToSpellLevel",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectimmunitytospelllevel"
+    },
+    {
+      "name": "CGameEffectImmunityToTimeStop",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectimmunitytotimestop"
+    },
+    {
+      "name": "CGameEffectImmunityToTurnUndead",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectimmunitytoturnundead"
+    },
+    {
+      "name": "CGameEffectImmunityToVisualEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectimmunitytovisualeffect"
+    },
+    {
+      "name": "CGameEffectImprisonment",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectimprisonment"
+    },
+    {
+      "name": "CGameEffectInfravision",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectinfravision"
+    },
+    {
+      "name": "CGameEffectInfravisionOff",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectinfravisionoff"
+    },
+    {
+      "name": "CGameEffectIntoxication",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectintoxication"
+    },
+    {
+      "name": "CGameEffectInvisible",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectinvisible"
+    },
+    {
+      "name": "CGameEffectJumpToArea",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectjumptoarea"
+    },
+    {
+      "name": "CGameEffectJumpToPocketPlane",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectjumptopocketplane"
+    },
+    {
+      "name": "CGameEffectKnock",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectknock"
+    },
+    {
+      "name": "CGameEffectLearnSpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectlearnspell"
+    },
+    {
+      "name": "CGameEffectLevel",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectlevel"
+    },
+    {
+      "name": "CGameEffectLevelDrain",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectleveldrain"
+    },
+    {
+      "name": "CGameEffectLevelRestoration",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectlevelrestoration"
+    },
+    {
+      "name": "CGameEffectList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectlist"
+    },
+    {
+      "name": "CGameEffectLore",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectlore"
+    },
+    {
+      "name": "CGameEffectLuck",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectluck"
+    },
+    {
+      "name": "CGameEffectMakeUnselectable",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectmakeunselectable"
+    },
+    {
+      "name": "CGameEffectMaze",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectmaze"
+    },
+    {
+      "name": "CGameEffectMeleeDamageBonus",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectmeleedamagebonus"
+    },
+    {
+      "name": "CGameEffectMeleeEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectmeleeeffect"
+    },
+    {
+      "name": "CGameEffectMeleeTHAC0Bonus",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectmeleethac0bonus"
+    },
+    {
+      "name": "CGameEffectMentalSpeed",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectmentalspeed"
+    },
+    {
+      "name": "CGameEffectMinHitPoints",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectminhitpoints"
+    },
+    {
+      "name": "CGameEffectMinorGlobe",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectminorglobe"
+    },
+    {
+      "name": "CGameEffectMirrorImage",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectmirrorimage"
+    },
+    {
+      "name": "CGameEffectMirrorImageRun",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectmirrorimagerun"
+    },
+    {
+      "name": "CGameEffectMissileDamageBonus",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectmissiledamagebonus"
+    },
+    {
+      "name": "CGameEffectMissileTHAC0Bonus",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectmissilethac0bonus"
+    },
+    {
+      "name": "CGameEffectMorale",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectmorale"
+    },
+    {
+      "name": "CGameEffectMoraleBreak",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectmoralebreak"
+    },
+    {
+      "name": "CGameEffectMovementRate",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectmovementrate"
+    },
+    {
+      "name": "CGameEffectMovementRateModal",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectmovementratemodal"
+    },
+    {
+      "name": "CGameEffectNPCBump",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectnpcbump"
+    },
+    {
+      "name": "CGameEffectName",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectname"
+    },
+    {
+      "name": "CGameEffectNoPermanentDeath",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectnopermanentdeath"
+    },
+    {
+      "name": "CGameEffectNonDetection",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectnondetection"
+    },
+    {
+      "name": "CGameEffectNon_CumulativeAid",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectnon-cumulativeaid"
+    },
+    {
+      "name": "CGameEffectNon_CumulativeBless",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectnon-cumulativebless"
+    },
+    {
+      "name": "CGameEffectNon_CumulativeChant",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectnon-cumulativechant"
+    },
+    {
+      "name": "CGameEffectNon_CumulativeChantBad",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectnon-cumulativechantbad"
+    },
+    {
+      "name": "CGameEffectNon_CumulativeDrawUponHolyMight",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectnon-cumulativedrawuponholymight"
+    },
+    {
+      "name": "CGameEffectNon_CumulativeLuck",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectnon-cumulativeluck"
+    },
+    {
+      "name": "CGameEffectOverrideAnimation",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectoverrideanimation"
+    },
+    {
+      "name": "CGameEffectOverrideWeaponType",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectoverrideweapontype"
+    },
+    {
+      "name": "CGameEffectPanic",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectpanic"
+    },
+    {
+      "name": "CGameEffectPauseCaster",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectpausecaster"
+    },
+    {
+      "name": "CGameEffectPetrification",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectpetrification"
+    },
+    {
+      "name": "CGameEffectPhysicalSpeed",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectphysicalspeed"
+    },
+    {
+      "name": "CGameEffectPlayMovie",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectplaymovie"
+    },
+    {
+      "name": "CGameEffectPlaySound",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectplaysound"
+    },
+    {
+      "name": "CGameEffectPoison",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectpoison"
+    },
+    {
+      "name": "CGameEffectPolymorph",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectpolymorph"
+    },
+    {
+      "name": "CGameEffectPortrait",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectportrait"
+    },
+    {
+      "name": "CGameEffectPortraitIcon",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectportraiticon"
+    },
+    {
+      "name": "CGameEffectPowerWordKill",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectpowerwordkill"
+    },
+    {
+      "name": "CGameEffectPowerWordSleep",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectpowerwordsleep"
+    },
+    {
+      "name": "CGameEffectPowerWordStun",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectpowerwordstun"
+    },
+    {
+      "name": "CGameEffectPreventAISlowDown",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectpreventaislowdown"
+    },
+    {
+      "name": "CGameEffectPreventSpellProtectionEffects",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectpreventspellprotectioneffects"
+    },
+    {
+      "name": "CGameEffectProficiency",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectproficiency"
+    },
+    {
+      "name": "CGameEffectProtectionCircle",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectprotectioncircle"
+    },
+    {
+      "name": "CGameEffectProtectionFromCreature",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectprotectionfromcreature"
+    },
+    {
+      "name": "CGameEffectPuppetMaster",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectpuppetmaster"
+    },
+    {
+      "name": "CGameEffectPushPull",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectpushpull"
+    },
+    {
+      "name": "CGameEffectRandomDrop",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectrandomdrop"
+    },
+    {
+      "name": "CGameEffectRandomPhase",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectrandomphase"
+    },
+    {
+      "name": "CGameEffectRandomSummon",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectrandomsummon"
+    },
+    {
+      "name": "CGameEffectRandomTeleport",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectrandomteleport"
+    },
+    {
+      "name": "CGameEffectRangeEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectrangeeffect"
+    },
+    {
+      "name": "CGameEffectRegeneration",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectregeneration"
+    },
+    {
+      "name": "CGameEffectRememorizeSpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectrememorizespell"
+    },
+    {
+      "name": "CGameEffectRemoveAllOfType",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectremovealloftype"
+    },
+    {
+      "name": "CGameEffectRemoveConfusion",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectremoveconfusion"
+    },
+    {
+      "name": "CGameEffectRemoveCurse",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectremovecurse"
+    },
+    {
+      "name": "CGameEffectRemoveEffectOfResource",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectremoveeffectofresource"
+    },
+    {
+      "name": "CGameEffectRemoveHold",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectremovehold"
+    },
+    {
+      "name": "CGameEffectRemoveInnateAbility",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectremoveinnateability"
+    },
+    {
+      "name": "CGameEffectRemoveIntoxication",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectremoveintoxication"
+    },
+    {
+      "name": "CGameEffectRemovePanic",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectremovepanic"
+    },
+    {
+      "name": "CGameEffectRemovePortraitIcon",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectremoveportraiticon"
+    },
+    {
+      "name": "CGameEffectRemoveRandomSpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectremoverandomspell"
+    },
+    {
+      "name": "CGameEffectRemoveSpellImmunity",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectremovespellimmunity"
+    },
+    {
+      "name": "CGameEffectRepeatingApplyEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectrepeatingapplyeffect"
+    },
+    {
+      "name": "CGameEffectReplaceItem",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectreplaceitem"
+    },
+    {
+      "name": "CGameEffectReplaceSelf",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectreplaceself"
+    },
+    {
+      "name": "CGameEffectReputation",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectreputation"
+    },
+    {
+      "name": "CGameEffectResistAcid",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectresistacid"
+    },
+    {
+      "name": "CGameEffectResistCold",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectresistcold"
+    },
+    {
+      "name": "CGameEffectResistCrushing",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectresistcrushing"
+    },
+    {
+      "name": "CGameEffectResistElectricity",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectresistelectricity"
+    },
+    {
+      "name": "CGameEffectResistFire",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectresistfire"
+    },
+    {
+      "name": "CGameEffectResistMagic",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectresistmagic"
+    },
+    {
+      "name": "CGameEffectResistMagicCold",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectresistmagiccold"
+    },
+    {
+      "name": "CGameEffectResistMagicFire",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectresistmagicfire"
+    },
+    {
+      "name": "CGameEffectResistMissile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectresistmissile"
+    },
+    {
+      "name": "CGameEffectResistPiercing",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectresistpiercing"
+    },
+    {
+      "name": "CGameEffectResistSlashing",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectresistslashing"
+    },
+    {
+      "name": "CGameEffectResistanceToMagic",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectresistancetomagic"
+    },
+    {
+      "name": "CGameEffectResistanceToPoison",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectresistancetopoison"
+    },
+    {
+      "name": "CGameEffectRest",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectrest"
+    },
+    {
+      "name": "CGameEffectRestoreMovementRate",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectrestoremovementrate"
+    },
+    {
+      "name": "CGameEffectRestrictEquipItem",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectrestrictequipitem"
+    },
+    {
+      "name": "CGameEffectRestrictEquipItemType",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectrestrictequipitemtype"
+    },
+    {
+      "name": "CGameEffectResurrect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectresurrect"
+    },
+    {
+      "name": "CGameEffectResurrectParty",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectresurrectparty"
+    },
+    {
+      "name": "CGameEffectRetreatFrom",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectretreatfrom"
+    },
+    {
+      "name": "CGameEffectRevealMagic",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectrevealmagic"
+    },
+    {
+      "name": "CGameEffectSTR",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectstr"
+    },
+    {
+      "name": "CGameEffectSTRExtra",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectstrextra"
+    },
+    {
+      "name": "CGameEffectSanctuary",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsanctuary"
+    },
+    {
+      "name": "CGameEffectSaveVsBreath",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsavevsbreath"
+    },
+    {
+      "name": "CGameEffectSaveVsDeath",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsavevsdeath"
+    },
+    {
+      "name": "CGameEffectSaveVsPoly",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsavevspoly"
+    },
+    {
+      "name": "CGameEffectSaveVsSchoolMod",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsavevsschoolmod"
+    },
+    {
+      "name": "CGameEffectSaveVsSpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsavevsspell"
+    },
+    {
+      "name": "CGameEffectSaveVsWands",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsavevswands"
+    },
+    {
+      "name": "CGameEffectSavingThrowChange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsavingthrowchange"
+    },
+    {
+      "name": "CGameEffectScreenShake",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectscreenshake"
+    },
+    {
+      "name": "CGameEffectScriptingState",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectscriptingstate"
+    },
+    {
+      "name": "CGameEffectSecondaryCastList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsecondarycastlist"
+    },
+    {
+      "name": "CGameEffectSeeInvisible",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectseeinvisible"
+    },
+    {
+      "name": "CGameEffectSelectiveDamageBonus",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectselectivedamagebonus"
+    },
+    {
+      "name": "CGameEffectSelectiveEnchantmentBonus",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectselectiveenchantmentbonus"
+    },
+    {
+      "name": "CGameEffectSelectiveToHitBonus",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectselectivetohitbonus"
+    },
+    {
+      "name": "CGameEffectSequencerFire",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsequencerfire"
+    },
+    {
+      "name": "CGameEffectSequencerFirePoint",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsequencerfirepoint"
+    },
+    {
+      "name": "CGameEffectSequencerInstance",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsequencerinstance"
+    },
+    {
+      "name": "CGameEffectSequencerStart",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsequencerstart"
+    },
+    {
+      "name": "CGameEffectSetAIScript",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsetaiscript"
+    },
+    {
+      "name": "CGameEffectSetDoNotJump",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsetdonotjump"
+    },
+    {
+      "name": "CGameEffectSetGlobal",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsetglobal"
+    },
+    {
+      "name": "CGameEffectSetLocalExternal",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsetlocalexternal"
+    },
+    {
+      "name": "CGameEffectSetLocalVariable",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsetlocalvariable"
+    },
+    {
+      "name": "CGameEffectSetSequence",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsetsequence"
+    },
+    {
+      "name": "CGameEffectSetSnare",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsetsnare"
+    },
+    {
+      "name": "CGameEffectSetSpellState",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsetspellstate"
+    },
+    {
+      "name": "CGameEffectSetTrap",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsettrap"
+    },
+    {
+      "name": "CGameEffectSevenEyes",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectseveneyes"
+    },
+    {
+      "name": "CGameEffectSevenEyesRun",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectseveneyesrun"
+    },
+    {
+      "name": "CGameEffectSexChange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsexchange"
+    },
+    {
+      "name": "CGameEffectShieldGlobe",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectshieldglobe"
+    },
+    {
+      "name": "CGameEffectShowArea",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectshowarea"
+    },
+    {
+      "name": "CGameEffectShowCreatures",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectshowcreatures"
+    },
+    {
+      "name": "CGameEffectSilence",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsilence"
+    },
+    {
+      "name": "CGameEffectSingleColorPulseAll",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsinglecolorpulseall"
+    },
+    {
+      "name": "CGameEffectSkillLockPicking",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectskilllockpicking"
+    },
+    {
+      "name": "CGameEffectSkillPickPocket",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectskillpickpocket"
+    },
+    {
+      "name": "CGameEffectSkillStealth",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectskillstealth"
+    },
+    {
+      "name": "CGameEffectSkillTracking",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectskilltracking"
+    },
+    {
+      "name": "CGameEffectSkillTraps",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectskilltraps"
+    },
+    {
+      "name": "CGameEffectSlay",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectslay"
+    },
+    {
+      "name": "CGameEffectSleep",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsleep"
+    },
+    {
+      "name": "CGameEffectSlow",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectslow"
+    },
+    {
+      "name": "CGameEffectSlowPoison",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectslowpoison"
+    },
+    {
+      "name": "CGameEffectSparkle",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsparkle"
+    },
+    {
+      "name": "CGameEffectSpecificDamageMod",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectspecificdamagemod"
+    },
+    {
+      "name": "CGameEffectSpellMemorizationCleric",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectspellmemorizationcleric"
+    },
+    {
+      "name": "CGameEffectSpellMemorizationMage",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectspellmemorizationmage"
+    },
+    {
+      "name": "CGameEffectSpellTrapLevelDecrement",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectspelltrapleveldecrement"
+    },
+    {
+      "name": "CGameEffectStaticCharge",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectstaticcharge"
+    },
+    {
+      "name": "CGameEffectStoneSkins",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectstoneskins"
+    },
+    {
+      "name": "CGameEffectStoneSkinsGolem",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectstoneskinsgolem"
+    },
+    {
+      "name": "CGameEffectStoneToFlesh",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectstonetoflesh"
+    },
+    {
+      "name": "CGameEffectStun",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectstun"
+    },
+    {
+      "name": "CGameEffectSummon",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsummon"
+    },
+    {
+      "name": "CGameEffectSummonDisable",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsummondisable"
+    },
+    {
+      "name": "CGameEffectSurgeMod",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectsurgemod"
+    },
+    {
+      "name": "CGameEffectSwapHitpoints",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectswaphitpoints"
+    },
+    {
+      "name": "CGameEffectTeleport",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectteleport"
+    },
+    {
+      "name": "CGameEffectThac0",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectthac0"
+    },
+    {
+      "name": "CGameEffectThac0Left",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectthac0left"
+    },
+    {
+      "name": "CGameEffectThac0Right",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectthac0right"
+    },
+    {
+      "name": "CGameEffectTimeStop",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffecttimestop"
+    },
+    {
+      "name": "CGameEffectTracking",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffecttracking"
+    },
+    {
+      "name": "CGameEffectTranslucent",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffecttranslucent"
+    },
+    {
+      "name": "CGameEffectTurnUndead",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectturnundead"
+    },
+    {
+      "name": "CGameEffectTurnUndeadModifier",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectturnundeadmodifier"
+    },
+    {
+      "name": "CGameEffectUnpauseCaster",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectunpausecaster"
+    },
+    {
+      "name": "CGameEffectUnstun",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectunstun"
+    },
+    {
+      "name": "CGameEffectUnsummon",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectunsummon"
+    },
+    {
+      "name": "CGameEffectUsability",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectusability"
+    },
+    {
+      "name": "CGameEffectUsabilityList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectusabilitylist"
+    },
+    {
+      "name": "CGameEffectUseAnyItem",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectuseanyitem"
+    },
+    {
+      "name": "CGameEffectVisible",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectvisible"
+    },
+    {
+      "name": "CGameEffectVisualAnimationEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectvisualanimationeffect"
+    },
+    {
+      "name": "CGameEffectVisualEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectvisualeffect"
+    },
+    {
+      "name": "CGameEffectVisualRange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectvisualrange"
+    },
+    {
+      "name": "CGameEffectVisualSpellHit",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectvisualspellhit"
+    },
+    {
+      "name": "CGameEffectVisualSpellHitIWD",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectvisualspellhitiwd"
+    },
+    {
+      "name": "CGameEffectVocalize",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectvocalize"
+    },
+    {
+      "name": "CGameEffectWIS",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectwis"
+    },
+    {
+      "name": "CGameEffectWebHold",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectwebhold"
+    },
+    {
+      "name": "CGameEffectWish",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectwish"
+    },
+    {
+      "name": "CGameEffectXP",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameeffectxp"
+    },
+    {
+      "name": "CGameFile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamefile"
+    },
+    {
+      "name": "CGameFireball3d",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamefireball3d"
+    },
+    {
+      "name": "CGameJournal",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamejournal"
+    },
+    {
+      "name": "CGameJournalAlphabetizer",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamejournalalphabetizer"
+    },
+    {
+      "name": "CGameJournalEntry",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamejournalentry"
+    },
+    {
+      "name": "CGameJournalEntryFlag",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamejournalentryflag"
+    },
+    {
+      "name": "CGameObject",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameobject"
+    },
+    {
+      "name": "CGameObjectArray",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameobjectarray"
+    },
+    {
+      "name": "CGameObjectArrayEntry",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameobjectarrayentry"
+    },
+    {
+      "name": "CGameOptions",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameoptions"
+    },
+    {
+      "name": "CGamePermission",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamepermission"
+    },
+    {
+      "name": "CGameRemoteObjectArray",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameremoteobjectarray"
+    },
+    {
+      "name": "CGameRemoteObjectControlChange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameremoteobjectcontrolchange"
+    },
+    {
+      "name": "CGameRemoteObjectDeletion",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameremoteobjectdeletion"
+    },
+    {
+      "name": "CGameRemoteObjectListEntry",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameremoteobjectlistentry"
+    },
+    {
+      "name": "CGameRemoveMapNote",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgameremovemapnote"
+    },
+    {
+      "name": "CGameSave",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamesave"
+    },
+    {
+      "name": "CGameSaveCharacter",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamesavecharacter"
+    },
+    {
+      "name": "CGameSound",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamesound"
+    },
+    {
+      "name": "CGameSpawning",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamespawning"
+    },
+    {
+      "name": "CGameSprite",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamesprite"
+    },
+    {
+      "name": "CGameSprite::GroundItem",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamesprite-grounditem"
+    },
+    {
+      "name": "CGameSpriteEquipment",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamespriteequipment"
+    },
+    {
+      "name": "CGameSpriteLastUpdate",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamespritelastupdate"
+    },
+    {
+      "name": "CGameStatic",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamestatic"
+    },
+    {
+      "name": "CGameStatsRes",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamestatsres"
+    },
+    {
+      "name": "CGameStatsSprite",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgamestatssprite"
+    },
+    {
+      "name": "CGameTemporal",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgametemporal"
+    },
+    {
+      "name": "CGameText",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgametext"
+    },
+    {
+      "name": "CGameTiledObject",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgametiledobject"
+    },
+    {
+      "name": "CGameTimer",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgametimer"
+    },
+    {
+      "name": "CGameTrigger",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CG/index.html#cgametrigger"
+    },
+    {
+      "name": "CIcon",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#cicon"
+    },
+    {
+      "name": "CImmunitiesAIType",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#cimmunitiesaitype"
+    },
+    {
+      "name": "CImmunitiesEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#cimmunitieseffect"
+    },
+    {
+      "name": "CImmunitiesItemEquip",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#cimmunitiesitemequip"
+    },
+    {
+      "name": "CImmunitiesItemEquipList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#cimmunitiesitemequiplist"
+    },
+    {
+      "name": "CImmunitiesItemTypeEquip",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#cimmunitiesitemtypeequip"
+    },
+    {
+      "name": "CImmunitiesItemTypeEquipList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#cimmunitiesitemtypeequiplist"
+    },
+    {
+      "name": "CImmunitiesProjectile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#cimmunitiesprojectile"
+    },
+    {
+      "name": "CImmunitiesSchoolAndSecondary",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#cimmunitiesschoolandsecondary"
+    },
+    {
+      "name": "CImmunitiesSchoolAndSecondaryDecrementing",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#cimmunitiesschoolandsecondarydecrementing"
+    },
+    {
+      "name": "CImmunitiesSpellLevel",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#cimmunitiesspelllevel"
+    },
+    {
+      "name": "CImmunitiesSpellLevelDecrementing",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#cimmunitiesspellleveldecrementing"
+    },
+    {
+      "name": "CImmunitiesSpellList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#cimmunitiesspelllist"
+    },
+    {
+      "name": "CImmunitiesWeapon",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#cimmunitiesweapon"
+    },
+    {
+      "name": "CImmunitySpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#cimmunityspell"
+    },
+    {
+      "name": "CImportGame",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#cimportgame"
+    },
+    {
+      "name": "CInfButtonArray",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#cinfbuttonarray"
+    },
+    {
+      "name": "CInfButtonSettings",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#cinfbuttonsettings"
+    },
+    {
+      "name": "CInfCursor",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#cinfcursor"
+    },
+    {
+      "name": "CInfGame",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#cinfgame"
+    },
+    {
+      "name": "CInfTileSet",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#cinftileset"
+    },
+    {
+      "name": "CInfToolTip",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#cinftooltip"
+    },
+    {
+      "name": "CInfinity",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#cinfinity"
+    },
+    {
+      "name": "CItem",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CI/index.html#citem"
+    },
+    {
+      "name": "CKeyInfo",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CK/index.html#ckeyinfo"
+    },
+    {
+      "name": "CLUACheats",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CL/index.html#cluacheats"
+    },
+    {
+      "name": "CLUAConsole",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CL/index.html#cluaconsole"
+    },
+    {
+      "name": "CLightning",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CL/index.html#clightning"
+    },
+    {
+      "name": "CList::CNode",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CL/index.html#clist-cnode"
+    },
+    {
+      "name": "CMachineState",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmachinestate"
+    },
+    {
+      "name": "CMachineStates",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmachinestates"
+    },
+    {
+      "name": "CMapStringToPtr",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmapstringtoptr"
+    },
+    {
+      "name": "CMapStringToPtr::CAssoc",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmapstringtoptr-cassoc"
+    },
+    {
+      "name": "CMapStringToString",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmapstringtostring"
+    },
+    {
+      "name": "CMapStringToString::CAssoc",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmapstringtostring-cassoc"
+    },
+    {
+      "name": "CMapWordToPtr",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmapwordtoptr"
+    },
+    {
+      "name": "CMapWordToPtr::CAssoc",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmapwordtoptr-cassoc"
+    },
+    {
+      "name": "CMarker",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmarker"
+    },
+    {
+      "name": "CMemINI",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmemini"
+    },
+    {
+      "name": "CMemINIFile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmeminifile"
+    },
+    {
+      "name": "CMemINIRes",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmeminires"
+    },
+    {
+      "name": "CMemINISection",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmeminisection"
+    },
+    {
+      "name": "CMemINIValue",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmeminivalue"
+    },
+    {
+      "name": "CMessage",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessage"
+    },
+    {
+      "name": "CMessageAddAction",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageaddaction"
+    },
+    {
+      "name": "CMessageAddClairvoyance",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageaddclairvoyance"
+    },
+    {
+      "name": "CMessageAddEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageaddeffect"
+    },
+    {
+      "name": "CMessageAddItem",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageadditem"
+    },
+    {
+      "name": "CMessageAddVVCInternal",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageaddvvcinternal"
+    },
+    {
+      "name": "CMessageAllowDialogInterrupt",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageallowdialoginterrupt"
+    },
+    {
+      "name": "CMessageAnimationChange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageanimationchange"
+    },
+    {
+      "name": "CMessageChangeDirection",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagechangedirection"
+    },
+    {
+      "name": "CMessageChangeStoreMarkup",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagechangestoremarkup"
+    },
+    {
+      "name": "CMessageCheckForForcedDialogEnd",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagecheckforforceddialogend"
+    },
+    {
+      "name": "CMessageCleanAir",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagecleanair"
+    },
+    {
+      "name": "CMessageClearActions",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageclearactions"
+    },
+    {
+      "name": "CMessageClearDialogActions",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagecleardialogactions"
+    },
+    {
+      "name": "CMessageClearDialogOnMachine",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagecleardialogonmachine"
+    },
+    {
+      "name": "CMessageClearGroupSlot",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagecleargroupslot"
+    },
+    {
+      "name": "CMessageClearTriggers",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagecleartriggers"
+    },
+    {
+      "name": "CMessageColorChange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagecolorchange"
+    },
+    {
+      "name": "CMessageColorReset",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagecolorreset"
+    },
+    {
+      "name": "CMessageColorUpdate",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagecolorupdate"
+    },
+    {
+      "name": "CMessageContainerAddItem",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagecontaineradditem"
+    },
+    {
+      "name": "CMessageContainerItems",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagecontaineritems"
+    },
+    {
+      "name": "CMessageContainerStatus",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagecontainerstatus"
+    },
+    {
+      "name": "CMessageCutSceneLite",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagecutscenelite"
+    },
+    {
+      "name": "CMessageCutSceneModeStatus",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagecutscenemodestatus"
+    },
+    {
+      "name": "CMessageDisableAI",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagedisableai"
+    },
+    {
+      "name": "CMessageDisplayText",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagedisplaytext"
+    },
+    {
+      "name": "CMessageDisplayTextRef",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagedisplaytextref"
+    },
+    {
+      "name": "CMessageDisplayTextRefPoint",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagedisplaytextrefpoint"
+    },
+    {
+      "name": "CMessageDisplayTextRefSend",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagedisplaytextrefsend"
+    },
+    {
+      "name": "CMessageDoorOpen",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagedooropen"
+    },
+    {
+      "name": "CMessageDoorStatus",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagedoorstatus"
+    },
+    {
+      "name": "CMessageDreamScriptResRef",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagedreamscriptresref"
+    },
+    {
+      "name": "CMessageDropPath",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagedroppath"
+    },
+    {
+      "name": "CMessageEnterDialog",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageenterdialog"
+    },
+    {
+      "name": "CMessageEnterDialogMode",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageenterdialogmode"
+    },
+    {
+      "name": "CMessageEnterStoreMode",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageenterstoremode"
+    },
+    {
+      "name": "CMessageEscapeArea",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageescapearea"
+    },
+    {
+      "name": "CMessageExitDialogMode",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageexitdialogmode"
+    },
+    {
+      "name": "CMessageExitStoreMode",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageexitstoremode"
+    },
+    {
+      "name": "CMessageExploreArea",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageexplorearea"
+    },
+    {
+      "name": "CMessageFadeColor",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagefadecolor"
+    },
+    {
+      "name": "CMessageFakeExpireCheck",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagefakeexpirecheck"
+    },
+    {
+      "name": "CMessageFamiliarAdd",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagefamiliaradd"
+    },
+    {
+      "name": "CMessageFamiliarRemoveResRef",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagefamiliarremoveresref"
+    },
+    {
+      "name": "CMessageFireProjectile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagefireprojectile"
+    },
+    {
+      "name": "CMessageFireSpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagefirespell"
+    },
+    {
+      "name": "CMessageForcePosition",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageforceposition"
+    },
+    {
+      "name": "CMessageForceRandomEncounter",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageforcerandomencounter"
+    },
+    {
+      "name": "CMessageHandler",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagehandler"
+    },
+    {
+      "name": "CMessageInsertAction",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageinsertaction"
+    },
+    {
+      "name": "CMessageInsertResponse",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageinsertresponse"
+    },
+    {
+      "name": "CMessageLeaveParty",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageleaveparty"
+    },
+    {
+      "name": "CMessageLoadDialog",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageloaddialog"
+    },
+    {
+      "name": "CMessageMakeGlobal",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagemakeglobal"
+    },
+    {
+      "name": "CMessageMoveGlobal",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagemoveglobal"
+    },
+    {
+      "name": "CMessageNonControlledDialogReturn",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagenoncontrolleddialogreturn"
+    },
+    {
+      "name": "CMessageNonControlledDialogStart",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagenoncontrolleddialogstart"
+    },
+    {
+      "name": "CMessagePartyGold",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagepartygold"
+    },
+    {
+      "name": "CMessagePlaySound",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageplaysound"
+    },
+    {
+      "name": "CMessagePlaySoundRef",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageplaysoundref"
+    },
+    {
+      "name": "CMessageRemoveItem",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageremoveitem"
+    },
+    {
+      "name": "CMessageRemoveReplies",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageremovereplies"
+    },
+    {
+      "name": "CMessageRemoveVVCInternal",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageremovevvcinternal"
+    },
+    {
+      "name": "CMessageReplaceItem",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagereplaceitem"
+    },
+    {
+      "name": "CMessageReputationChange",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagereputationchange"
+    },
+    {
+      "name": "CMessageResetMorale",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageresetmorale"
+    },
+    {
+      "name": "CMessageSaveGame",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesavegame"
+    },
+    {
+      "name": "CMessageScreenShake",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagescreenshake"
+    },
+    {
+      "name": "CMessageSetAISpeed",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetaispeed"
+    },
+    {
+      "name": "CMessageSetActive",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetactive"
+    },
+    {
+      "name": "CMessageSetActiveImprisonment",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetactiveimprisonment"
+    },
+    {
+      "name": "CMessageSetAreaFlag",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetareaflag"
+    },
+    {
+      "name": "CMessageSetAreaScript",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetareascript"
+    },
+    {
+      "name": "CMessageSetBanterBlockFlag",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetbanterblockflag"
+    },
+    {
+      "name": "CMessageSetBanterBlockTime",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetbanterblocktime"
+    },
+    {
+      "name": "CMessageSetCampaign",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetcampaign"
+    },
+    {
+      "name": "CMessageSetCommandPause",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetcommandpause"
+    },
+    {
+      "name": "CMessageSetCurrentActionId",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetcurrentactionid"
+    },
+    {
+      "name": "CMessageSetCurrentArea",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetcurrentarea"
+    },
+    {
+      "name": "CMessageSetDialogPausing",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetdialogpausing"
+    },
+    {
+      "name": "CMessageSetDialogResRef",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetdialogresref"
+    },
+    {
+      "name": "CMessageSetDialogWait",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetdialogwait"
+    },
+    {
+      "name": "CMessageSetDirection",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetdirection"
+    },
+    {
+      "name": "CMessageSetDrawPoly",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetdrawpoly"
+    },
+    {
+      "name": "CMessageSetFamiliarSummoner",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetfamiliarsummoner"
+    },
+    {
+      "name": "CMessageSetForceActionPick",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetforceactionpick"
+    },
+    {
+      "name": "CMessageSetHappiness",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesethappiness"
+    },
+    {
+      "name": "CMessageSetInCutScene",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetincutscene"
+    },
+    {
+      "name": "CMessageSetInDialog",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetindialog"
+    },
+    {
+      "name": "CMessageSetInStore",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetinstore"
+    },
+    {
+      "name": "CMessageSetLastAttacker",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetlastattacker"
+    },
+    {
+      "name": "CMessageSetLastObject",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetlastobject"
+    },
+    {
+      "name": "CMessageSetMusic",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetmusic"
+    },
+    {
+      "name": "CMessageSetNumTimesTalkedTo",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetnumtimestalkedto"
+    },
+    {
+      "name": "CMessageSetPath",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetpath"
+    },
+    {
+      "name": "CMessageSetPortraitLarge",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetportraitlarge"
+    },
+    {
+      "name": "CMessageSetPortraitSmall",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetportraitsmall"
+    },
+    {
+      "name": "CMessageSetRestEncounterProbability",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetrestencounterprobability"
+    },
+    {
+      "name": "CMessageSetSequence",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetsequence"
+    },
+    {
+      "name": "CMessageSetSound",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetsound"
+    },
+    {
+      "name": "CMessageSetStateOverrideFlag",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetstateoverrideflag"
+    },
+    {
+      "name": "CMessageSetStateOverrideTime",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetstateoverridetime"
+    },
+    {
+      "name": "CMessageSetTarget",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesettarget"
+    },
+    {
+      "name": "CMessageSetTimeStop",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesettimestop"
+    },
+    {
+      "name": "CMessageSetTrigger",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesettrigger"
+    },
+    {
+      "name": "CMessageSetVariable",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetvariable"
+    },
+    {
+      "name": "CMessageSetVariableAll",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetvariableall"
+    },
+    {
+      "name": "CMessageSetWorldmap",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetworldmap"
+    },
+    {
+      "name": "CMessageSetWorldmapAreaFlag",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagesetworldmapareaflag"
+    },
+    {
+      "name": "CMessageSpawnPtActivate",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagespawnptactivate"
+    },
+    {
+      "name": "CMessageSpawnPtSpawn",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagespawnptspawn"
+    },
+    {
+      "name": "CMessageSpriteDeath",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagespritedeath"
+    },
+    {
+      "name": "CMessageSpriteEquipment",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagespriteequipment"
+    },
+    {
+      "name": "CMessageSpritePetrify",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagespritepetrify"
+    },
+    {
+      "name": "CMessageSpriteUpdate",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagespriteupdate"
+    },
+    {
+      "name": "CMessageStartCombatMusic",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagestartcombatmusic"
+    },
+    {
+      "name": "CMessageStartFollow",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagestartfollow"
+    },
+    {
+      "name": "CMessageStartScroll",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagestartscroll"
+    },
+    {
+      "name": "CMessageStartSong",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagestartsong"
+    },
+    {
+      "name": "CMessageStartTextScreen",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagestarttextscreen"
+    },
+    {
+      "name": "CMessageStartVEF",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagestartvef"
+    },
+    {
+      "name": "CMessageStaticPalette",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagestaticpalette"
+    },
+    {
+      "name": "CMessageStaticSequence",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagestaticsequence"
+    },
+    {
+      "name": "CMessageStaticStart",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagestaticstart"
+    },
+    {
+      "name": "CMessageStopActions",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagestopactions"
+    },
+    {
+      "name": "CMessageStopEscapeArea",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagestopescapearea"
+    },
+    {
+      "name": "CMessageStopFollow",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagestopfollow"
+    },
+    {
+      "name": "CMessageStoreAddItem",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagestoreadditem"
+    },
+    {
+      "name": "CMessageStoreDemand",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagestoredemand"
+    },
+    {
+      "name": "CMessageStoreRelease",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagestorerelease"
+    },
+    {
+      "name": "CMessageStoreRemoveItem",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagestoreremoveitem"
+    },
+    {
+      "name": "CMessageStoreReplaceItem",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagestorereplaceitem"
+    },
+    {
+      "name": "CMessageTakeCreatureItems",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagetakecreatureitems"
+    },
+    {
+      "name": "CMessageTransformItem",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagetransformitem"
+    },
+    {
+      "name": "CMessageTriggerStatus",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagetriggerstatus"
+    },
+    {
+      "name": "CMessageUnlock",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageunlock"
+    },
+    {
+      "name": "CMessageUpdateImmunities",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageupdateimmunities"
+    },
+    {
+      "name": "CMessageUpdateMachineState",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageupdatemachinestate"
+    },
+    {
+      "name": "CMessageUpdateReaction",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageupdatereaction"
+    },
+    {
+      "name": "CMessageUpdateScript",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageupdatescript"
+    },
+    {
+      "name": "CMessageUpdateStoredPartyLocations",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageupdatestoredpartylocations"
+    },
+    {
+      "name": "CMessageUseItemCharges",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageuseitemcharges"
+    },
+    {
+      "name": "CMessageVerbalConstant",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageverbalconstant"
+    },
+    {
+      "name": "CMessageVisibilityMapMove",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagevisibilitymapmove"
+    },
+    {
+      "name": "CMessageVisualEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessagevisualeffect"
+    },
+    {
+      "name": "CMessageWeaponImmumityUpdate",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmessageweaponimmumityupdate"
+    },
+    {
+      "name": "CMoveList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmovelist"
+    },
+    {
+      "name": "CMoveListEntry",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmovelistentry"
+    },
+    {
+      "name": "CMultiplayerSettings",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmultiplayersettings"
+    },
+    {
+      "name": "CMusicPosition",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CM/index.html#cmusicposition"
+    },
+    {
+      "name": "CNetwork",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CN/index.html#cnetwork"
+    },
+    {
+      "name": "CNetworkConnectionSettings",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CN/index.html#cnetworkconnectionsettings"
+    },
+    {
+      "name": "CNetworkWindow",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CN/index.html#cnetworkwindow"
+    },
+    {
+      "name": "CObArray",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CO/index.html#cobarray"
+    },
+    {
+      "name": "CObList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CO/index.html#coblist"
+    },
+    {
+      "name": "CObList::CNode",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CO/index.html#coblist-cnode"
+    },
+    {
+      "name": "CObject",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CO/index.html#cobject"
+    },
+    {
+      "name": "CObjectMarker",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CO/index.html#cobjectmarker"
+    },
+    {
+      "name": "COverridePath",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CO/index.html#coverridepath"
+    },
+    {
+      "name": "CPARTICLE_POINT",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cparticle-point"
+    },
+    {
+      "name": "CParticle",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cparticle"
+    },
+    {
+      "name": "CPathNode",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cpathnode"
+    },
+    {
+      "name": "CPathSearch",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cpathsearch"
+    },
+    {
+      "name": "CPersistantEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cpersistanteffect"
+    },
+    {
+      "name": "CPersistantEffectApplyEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cpersistanteffectapplyeffect"
+    },
+    {
+      "name": "CPersistantEffectBurningDeath",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cpersistanteffectburningdeath"
+    },
+    {
+      "name": "CPersistantEffectColorEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cpersistanteffectcoloreffect"
+    },
+    {
+      "name": "CPersistantEffectDamage",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cpersistanteffectdamage"
+    },
+    {
+      "name": "CPersistantEffectDisease",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cpersistanteffectdisease"
+    },
+    {
+      "name": "CPersistantEffectElectricDeath",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cpersistanteffectelectricdeath"
+    },
+    {
+      "name": "CPersistantEffectFadeEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cpersistanteffectfadeeffect"
+    },
+    {
+      "name": "CPersistantEffectFireDeath",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cpersistanteffectfiredeath"
+    },
+    {
+      "name": "CPersistantEffectList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cpersistanteffectlist"
+    },
+    {
+      "name": "CPersistantEffectListRegenerated",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cpersistanteffectlistregenerated"
+    },
+    {
+      "name": "CPersistantEffectMove",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cpersistanteffectmove"
+    },
+    {
+      "name": "CPersistantEffectPoison",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cpersistanteffectpoison"
+    },
+    {
+      "name": "CPersistantEffectRegeneration",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cpersistanteffectregeneration"
+    },
+    {
+      "name": "CPlatform",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cplatform"
+    },
+    {
+      "name": "CPlex",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cplex"
+    },
+    {
+      "name": "CPoint",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cpoint"
+    },
+    {
+      "name": "CPortraitIcon",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cportraiticon"
+    },
+    {
+      "name": "CProgressBar",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprogressbar"
+    },
+    {
+      "name": "CProjectile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectile"
+    },
+    {
+      "name": "CProjectileAmbiant",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectileambiant"
+    },
+    {
+      "name": "CProjectileArea",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectilearea"
+    },
+    {
+      "name": "CProjectileAreaFileFormat",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectileareafileformat"
+    },
+    {
+      "name": "CProjectileBAM",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectilebam"
+    },
+    {
+      "name": "CProjectileBAMFileFormat",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectilebamfileformat"
+    },
+    {
+      "name": "CProjectileCallLightning",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectilecalllightning"
+    },
+    {
+      "name": "CProjectileCastingGlow",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectilecastingglow"
+    },
+    {
+      "name": "CProjectileChain",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectilechain"
+    },
+    {
+      "name": "CProjectileColorSpray",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectilecolorspray"
+    },
+    {
+      "name": "CProjectileConeOfCold",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectileconeofcold"
+    },
+    {
+      "name": "CProjectileFall",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectilefall"
+    },
+    {
+      "name": "CProjectileFile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectilefile"
+    },
+    {
+      "name": "CProjectileFileFormat",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectilefileformat"
+    },
+    {
+      "name": "CProjectileFireHands",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectilefirehands"
+    },
+    {
+      "name": "CProjectileInstant",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectileinstant"
+    },
+    {
+      "name": "CProjectileInvisibleTravelling",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectileinvisibletravelling"
+    },
+    {
+      "name": "CProjectileLightningBolt",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectilelightningbolt"
+    },
+    {
+      "name": "CProjectileLightningBoltGround",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectilelightningboltground"
+    },
+    {
+      "name": "CProjectileLightningBounce",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectilelightningbounce"
+    },
+    {
+      "name": "CProjectileLightningStorm",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectilelightningstorm"
+    },
+    {
+      "name": "CProjectileMagicMissileMulti",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectilemagicmissilemulti"
+    },
+    {
+      "name": "CProjectileMulti",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectilemulti"
+    },
+    {
+      "name": "CProjectileMushroom",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectilemushroom"
+    },
+    {
+      "name": "CProjectileNewScorcher",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectilenewscorcher"
+    },
+    {
+      "name": "CProjectileScorcher",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectilescorcher"
+    },
+    {
+      "name": "CProjectileSegment",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectilesegment"
+    },
+    {
+      "name": "CProjectileSkyStrike",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectileskystrike"
+    },
+    {
+      "name": "CProjectileSkyStrikeBAM",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectileskystrikebam"
+    },
+    {
+      "name": "CProjectileSpellHit",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectilespellhit"
+    },
+    {
+      "name": "CProjectileTravelDoor",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cprojectiletraveldoor"
+    },
+    {
+      "name": "CPtrArray",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cptrarray"
+    },
+    {
+      "name": "CPtrList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cptrlist"
+    },
+    {
+      "name": "CPtrList::CNode",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CP/index.html#cptrlist-cnode"
+    },
+    {
+      "name": "CRE",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/File%20Formats/index.html#cre"
+    },
+    {
+      "name": "CRainDrop",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#craindrop"
+    },
+    {
+      "name": "CRainStorm",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#crainstorm"
+    },
+    {
+      "name": "CRect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#crect"
+    },
+    {
+      "name": "CRes",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#cres"
+    },
+    {
+      "name": "CResArea",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#cresarea"
+    },
+    {
+      "name": "CResBIO",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#cresbio"
+    },
+    {
+      "name": "CResBinary",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#cresbinary"
+    },
+    {
+      "name": "CResBitmap",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#cresbitmap"
+    },
+    {
+      "name": "CResCHR",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#creschr"
+    },
+    {
+      "name": "CResCRE",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#crescre"
+    },
+    {
+      "name": "CResCell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#crescell"
+    },
+    {
+      "name": "CResDLG",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#cresdlg"
+    },
+    {
+      "name": "CResEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#creseffect"
+    },
+    {
+      "name": "CResFont",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#cresfont"
+    },
+    {
+      "name": "CResGame",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#cresgame"
+    },
+    {
+      "name": "CResINI",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#cresini"
+    },
+    {
+      "name": "CResInfTile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#cresinftile"
+    },
+    {
+      "name": "CResItem",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#cresitem"
+    },
+    {
+      "name": "CResMosaic",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#cresmosaic"
+    },
+    {
+      "name": "CResPLT",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#cresplt"
+    },
+    {
+      "name": "CResPVR",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#crespvr"
+    },
+    {
+      "name": "CResPng",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#crespng"
+    },
+    {
+      "name": "CResRef",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#cresref"
+    },
+    {
+      "name": "CResSpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#cresspell"
+    },
+    {
+      "name": "CResStore",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#cresstore"
+    },
+    {
+      "name": "CResText",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#crestext"
+    },
+    {
+      "name": "CResTile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#crestile"
+    },
+    {
+      "name": "CResTileSet",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#crestileset"
+    },
+    {
+      "name": "CResUI",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#cresui"
+    },
+    {
+      "name": "CResWED",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#creswed"
+    },
+    {
+      "name": "CResWave",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#creswave"
+    },
+    {
+      "name": "CResWebm",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#creswebm"
+    },
+    {
+      "name": "CResWorldMap",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#cresworldmap"
+    },
+    {
+      "name": "CRuleTables",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CR/index.html#cruletables"
+    },
+    {
+      "name": "CSaveGameSlot",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#csavegameslot"
+    },
+    {
+      "name": "CSavedGameFamiliars",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#csavedgamefamiliars"
+    },
+    {
+      "name": "CSavedGameHeader",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#csavedgameheader"
+    },
+    {
+      "name": "CSavedGameJournalEntry",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#csavedgamejournalentry"
+    },
+    {
+      "name": "CSavedGamePartyCreature",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#csavedgamepartycreature"
+    },
+    {
+      "name": "CSavedGameStoredLocation",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#csavedgamestoredlocation"
+    },
+    {
+      "name": "CSchoolAndSecondaryDecrementing",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cschoolandsecondarydecrementing"
+    },
+    {
+      "name": "CScreenAI",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreenai"
+    },
+    {
+      "name": "CScreenChapter",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreenchapter"
+    },
+    {
+      "name": "CScreenCharacter",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreencharacter"
+    },
+    {
+      "name": "CScreenCharacterStoredMageSpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreencharacterstoredmagespell"
+    },
+    {
+      "name": "CScreenConnection",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreenconnection"
+    },
+    {
+      "name": "CScreenCreateChar",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreencreatechar"
+    },
+    {
+      "name": "CScreenCreateCharStep",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreencreatecharstep"
+    },
+    {
+      "name": "CScreenCreateParty",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreencreateparty"
+    },
+    {
+      "name": "CScreenDLC",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreendlc"
+    },
+    {
+      "name": "CScreenInventory",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreeninventory"
+    },
+    {
+      "name": "CScreenJournal",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreenjournal"
+    },
+    {
+      "name": "CScreenLoad",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreenload"
+    },
+    {
+      "name": "CScreenMap",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreenmap"
+    },
+    {
+      "name": "CScreenMovies",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreenmovies"
+    },
+    {
+      "name": "CScreenMultiPlayer",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreenmultiplayer"
+    },
+    {
+      "name": "CScreenOptions",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreenoptions"
+    },
+    {
+      "name": "CScreenPriestSpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreenpriestspell"
+    },
+    {
+      "name": "CScreenSave",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreensave"
+    },
+    {
+      "name": "CScreenStart",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreenstart"
+    },
+    {
+      "name": "CScreenStore",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreenstore"
+    },
+    {
+      "name": "CScreenStoreItem",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreenstoreitem"
+    },
+    {
+      "name": "CScreenWizSpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreenwizspell"
+    },
+    {
+      "name": "CScreenWorld",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreenworld"
+    },
+    {
+      "name": "CScreenWorldMap",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscreenworldmap"
+    },
+    {
+      "name": "CScriptCache",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cscriptcache"
+    },
+    {
+      "name": "CSearchBitmap",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#csearchbitmap"
+    },
+    {
+      "name": "CSearchRequest",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#csearchrequest"
+    },
+    {
+      "name": "CSelectiveBonus",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cselectivebonus"
+    },
+    {
+      "name": "CSelectiveBonusList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cselectivebonuslist"
+    },
+    {
+      "name": "CSelectiveWeaponType",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cselectiveweapontype"
+    },
+    {
+      "name": "CSelectiveWeaponTypeList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cselectiveweapontypelist"
+    },
+    {
+      "name": "CSequenceSound",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#csequencesound"
+    },
+    {
+      "name": "CSequenceSoundList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#csequencesoundlist"
+    },
+    {
+      "name": "CSize",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#csize"
+    },
+    {
+      "name": "CSnowFlake",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#csnowflake"
+    },
+    {
+      "name": "CSnowStorm",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#csnowstorm"
+    },
+    {
+      "name": "CSound",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#csound"
+    },
+    {
+      "name": "CSoundChannel",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#csoundchannel"
+    },
+    {
+      "name": "CSoundExtensionBase",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#csoundextensionbase"
+    },
+    {
+      "name": "CSoundExtensionFile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#csoundextensionfile"
+    },
+    {
+      "name": "CSoundImp",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#csoundimp"
+    },
+    {
+      "name": "CSoundMixer",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#csoundmixer"
+    },
+    {
+      "name": "CSoundMixerImp",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#csoundmixerimp"
+    },
+    {
+      "name": "CSoundProperties",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#csoundproperties"
+    },
+    {
+      "name": "CSparkle",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#csparkle"
+    },
+    {
+      "name": "CSparkleCluster",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#csparklecluster"
+    },
+    {
+      "name": "CSpawn",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cspawn"
+    },
+    {
+      "name": "CSpawn::ePMode",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cspawn-epmode"
+    },
+    {
+      "name": "CSpawnFile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cspawnfile"
+    },
+    {
+      "name": "CSpawnList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cspawnlist"
+    },
+    {
+      "name": "CSpawnPoint",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cspawnpoint"
+    },
+    {
+      "name": "CSpawnPointArray",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cspawnpointarray"
+    },
+    {
+      "name": "CSpawnPointVar",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cspawnpointvar"
+    },
+    {
+      "name": "CSpawnVar",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cspawnvar"
+    },
+    {
+      "name": "CSpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cspell"
+    },
+    {
+      "name": "CSpellLevelDecrementing",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cspellleveldecrementing"
+    },
+    {
+      "name": "CStore",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cstore"
+    },
+    {
+      "name": "CStoreFile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cstorefile"
+    },
+    {
+      "name": "CStoreFileDrinks",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cstorefiledrinks"
+    },
+    {
+      "name": "CStoreFileHeader",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cstorefileheader"
+    },
+    {
+      "name": "CStoreFileItem",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cstorefileitem"
+    },
+    {
+      "name": "CStoreFileSpell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cstorefilespell"
+    },
+    {
+      "name": "CString",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cstring"
+    },
+    {
+      "name": "CStringData",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cstringdata"
+    },
+    {
+      "name": "CStringList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cstringlist"
+    },
+    {
+      "name": "CStringList::CNode",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CS/index.html#cstringlist-cnode"
+    },
+    {
+      "name": "CTiledObject",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CT/index.html#ctiledobject"
+    },
+    {
+      "name": "CTime",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CT/index.html#ctime"
+    },
+    {
+      "name": "CTimeSpan",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CT/index.html#ctimespan"
+    },
+    {
+      "name": "CTimer",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CT/index.html#ctimer"
+    },
+    {
+      "name": "CTimerWorld",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CT/index.html#ctimerworld"
+    },
+    {
+      "name": "CTlkFileOverride",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CT/index.html#ctlkfileoverride"
+    },
+    {
+      "name": "CTlkTable",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CT/index.html#ctlktable"
+    },
+    {
+      "name": "CTypedPtrList::CNode",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CT/index.html#ctypedptrlist-cnode"
+    },
+    {
+      "name": "CUIControlTextDisplay",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CU/index.html#cuicontroltextdisplay"
+    },
+    {
+      "name": "CUtil",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CU/index.html#cutil"
+    },
+    {
+      "name": "CVEFEvent",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvefevent"
+    },
+    {
+      "name": "CVEFVidCell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvefvidcell"
+    },
+    {
+      "name": "CVEFVidCellBase",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvefvidcellbase"
+    },
+    {
+      "name": "CVEFVidCellFile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvefvidcellfile"
+    },
+    {
+      "name": "CVIDIMG_PALETTEAFFECT",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvidimg-paletteaffect"
+    },
+    {
+      "name": "CVIDMODE_RETICLE_DESCRIPTION",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvidmode-reticle-description"
+    },
+    {
+      "name": "CVIDPALETTE_COLOR",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvidpalette-color"
+    },
+    {
+      "name": "CVIDPOLY_VERTEX",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvidpoly-vertex"
+    },
+    {
+      "name": "CVRamPool",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvrampool"
+    },
+    {
+      "name": "CVVCHash",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvvchash"
+    },
+    {
+      "name": "CVVCHashEntry",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvvchashentry"
+    },
+    {
+      "name": "CVariable",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvariable"
+    },
+    {
+      "name": "CVariableHash",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvariablehash"
+    },
+    {
+      "name": "CVidBitmap",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvidbitmap"
+    },
+    {
+      "name": "CVidCell",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvidcell"
+    },
+    {
+      "name": "CVidCellFont",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvidcellfont"
+    },
+    {
+      "name": "CVidDrawable",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cviddrawable"
+    },
+    {
+      "name": "CVidFont",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvidfont"
+    },
+    {
+      "name": "CVidImage",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvidimage"
+    },
+    {
+      "name": "CVidMode",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvidmode"
+    },
+    {
+      "name": "CVidMosaic",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvidmosaic"
+    },
+    {
+      "name": "CVidPalette",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvidpalette"
+    },
+    {
+      "name": "CVidPng",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvidpng"
+    },
+    {
+      "name": "CVidPoly",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvidpoly"
+    },
+    {
+      "name": "CVidTile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvidtile"
+    },
+    {
+      "name": "CVideo",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvideo"
+    },
+    {
+      "name": "CVisibilityMap",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvisibilitymap"
+    },
+    {
+      "name": "CVisibilityMapEllipse",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvisibilitymapellipse"
+    },
+    {
+      "name": "CVisibilityMapTreeNode",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvisibilitymaptreenode"
+    },
+    {
+      "name": "CVisualEffect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvisualeffect"
+    },
+    {
+      "name": "CVisualEffectBase",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvisualeffectbase"
+    },
+    {
+      "name": "CVisualEffectFile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvisualeffectfile"
+    },
+    {
+      "name": "CVoice",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CV/index.html#cvoice"
+    },
+    {
+      "name": "CWarp",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CW/index.html#cwarp"
+    },
+    {
+      "name": "CWeaponIdentification",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CW/index.html#cweaponidentification"
+    },
+    {
+      "name": "CWeather",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CW/index.html#cweather"
+    },
+    {
+      "name": "CWildSurge",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CW/index.html#cwildsurge"
+    },
+    {
+      "name": "CWnd",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CW/index.html#cwnd"
+    },
+    {
+      "name": "CWorldMap",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CW/index.html#cworldmap"
+    },
+    {
+      "name": "CWorldMapArea",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CW/index.html#cworldmaparea"
+    },
+    {
+      "name": "CWorldMapData",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CW/index.html#cworldmapdata"
+    },
+    {
+      "name": "CWorldMapFile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CW/index.html#cworldmapfile"
+    },
+    {
+      "name": "CWorldMapHeader",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CW/index.html#cworldmapheader"
+    },
+    {
+      "name": "CWorldMapLinks",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CW/index.html#cworldmaplinks"
+    },
+    {
+      "name": "CZipFile",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CZ/index.html#czipfile"
+    },
+    {
+      "name": "DLG",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/File%20Formats/index.html#dlg"
+    },
+    {
+      "name": "DPWrapper",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#dpwrapper"
+    },
+    {
+      "name": "DPWrapper::PEER_STATE_t",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#dpwrapper-unnamed-type-peer-state"
+    },
+    {
+      "name": "DP_Packet",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#dp-packet"
+    },
+    {
+      "name": "DP_Player",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#dp-player"
+    },
+    {
+      "name": "DP_ProviderID",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#dp-providerid"
+    },
+    {
+      "name": "EFF",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/File%20Formats/index.html#eff"
+    },
+    {
+      "name": "GAM",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/File%20Formats/index.html#gam"
+    },
+    {
+      "name": "IDPPeer",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#idppeer"
+    },
+    {
+      "name": "IDPProvider",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#idpprovider"
+    },
+    {
+      "name": "ITM",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/File%20Formats/index.html#itm"
+    },
+    {
+      "name": "Item_Header_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#item-header-st"
+    },
+    {
+      "name": "Item_ability_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#item-ability-st"
+    },
+    {
+      "name": "Item_effect_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#item-effect-st"
+    },
+    {
+      "name": "KEY",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/File%20Formats/index.html#key"
+    },
+    {
+      "name": "KeyFileHeader_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#keyfileheader-st"
+    },
+    {
+      "name": "KeyFileKeyEntry_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#keyfilekeyentry-st"
+    },
+    {
+      "name": "KeyFileResFileName_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#keyfileresfilename-st"
+    },
+    {
+      "name": "MAP_CHAR_POSITIONS",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#map-char-positions"
+    },
+    {
+      "name": "MOS",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/File%20Formats/index.html#mos"
+    },
+    {
+      "name": "MOSAICHEADERV2",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#mosaicheaderv2"
+    },
+    {
+      "name": "MOSAICQUAD",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#mosaicquad"
+    },
+    {
+      "name": "Marker",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#marker"
+    },
+    {
+      "name": "Mod_t",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#mod-t"
+    },
+    {
+      "name": "PLT",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/File%20Formats/index.html#plt"
+    },
+    {
+      "name": "PLTHeader_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#pltheader-st"
+    },
+    {
+      "name": "PRO",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/File%20Formats/index.html#pro"
+    },
+    {
+      "name": "PVRTextureHeaderV3",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#pvrtextureheaderv3"
+    },
+    {
+      "name": "RLEDestFormat",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#rledestformat"
+    },
+    {
+      "name": "ResFixedHeader_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#resfixedheader-st"
+    },
+    {
+      "name": "SAV",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/File%20Formats/index.html#sav"
+    },
+    {
+      "name": "SAreaFileCreatureWrapper",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#sareafilecreaturewrapper"
+    },
+    {
+      "name": "SAreaFileDoorWrapper",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#sareafiledoorwrapper"
+    },
+    {
+      "name": "SAreaFileWrapper",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#sareafilewrapper"
+    },
+    {
+      "name": "SDL_Rect",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#sdl-rect"
+    },
+    {
+      "name": "SPL",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/File%20Formats/index.html#spl"
+    },
+    {
+      "name": "SProjectileWrapper",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#sprojectilewrapper"
+    },
+    {
+      "name": "SSavedGamePartyCreatureReferenceWrapper",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#ssavedgamepartycreaturereferencewrapper"
+    },
+    {
+      "name": "STO",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/File%20Formats/index.html#sto"
+    },
+    {
+      "name": "STR_RES",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#str-res"
+    },
+    {
+      "name": "STR_RES_HEADER",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#str-res-header"
+    },
+    {
+      "name": "STriggerObjectWrapper",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#striggerobjectwrapper"
+    },
+    {
+      "name": "Spell_Header_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#spell-header-st"
+    },
+    {
+      "name": "Spell_ability_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#spell-ability-st"
+    },
+    {
+      "name": "StatRating",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#statrating"
+    },
+    {
+      "name": "TILE_CODE",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#tile-code"
+    },
+    {
+      "name": "TIS",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/File%20Formats/index.html#tis"
+    },
+    {
+      "name": "TLK",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/File%20Formats/index.html#tlk"
+    },
+    {
+      "name": "TLK_FILE_HEADER",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#tlk-file-header"
+    },
+    {
+      "name": "TLK_FILE_OVERRIDE_ENTRY",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#tlk-file-override-entry"
+    },
+    {
+      "name": "TLK_FILE_OVERRIDE_HEADER",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#tlk-file-override-header"
+    },
+    {
+      "name": "TLK_FILE_OVERRIDE_TEXT_BLOCK",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#tlk-file-override-text-block"
+    },
+    {
+      "name": "TLK_FILE_OVERRIDE_TEXT_HEADER",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#tlk-file-override-text-header"
+    },
+    {
+      "name": "UI_ControlTableEntry_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#ui-controltableentry-st"
+    },
+    {
+      "name": "UI_Control_Button_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#ui-control-button-st"
+    },
+    {
+      "name": "UI_Control_Edit_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#ui-control-edit-st"
+    },
+    {
+      "name": "UI_Control_Label_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#ui-control-label-st"
+    },
+    {
+      "name": "UI_Control_ScrollBar_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#ui-control-scrollbar-st"
+    },
+    {
+      "name": "UI_Control_Slider_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#ui-control-slider-st"
+    },
+    {
+      "name": "UI_Control_TextDisplay_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#ui-control-textdisplay-st"
+    },
+    {
+      "name": "UI_Control_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#ui-control-st"
+    },
+    {
+      "name": "UI_Header_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#ui-header-st"
+    },
+    {
+      "name": "UI_PanelHeader_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#ui-panelheader-st"
+    },
+    {
+      "name": "WAV_Header",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#wav-header"
+    },
+    {
+      "name": "WBM",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/File%20Formats/index.html#wbm"
+    },
+    {
+      "name": "WED",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/File%20Formats/index.html#wed"
+    },
+    {
+      "name": "WED_LayerHeader_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#wed-layerheader-st"
+    },
+    {
+      "name": "WED_PolyHeader_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#wed-polyheader-st"
+    },
+    {
+      "name": "WED_PolyList_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#wed-polylist-st"
+    },
+    {
+      "name": "WED_PolyPoint_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#wed-polypoint-st"
+    },
+    {
+      "name": "WED_ScreenSectionList",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#wed-screensectionlist"
+    },
+    {
+      "name": "WED_TILE",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#wed-tile"
+    },
+    {
+      "name": "WED_TileData_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#wed-tiledata-st"
+    },
+    {
+      "name": "WED_TiledObject_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#wed-tiledobject-st"
+    },
+    {
+      "name": "WED_WedHeader_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#wed-wedheader-st"
+    },
+    {
+      "name": "WMAP",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/File%20Formats/index.html#wmap"
+    },
+    {
+      "name": "_EAXPRESET",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#eaxpreset"
+    },
+    {
+      "name": "_EdgeDescription",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#edgedescription"
+    },
+    {
+      "name": "_GUID",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#guid"
+    },
+    {
+      "name": "_iobuf",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#iobuf"
+    },
+    {
+      "name": "bamHeader_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#bamheader-st"
+    },
+    {
+      "name": "biffFixedTableEntry_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#bifffixedtableentry-st"
+    },
+    {
+      "name": "biffHeader_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#biffheader-st"
+    },
+    {
+      "name": "biffVarTableEntry_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#biffvartableentry-st"
+    },
+    {
+      "name": "biff_t",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#biff-t"
+    },
+    {
+      "name": "campaignTable",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#campaigntable"
+    },
+    {
+      "name": "cnetworkwindow_queueentry_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/CN/index.html#cnetworkwindow-queueentry-st"
+    },
+    {
+      "name": "file_t",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#file-t"
+    },
+    {
+      "name": "forcedTooltip",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#forcedtooltip"
+    },
+    {
+      "name": "frame",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#frame"
+    },
+    {
+      "name": "frameTableEntry_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#frametableentry-st"
+    },
+    {
+      "name": "mosHeader_st",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#mosheader-st"
+    },
+    {
+      "name": "st_tiledef",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/Other/index.html#st-tiledef"
+    },
+    {
+      "name": "uiColumn",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#uicolumn"
+    },
+    {
+      "name": "uiItem",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#uiitem"
+    },
+    {
+      "name": "uiItem::bam",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#uiitem-unnamed-type-bam"
+    },
+    {
+      "name": "uiItem::bmp",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#uiitem-unnamed-type-bmp"
+    },
+    {
+      "name": "uiItem::button",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#uiitem-unnamed-type-button"
+    },
+    {
+      "name": "uiItem::edit",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#uiitem-unnamed-type-edit"
+    },
+    {
+      "name": "uiItem::list",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#uiitem-unnamed-type-list"
+    },
+    {
+      "name": "uiItem::map",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#uiitem-unnamed-type-map"
+    },
+    {
+      "name": "uiItem::mosaic",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#uiitem-unnamed-type-mosaic"
+    },
+    {
+      "name": "uiItem::movie",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#uiitem-unnamed-type-movie"
+    },
+    {
+      "name": "uiItem::progressBar",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#uiitem-unnamed-type-progressbar"
+    },
+    {
+      "name": "uiItem::rectangle",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#uiitem-unnamed-type-rectangle"
+    },
+    {
+      "name": "uiItem::scrollbar",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#uiitem-unnamed-type-scrollbar"
+    },
+    {
+      "name": "uiItem::slider",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#uiitem-unnamed-type-slider"
+    },
+    {
+      "name": "uiItem::slot",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#uiitem-unnamed-type-slot"
+    },
+    {
+      "name": "uiItem::text",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#uiitem-unnamed-type-text"
+    },
+    {
+      "name": "uiItem::tooltip",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#uiitem-unnamed-type-tooltip"
+    },
+    {
+      "name": "uiItem::uiTemplate",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#uiitem-unnamed-type-uitemplate"
+    },
+    {
+      "name": "uiMenu",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#uimenu"
+    },
+    {
+      "name": "uiVariant",
+      "url": "https://eeex-docs.readthedocs.io/en/latest/EE%20Game%20Structures%20%28x64%29/UI/index.html#uivariant"
+    }
+  ]
+}
