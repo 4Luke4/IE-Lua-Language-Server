@@ -24,6 +24,12 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
 - Settings `ieLua.validate.mode` (`manual`, `save` (default), `type`, `saveAndType`) and
   `ieLua.validate.debounce` (default 300 ms).
 - Command **IE Lua: Validate Current File** (`ieLua.validateDocument`).
+- Document symbols (`textDocument/documentSymbol`; outline, breadcrumbs, *Go to Symbol in
+  Editor*): functions and methods at any depth, top-level locals, the first assignment to each
+  global, and named table fields; in `.menu` files, each `menu` block by its `name`, holding the
+  Lua symbols inside it. Flat `SymbolInformation` for clients without hierarchical support.
+- Error-tolerant Lua 5.2 parser and scope analysis (`src/server/syntax/`), checked against the
+  official compiler by a differential test; it publishes no diagnostics of its own.
 - Localization of the manifest and UI strings into all 14 VS Code display languages
   (machine-produced; review welcome).
 - Setup guides for Sublime Text, Neovim, Emacs, JetBrains IDEs, Helix, Zed, Kate, Notepad++ and Geany.

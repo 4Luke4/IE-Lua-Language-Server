@@ -9,12 +9,19 @@ import {
   TextDocumentSyncKind,
 } from 'vscode-languageserver/node';
 import { TextDocument } from 'vscode-languageserver-textdocument';
+import { ParsedDocumentCache } from './documentCache.ts';
 import * as diagnostics from './features/diagnostics.ts';
+import * as documentSymbols from './features/documentSymbols.ts';
 import { SettingsStore } from './settingsStore.ts';
 import { loadLua52 } from './validation/lua52.ts';
 
 const connection = createConnection(ProposedFeatures.all);
 const documents = new TextDocuments(TextDocument);
+/** Syntax trees shared by the features, one per open document version. */
+const parsed = new ParsedDocumentCache();
+documents.onDidClose(({ document }) => {
+  parsed.delete(document.uri);
+});
 
 const lua = loadLua52();
 lua.catch((error: unknown) => {
@@ -31,6 +38,10 @@ connection.onInitialize((params) => {
     settings: new SettingsStore(connection, configurationPull, params.initializationOptions),
     timers: { setTimeout, clearTimeout: (handle) => { clearTimeout(handle as NodeJS.Timeout); } },
   });
+  documentSymbols.register(connection, documents, {
+    cache: parsed,
+    hierarchical: params.capabilities.textDocument?.documentSymbol?.hierarchicalDocumentSymbolSupport === true,
+  });
   return {
     capabilities: {
       textDocumentSync: {
@@ -38,6 +49,7 @@ connection.onInitialize((params) => {
         change: TextDocumentSyncKind.Incremental,
         save: { includeText: false },
       },
+      documentSymbolProvider: { label: 'IE Lua' },
     },
     serverInfo: { name: 'IE Lua Language Server' },
   };

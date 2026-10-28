@@ -1,0 +1,17 @@
+-- Original fixture: document symbols and folding.
+`
+function helper(value)
+	return value
+end
+`
+menu
+{
+	name 'OUTLINE_MAIN'
+	button
+	{
+		action
+		"
+			helper(1)
+		"
+	}
+}
