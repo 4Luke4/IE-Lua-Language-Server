@@ -10,6 +10,7 @@ import {
 } from 'vscode-languageserver/node';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { ParsedDocumentCache } from './documentCache.ts';
+import * as definition from './features/definition.ts';
 import * as diagnostics from './features/diagnostics.ts';
 import * as documentSymbols from './features/documentSymbols.ts';
 import * as foldingRanges from './features/foldingRanges.ts';
@@ -49,6 +50,7 @@ connection.onInitialize((params) => {
     rangeLimit: folding?.rangeLimit,
     kinds: folding?.foldingRangeKind?.valueSet,
   });
+  definition.register(connection, documents, { cache: parsed });
   return {
     capabilities: {
       textDocumentSync: {
@@ -58,6 +60,7 @@ connection.onInitialize((params) => {
       },
       documentSymbolProvider: { label: 'IE Lua' },
       foldingRangeProvider: true,
+      definitionProvider: true,
     },
     serverInfo: { name: 'IE Lua Language Server' },
   };

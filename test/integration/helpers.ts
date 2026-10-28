@@ -56,3 +56,18 @@ export async function withSetting(key: string, value: unknown): Promise<() => Th
 export async function closeAllEditors(): Promise<void> {
   await vscode.commands.executeCommand('workbench.action.closeAllEditors');
 }
+
+/** `line:character` of each location's start, for compact assertions. */
+export function starts(locations: readonly (vscode.Location | vscode.LocationLink)[]): string[] {
+  return locations.map((location) => {
+    const { start } = 'uri' in location ? location.range : location.targetRange;
+    return `${String(start.line)}:${String(start.character)}`;
+  });
+}
+
+/** Opens a fixture in an editor and returns its URI. */
+export async function openFixture(file: string): Promise<vscode.Uri> {
+  const uri = fixtureUri(file);
+  await vscode.window.showTextDocument(await vscode.workspace.openTextDocument(uri));
+  return uri;
+}

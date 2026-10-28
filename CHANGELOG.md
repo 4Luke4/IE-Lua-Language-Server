@@ -33,6 +33,10 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   comments and runs of `--` lines; in `.menu` files every `{ … }` block, `` `…` `` blocks and
   `"…"` scripts, plus the Lua inside them. The closing line stays visible. Honors the client's
   `rangeLimit` and supported kinds.
+- Go to definition (`textDocument/definition`) within the document: from any use of a local to
+  its declaration, and from a global to every assignment to it (`x = …`, `function x()`). In
+  `.menu` files globals are shared by all Lua chunks, locals stay in their own chunk. No result
+  for the implicit `self`, for globals the document never assigns, or for table fields.
 - Error-tolerant Lua 5.2 parser and scope analysis (`src/server/syntax/`), checked against the
   official compiler by a differential test; it publishes no diagnostics of its own.
 - Localization of the manifest and UI strings into all 14 VS Code display languages

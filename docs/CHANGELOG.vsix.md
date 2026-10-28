@@ -22,6 +22,8 @@ versions with an **even** middle number (for example 1.**2**.0) are stable relea
   **Go to Symbol in Editor**.
 - **Code folding that follows the code.** Fold functions, loops, each branch of an `if`, tables,
   comments, and every block and script of a `.menu` file.
+- **Go to Definition** jumps from a variable to where it is declared, or to where a global
+  gets its value in the same file, including across the Lua of a `.menu` file.
 - **Available in 14 languages**, following your VS Code display language.
 - **Works in other editors too**: setup guides for Sublime Text, Neovim, Emacs, JetBrains
   IDEs, Helix, Zed, Kate, Notepad++ and Geany are on the project page.
