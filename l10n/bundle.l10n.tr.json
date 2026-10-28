@@ -1,4 +1,11 @@
 {
+  "Only the names of local and global variables can be renamed.": "Yalnızca yerel ve genel değişkenlerin adları yeniden adlandırılabilir.",
+  "The implicit \"self\" of a method has no declaration and cannot be renamed.": "Bir yöntemin örtük \"self\" parametresinin bildirimi yoktur ve yeniden adlandırılamaz.",
+  "This global is never assigned in this file. It is defined elsewhere (another file, the game or EEex), so it cannot be renamed here.": "Bu genel değişkene bu dosyada hiç değer atanmıyor. Başka bir yerde (başka bir dosyada, oyunda veya EEex'te) tanımlandığından burada yeniden adlandırılamaz.",
+  "Fix the syntax errors first: names in code that does not parse cannot all be found.": "Önce söz dizimi hatalarını düzeltin: ayrıştırılamayan kodda tüm adlar bulunamaz.",
+  "The new name is not a valid Lua name: use letters, digits and underscores, and do not start with a digit.": "Yeni ad geçerli bir Lua adı değil: harf, rakam ve alt çizgi kullanın ve bir rakamla başlamayın.",
+  "The new name is a reserved word in Lua.": "Yeni ad, Lua'da ayrılmış bir sözcüktür.",
+  "Renaming would change what another name in this file refers to.": "Yeniden adlandırma, bu dosyadaki başka bir adın neye başvurduğunu değiştirir.",
   "Open a Lua or Infinity Engine menu file to validate it.": "Doğrulamak için bir Lua dosyası veya Infinity Engine menü dosyası açın.",
   "IE Lua: no problems found.": "IE Lua: Sorun bulunamadı.",
   "IE Lua: {0} problem(s) found.": "IE Lua: {0} sorun bulundu.",

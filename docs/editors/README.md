@@ -65,5 +65,10 @@ node /path/to/server.js --stdio
 | Syntax errors | `textDocument/publishDiagnostics` | When `validate.mode` says so (see above). |
 | Document symbols (outline) | `textDocument/documentSymbol` | Nested when the editor supports it, otherwise a flat list with container names. |
 | Folding | `textDocument/foldingRange` | Whole lines; the closing line of each construct stays visible. |
+| Go to definition | `textDocument/definition` | The declaration of a local, or every assignment to a global, in the same file. |
+| Find references | `textDocument/references` | Every use of a local or global in the same file. |
+| Rename | `textDocument/prepareRename`, `textDocument/rename` | Same file only; refused, with the reason as the error message, when the rename could change what the code does. |
 
-Symbols and folding always reflect the current text, whatever `validate.mode` is.
+Symbols, folding and navigation always reflect the current text, whatever `validate.mode` is.
+Navigation works on variables: table fields (`t.x`) and `goto` labels are not followed, and in a
+`.menu` file globals are shared by all its Lua, while locals stay in their own block or script.

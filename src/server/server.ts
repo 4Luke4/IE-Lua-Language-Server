@@ -10,9 +10,12 @@ import {
 } from 'vscode-languageserver/node';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { ParsedDocumentCache } from './documentCache.ts';
+import * as definition from './features/definition.ts';
 import * as diagnostics from './features/diagnostics.ts';
 import * as documentSymbols from './features/documentSymbols.ts';
 import * as foldingRanges from './features/foldingRanges.ts';
+import * as references from './features/references.ts';
+import * as rename from './features/rename.ts';
 import { SettingsStore } from './settingsStore.ts';
 import { loadLua52 } from './validation/lua52.ts';
 
@@ -49,6 +52,10 @@ connection.onInitialize((params) => {
     rangeLimit: folding?.rangeLimit,
     kinds: folding?.foldingRangeKind?.valueSet,
   });
+  definition.register(connection, documents, { cache: parsed });
+  references.register(connection, documents, { cache: parsed });
+  rename.register(connection, documents, { cache: parsed, documentChanges: workspace?.workspaceEdit?.documentChanges === true });
+  const prepareRename = params.capabilities.textDocument?.rename?.prepareSupport === true;
   return {
     capabilities: {
       textDocumentSync: {
@@ -58,6 +65,10 @@ connection.onInitialize((params) => {
       },
       documentSymbolProvider: { label: 'IE Lua' },
       foldingRangeProvider: true,
+      definitionProvider: true,
+      referencesProvider: true,
+      // Without prepareSupport the client must not be sent `prepareProvider` (LSP 3.17).
+      renameProvider: prepareRename ? { prepareProvider: true } : true,
     },
     serverInfo: { name: 'IE Lua Language Server' },
   };

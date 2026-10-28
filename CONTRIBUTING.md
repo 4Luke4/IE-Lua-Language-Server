@@ -121,9 +121,15 @@ Nothing is ever published to a marketplace (`"private": true`; `vsce publish` is
    **stable**. It computes the next version (odd minor for pre-releases, even minor for stable,
    always higher than every earlier release; the very first stable release is the committed
    `VERSION`, 1.0.0, and a pre-release before it would be 1.1.0), updates `VERSION`, `package.json`, `package-lock.json`
-   and both changelogs, and opens a `chore(release): vX.Y.Z` pull request.
+   and both changelogs, records the size VS Code will show for the installed VSIX in
+   `.github/badges/install-size.json` (the README's install-size badge), and opens a
+   `chore(release): vX.Y.Z` pull request. CI checks that size on every `release/v*` branch: if `main` moves
+   and you update the branch, re-run `node scripts/release/cli.mts install-size --vsix <file> --write` on
+   a VSIX packaged as the error message describes, and commit the file.
 3. Review and merge that pull request. The workflow then verifies the version, runs the checks,
-   packages the VSIX and creates the tag and the GitHub release (environment `release`).
+   packages the VSIX and creates the tag and the GitHub release (environment `release`). The VSIX
+   is the release's only asset; its SHA-256 and exact installed size are at the end of the release
+   notes. Publishing fails if the committed install-size badge does not match the VSIX.
 
 ## Repository settings (maintainers)
 

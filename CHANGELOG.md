@@ -33,6 +33,21 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   comments and runs of `--` lines; in `.menu` files every `{ … }` block, `` `…` `` blocks and
   `"…"` scripts, plus the Lua inside them. The closing line stays visible. Honors the client's
   `rangeLimit` and supported kinds.
+- Go to definition (`textDocument/definition`) within the document: from any use of a local to
+  its declaration, and from a global to every assignment to it (`x = …`, `function x()`). In
+  `.menu` files globals are shared by all Lua chunks, locals stay in their own chunk. No result
+  for the implicit `self`, for globals the document never assigns, or for table fields.
+- Find references (`textDocument/references`) within the document, with the same matching as
+  go to definition: the uses of a local, including the implicit `self` of a method, or every use
+  of a global across the Lua chunks of the document. `includeDeclaration` decides whether the
+  local's declaration, or the assignments to the global, are included.
+- Rename (`textDocument/prepareRename`, `textDocument/rename`) within the document, for locals
+  and for globals the document assigns. Refused, with a reason localized in VS Code: anything
+  that is not a variable, the implicit `self`, globals the document never assigns (defined in
+  another file, the game or EEex), code with syntax errors where the variable can occur, new names
+  that are not Lua names or are reserved words, and any rename that would change what a name
+  refers to (checked by re-analyzing the renamed text). Edits are versioned when the client
+  supports `documentChanges`.
 - Error-tolerant Lua 5.2 parser and scope analysis (`src/server/syntax/`), checked against the
   official compiler by a differential test; it publishes no diagnostics of its own.
 - Localization of the manifest and UI strings into all 14 VS Code display languages
@@ -50,5 +65,12 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   committed `VERSION` as the first stable release (a pre-release before it would be 1.1.0).
 - The Release workflow publishes only for merged `chore(release): …` pull requests, not for any
   other push that changes `VERSION`.
+- The Release workflow records the installed size of each release for the README's install-size
+  badge (`.github/badges/install-size.json`, a shields.io endpoint): the size VS Code shows in the
+  extension's details, computed from the VSIX exactly as VS Code installs it
+  (`scripts/release/vsix.mts`). CI checks it on release branches and the publish job against the
+  VSIX it publishes; the exact byte count goes in the release notes.
+- GitHub releases have the VSIX as their only asset; its SHA-256 moved from a separate
+  `.vsix.sha256` file into the release notes, so the download count covers VSIX downloads only.
 - CI integration jobs build the tests before running them, and a test run that finds no tests now
   fails. Until now the CI integration jobs ran 0 tests and passed.

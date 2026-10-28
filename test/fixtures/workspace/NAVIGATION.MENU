@@ -1,0 +1,21 @@
+-- Original fixture: navigation across the Lua chunks of a .menu file.
+`
+selected = 0
+`
+menu
+{
+	name 'NAVIGATION_MAIN'
+	onOpen
+	"
+		selected = 1
+	"
+	button
+	{
+		enabled "selected == 1"
+		action
+		"
+			local value = selected
+			selected = value + 1
+		"
+	}
+}

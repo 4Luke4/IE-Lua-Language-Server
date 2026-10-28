@@ -1,4 +1,11 @@
 {
+  "Only the names of local and global variables can be renamed.": "Csak helyi és globális változók neve nevezhető át.",
+  "The implicit \"self\" of a method has no declaration and cannot be renamed.": "Egy metódus implicit \"self\" paraméterének nincs deklarációja, ezért nem nevezhető át.",
+  "This global is never assigned in this file. It is defined elsewhere (another file, the game or EEex), so it cannot be renamed here.": "Ez a globális változó ebben a fájlban sosem kap értéket. Máshol van definiálva (egy másik fájlban, a játékban vagy az EEex-ben), ezért itt nem nevezhető át.",
+  "Fix the syntax errors first: names in code that does not parse cannot all be found.": "Először javítsa ki a szintaktikai hibákat: a nem elemezhető kódban nem található meg minden név.",
+  "The new name is not a valid Lua name: use letters, digits and underscores, and do not start with a digit.": "Az új név nem érvényes Lua-név: használjon betűket, számjegyeket és aláhúzásjeleket, és ne kezdje számjeggyel.",
+  "The new name is a reserved word in Lua.": "Az új név foglalt szó a Lua nyelvben.",
+  "Renaming would change what another name in this file refers to.": "Az átnevezés megváltoztatná, hogy a fájl egy másik neve mire hivatkozik.",
   "Open a Lua or Infinity Engine menu file to validate it.": "Nyisson meg egy Lua-fájlt vagy Infinity Engine-menüfájlt az ellenőrzéshez.",
   "IE Lua: no problems found.": "IE Lua: Nem található probléma.",
   "IE Lua: {0} problem(s) found.": "IE Lua: Talált problémák száma: {0}.",

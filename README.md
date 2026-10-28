@@ -3,6 +3,8 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/4Luke4/IE-Lua-Language-Server/ci.yml?branch=main&label=CI&logo=github)](https://github.com/4Luke4/IE-Lua-Language-Server/actions/workflows/ci.yml)
 [![CodeQL](https://img.shields.io/github/actions/workflow/status/4Luke4/IE-Lua-Language-Server/codeql.yml?branch=main&label=CodeQL&logo=github)](https://github.com/4Luke4/IE-Lua-Language-Server/actions/workflows/codeql.yml)
 [![Release](https://img.shields.io/github/v/release/4Luke4/IE-Lua-Language-Server?include_prereleases&sort=semver&label=release)](https://github.com/4Luke4/IE-Lua-Language-Server/releases)
+[![Downloads](https://img.shields.io/github/downloads/4Luke4/IE-Lua-Language-Server/total?label=downloads&logo=github)](https://github.com/4Luke4/IE-Lua-Language-Server/releases)
+[![Install size](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2F4Luke4%2FIE-Lua-Language-Server%2Fmain%2F.github%2Fbadges%2Finstall-size.json)](#installation)
 [![License: proprietary](https://img.shields.io/badge/license-proprietary-informational)](LICENSE.md)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-fe5196?logo=conventionalcommits&logoColor=white)](https://www.conventionalcommits.org/en/v1.0.0/)
 
@@ -11,8 +13,9 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
 `.menu` files such as `UI.MENU`.
 
 > [!NOTE]
-> This is an early version. It currently provides **syntax diagnostics**, **document symbols**
-> and **folding**; completion, hover, navigation, formatting and more are planned.
+> This is an early version. It currently provides **syntax diagnostics**, **document symbols**,
+> **folding**, **go to definition**, **find references** and **rename** within a file; completion,
+> hover, workspace-wide navigation, formatting and more are planned.
 
 ## Features
 
@@ -27,6 +30,10 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
   **Go to Symbol in Editor**. Works while the file still has syntax errors.
 - **Folding that follows the code:** functions, loops, each `if`/`elseif`/`else` branch, tables,
   comments, and every `{ … }` block and Lua script of a `.menu` file.
+- **Go to Definition, Find All References and Rename Symbol** for variables within a file. Locals
+  follow Lua's scoping rules; globals are followed across all the Lua of a `.menu` file. Rename
+  refuses, and says why, when it could change what the code does: a name already in use nearby,
+  a reserved word, or a global that is defined outside the file.
 - **Available in 14 languages**, following your VS Code display language.
 - **Works in other editors** through the Language Server Protocol.
 
@@ -43,6 +50,10 @@ This extension is distributed privately as a `.vsix` file.
    ```
 
 Requires VS Code **1.91** or later.
+
+The *downloads* badge counts downloads of the `.vsix` files of all releases, as reported by
+GitHub; GitHub does not say who downloads, so maintainers' own downloads are included. The
+*install size* badge shows the size VS Code reports for the latest release once installed.
 
 ## Settings
 

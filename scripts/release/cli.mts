@@ -7,6 +7,13 @@
 //   node scripts/release/cli.mts verify [--notes <file>]
 //       Checks that the committed version is consistent and not yet released, and
 //       optionally writes the CHANGELOG.md section of that version to <file>.
+//   node scripts/release/cli.mts install-size --vsix <file> (--write | --check) [--notes <file>]
+//       Computes the size VS Code shows for the extension once <file> is installed
+//       (scripts/release/vsix.mts) and writes it to, or checks it against, the
+//       README badge data in .github/badges/install-size.json. The check compares
+//       what the badge shows (VS Code's rounding to 0.01 KB): shields.io rejects
+//       extra keys, so the exact byte count is printed, and appended to the
+//       release notes file given with --notes.
 //
 // On GitHub Actions both commands append `version`, `tag` and `channel` to $GITHUB_OUTPUT.
 import { execFileSync } from 'node:child_process';
@@ -25,10 +32,13 @@ import {
   type Channel,
   type Version,
 } from './version.mts';
+import { formatSize, installedSize, installSizeBadge, zipEntries } from './vsix.mts';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const REPOSITORY_URL = 'https://github.com/4Luke4/IE-Lua-Language-Server';
 const CHANGELOGS = ['CHANGELOG.md', join('docs', 'CHANGELOG.vsix.md')];
+/** shields.io endpoint data of the README's install-size badge, for the latest release. */
+const INSTALL_SIZE_BADGE = join('.github', 'badges', 'install-size.json');
 
 function fail(message: string): never {
   console.error(`::error title=Release::${message}`);
@@ -149,6 +159,43 @@ function verify(notesFile: string | undefined): void {
   output({ version: text, tag, channel: channelOf(version) });
 }
 
+function installSize(vsixFile: string | undefined, mode: 'write' | 'check', notesFile: string | undefined): void {
+  if (!vsixFile) {
+    fail('install-size needs --vsix <file>.');
+  }
+  let size: number;
+  try {
+    size = installedSize(zipEntries(readFileSync(vsixFile)));
+  } catch (error) {
+    fail(`Cannot read the VSIX ${vsixFile}: ${error instanceof Error ? error.message : String(error)}`);
+  }
+  const badge = `${JSON.stringify(installSizeBadge(size), null, 2)}\n`;
+  console.log(`${vsixFile} installs ${String(size)} bytes, shown by VS Code as ${formatSize(size)}.`);
+  if (mode === 'write') {
+    writeFileSync(join(root, INSTALL_SIZE_BADGE), badge);
+    console.log(`Wrote ${INSTALL_SIZE_BADGE}.`);
+    return;
+  }
+  let committed: string;
+  try {
+    committed = read(INSTALL_SIZE_BADGE);
+  } catch (error) {
+    fail(`Cannot read ${INSTALL_SIZE_BADGE}: ${error instanceof Error ? error.message : String(error)}`);
+  }
+  if (committed !== badge) {
+    fail(
+      `${INSTALL_SIZE_BADGE} does not match ${vsixFile}, which installs ${formatSize(size)} (${String(size)} bytes). ` +
+        'The badge must describe the VSIX this commit releases. On the release branch, run `npm run package`, package the VSIX ' +
+        'as the Release workflow does (with --pre-release for an odd minor version), run ' +
+        '`node scripts/release/cli.mts install-size --vsix <file> --write` and commit the file.',
+    );
+  }
+  console.log(`${INSTALL_SIZE_BADGE} matches.`);
+  if (notesFile) {
+    appendFileSync(notesFile, `\n**Installed size:** ${String(size)} bytes (${formatSize(size)} in VS Code).\n`);
+  }
+}
+
 const [command, ...args] = process.argv.slice(2);
 const option = (name: string): string | undefined => {
   const index = args.indexOf(name);
@@ -163,6 +210,15 @@ if (command === 'prepare') {
   prepare(channel);
 } else if (command === 'verify') {
   verify(option('--notes'));
+} else if (command === 'install-size') {
+  const write = args.includes('--write');
+  if (write === args.includes('--check')) {
+    fail('install-size needs exactly one of --write and --check.');
+  }
+  installSize(option('--vsix'), write ? 'write' : 'check', option('--notes'));
 } else {
-  fail(`Unknown command "${String(command)}". Use "prepare --channel <pre-release|stable>" or "verify [--notes <file>]".`);
+  fail(
+    `Unknown command "${String(command)}". Use "prepare --channel <pre-release|stable>", "verify [--notes <file>]" ` +
+      'or "install-size --vsix <file> (--write | --check) [--notes <file>]".',
+  );
 }

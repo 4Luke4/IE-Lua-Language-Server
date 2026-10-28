@@ -1,6 +1,7 @@
 import type * as vscode from 'vscode';
 import { LanguageClient, TransportKind, type LanguageClientOptions, type ServerOptions } from 'vscode-languageclient/node';
 import { DOCUMENT_SCHEMES, LANGUAGE_IDS } from '../shared/protocol.ts';
+import { renameMiddleware } from './renameRefusals.ts';
 
 export const CLIENT_ID = 'ieLua';
 const CLIENT_NAME = 'IE Lua Language Server';
@@ -15,6 +16,7 @@ export async function startClient(context: vscode.ExtensionContext, outputChanne
   const clientOptions: LanguageClientOptions = {
     documentSelector: LANGUAGE_IDS.flatMap((language) => DOCUMENT_SCHEMES.map((scheme) => ({ language, scheme }))),
     outputChannel,
+    middleware: renameMiddleware,
   };
   const client = new LanguageClient(CLIENT_ID, CLIENT_NAME, serverOptions, clientOptions);
   await client.start();

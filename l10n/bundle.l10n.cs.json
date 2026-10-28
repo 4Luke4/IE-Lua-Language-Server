@@ -1,4 +1,11 @@
 {
+  "Only the names of local and global variables can be renamed.": "Přejmenovat lze pouze názvy lokálních a globálních proměnných.",
+  "The implicit \"self\" of a method has no declaration and cannot be renamed.": "Implicitní \"self\" metody nemá deklaraci a nelze jej přejmenovat.",
+  "This global is never assigned in this file. It is defined elsewhere (another file, the game or EEex), so it cannot be renamed here.": "Tato globální proměnná se v tomto souboru nikdy nepřiřazuje. Je definována jinde (v jiném souboru, ve hře nebo v EEex), proto ji zde nelze přejmenovat.",
+  "Fix the syntax errors first: names in code that does not parse cannot all be found.": "Nejprve opravte syntaktické chyby: v kódu, který nelze analyzovat, nelze najít všechny názvy.",
+  "The new name is not a valid Lua name: use letters, digits and underscores, and do not start with a digit.": "Nový název není platný název jazyka Lua: použijte písmena, číslice a podtržítka a nezačínejte číslicí.",
+  "The new name is a reserved word in Lua.": "Nový název je v jazyce Lua rezervované slovo.",
+  "Renaming would change what another name in this file refers to.": "Přejmenováním by se změnilo, na co odkazuje jiný název v tomto souboru.",
   "Open a Lua or Infinity Engine menu file to validate it.": "Pokud chcete soubor ověřit, otevřete soubor Lua nebo soubor nabídky Infinity Engine.",
   "IE Lua: no problems found.": "IE Lua: Nenašly se žádné problémy.",
   "IE Lua: {0} problem(s) found.": "IE Lua: Počet nalezených problémů: {0}.",

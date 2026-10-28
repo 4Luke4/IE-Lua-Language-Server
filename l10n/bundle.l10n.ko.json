@@ -1,4 +1,11 @@
 {
+  "Only the names of local and global variables can be renamed.": "로컬 및 전역 변수의 이름만 바꿀 수 있습니다.",
+  "The implicit \"self\" of a method has no declaration and cannot be renamed.": "메서드의 암시적 \"self\"에는 선언이 없으므로 이름을 바꿀 수 없습니다.",
+  "This global is never assigned in this file. It is defined elsewhere (another file, the game or EEex), so it cannot be renamed here.": "이 전역 변수는 이 파일에서 할당되지 않습니다. 다른 곳(다른 파일, 게임 또는 EEex)에 정의되어 있으므로 여기서 이름을 바꿀 수 없습니다.",
+  "Fix the syntax errors first: names in code that does not parse cannot all be found.": "먼저 구문 오류를 수정하세요. 구문 분석할 수 없는 코드에서는 모든 이름을 찾을 수 없습니다.",
+  "The new name is not a valid Lua name: use letters, digits and underscores, and do not start with a digit.": "새 이름이 올바른 Lua 이름이 아닙니다. 문자, 숫자 및 밑줄을 사용하고 숫자로 시작하지 마세요.",
+  "The new name is a reserved word in Lua.": "새 이름은 Lua의 예약어입니다.",
+  "Renaming would change what another name in this file refers to.": "이름을 바꾸면 이 파일의 다른 이름이 참조하는 대상이 바뀝니다.",
   "Open a Lua or Infinity Engine menu file to validate it.": "유효성을 검사하려면 Lua 파일 또는 Infinity Engine 메뉴 파일을 여세요.",
   "IE Lua: no problems found.": "IE Lua: 문제가 없습니다.",
   "IE Lua: {0} problem(s) found.": "IE Lua: 문제 {0}개를 찾았습니다.",

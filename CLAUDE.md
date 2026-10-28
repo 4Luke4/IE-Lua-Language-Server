@@ -11,7 +11,7 @@
 |---|---|
 | Name | `IE Lua Language Server` |
 | Publisher | `infinity-engine-tools` |
-| Purpose | Lua 5.2 language support (diagnostics, document symbols and folding now; more LSP features planned) for Infinity Engine EE `.lua` files and the Lua embedded in `.menu` files, usable from VS Code and other LSP editors |
+| Purpose | Lua 5.2 language support (diagnostics, document symbols, folding, and same-file definition, references and rename now; more LSP features planned) for Infinity Engine EE `.lua` files and the Lua embedded in `.menu` files, usable from VS Code and other LSP editors |
 | Language | TypeScript (strict) |
 | Bundler | esbuild (two bundles: client + language server) |
 | Minimum VS Code | `^1.91.0` (see `engines.vscode` in `package.json`; required by `vscode-languageclient` ≥ 10) |
