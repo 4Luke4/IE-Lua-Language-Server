@@ -1,1 +1,6 @@
-{}
+{
+  "hover.kind.parameter": "parametre",
+  "hover.kind.forVariable": "for değişkeni",
+  "hover.kind.global": "global",
+  "hover.engineReplaced": "Oyun motoru {0} işlevini kendi işleviyle değiştirir; bu nedenle Lua 5.2 kılavuzundaki açıklama geçerli değildir. Bkz. {1}."
+}

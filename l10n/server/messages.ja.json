@@ -1,1 +1,6 @@
-{}
+{
+  "hover.kind.parameter": "パラメーター",
+  "hover.kind.forVariable": "for 変数",
+  "hover.kind.global": "グローバル",
+  "hover.engineReplaced": "ゲーム エンジンは {0} を独自の関数に置き換えるため、Lua 5.2 マニュアルの説明は当てはまりません。{1} を参照してください。"
+}

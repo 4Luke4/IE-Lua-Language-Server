@@ -1,1 +1,6 @@
-{}
+{
+  "hover.kind.parameter": "paraméter",
+  "hover.kind.forVariable": "for-változó",
+  "hover.kind.global": "globális",
+  "hover.engineReplaced": "A játékmotor saját függvényre cseréli a(z) {0} függvényt, ezért a Lua 5.2 kézikönyv leírása nem érvényes. Lásd: {1}."
+}

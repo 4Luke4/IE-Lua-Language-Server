@@ -1,1 +1,6 @@
-{}
+{
+  "hover.kind.parameter": "parâmetro",
+  "hover.kind.forVariable": "variável for",
+  "hover.kind.global": "global",
+  "hover.engineReplaced": "O mecanismo do jogo substitui {0} por uma função própria, portanto a descrição do manual do Lua 5.2 não se aplica. Consulte {1}."
+}

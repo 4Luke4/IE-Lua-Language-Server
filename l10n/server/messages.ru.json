@@ -1,1 +1,6 @@
-{}
+{
+  "hover.kind.parameter": "параметр",
+  "hover.kind.forVariable": "переменная for",
+  "hover.kind.global": "глобальная",
+  "hover.engineReplaced": "Игровой движок заменяет {0} собственной функцией, поэтому описание из руководства по Lua 5.2 не применимо. См. {1}."
+}
