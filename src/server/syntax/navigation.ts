@@ -51,20 +51,19 @@ export function variableIndex(document: ParsedDocument): readonly VariableOccurr
 }
 
 /**
- * The variable at `offset`, or `undefined` when there is none (keyword, field
- * name, string, comment, menu syntax). A cursor just after a name still
- * selects it, as editors place the cursor there after typing.
+ * The entry of `sorted` (sorted by identifier offset) whose identifier is at
+ * `offset`. A cursor just after a name still selects it, as editors place the
+ * cursor there after typing.
  */
-export function targetAt(document: ParsedDocument, offset: number): TargetHit | undefined {
-  const index = variableIndex(document);
+export function identifierAt<T extends { readonly identifier: Ast.Identifier }>(sorted: readonly T[], offset: number): T | undefined {
   // Last identifier starting at or before `offset`. Identifiers never touch, so
   // one starting exactly at `offset` wins over one ending there.
   let low = 0;
-  let high = index.length - 1;
-  let found: VariableOccurrence | undefined;
+  let high = sorted.length - 1;
+  let found: T | undefined;
   while (low <= high) {
     const middle = (low + high) >> 1;
-    const entry = index[middle];
+    const entry = sorted[middle];
     if (entry && entry.identifier.start <= offset) {
       found = entry;
       low = middle + 1;
@@ -72,7 +71,17 @@ export function targetAt(document: ParsedDocument, offset: number): TargetHit | 
       high = middle - 1;
     }
   }
-  if (!found || offset > found.identifier.end) {
+  return found && offset <= found.identifier.end ? found : undefined;
+}
+
+/**
+ * The variable at `offset`, or `undefined` when there is none (keyword, field
+ * name, string, comment, menu syntax). A cursor just after a name still
+ * selects it, as editors place the cursor there after typing.
+ */
+export function targetAt(document: ParsedDocument, offset: number): TargetHit | undefined {
+  const found = identifierAt(variableIndex(document), offset);
+  if (!found) {
     return undefined;
   }
   const { identifier, chunkIndex } = found;

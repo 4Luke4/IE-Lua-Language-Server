@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { parseDocument, type ParsedDocument } from '../../../../src/server/syntax/document.ts';
-import { definitions, references, targetAt } from '../../../../src/server/syntax/navigation.ts';
+import { definitions, identifierAt, references, targetAt } from '../../../../src/server/syntax/navigation.ts';
 
 /** `name@offset` for each identifier. */
 const at = (identifiers: readonly { name: string; start: number }[]): string[] => identifiers.map((i) => `${i.name}@${String(i.start)}`);
@@ -21,6 +21,17 @@ function definitionsAt(document: ParsedDocument, offset: number): string[] | und
 }
 
 describe('server/syntax/navigation', () => {
+  describe('identifierAt', () => {
+    const entries = [{ identifier: { kind: 'Identifier', name: 'ab', start: 2, end: 4 } }, { identifier: { kind: 'Identifier', name: 'c', start: 6, end: 7 } }] as const;
+
+    it('finds the identifier containing or just before the offset', () => {
+      assert.deepEqual([0, 1, 2, 3, 4, 5, 6, 7, 8].map((offset) => identifierAt(entries, offset)?.identifier.name), [
+        undefined, undefined, 'ab', 'ab', 'ab', undefined, 'c', 'c', undefined,
+      ]);
+      assert.equal(identifierAt<(typeof entries)[number]>([], 0), undefined);
+    });
+  });
+
   describe('targetAt', () => {
     //            0         1         2
     //            0123456789012345678901234

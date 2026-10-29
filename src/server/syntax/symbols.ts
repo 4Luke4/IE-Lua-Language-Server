@@ -19,6 +19,7 @@
 import type * as Ast from './ast.ts';
 import type { ParsedChunk, ParsedDocument } from './document.ts';
 import type { ScopeAnalysis } from './scope.ts';
+import { parameterList } from './signatures.ts';
 
 export type OutlineKind = 'function' | 'method' | 'variable' | 'field' | 'namespace';
 
@@ -51,12 +52,6 @@ interface Context {
 const nested = (context: Context, container: OutlineSymbol[]): Context => ({ ...context, container, topLevel: false });
 const inFunction = (context: Context, container: OutlineSymbol[]): Context => ({ ...nested(context, container), listGlobals: false });
 
-function parameters(func: Ast.FunctionExpression): string {
-  const names = func.parameters.map((p) => p.name);
-  if (func.isVararg) names.push('...');
-  return `(${names.join(', ')})`;
-}
-
 /** `a`, `a.b.c` for identifiers and `.` chains on an identifier; `undefined` otherwise. */
 function dottedName(expression: Ast.Expression): string | undefined {
   if (expression.kind === 'Identifier') return expression.name;
@@ -76,7 +71,7 @@ function functionSymbol(
   context: Context,
 ): OutlineSymbol {
   const symbol: OutlineSymbol = {
-    name, kind, detail: parameters(func), start: range.start, end: range.end,
+    name, kind, detail: parameterList(func), start: range.start, end: range.end,
     selectionStart: selection.start, selectionEnd: selection.end, children: [],
   };
   block(func.body, inFunction(context, symbol.children));
