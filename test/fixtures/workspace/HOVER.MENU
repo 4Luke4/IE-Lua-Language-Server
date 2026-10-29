@@ -1,0 +1,13 @@
+-- Original fixture: hover over the Lua of a .menu file.
+`
+hoverCount = 0
+`
+menu
+{
+	name 'HOVER_MAIN'
+	onOpen
+	"
+		hoverCount = hoverCount + 1
+		Infinity_DisplayString(string.rep('-', hoverCount))
+	"
+}

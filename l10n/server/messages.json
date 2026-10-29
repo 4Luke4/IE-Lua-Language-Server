@@ -1,0 +1,6 @@
+{
+  "hover.kind.parameter": "parameter",
+  "hover.kind.forVariable": "for variable",
+  "hover.kind.global": "global",
+  "hover.engineReplaced": "The game engine replaces {0} with its own function, so the description in the Lua 5.2 manual does not apply. See {1}."
+}

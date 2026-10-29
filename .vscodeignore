@@ -7,7 +7,7 @@
 !package.json
 !package.nls.json
 !package.nls.*.json
-!l10n/**
+!l10n/bundle.l10n*.json
 !language-configuration/**
 !syntaxes/**
 !images/icon.png

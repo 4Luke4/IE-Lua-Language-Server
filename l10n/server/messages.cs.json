@@ -1,0 +1,6 @@
+{
+  "hover.kind.parameter": "parametr",
+  "hover.kind.forVariable": "proměnná for",
+  "hover.kind.global": "globální",
+  "hover.engineReplaced": "Herní engine nahrazuje {0} vlastní funkcí, takže popis v příručce Lua 5.2 neplatí. Viz {1}."
+}

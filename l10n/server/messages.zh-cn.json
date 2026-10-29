@@ -1,0 +1,6 @@
+{
+  "hover.kind.parameter": "参数",
+  "hover.kind.forVariable": "for 变量",
+  "hover.kind.global": "全局",
+  "hover.engineReplaced": "游戏引擎将 {0} 替换为自己的函数，因此 Lua 5.2 手册中的说明不适用。请参阅 {1}。"
+}

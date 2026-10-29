@@ -1,0 +1,6 @@
+{
+  "hover.kind.parameter": "參數",
+  "hover.kind.forVariable": "for 變數",
+  "hover.kind.global": "全域",
+  "hover.engineReplaced": "遊戲引擎會以自己的函式取代 {0}，因此 Lua 5.2 手冊中的說明不適用。請參閱 {1}。"
+}

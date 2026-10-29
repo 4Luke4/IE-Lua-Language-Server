@@ -90,6 +90,35 @@ describe('server/syntax/scope', () => {
     assert.deepEqual(writes, ['a@8', 'b@16', 'g@31', 'a@39']);
   });
 
+  describe('environmentFields', () => {
+    const fields = (source: string): string[] => [...analyze(source).environmentFields].map((identifier) => `${identifier.name}@${String(identifier.start)}`);
+
+    it('is empty while only the chunk\'s own _ENV is in effect', () => {
+      assert.deepEqual(fields('print(x) _ENV.y = 1'), []);
+    });
+
+    it('records globals resolved while a local _ENV is visible, and only then', () => {
+      //            0         1         2         3
+      //            0123456789012345678901234567890123456789
+      const source = 'a = 1 do local _ENV = {} b = c end d()';
+      assert.deepEqual(fields(source), ['b@25', 'c@29']);
+      // They stay globals by name, as navigation expects.
+      assert.deepEqual(globalNames(source), ['a', 'b', 'c', 'd']);
+    });
+
+    it('treats a parameter or for variable named _ENV the same way', () => {
+      assert.deepEqual(fields('function f(_ENV) return x end'), ['x@24']);
+      assert.deepEqual(fields('for _ENV in e do y() end'), ['y@17']);
+    });
+
+    it('applies `local _ENV = _ENV` only after the statement', () => {
+      //            0         1         2
+      //            0123456789012345678901234
+      const source = 'local _ENV = x return y';
+      assert.deepEqual(fields(source), ['y@22']);
+    });
+  });
+
   it('does not record declarations, reads or function paths with fields or methods as writes', () => {
     assert.deepEqual([...analyze('local x = y function t.f() end function t:m() end print(x)').writes], []);
   });

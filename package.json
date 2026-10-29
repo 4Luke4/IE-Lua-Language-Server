@@ -124,6 +124,7 @@
     "test": "vscode-test",
     "check-l10n": "node scripts/check-l10n.mts",
     "build:wasm": "node third_party/lua52/build.mts",
+    "lua-manual": "node scripts/lua-manual/generate.mts",
     "notices": "node scripts/third-party-notices.mts"
   },
   "dependencies": {

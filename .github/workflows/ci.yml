@@ -4,7 +4,7 @@
 # - One Linux runner per job; jobs that only matter for some paths are skipped
 #   by the `changes` job (workflow-level `paths:` filters are not used because a
 #   skipped workflow never reports, which blocks required status checks).
-# - npm, VS Code test builds and emsdk are cached.
+# - npm, VS Code test builds, emsdk and the Lua source tarball are cached.
 # - Superseded pull request runs are cancelled.
 # Failures are reported as file/line annotations (setup-node's tsc and ESLint
 # problem matchers, and `::error` lines from scripts/).
@@ -33,6 +33,7 @@ jobs:
     outputs:
       code: ${{ steps.diff.outputs.code }}
       wasm: ${{ steps.diff.outputs.wasm }}
+      manual: ${{ steps.diff.outputs.manual }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -49,6 +50,7 @@ jobs:
             echo "No usable base commit; running every job."
             echo "code=true" >> "$GITHUB_OUTPUT"
             echo "wasm=true" >> "$GITHUB_OUTPUT"
+            echo "manual=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           changed="$(git diff --name-only "$BASE" HEAD)"
@@ -63,6 +65,11 @@ jobs:
             echo "wasm=true" >> "$GITHUB_OUTPUT"
           else
             echo "wasm=false" >> "$GITHUB_OUTPUT"
+          fi
+          if printf '%s\n' "$changed" | grep -qE '^(scripts/lua-manual/|data/lua52/|third_party/lua52/tarball\.mts$|\.github/workflows/ci\.yml$)'; then
+            echo "manual=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "manual=false" >> "$GITHUB_OUTPUT"
           fi
 
   checks:
@@ -191,13 +198,17 @@ jobs:
             exit 1
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
-      - name: Cache emsdk and Lua sources
+      - name: Cache emsdk
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: |
-            .cache/emsdk
-            .cache/lua
+          path: .cache/emsdk
           key: emsdk-${{ runner.os }}-${{ steps.emsdk.outputs.version }}
+      # Shared with the `manual` job; the key changes when the pinned tarball does.
+      - name: Cache the Lua source tarball
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .cache/lua
+          key: lua-src-${{ hashFiles('third_party/lua52/tarball.mts') }}
       - name: Install emsdk ${{ steps.emsdk.outputs.version }}
         env:
           VERSION: ${{ steps.emsdk.outputs.version }}
@@ -211,3 +222,25 @@ jobs:
         run: |
           source .cache/emsdk/emsdk_env.sh
           npm run build:wasm -- --check
+
+  manual:
+    name: Lua 5.2 manual data is current
+    needs: changes
+    if: needs.changes.outputs.manual == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # No `npm ci`: the generator uses only Node built-ins and `tar`.
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - name: Cache the Lua source tarball
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .cache/lua
+          key: lua-src-${{ hashFiles('third_party/lua52/tarball.mts') }}
+      - name: Regenerate and compare
+        run: npm run lua-manual -- --check

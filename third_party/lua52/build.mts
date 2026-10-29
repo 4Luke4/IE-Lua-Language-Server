@@ -5,19 +5,15 @@
 //
 // Requires Emscripten (see EMSCRIPTEN_VERSION) on PATH, e.g. via
 // `source .cache/emsdk/emsdk_env.sh`. Inputs are pinned and verified:
-// the tarball by its SHA-256 published on https://www.lua.org/ftp/, and the
-// compiler by its exact version string.
-import { createHash } from 'node:crypto';
+// the tarball by its SHA-256 published on https://www.lua.org/ftp/ (tarball.mts),
+// and the compiler by its exact version string.
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { fetchLuaTarball, LUA_VERSION, sha256 } from './tarball.mts';
 
-const LUA_VERSION = '5.2.4';
-const LUA_URL = `https://www.lua.org/ftp/lua-${LUA_VERSION}.tar.gz`;
-// Published next to the tarball on https://www.lua.org/ftp/ ("checksum (sha256)").
-const LUA_SHA256 = 'b9e2e4aad6789b3b63a056d442f7b39f0ecfca3ae0f1fc0ae4e9614401b69f4b';
 // https://github.com/emscripten-core/emsdk tag; keep in sync with .github/workflows/ci.yml.
 const EMSCRIPTEN_VERSION = '6.0.13';
 
@@ -31,17 +27,11 @@ const SOURCES = [
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..', '..');
-const cacheDir = join(root, '.cache', 'lua');
-const tarball = join(cacheDir, `lua-${LUA_VERSION}.tar.gz`);
 
 function fail(message: string): never {
   // `::error::` renders as an annotation on GitHub Actions and reads fine locally.
   console.error(`::error title=Lua 5.2 WASM build::${message}`);
   process.exit(1);
-}
-
-function sha256(data: Buffer | string): string {
-  return createHash('sha256').update(data).digest('hex');
 }
 
 function run(command: string, args: string[], cwd: string): string {
@@ -58,22 +48,6 @@ function run(command: string, args: string[], cwd: string): string {
     const stderr = error instanceof Error && 'stderr' in error && typeof error.stderr === 'string' ? error.stderr.trim() : '';
     const details = stderr || (error instanceof Error ? error.message : String(error));
     fail(`\`${command} ${args.join(' ')}\` failed in ${relative(root, cwd) || '.'}:\n${details}`);
-  }
-}
-
-async function fetchTarball(): Promise<void> {
-  if (!existsSync(tarball)) {
-    mkdirSync(cacheDir, { recursive: true });
-    const response = await fetch(LUA_URL);
-    if (!response.ok) {
-      fail(`Downloading ${LUA_URL} failed: HTTP ${response.status} ${response.statusText}`);
-    }
-    writeFileSync(tarball, Buffer.from(await response.arrayBuffer()));
-  }
-  const actual = sha256(readFileSync(tarball));
-  if (actual !== LUA_SHA256) {
-    rmSync(tarball);
-    fail(`${LUA_URL} has SHA-256 ${actual}, expected ${LUA_SHA256}. The cached file was deleted; re-run to download it again.`);
   }
 }
 
@@ -98,7 +72,7 @@ declare function createLua52(): Promise<Lua52Module>;
 export default createLua52;
 `;
 
-function build(outDir: string): void {
+function build(tarball: string, outDir: string): void {
   const work = mkdtempSync(join(tmpdir(), 'lua52-'));
   try {
     run('tar', ['-xzf', tarball, '-C', work], root);
@@ -134,17 +108,22 @@ function build(outDir: string): void {
 
 async function main(): Promise<void> {
   const check = process.argv.includes('--check');
-  await fetchTarball();
+  let tarball: string;
+  try {
+    tarball = await fetchLuaTarball();
+  } catch (error) {
+    fail(error instanceof Error ? error.message : String(error));
+  }
   checkCompiler();
   const committed = join(here, 'dist');
   if (!check) {
-    build(committed);
+    build(tarball, committed);
     console.log(`Built ${relative(root, join(committed, 'lua52.js'))} (${readFileSync(join(committed, 'lua52.js.sha256'), 'utf8').trim()})`);
     return;
   }
   const scratch = mkdtempSync(join(tmpdir(), 'lua52-check-'));
   try {
-    build(scratch);
+    build(tarball, scratch);
     for (const file of ['lua52.js', 'lua52.d.ts', 'lua52.js.sha256']) {
       const expectedPath = join(committed, file);
       if (!existsSync(expectedPath)) {

@@ -2,23 +2,27 @@
 // one GitHub annotation per problem, naming the file and key at fault.
 //
 // Checks:
-//  1. Every VS Code display language has package.nls.<locale>.json and
-//     l10n/bundle.l10n.<locale>.json.
+//  1. Every VS Code display language (src/shared/locales.ts) has
+//     package.nls.<locale>.json, l10n/bundle.l10n.<locale>.json and
+//     l10n/server/messages.<locale>.json.
 //  2. Each locale has exactly the keys of the English source, all non-empty.
 //  3. Code spans (`…`, which include setting links), {0}-style placeholders and
 //     **IE Lua: <command title>** references survive translation unchanged
 //     (references must use that locale's own command title).
 //  4. Every %key% used in package.json exists in package.nls.json and vice versa.
 //  5. l10n/bundle.l10n.json equals a fresh `@vscode/l10n-dev export` of src/client.
+//     The language server is not part of the export: it uses `messages.t()`
+//     (src/server/l10n.ts), not `vscode.l10n.t()`.
+//  6. The server tables l10n/server/messages.<locale>.json have exactly the keys
+//     of l10n/server/messages.json, with code spans and placeholders unchanged.
+//  7. Every key of l10n/server/messages.json is used in src/server/ (as a
+//     quoted string); unknown keys are compile errors there (`MessageKey`).
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-
-// The display languages VS Code offers as language packs, besides English:
-// https://code.visualstudio.com/docs/configure/locales#_available-locales
-export const LOCALES = ['cs', 'de', 'es', 'fr', 'hu', 'it', 'ja', 'ko', 'pl', 'pt-br', 'ru', 'tr', 'zh-cn', 'zh-tw'] as const;
+import { LOCALES } from '../src/shared/locales.ts';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const errors: string[] = [];
@@ -130,6 +134,32 @@ if (packageNls && bundle) {
   }
 }
 
+// 6. Language server tables.
+const serverDir = join(root, 'l10n', 'server');
+const serverFile = join(serverDir, 'messages.json');
+const server = readJson(serverFile);
+if (server) {
+  for (const locale of LOCALES) {
+    const localeFile = join(serverDir, `messages.${locale}.json`);
+    const translated = readJson(localeFile);
+    if (translated) {
+      compare(server, serverFile, translated, localeFile);
+    }
+  }
+
+  // 7. Every server key is used by the server.
+  const sources = (dir: string): string[] =>
+    readdirSync(dir, { withFileTypes: true }).flatMap((entry) =>
+      entry.isDirectory() ? sources(join(dir, entry.name)) : entry.name.endsWith('.ts') ? [readFileSync(join(dir, entry.name), 'utf8')] : [],
+    );
+  const serverSource = sources(join(root, 'src', 'server')).join('\n');
+  for (const key of Object.keys(server)) {
+    if (!serverSource.includes(`'${key}'`)) {
+      error(serverFile, `"${key}" is not used in src/server; remove it from every l10n/server/messages*.json.`);
+    }
+  }
+}
+
 if (errors.length > 0) {
   for (const line of errors) {
     console.error(line);
@@ -137,4 +167,7 @@ if (errors.length > 0) {
   console.error(`Localization check failed with ${errors.length} problem(s).`);
   process.exit(1);
 }
-console.log(`Localization check passed: ${LOCALES.length} locales, ${Object.keys(packageNls ?? {}).length} manifest strings, ${Object.keys(bundle ?? {}).length} runtime strings.`);
+console.log(
+  `Localization check passed: ${LOCALES.length} locales, ${Object.keys(packageNls ?? {}).length} manifest strings, ` +
+    `${Object.keys(bundle ?? {}).length} client strings, ${Object.keys(server ?? {}).length} server strings.`,
+);
