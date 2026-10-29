@@ -2,11 +2,18 @@ import assert from 'node:assert/strict';
 import { posix } from 'node:path';
 import { isIndexedFileName, WorkspaceIndex, type DirectoryEntry, type WorkspaceFileSystem } from '../../../../src/server/workspace/workspaceIndex.ts';
 
-/** An in-memory file system: paths ending in `/` are directories, `@` marks a symbolic link. */
+/** An in-memory file system keyed by full path; `links` marks symbolic links. */
 class MemoryFileSystem implements WorkspaceFileSystem {
   readonly files = new Map<string, string>();
   readonly links = new Set<string>();
   readonly reads: string[] = [];
+  /** Paths whose read never completes, to hold the index's queue. */
+  readonly hanging = new Set<string>();
+  private readonly sep: string;
+
+  constructor(sep = '/') {
+    this.sep = sep;
+  }
 
   add(path: string, text = ''): this {
     this.files.set(path, text);
@@ -14,11 +21,11 @@ class MemoryFileSystem implements WorkspaceFileSystem {
   }
 
   readDirectory(path: string): Promise<DirectoryEntry[]> {
-    const prefix = path.endsWith('/') ? path : `${path}/`;
+    const prefix = path.endsWith(this.sep) ? path : `${path}${this.sep}`;
     const entries = new Map<string, DirectoryEntry['kind']>();
     for (const file of [...this.files.keys(), ...this.links]) {
       if (!file.startsWith(prefix)) continue;
-      const [name, ...rest] = file.slice(prefix.length).split('/');
+      const [name, ...rest] = file.slice(prefix.length).split(this.sep);
       if (!name) continue;
       const kind = this.links.has(prefix + name) ? 'symlink' : rest.length > 0 ? 'directory' : 'file';
       entries.set(name, kind);
@@ -31,8 +38,11 @@ class MemoryFileSystem implements WorkspaceFileSystem {
 
   readFile(path: string): Promise<Uint8Array> {
     this.reads.push(path);
+    if (this.hanging.has(path)) return new Promise(() => undefined);
     const text = this.files.get(path);
-    return text === undefined ? Promise.reject(new Error(`ENOENT: ${path}`)) : Promise.resolve(new TextEncoder().encode(text));
+    return text === undefined
+      ? Promise.reject(Object.assign(new Error(`ENOENT: no such file, open '${path}'`), { code: 'ENOENT' }))
+      : Promise.resolve(new TextEncoder().encode(text));
   }
 }
 
@@ -96,22 +106,58 @@ describe('server/workspace/workspaceIndex', () => {
     assert.deepEqual(indexed(), ['file:///w/linked.lua=L', 'file:///w/real/a.lua=A']);
   });
 
-  it('logs and skips what it cannot read', async () => {
-    const fs = new MemoryFileSystem().add('/w/a.lua', 'A');
+  it('logs and skips what it cannot read, but not files that are gone', async () => {
+    const fs = new MemoryFileSystem().add('/w/a.lua', 'A').add('/w/locked.lua');
+    fs.readFile = (path) => (path === '/w/locked.lua' ? Promise.reject(new Error('EACCES: permission denied')) : MemoryFileSystem.prototype.readFile.call(fs, path));
     fs.links.add('/w/broken.lua');
     const { index, indexed, log } = setup(fs);
     index.setFolders(['file:///w', 'file:///missing']);
     await index.ready();
     assert.deepEqual(indexed(), ['file:///w/a.lua=A']);
-    assert.ok(log.some((line) => line.startsWith('Cannot read /w/broken.lua')));
+    assert.ok(log.some((line) => line === 'Cannot read /w/locked.lua: EACCES: permission denied'));
+    assert.ok(!log.some((line) => line.includes('broken.lua')), 'a dangling link is a file that is gone, not an error');
     assert.ok(log.some((line) => line.startsWith('Cannot list /missing')));
   });
 
-  it('scans only file: folders and says so for the others', async () => {
-    const { index, log } = setup(new MemoryFileSystem());
-    index.setFolders(['vscode-vfs://github/x/y']);
+  it('does not log when the file of a closed document no longer exists', async () => {
+    const fs = new MemoryFileSystem().add('/w/a.lua', 'A').add('/w/notes.txt');
+    const { index, indexed, log } = setup(fs);
+    index.setFolders(['file:///w']);
     await index.ready();
-    assert.ok(log.some((line) => line.includes('vscode-vfs://github/x/y is not on the local file system')));
+    const lines = log.length;
+    fs.files.delete('/w/a.lua');
+    index.fileChanged('file:///w/a.lua');
+    await index.ready();
+    assert.deepEqual(indexed(), []);
+    assert.equal(log.length, lines);
+  });
+
+  it('answers ready() for the work queued before the call, even while more keeps arriving', async () => {
+    const fs = new MemoryFileSystem().add('/w/a.lua', 'A').add('/w/slow.lua', 'S');
+    const { index, indexed } = setup(fs);
+    index.setFolders(['file:///w']);
+    await index.ready();
+    fs.add('/w/a.lua', 'A2');
+    index.fileChanged('file:///w/a.lua');
+    const ready = index.ready();
+    // Work queued after the call never finishes; the call must not wait for it.
+    fs.hanging.add('/w/slow.lua');
+    index.fileChanged('file:///w/slow.lua');
+    await ready;
+    // slow.lua is being read again: its previous entry stays meanwhile.
+    assert.deepEqual(indexed(), ['file:///w/a.lua=A2', 'file:///w/slow.lua=S']);
+  });
+
+  it('waits in ready() for the rescan a files.exclude change starts', async () => {
+    const fs = new MemoryFileSystem().add('/w/a.lua', 'A').add('/w/b.lua', 'B');
+    const excludes: Record<string, unknown> = {};
+    const { index, indexed } = setup(fs, excludes);
+    index.setFolders(['file:///w']);
+    await index.ready();
+    excludes['file:///w'] = { 'b.lua': true };
+    index.settingsChanged();
+    await index.ready();
+    assert.deepEqual(indexed(), ['file:///w/a.lua=A']);
   });
 
   it('reindexes changed files and drops deleted files and folders', async () => {

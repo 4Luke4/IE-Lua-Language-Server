@@ -109,24 +109,27 @@ export class WorkspaceIndex<T> {
   /** Rescans every folder, re-reading `files.exclude` (call when it changes). */
   rescan(): void {
     const generation = ++this.generation;
-    this.enqueue(async () => {
-      const started = Date.now();
-      const found: { folder: Folder; path: string }[] = [];
-      for (const folder of this.folders) {
-        const value = await this.deps.filesExclude(folder.uri);
-        folder.excluded = filesExcludeFilter(value);
-        folder.excludeJson = JSON.stringify(value ?? null);
-        await this.walk(folder, folder.path, found, generation);
-        if (generation !== this.generation) return;
-      }
-      this.files.clear();
-      for (const { folder, path } of found) {
-        await this.deps.yieldToEventLoop();
-        if (generation !== this.generation) return;
-        await this.indexFile(folder, path);
-      }
-      this.deps.log(`Indexed ${this.files.size} Lua and .menu files in ${Date.now() - started} ms.`);
-    });
+    this.enqueue(() => this.scan(generation));
+  }
+
+  /** Walks every folder and indexes what it finds, unless a newer scan starts meanwhile. */
+  private async scan(generation: number): Promise<void> {
+    const started = Date.now();
+    const found: { folder: Folder; path: string }[] = [];
+    for (const folder of this.folders) {
+      const value = await this.deps.filesExclude(folder.uri);
+      folder.excluded = filesExcludeFilter(value);
+      folder.excludeJson = JSON.stringify(value ?? null);
+      await this.walk(folder, folder.path, found, generation);
+      if (generation !== this.generation) return;
+    }
+    this.files.clear();
+    for (const { folder, path } of found) {
+      await this.deps.yieldToEventLoop();
+      if (generation !== this.generation) return;
+      await this.indexFile(folder, path);
+    }
+    this.deps.log(`Indexed ${this.files.size} Lua and .menu files in ${Date.now() - started} ms.`);
   }
 
   /**
@@ -139,7 +142,8 @@ export class WorkspaceIndex<T> {
       for (const folder of this.folders) {
         if (JSON.stringify((await this.deps.filesExclude(folder.uri)) ?? null) !== folder.excludeJson) changed = true;
       }
-      if (changed) this.rescan();
+      // Scan within this job, so that `ready()` callers waiting for it see the result.
+      if (changed) await this.scan(++this.generation);
     });
   }
 
@@ -155,8 +159,8 @@ export class WorkspaceIndex<T> {
       if (key === undefined || !folder) return;
       const path = this.toPath(uri);
       if (isIndexedFileName(this.deps.path.basename(path))) {
-        this.files.delete(key);
-        if (!(await this.isExcluded(folder, path))) await this.indexFile(folder, path);
+        // The previous entry stays until the new one is ready, so the file never drops out meanwhile.
+        if ((await this.isExcluded(folder, path)) || !(await this.indexFile(folder, path))) this.files.delete(key);
         return;
       }
       if (!(await this.isDirectory(path)) || (await this.isExcluded(folder, path))) return;
@@ -184,13 +188,12 @@ export class WorkspaceIndex<T> {
     });
   }
 
-  /** Resolves when the work queued so far is done, including the work it queues itself. */
-  async ready(): Promise<void> {
-    let tail: Promise<void>;
-    do {
-      tail = this.tail;
-      await tail;
-    } while (tail !== this.tail);
+  /**
+   * Resolves when the work queued before the call is done. Work queued later is
+   * not waited for, so a stream of file events cannot hold a request up.
+   */
+  ready(): Promise<void> {
+    return this.tail;
   }
 
   /** The indexed files, in no particular order. */
@@ -268,20 +271,27 @@ export class WorkspaceIndex<T> {
     return false;
   }
 
-  private async indexFile(folder: Folder, path: string): Promise<void> {
+  /** Reads and analyzes a file; `false` when it cannot be read. */
+  private async indexFile(folder: Folder, path: string): Promise<boolean> {
     let bytes: Uint8Array;
     try {
       bytes = await this.deps.fs.readFile(path);
     } catch (error) {
-      this.deps.log(`Cannot read ${path}: ${error instanceof Error ? error.message : String(error)}`);
-      return;
+      // A file deleted meanwhile (or a closed document whose file is gone) is simply not indexed.
+      if (!isNotFound(error)) this.deps.log(`Cannot read ${path}: ${error instanceof Error ? error.message : String(error)}`);
+      return false;
     }
     const relative = this.relative(folder, path);
     const uri = `${folder.uri}/${relative.split('/').map(encodeURIComponent).join('/')}`;
     // UTF-8, with a byte order mark removed and invalid bytes replaced, as VS Code opens files by default.
     const value = this.deps.analyze(decoder.decode(bytes), uri);
     this.files.set(normalizeKey(path), { uri, key: normalizeKey(path), value });
+    return true;
   }
+}
+
+function isNotFound(error: unknown): boolean {
+  return typeof error === 'object' && error !== null && (error as { code?: unknown }).code === 'ENOENT';
 }
 
 function normalizeKey(path: string): string {
