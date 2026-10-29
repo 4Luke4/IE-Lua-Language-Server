@@ -9,5 +9,6 @@
   "configuration.validate.mode.save": "在儲存檔案時驗證。",
   "configuration.validate.mode.type": "在輸入時驗證，於 `#ieLua.validate.debounce#` 毫秒內沒有變更後進行。",
   "configuration.validate.mode.saveAndType": "在輸入時及儲存檔案時驗證。",
-  "configuration.validate.debounce.description": "當 `#ieLua.validate.mode#` 為 `type` 或 `saveAndType` 時，最後一次變更到開始驗證之間的延遲時間 (毫秒)。"
+  "configuration.validate.debounce.description": "當 `#ieLua.validate.mode#` 為 `type` 或 `saveAndType` 時，最後一次變更到開始驗證之間的延遲時間 (毫秒)。",
+  "semanticTokenModifiers.global.description": "全域變數（全域環境中的欄位），與區域變數相對。"
 }

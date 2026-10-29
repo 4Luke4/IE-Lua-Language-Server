@@ -43,6 +43,10 @@ versions with an **even** middle number (for example 1.**2**.0) are stable relea
   game functions such as `Infinity_DisplayString`, or methods after `C:`. Lua functions show
   their description from the Lua 5.2 manual, EEex and game functions a link to their
   documentation. In `.menu` files, completion works inside the Lua.
+- **Colors that show what each name is.** With a theme that uses semantic highlighting, such as
+  VS Code's default theme, parameters, local and global variables, functions, table fields and
+  the functions the game provides can be colored differently, in Lua files and the Lua of `.menu`
+  files. Themes can style globals with the `global` modifier.
 - **Available in 14 languages**, following your VS Code display language.
 - **Works in other editors too**: setup guides for Sublime Text, Neovim, Emacs, JetBrains
   IDEs, Helix, Zed, Kate, Notepad++ and Geany are on the project page.

@@ -31,6 +31,7 @@ server (port 6009).
 | `src/server/validation/` | Pure validation logic, unit-tested without LSP or VS Code |
 | `src/server/hover/` | What a hover describes and its text (pure; library data from `data/lua52/` and `data/eeex/`) |
 | `src/server/completion/` | What completion offers at the cursor (pure; reuses the hover's knowledge and text) |
+| `src/server/semanticTokens/` | What each name is, for semantic highlighting (pure; follows the hover's rules) |
 | `src/server/syntax/` | Error-tolerant Lua 5.2 parser, scope analysis, document symbols and folding (pure; checked against the official compiler by `test/unit/server/syntax/differential.test.ts`) |
 | `src/server/workspace/` | Index of the workspace's Lua and `.menu` files, and `files.exclude` matching as VS Code applies it (file system injected, unit-tested with an in-memory one) |
 | `src/shared/` | Types and constants used by both sides |

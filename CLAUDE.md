@@ -11,7 +11,7 @@
 |---|---|
 | Name | `IE Lua Language Server` |
 | Publisher | `infinity-engine-tools` |
-| Purpose | Lua 5.2 language support (diagnostics, hover, completion, document and workspace symbols, folding, and same-file definition, references and rename now; more LSP features planned) for Infinity Engine EE `.lua` files and the Lua embedded in `.menu` files, usable from VS Code and other LSP editors |
+| Purpose | Lua 5.2 language support (diagnostics, hover, completion, semantic tokens, document and workspace symbols, folding, and same-file definition, references and rename now; more LSP features planned) for Infinity Engine EE `.lua` files and the Lua embedded in `.menu` files, usable from VS Code and other LSP editors |
 | Language | TypeScript (strict) |
 | Bundler | esbuild (two bundles: client + language server) |
 | Minimum VS Code | `^1.91.0` (see `engines.vscode` in `package.json`; required by `vscode-languageclient` ≥ 10) |
@@ -34,6 +34,7 @@
 │   │   ├── features/        # completion.ts, diagnostics.ts, hover.ts, ...
 │   │   ├── hover/           # Hover targets, library knowledge and rendering (pure, no LSP imports)
 │   │   ├── completion/      # Completion candidates (pure, no LSP imports)
+│   │   ├── semanticTokens/  # Name classification for semantic tokens (pure, no LSP imports)
 │   │   ├── l10n.ts          # Server messages in the client's locale (tables in l10n/server/)
 │   │   ├── syntax/          # Lua 5.2 lexer, parser, scopes, symbols, folding (pure, no LSP imports)
 │   │   ├── validation/      # Pure analysis logic (no LSP imports) — unit-tested directly

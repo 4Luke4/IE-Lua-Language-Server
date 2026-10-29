@@ -111,6 +111,25 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
     (`completionItem.documentationFormat`). The edit range is the name around the cursor, sent
     once per list when the client supports `itemDefaults.editRange`, as an insert/replace edit
     when it supports `insertReplaceSupport`.
+- Semantic tokens (`textDocument/semanticTokens/full`, `/full/delta` and `/range`) for the names
+  in the Lua of `.lua` and `.menu` files, classified by the rules of hover so that a name is
+  colored as it hovers. Keywords, literals, comments and `.menu` syntax are left to the TextMate
+  grammars.
+  - Types (all standard): `namespace`, `function`, `method`, `variable`, `parameter`, `property`,
+    `label`. Modifiers: `declaration`, `modification`, `defaultLibrary`, and `global`, declared
+    in the manifest (`contributes.semanticTokenModifiers`) so that themes can style `*.global`.
+    No TextMate fallback scope is contributed: there is no conventional scope for globals, and
+    the predefined fallbacks of the token types still apply.
+  - Locals: parameters and the implicit `self` are `parameter`; `local function f`, and a local
+    declared with a function expression and never assigned again, are `function`.
+  - Globals have `global`. A global the document assigns is a `function` or `variable` from its
+    first assignment; otherwise it takes its kind from the Lua 5.2 manual (`namespace` for the
+    module tables) or EEex-Docs. `defaultLibrary` marks the manual's names, the engine's `print`
+    and the *EE Game Lua Functions*, not EEex functions. `_ENV`, and names resolved through a
+    local `_ENV`, are not globals.
+  - Fields are `property`, or `method` after `:`; library and EEex-Docs members (`string.format`,
+    `C:AddGold`) as documented. Assignment targets have `modification`, declared names
+    `declaration`, labels are `label`.
 - Error-tolerant Lua 5.2 parser and scope analysis (`src/server/syntax/`), checked against the
   official compiler by a differential test; it publishes no diagnostics of its own.
 - Localization of the manifest, UI strings and the language server's hover labels into all 14 VS

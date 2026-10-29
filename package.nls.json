@@ -9,5 +9,6 @@
   "configuration.validate.mode.save": "Validate when a file is saved.",
   "configuration.validate.mode.type": "Validate while typing, after `#ieLua.validate.debounce#` milliseconds without changes.",
   "configuration.validate.mode.saveAndType": "Validate while typing and when a file is saved.",
-  "configuration.validate.debounce.description": "Delay in milliseconds after the last change before validating, when `#ieLua.validate.mode#` is `type` or `saveAndType`."
+  "configuration.validate.debounce.description": "Delay in milliseconds after the last change before validating, when `#ieLua.validate.mode#` is `type` or `saveAndType`.",
+  "semanticTokenModifiers.global.description": "A global variable (a field of the global environment), as opposed to a local."
 }

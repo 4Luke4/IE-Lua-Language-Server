@@ -9,5 +9,6 @@
   "configuration.validate.mode.save": "ファイルの保存時に検証します。",
   "configuration.validate.mode.type": "入力中に、変更がない状態が `#ieLua.validate.debounce#` ミリ秒続いた後で検証します。",
   "configuration.validate.mode.saveAndType": "入力中およびファイルの保存時に検証します。",
-  "configuration.validate.debounce.description": "`#ieLua.validate.mode#` が `type` または `saveAndType` の場合に、最後の変更から検証までの遅延時間 (ミリ秒)。"
+  "configuration.validate.debounce.description": "`#ieLua.validate.mode#` が `type` または `saveAndType` の場合に、最後の変更から検証までの遅延時間 (ミリ秒)。",
+  "semanticTokenModifiers.global.description": "グローバル変数 (グローバル環境のフィールド)。ローカル変数とは異なります。"
 }

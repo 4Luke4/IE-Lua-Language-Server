@@ -9,5 +9,6 @@
   "configuration.validate.mode.save": "파일을 저장할 때 유효성을 검사합니다.",
   "configuration.validate.mode.type": "입력하는 동안 `#ieLua.validate.debounce#`밀리초 동안 변경이 없으면 유효성을 검사합니다.",
   "configuration.validate.mode.saveAndType": "입력하는 동안과 파일을 저장할 때 유효성을 검사합니다.",
-  "configuration.validate.debounce.description": "`#ieLua.validate.mode#`이(가) `type` 또는 `saveAndType`인 경우 마지막 변경 후 유효성 검사까지의 지연 시간(밀리초)입니다."
+  "configuration.validate.debounce.description": "`#ieLua.validate.mode#`이(가) `type` 또는 `saveAndType`인 경우 마지막 변경 후 유효성 검사까지의 지연 시간(밀리초)입니다.",
+  "semanticTokenModifiers.global.description": "전역 변수(전역 환경의 필드)로, 로컬 변수와 구별됩니다."
 }

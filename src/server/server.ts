@@ -24,6 +24,7 @@ import * as hover from './features/hover.ts';
 import { markupFormat } from './features/markup.ts';
 import * as references from './features/references.ts';
 import * as rename from './features/rename.ts';
+import * as semanticTokens from './features/semanticTokens.ts';
 import * as workspaceSymbols from './features/workspaceSymbols.ts';
 import { createMessages } from './l10n.ts';
 import { SettingsStore } from './settingsStore.ts';
@@ -103,6 +104,7 @@ connection.onInitialize((params) => {
   references.register(connection, documents, { cache: parsed });
   rename.register(connection, documents, { cache: parsed, documentChanges: workspace?.workspaceEdit?.documentChanges === true });
   workspaceSymbols.register(connection, documents, { cache: parsed, index });
+  semanticTokens.register(connection, documents, { cache: parsed });
   hover.register(connection, documents, {
     cache: parsed,
     format: markupFormat(params.capabilities.textDocument?.hover?.contentFormat),
@@ -138,6 +140,7 @@ connection.onInitialize((params) => {
       workspaceSymbolProvider: true,
       hoverProvider: true,
       completionProvider: { triggerCharacters: [...completion.TRIGGER_CHARACTERS], resolveProvider: true },
+      semanticTokensProvider: { legend: semanticTokens.LEGEND, full: { delta: true }, range: true },
       ...(workspaceFolderChanges ? { workspace: { workspaceFolders: { supported: true, changeNotifications: true } } } : {}),
     },
     serverInfo: { name: 'IE Lua Language Server' },

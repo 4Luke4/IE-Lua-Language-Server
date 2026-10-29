@@ -24,7 +24,7 @@ import type * as Ast from '../syntax/ast.ts';
 import type { ParsedDocument } from '../syntax/document.ts';
 import { fieldWrites, globalPath, withoutG } from '../syntax/globalPaths.ts';
 import { memberAt, type MemberOccurrence } from '../syntax/members.ts';
-import { definitions, targetAt, type TargetHit } from '../syntax/navigation.ts';
+import { targetAt, type TargetHit } from '../syntax/navigation.ts';
 import type { Declaration } from '../syntax/scope.ts';
 import { declarationSite, type DeclarationSite } from '../syntax/signatures.ts';
 import { engineReplacement, externalEntry, manualEntry, type EngineReplacement, type ExternalEntry, type ManualEntry } from './knowledge.ts';
@@ -43,9 +43,29 @@ export interface HoverHit {
   readonly identifier: Ast.Identifier;
 }
 
-/** The first assignment to the global `name` in the document, if any. */
+/** The first assignment to each global of each document, by name; dropped with the document. */
+const firstWriteIndexes = new WeakMap<ParsedDocument, ReadonlyMap<string, Ast.Identifier>>();
+
+/**
+ * The first assignment to the global `name` in the document, if any: the
+ * first of `definitions` (syntax/navigation.ts), which is in document order. Indexed once per
+ * document, as a .menu file has thousands of chunks to search.
+ */
 function firstWrite(document: ParsedDocument, name: string): Ast.Identifier | undefined {
-  return definitions(document, { kind: 'global', name })[0];
+  let index = firstWriteIndexes.get(document);
+  if (!index) {
+    const first = new Map<string, Ast.Identifier>();
+    for (const { scopes } of document.chunks) {
+      for (const identifier of scopes.writes) {
+        const earlier = first.get(identifier.name);
+        // Chunks are in document order and never overlap, so the lowest offset comes first.
+        if (!scopes.resolved.has(identifier) && (!earlier || identifier.start < earlier.start)) first.set(identifier.name, identifier);
+      }
+    }
+    index = first;
+    firstWriteIndexes.set(document, index);
+  }
+  return index.get(name);
 }
 
 /** A global that is not assigned in the document, looked up in what the server knows. */
@@ -66,7 +86,8 @@ function globalTarget(document: ParsedDocument, name: string): HoverTarget {
   return knownGlobal(name) ?? { kind: 'global', name, site: undefined, link: undefined };
 }
 
-function variableTarget(document: ParsedDocument, { target, identifier, chunkIndex }: TargetHit): HoverTarget | undefined {
+/** What to describe for a variable occurrence (see `targetAt`), or `undefined` when there is nothing to say. */
+export function variableTarget(document: ParsedDocument, { target, identifier, chunkIndex }: TargetHit): HoverTarget | undefined {
   if (target.kind === 'local') {
     const declaring = target.declaration.identifier;
     return { kind: 'local', declaration: target.declaration, site: declaring && declarationSite(document, declaring) };
@@ -87,7 +108,8 @@ function libraryMember(document: ParsedDocument, dotted: string): ManualEntry | 
 const isStringLiteral = (expression: Ast.Expression): boolean =>
   expression.kind === 'StringLiteral' || (expression.kind === 'ParenthesizedExpression' && isStringLiteral(expression.expression));
 
-function memberTarget(document: ParsedDocument, { node, chunkIndex }: MemberOccurrence): HoverTarget | undefined {
+/** What to describe for a field or method name (see `memberIndex`), or `undefined` when there is nothing to say. */
+export function memberTarget(document: ParsedDocument, { node, chunkIndex }: MemberOccurrence): HoverTarget | undefined {
   if (node.kind === 'MethodCallExpression') {
     // Strings have the string table as their metatable's __index (manual §6.4).
     if (isStringLiteral(node.base)) {

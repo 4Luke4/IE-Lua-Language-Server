@@ -9,5 +9,6 @@
   "configuration.validate.mode.save": "Ověřovat při uložení souboru.",
   "configuration.validate.mode.type": "Ověřovat během psaní, po `#ieLua.validate.debounce#` ms bez změn.",
   "configuration.validate.mode.saveAndType": "Ověřovat během psaní a při uložení souboru.",
-  "configuration.validate.debounce.description": "Prodleva v milisekundách od poslední změny do ověření, když má `#ieLua.validate.mode#` hodnotu `type` nebo `saveAndType`."
+  "configuration.validate.debounce.description": "Prodleva v milisekundách od poslední změny do ověření, když má `#ieLua.validate.mode#` hodnotu `type` nebo `saveAndType`.",
+  "semanticTokenModifiers.global.description": "Globální proměnná (pole globálního prostředí), na rozdíl od místní proměnné."
 }
