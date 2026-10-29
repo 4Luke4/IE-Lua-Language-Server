@@ -9,5 +9,6 @@
   "configuration.validate.mode.save": "Beim Speichern einer Datei überprüfen.",
   "configuration.validate.mode.type": "Während der Eingabe überprüfen, nachdem `#ieLua.validate.debounce#` Millisekunden lang keine Änderungen erfolgt sind.",
   "configuration.validate.mode.saveAndType": "Während der Eingabe und beim Speichern einer Datei überprüfen.",
-  "configuration.validate.debounce.description": "Verzögerung in Millisekunden nach der letzten Änderung vor der Überprüfung, wenn `#ieLua.validate.mode#` auf `type` oder `saveAndType` festgelegt ist."
+  "configuration.validate.debounce.description": "Verzögerung in Millisekunden nach der letzten Änderung vor der Überprüfung, wenn `#ieLua.validate.mode#` auf `type` oder `saveAndType` festgelegt ist.",
+  "semanticTokenModifiers.global.description": "Eine globale Variable (ein Feld der globalen Umgebung), im Gegensatz zu einer lokalen Variable."
 }

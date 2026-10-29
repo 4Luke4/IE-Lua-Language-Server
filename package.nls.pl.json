@@ -9,5 +9,6 @@
   "configuration.validate.mode.save": "Sprawdzaj poprawność podczas zapisywania pliku.",
   "configuration.validate.mode.type": "Sprawdzaj poprawność podczas pisania, po `#ieLua.validate.debounce#` ms bez zmian.",
   "configuration.validate.mode.saveAndType": "Sprawdzaj poprawność podczas pisania i zapisywania pliku.",
-  "configuration.validate.debounce.description": "Opóźnienie w milisekundach od ostatniej zmiany do sprawdzenia poprawności, gdy ustawienie `#ieLua.validate.mode#` ma wartość `type` lub `saveAndType`."
+  "configuration.validate.debounce.description": "Opóźnienie w milisekundach od ostatniej zmiany do sprawdzenia poprawności, gdy ustawienie `#ieLua.validate.mode#` ma wartość `type` lub `saveAndType`.",
+  "semanticTokenModifiers.global.description": "Zmienna globalna (pole środowiska globalnego), w odróżnieniu od zmiennej lokalnej."
 }

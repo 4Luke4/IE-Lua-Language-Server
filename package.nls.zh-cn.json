@@ -9,5 +9,6 @@
   "configuration.validate.mode.save": "在保存文件时验证。",
   "configuration.validate.mode.type": "在键入时验证，在 `#ieLua.validate.debounce#` 毫秒内无更改后进行。",
   "configuration.validate.mode.saveAndType": "在键入时和保存文件时验证。",
-  "configuration.validate.debounce.description": "当 `#ieLua.validate.mode#` 为 `type` 或 `saveAndType` 时，最后一次更改后到开始验证前的延迟时间(毫秒)。"
+  "configuration.validate.debounce.description": "当 `#ieLua.validate.mode#` 为 `type` 或 `saveAndType` 时，最后一次更改后到开始验证前的延迟时间(毫秒)。",
+  "semanticTokenModifiers.global.description": "全局变量（全局环境中的字段），与局部变量相对。"
 }

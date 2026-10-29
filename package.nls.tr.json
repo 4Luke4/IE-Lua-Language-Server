@@ -9,5 +9,6 @@
   "configuration.validate.mode.save": "Dosya kaydedildiğinde doğrula.",
   "configuration.validate.mode.type": "Yazarken, `#ieLua.validate.debounce#` milisaniye boyunca değişiklik olmadığında doğrula.",
   "configuration.validate.mode.saveAndType": "Yazarken ve dosya kaydedildiğinde doğrula.",
-  "configuration.validate.debounce.description": "`#ieLua.validate.mode#` ayarı `type` veya `saveAndType` olduğunda, son değişiklikten doğrulamaya kadar geçen milisaniye cinsinden gecikme."
+  "configuration.validate.debounce.description": "`#ieLua.validate.mode#` ayarı `type` veya `saveAndType` olduğunda, son değişiklikten doğrulamaya kadar geçen milisaniye cinsinden gecikme.",
+  "semanticTokenModifiers.global.description": "Yerel değişkenin aksine, genel bir değişken (genel ortamın bir alanı)."
 }

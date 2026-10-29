@@ -9,5 +9,6 @@
   "configuration.validate.mode.save": "Ellenőrzés fájl mentésekor.",
   "configuration.validate.mode.type": "Ellenőrzés gépelés közben, ha `#ieLua.validate.debounce#` ezredmásodpercig nem történt módosítás.",
   "configuration.validate.mode.saveAndType": "Ellenőrzés gépelés közben és fájl mentésekor.",
-  "configuration.validate.debounce.description": "Késleltetés ezredmásodpercben az utolsó módosítás és az ellenőrzés között, ha az `#ieLua.validate.mode#` értéke `type` vagy `saveAndType`."
+  "configuration.validate.debounce.description": "Késleltetés ezredmásodpercben az utolsó módosítás és az ellenőrzés között, ha az `#ieLua.validate.mode#` értéke `type` vagy `saveAndType`.",
+  "semanticTokenModifiers.global.description": "Globális változó (a globális környezet egy mezője), szemben a helyi változóval."
 }

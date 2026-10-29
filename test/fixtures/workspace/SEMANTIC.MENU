@@ -1,0 +1,11 @@
+-- Original fixture: semantic tokens in the Lua of a .menu file.
+`
+function SemanticShow(count)
+	return count + 1
+end
+`
+menu
+{
+	name 'SEMANTIC_MAIN'
+	onOpen "SemanticShow(2)"
+}

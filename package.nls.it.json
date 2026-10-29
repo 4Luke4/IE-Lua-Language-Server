@@ -9,5 +9,6 @@
   "configuration.validate.mode.save": "Convalida al salvataggio di un file.",
   "configuration.validate.mode.type": "Convalida durante la digitazione, dopo `#ieLua.validate.debounce#` millisecondi senza modifiche.",
   "configuration.validate.mode.saveAndType": "Convalida durante la digitazione e al salvataggio di un file.",
-  "configuration.validate.debounce.description": "Ritardo in millisecondi dopo l'ultima modifica prima della convalida, quando `#ieLua.validate.mode#` è `type` o `saveAndType`."
+  "configuration.validate.debounce.description": "Ritardo in millisecondi dopo l'ultima modifica prima della convalida, quando `#ieLua.validate.mode#` è `type` o `saveAndType`.",
+  "semanticTokenModifiers.global.description": "Una variabile globale (un campo dell'ambiente globale), a differenza di una variabile locale."
 }

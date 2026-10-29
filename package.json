@@ -65,6 +65,12 @@
         }
       }
     ],
+    "semanticTokenModifiers": [
+      {
+        "id": "global",
+        "description": "%semanticTokenModifiers.global.description%"
+      }
+    ],
     "commands": [
       {
         "command": "ieLua.validateDocument",
