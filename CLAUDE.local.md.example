@@ -1,8 +1,0 @@
-# CLAUDE.local.md — Personal Overrides (not committed)
-
-> Rename to `CLAUDE.local.md` and add it to `.gitignore`.
-> Use for machine- or person-specific notes that shouldn't live in the shared `CLAUDE.md`.
-
-- Preferred VS Code build for manual testing: `code-insiders`
-- Local test workspace: `<path/to/sample-workspace>`
-- Reply in: English
