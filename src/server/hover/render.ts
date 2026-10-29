@@ -76,11 +76,29 @@ function parts(target: HoverTarget, format: HoverFormat, messages: Messages): Pa
   }
 }
 
+/** The code line of a hover: how the target is declared or documented (`local function f(a)`, `string.format (formatstring, ···)`). */
+export function renderSignature(target: HoverTarget, messages: Messages): string {
+  // The code line is the same in both formats.
+  return parts(target, 'plaintext', messages).code;
+}
+
+/** The parts after the code line, already formatted. */
+function documentationParts({ documentation, link }: Parts, format: HoverFormat): string[] {
+  const linkPart = link && (format === 'markdown' ? `[${link.text}](${link.url})` : `${link.text}: ${link.url}`);
+  return [documentation, linkPart].filter((part) => part !== undefined);
+}
+
+const separator = (format: HoverFormat): string => (format === 'markdown' ? '\n\n---\n\n' : '\n\n');
+
+/** A hover without its code line (the documentation and the source link), or `undefined` when there is neither. */
+export function renderDocumentation(target: HoverTarget, format: HoverFormat, messages: Messages): string | undefined {
+  const rest = documentationParts(parts(target, format, messages), format);
+  return rest.length > 0 ? rest.join(separator(format)) : undefined;
+}
+
 /** The hover text for `target`. */
 export function renderHover(target: HoverTarget, format: HoverFormat, messages: Messages): string {
-  const { code, documentation, link } = parts(target, format, messages);
-  if (format === 'plaintext') {
-    return [code, documentation, link && `${link.text}: ${link.url}`].filter((part) => part !== undefined).join('\n\n');
-  }
-  return [`\`\`\`lua\n${code}\n\`\`\``, documentation, link && `[${link.text}](${link.url})`].filter((part) => part !== undefined).join('\n\n---\n\n');
+  const hover = parts(target, format, messages);
+  const code = format === 'markdown' ? `\`\`\`lua\n${hover.code}\n\`\`\`` : hover.code;
+  return [code, ...documentationParts(hover, format)].join(separator(format));
 }

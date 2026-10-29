@@ -60,6 +60,11 @@ export function manualEntry(name: string): ManualEntry | undefined {
   return manualEntries.get(name);
 }
 
+/** Every manual entry, in the manual's order. */
+export function allManualEntries(): readonly ManualEntry[] {
+  return [...manualEntries.values()];
+}
+
 // ------------------------------------------------- engine replacements
 
 /** A standard function the engine replaces, so the manual does not describe it. */
@@ -101,4 +106,9 @@ const externalEntries: ReadonlyMap<string, ExternalEntry> = new Map(
 /** The EEex-Docs entry for `name` as it is documented (`x`, `x.y` or `x:y`). */
 export function externalEntry(name: string): ExternalEntry | undefined {
   return externalEntries.get(name);
+}
+
+/** Every EEex-Docs entry, EEex Functions first, each section in its published order. */
+export function allExternalEntries(): readonly ExternalEntry[] {
+  return [...externalEntries.values()];
 }

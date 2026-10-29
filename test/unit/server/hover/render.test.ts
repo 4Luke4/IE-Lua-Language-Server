@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createMessages } from '../../../../src/server/l10n.ts';
-import { renderHover, type HoverFormat } from '../../../../src/server/hover/render.ts';
+import { renderDocumentation, renderHover, renderSignature, type HoverFormat } from '../../../../src/server/hover/render.ts';
 import { hoverTargetAt } from '../../../../src/server/hover/resolve.ts';
 import { parseDocument } from '../../../../src/server/syntax/document.ts';
 
@@ -90,6 +90,32 @@ describe('server/hover/render', () => {
       const markdown = render('C:AddGold(1)', 'AddGold');
       assert.match(markdown, /^```lua\nC:AddGold\n```\n\n---\n\n\[EE Game Lua Functions\]\(https:\/\/eeex-docs\.readthedocs\.io\/[^)]+\)$/);
       assert.match(render('EEex_AIBase_GetScriptLevel()', 'EEex', 'plaintext'), /^EEex_AIBase_GetScriptLevel\n\nEEex Functions: https:\/\/eeex-docs\.readthedocs\.io\//);
+    });
+  });
+
+  describe('signature and documentation separately', () => {
+    const hit = (text: string, needle: string): Parameters<typeof renderHover>[0] => {
+      const found = hoverTargetAt(parseDocument(text, 'lua'), text.indexOf(needle));
+      assert.ok(found, needle);
+      return found.target;
+    };
+
+    it('make up the hover: code line, then documentation and link', () => {
+      for (const [text, needle] of [['return math.huge', 'huge'], ['print(1)', 'print'], ['C:AddGold(1)', 'AddGold'], ['local x = 1 return x', 'x']] as const) {
+        const target = hit(text, needle);
+        for (const format of ['markdown', 'plaintext'] as const) {
+          const code = format === 'markdown' ? fence(renderSignature(target, english)) : renderSignature(target, english);
+          const documentation = renderDocumentation(target, format, english);
+          const separator = format === 'markdown' ? '\n\n---\n\n' : '\n\n';
+          assert.equal(renderHover(target, format, english), documentation === undefined ? code : `${code}${separator}${documentation}`, `${needle} ${format}`);
+        }
+      }
+    });
+
+    it('give the code line alone for names without documentation', () => {
+      const target = hit('local function f(a) end', 'f(');
+      assert.equal(renderSignature(target, english), 'local function f(a)');
+      assert.equal(renderDocumentation(target, 'markdown', english), undefined);
     });
   });
 });

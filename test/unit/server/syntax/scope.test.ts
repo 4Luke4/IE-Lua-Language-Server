@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { parseChunk } from '../../../../src/server/syntax/parser.ts';
-import { analyzeScopes, type ScopeAnalysis } from '../../../../src/server/syntax/scope.ts';
+import { analyzeScopes, visibleAt, type ScopeAnalysis } from '../../../../src/server/syntax/scope.ts';
 
 function analyze(source: string): ScopeAnalysis {
   const chunk = parseChunk(source);
@@ -121,5 +121,72 @@ describe('server/syntax/scope', () => {
 
   it('does not record declarations, reads or function paths with fields or methods as writes', () => {
     assert.deepEqual([...analyze('local x = y function t.f() end function t:m() end print(x)').writes], []);
+  });
+
+  describe('visibility', () => {
+    /**
+     * Names visible where `|` is in `marked` (the marker is removed before parsing,
+     * which may leave the code incomplete), sorted, as `name:kind@declaringOffset`.
+     */
+    function visible(marked: string): string[] {
+      const offset = marked.indexOf('|');
+      assert.ok(offset >= 0 && marked.indexOf('|', offset + 1) < 0, 'exactly one marker');
+      const source = marked.slice(0, offset) + marked.slice(offset + 1);
+      return visibleAt(analyzeScopes(parseChunk(source)), offset)
+        .map((d) => `${d.name}:${d.kind}@${d.identifier ? String(d.identifier.start) : '-'}`)
+        .sort();
+    }
+
+    it('makes a local visible after its statement, not in its own initializer', () => {
+      assert.deepEqual(visible('local x = 1 |'), ['x:local@6']);
+      assert.deepEqual(visible('local x = |'), []);
+      assert.deepEqual(visible('local x = y|'), []);
+      assert.deepEqual(visible('local x = 1 local y = x|'), ['x:local@6']);
+    });
+
+    it('makes a local function visible in its own body', () => {
+      assert.deepEqual(visible('local function f() | end'), ['f:localFunction@15']);
+    });
+
+    it('makes parameters and the implicit self visible in the body only', () => {
+      assert.deepEqual(visible('function t:m(a) | end'), ['a:parameter@13', 'self:self@-']);
+      assert.deepEqual(visible('function t:m(a) end |'), []);
+    });
+
+    it('makes for variables visible in the loop body, not in the loop expressions', () => {
+      assert.deepEqual(visible('for i = 1, 2 do | end'), ['i:forVariable@4']);
+      assert.deepEqual(visible('for i = 1, n| do end'), []);
+      assert.deepEqual(visible('for k, v in pairs(t) do | end'), ['k:forVariable@4', 'v:forVariable@7']);
+      assert.deepEqual(visible('for k, v in pairs(t) do end |'), []);
+    });
+
+    it('ends block scopes at their closing keyword, and lets until see the repeat body', () => {
+      assert.deepEqual(visible('do local x = 1 | end'), ['x:local@9']);
+      assert.deepEqual(visible('do local x = 1 end |'), []);
+      assert.deepEqual(visible('while c do local x = 1 | end'), ['x:local@17']);
+      assert.deepEqual(visible('repeat local x = 1 until x|'), ['x:local@13']);
+      assert.deepEqual(visible('repeat local x = 1 until x |'), []);
+      assert.deepEqual(visible('if a then local x = 1 | else end'), ['x:local@16']);
+      assert.deepEqual(visible('if a then local x = 1 else | end'), []);
+      assert.deepEqual(visible('if a then local x = 1 elseif | then end'), []);
+    });
+
+    it('keeps the innermost declaration of each name', () => {
+      assert.deepEqual(visible('local x = 1 do local x = 2 | end'), ['x:local@21']);
+      assert.deepEqual(visible('local x = 1 do local x = 2 end |'), ['x:local@6']);
+      assert.deepEqual(visible('local x = 1 local x = 2 |'), ['x:local@18']);
+      assert.deepEqual(visible('local a = 1 function f(a) | end'), ['a:parameter@23']);
+    });
+
+    it('sees through code that does not parse, up to the closing keyword', () => {
+      assert.deepEqual(visible('local function f(a)\n  local b = 1\n  a.|\nend'), ['a:parameter@17', 'b:local@28', 'f:localFunction@15']);
+      assert.deepEqual(visible('local function f(a)\n  local b = 1\n  print(|\nend'), ['a:parameter@17', 'b:local@28', 'f:localFunction@15']);
+      assert.deepEqual(visible('local function f(a)\n  local b = 1\nend\nprint(|'), ['f:localFunction@15']);
+    });
+
+    it('extends scopes without a closing keyword to the end of the enclosing scope', () => {
+      assert.deepEqual(visible('local function f(a)\n  local b = 1\n  |'), ['a:parameter@17', 'b:local@28', 'f:localFunction@15']);
+      assert.deepEqual(visible('do\n  for i = 1, 2 do\n    local x = i\nend\n|'), []);
+    });
   });
 });

@@ -38,6 +38,11 @@ versions with an **even** middle number (for example 1.**2**.0) are stable relea
   `Infinity_DisplayString` for a link to its EEex documentation, or over your own variables to
   see how they are declared. Only the libraries the game provides are documented, and `print`
   tells you that the game replaces it.
+- **Code completion.** Suggestions for the variables in scope, the globals your file defines,
+  the Lua functions the game provides (type `string.` for the string library), and EEex and
+  game functions such as `Infinity_DisplayString`, or methods after `C:`. Lua functions show
+  their description from the Lua 5.2 manual, EEex and game functions a link to their
+  documentation. In `.menu` files, completion works inside the Lua.
 - **Available in 14 languages**, following your VS Code display language.
 - **Works in other editors too**: setup guides for Sublime Text, Neovim, Emacs, JetBrains
   IDEs, Helix, Zed, Kate, Notepad++ and Geany are on the project page.

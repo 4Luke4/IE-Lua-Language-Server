@@ -1,0 +1,10 @@
+-- Original fixture: completion in the Lua of a .menu file.
+`
+completionShown = false
+`
+menu
+{
+	name 'COMPLETION_MAIN'
+	onOpen "completionShown = true"
+	enabled "completionShown"
+}

@@ -13,16 +13,6 @@ export interface HoverDeps {
   readonly messages: Messages;
 }
 
-/**
- * The format to answer in: the first of the client's `hover.contentFormat`
- * (listed in order of preference) that the server can produce; plain text
- * when the client lists none, which every client can display.
- */
-export function hoverFormat(contentFormat: readonly string[] | undefined): HoverFormat {
-  const supported = contentFormat?.find((kind) => kind === MarkupKind.Markdown || kind === MarkupKind.PlainText);
-  return supported === MarkupKind.Markdown ? 'markdown' : 'plaintext';
-}
-
 /** `textDocument/hover` (see src/server/hover/). */
 export function register(connection: Connection, documents: TextDocuments<TextDocument>, deps: HoverDeps): void {
   connection.onHover(({ textDocument, position }, token): Hover | null => {
