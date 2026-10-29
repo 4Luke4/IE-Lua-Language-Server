@@ -14,20 +14,26 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
 
 > [!NOTE]
 > This is an early version. It currently provides **syntax diagnostics**, **document symbols**,
-> **folding**, **go to definition**, **find references** and **rename** within a file; completion,
-> hover, workspace-wide navigation, formatting and more are planned.
+> **workspace symbols**, **folding**, and **go to definition**, **find references** and **rename**
+> within a file; completion, hover, cross-file navigation, formatting and more are planned.
 
 ## Features
 
 - **Syntax errors from the official Lua 5.2 compiler.** The real Lua 5.2.4 front end, built to
   WebAssembly, checks your code — nothing to install, and no code is ever run.
-- **`.menu` files understood.** Lua inside `` `…` `` blocks, `action`/`onOpen`/`onClose` scripts,
-  `enabled "…"` and `<property> lua "…"` expressions is checked, and errors point to the right line
-  of the `.menu` file. Upper-case names like `UI.MENU` are recognized, with Lua highlighting.
+- **`.menu` files understood as the game reads them.** All the Lua the game compiles is checked,
+  in the exact form it compiles it: `` `…` `` blocks, `onOpen`/`onClose`/`action…` scripts, and
+  `enabled`, `table`, `lua "…"` and other expressions, in `"…"` or `'…'`, plus the Lua the game
+  generates from `slotinfo` and `spellInfo`. Errors point to the right line of the `.menu` file,
+  and warnings flag text the game reads differently than it looks, such as `My_Menu` unquoted.
+  Upper-case names like `UI.MENU` are recognized, with Lua highlighting. The rules come from the
+  [IESDP description of the format](https://gibberlings3.github.io/iesdp/file_formats/ie_formats/menu_v1.htm).
 - **You decide when files are checked:** on save (default), while typing, both, or only on request.
 - **Outline and breadcrumbs.** Functions, methods, top-level variables and table fields of Lua files,
   and each menu of a `.menu` file by its `name`, in the Outline view, the breadcrumbs and
   **Go to Symbol in Editor**. Works while the file still has syntax errors.
+- **Go to Symbol in Workspace** across every Lua and `.menu` file of your workspace, including files
+  you haven't opened; files hidden with *Files: Exclude* are left out.
 - **Folding that follows the code:** functions, loops, each `if`/`elseif`/`else` branch, tables,
   comments, and every `{ … }` block and Lua script of a `.menu` file.
 - **Go to Definition, Find All References and Rename Symbol** for variables within a file. Locals
