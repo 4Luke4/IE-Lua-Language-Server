@@ -14,9 +14,9 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
 
 > [!NOTE]
 > This is an early version. It currently provides **syntax diagnostics**, **hover**,
-> **completion**, **document symbols**, **workspace symbols**, **folding**, and **go to definition**,
-> **find references** and **rename** within a file; cross-file navigation, formatting and more are
-> planned.
+> **completion**, **semantic highlighting**, **document symbols**, **workspace symbols**, **folding**,
+> and **go to definition**, **find references** and **rename** within a file; cross-file navigation,
+> formatting and more are planned.
 
 ## Features
 
@@ -49,6 +49,17 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
   (`Infinity_…`, `EEex_…`, and methods after `C:`), with the same documentation as on hover.
   Nothing the game lacks is suggested (`io`, `os`, `require`, coroutines). In `.menu` files,
   completion works inside the Lua only.
+- **Colors that show what each name is.** Parameters, local and global variables, functions,
+  table fields and the functions the game provides can each have their own color: the extension
+  tells VS Code what every name in the Lua is, by the same rules as hover. This needs a theme
+  that uses semantic highlighting, such as VS Code's default theme. Globals carry a `global`
+  modifier that you can style yourself, for example in `settings.json`:
+
+  ```json
+  "editor.semanticTokenColorCustomizations": {
+    "rules": { "*.global": { "bold": true } }
+  }
+  ```
 - **Go to Definition, Find All References and Rename Symbol** for variables within a file. Locals
   follow Lua's scoping rules; globals are followed across all the Lua of a `.menu` file. Rename
   refuses, and says why, when it could change what the code does: a name already in use nearby,

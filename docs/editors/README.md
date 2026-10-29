@@ -70,6 +70,7 @@ node /path/to/server.js --stdio
 | Rename | `textDocument/prepareRename`, `textDocument/rename` | Same file only; refused, with the reason as the error message, when the rename could change what the code does. |
 | Hover | `textDocument/hover` | Markdown or plain text, whichever the editor prefers (`hover.contentFormat`); the server's own words follow the editor's `locale`. See below. |
 | Completion | `textDocument/completion`, `completionItem/resolve` | Triggered by `.` and `:`. Documentation is sent on resolve, in the editor's preferred `completionItem.documentationFormat`. See below. |
+| Semantic tokens | `textDocument/semanticTokens/full`, `/full/delta`, `/range` | Names only (keywords, strings and comments are left to the editor's highlighting). See below. |
 | Workspace symbols | `workspace/symbol` | Every `*.lua` and `*.menu` file under the workspace folders, plus open files. See below. |
 
 Workspace symbols need an editor that sends **workspace folders** when it starts the server;
@@ -96,6 +97,13 @@ detail and its documentation on resolve. Members are offered after `.` and `:` o
 Each item replaces the name around the cursor (`insertReplaceSupport` and
 `completionList.itemDefaults` are used when the editor has them).
 
-Symbols, folding, hover, completion and navigation always reflect the current text, whatever `validate.mode` is.
+Semantic tokens classify every name in the Lua with standard token types (`namespace`,
+`function`, `method`, `variable`, `parameter`, `property`, `label`) and modifiers
+(`declaration`, `modification`, `defaultLibrary`), plus a `global` modifier for global variables.
+`defaultLibrary` marks the Lua 5.2 library and the game's own functions (`Infinity_…`), not EEex
+functions. How the names are colored depends on the editor and its color scheme; an editor that
+ignores the `global` modifier still gets the token type.
+
+Symbols, folding, hover, completion, semantic tokens and navigation always reflect the current text, whatever `validate.mode` is.
 Navigation works on variables: table fields (`t.x`) and `goto` labels are not followed, and in a
 `.menu` file globals are shared by all its Lua, while locals stay in their own block or script.
