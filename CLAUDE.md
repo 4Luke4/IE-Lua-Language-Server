@@ -131,6 +131,12 @@ esbuild does **not** type-check. Always run `npm run check-types` — a green bu
 - Only advertise capabilities that are actually implemented.
 - Debug the server with `--inspect=6009` via the `debug` server options.
 - Full details: `.claude/rules/language-server.md`.
+- **Engine facts come from IESDP** (checked against the 2.6.6.0 and 2.7.3.0 executables), never from guesses:
+  [MENU format](https://gibberlings3.github.io/iesdp/file_formats/ie_formats/menu_v1.htm) (lexer, grammar,
+  which properties are Lua and the exact text compiled for them: see `src/server/validation/menu*.ts`) and
+  [Engine Lua globals](https://gibberlings3.github.io/iesdp/file_formats/ie_formats/lua_globals.htm). The engine's
+  Lua state opens only `_G`, `table`, `string`, `bit32`, `math` and `debug` and replaces `print`; `io`, `os` and
+  `package` (hence `require`) exist only as test-automation stubs. Hover/completion must not offer them.
 
 ---
 
