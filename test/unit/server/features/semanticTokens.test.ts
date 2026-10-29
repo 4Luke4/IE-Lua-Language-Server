@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { SemanticTokenModifiers, SemanticTokensBuilder, SemanticTokenTypes } from 'vscode-languageserver/node';
+import { SemanticTokenModifiers, SemanticTokenTypes } from 'vscode-languageserver/node';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { LEGEND, pushTokens } from '../../../../src/server/features/semanticTokens.ts';
+import { LEGEND, pushTokens, TokenResults, type TokenSink } from '../../../../src/server/features/semanticTokens.ts';
 import { classifyNames } from '../../../../src/server/semanticTokens/classify.ts';
 import { parseDocument } from '../../../../src/server/syntax/document.ts';
 
@@ -54,20 +54,41 @@ describe('server/features/semanticTokens', () => {
     assert.deepEqual(pushes(text, { start: 0, end: 0 }), []);
   });
 
-  it('builds the delta of a document against its previous result', () => {
-    const builder = new SemanticTokensBuilder();
-    const fill = (text: string): void => {
+  describe('TokenResults', () => {
+    /** A `fill` for `text`, as the handlers make one for a document. */
+    const fill = (text: string) => (sink: TokenSink): void => {
       const document = TextDocument.create('file:///t.lua', 'lua', 1, text);
-      pushTokens(builder, classifyNames(parseDocument(text, 'lua')), (offset) => document.positionAt(offset));
+      pushTokens(sink, classifyNames(parseDocument(text, 'lua')), (offset) => document.positionAt(offset));
     };
-    fill('local a = 1');
-    const first = builder.build();
-    builder.previousResult(first.resultId ?? '');
-    fill('local a = 1 return a');
-    const delta = builder.buildEdits();
-    assert.ok('edits' in delta, 'a delta against the previous result');
-    builder.previousResult('unknown');
-    fill('local b');
-    assert.ok('data' in builder.buildEdits(), 'a full result when the previous one is unknown');
+
+    it('answers a delta request with edits against the last full result', () => {
+      const results = new TokenResults();
+      const first = results.full('file:///a.lua', fill('local a = 1'));
+      assert.ok(first.resultId);
+      const delta = results.delta('file:///a.lua', first.resultId, fill('local a = 1 return a'));
+      assert.ok('edits' in delta, 'edits');
+      // One token appended after the first five numbers: `a` (variable, index 3) 13 characters after the declaration at 6.
+      assert.deepEqual(delta.edits, [{ start: 5, deleteCount: 0, data: [0, 13, 1, 3, 0] }]);
+    });
+
+    it('answers with a full result when the previous result is unknown, unseen or closed', () => {
+      const results = new TokenResults();
+      const first = results.full('file:///a.lua', fill('local a'));
+      assert.ok('data' in results.delta('file:///a.lua', 'not-a-result', fill('local b')), 'unknown id');
+      assert.ok('data' in results.delta('file:///b.lua', first.resultId ?? '', fill('local b')), 'unseen document');
+      const again = results.full('file:///a.lua', fill('local a'));
+      results.delete('file:///a.lua');
+      assert.ok('data' in results.delta('file:///a.lua', again.resultId ?? '', fill('local a')), 'closed document');
+    });
+
+    it('chains deltas: each delta becomes the result the next one is diffed against', () => {
+      const results = new TokenResults();
+      const first = results.full('file:///a.lua', fill('local a'));
+      const second = results.delta('file:///a.lua', first.resultId ?? '', fill('local a local b'));
+      assert.ok('edits' in second && second.resultId);
+      const third = results.delta('file:///a.lua', second.resultId, fill('local a local b'));
+      assert.ok('edits' in third, 'edits');
+      assert.deepEqual(third.edits, []);
+    });
   });
 });
