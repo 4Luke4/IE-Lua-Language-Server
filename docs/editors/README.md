@@ -69,6 +69,7 @@ node /path/to/server.js --stdio
 | Find references | `textDocument/references` | Every use of a local or global in the same file. |
 | Rename | `textDocument/prepareRename`, `textDocument/rename` | Same file only; refused, with the reason as the error message, when the rename could change what the code does. |
 | Hover | `textDocument/hover` | Markdown or plain text, whichever the editor prefers (`hover.contentFormat`); the server's own words follow the editor's `locale`. See below. |
+| Completion | `textDocument/completion`, `completionItem/resolve` | Triggered by `.` and `:`. Documentation is sent on resolve, in the editor's preferred `completionItem.documentationFormat`. See below. |
 | Workspace symbols | `workspace/symbol` | Every `*.lua` and `*.menu` file under the workspace folders, plus open files. See below. |
 
 Workspace symbols need an editor that sends **workspace folders** when it starts the server;
@@ -88,6 +89,13 @@ others get plain text with the links written out. The few words of the server's 
 `parameter`) are translated when the editor sends a `locale` the extension supports (one of the
 14 VS Code display languages, or its language alone: `de-AT` uses German); otherwise English.
 
-Symbols, folding, hover and navigation always reflect the current text, whatever `validate.mode` is.
+Completion offers the variables in scope, the globals the file assigns, the Lua 5.2 libraries the
+game provides and the EEex and game functions, with the hover's declaration line as the item's
+detail and its documentation on resolve. Members are offered after `.` and `:` on globals
+(`string.`, `C:`) and after `("…"):`; there is no type inference, so fields of locals are not.
+Each item replaces the name around the cursor (`insertReplaceSupport` and
+`completionList.itemDefaults` are used when the editor has them).
+
+Symbols, folding, hover, completion and navigation always reflect the current text, whatever `validate.mode` is.
 Navigation works on variables: table fields (`t.x`) and `goto` labels are not followed, and in a
 `.menu` file globals are shared by all its Lua, while locals stay in their own block or script.

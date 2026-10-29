@@ -14,9 +14,9 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
 
 > [!NOTE]
 > This is an early version. It currently provides **syntax diagnostics**, **hover**,
-> **document symbols**, **workspace symbols**, **folding**, and **go to definition**,
-> **find references** and **rename** within a file; completion, cross-file navigation, formatting
-> and more are planned.
+> **completion**, **document symbols**, **workspace symbols**, **folding**, and **go to definition**,
+> **find references** and **rename** within a file; cross-file navigation, formatting and more are
+> planned.
 
 ## Features
 
@@ -44,6 +44,11 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
   `Infinity_DisplayString` or `C:AddGold` link to the
   [EEex documentation](https://eeex-docs.readthedocs.io/en/latest/), and your own variables show
   how they are declared.
+- **Code completion** for the variables in scope, the globals your file defines, the Lua functions
+  the game provides (`string.` lists the string library), and EEex and game functions
+  (`Infinity_…`, `EEex_…`, and methods after `C:`), with the same documentation as on hover.
+  Nothing the game lacks is suggested (`io`, `os`, `require`, coroutines). In `.menu` files,
+  completion works inside the Lua only.
 - **Go to Definition, Find All References and Rename Symbol** for variables within a file. Locals
   follow Lua's scoping rules; globals are followed across all the Lua of a `.menu` file. Rename
   refuses, and says why, when it could change what the code does: a name already in use nearby,
