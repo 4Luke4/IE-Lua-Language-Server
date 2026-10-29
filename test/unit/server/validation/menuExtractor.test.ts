@@ -60,6 +60,59 @@ describe('server/validation/menuExtractor', () => {
     assert.deepEqual(chunksOf('action\r\n"\r\n\tx()\r\n"'), [['statements', '\r\n\tx()\r\n']]);
   });
 
+  it('extracts Lua from single-quoted strings like double-quoted ones', () => {
+    assert.deepEqual(chunksOf("action 'Close()'\nbam lua 'getBam()'\nenabled 'a == 1'"), [
+      ['statements', 'Close()'],
+      ['expression', 'getBam()'],
+      ['expression', 'a == 1'],
+    ]);
+  });
+
+  it('extracts unquoted words that are not keywords, which the engine reads as strings', () => {
+    assert.deepEqual(chunksOf('table characterDetails\nenabled\tcurrentSave\ntext lua someName'), [
+      ['expression', 'characterDetails'],
+      ['expression', 'currentSave'],
+      ['expression', 'someName'],
+    ]);
+  });
+
+  it('extracts table, seperator, useOverlayTint, actiondrag and bitmap res as expressions', () => {
+    assert.deepEqual(
+      chunksOf('table "rows"\nseperator "sep()"\nuseOverlayTint "tint"\nactionDrag "drag()"\nbitmap res "resName()"'),
+      [
+        ['expression', 'rows'],
+        ['expression', 'sep()'],
+        ['expression', 'tint'],
+        ['expression', 'drag()'],
+        ['expression', 'resName()'],
+      ],
+    );
+  });
+
+  it('extracts res only after bitmap', () => {
+    assert.deepEqual(chunksOf('res "x"\nbitmap "y"'), []);
+  });
+
+  it('finds properties anywhere on a line, since the grammar ignores line breaks', () => {
+    assert.deepEqual(chunksOf('button { name "B" area 0 0 10 10 action "f()" enabled "g()" }'), [
+      ['statements', 'f()'],
+      ['expression', 'g()'],
+    ]);
+  });
+
+  it('keeps a property and its string together across inline Lua, which produces no token', () => {
+    assert.deepEqual(chunksOf('action `x = 1\n` "f()"'), [
+      ['statements', 'x = 1\n'],
+      ['statements', 'f()'],
+    ]);
+  });
+
+  it('does not validate an unterminated string, which runs to the end of the file', () => {
+    const { chunks, problems } = extractMenuLua("action 'f()\n");
+    assert.deepEqual(chunks, []);
+    assert.deepEqual(problems.map((p) => p.code), ['menu-unterminated-string']);
+  });
+
   it('reports an unterminated backtick block', () => {
     const { chunks, problems } = extractMenuLua('menu\n{\n}\n`\nlocal x = 1\n');
     assert.deepEqual(chunks, []);
@@ -82,6 +135,10 @@ describe('server/validation/menuExtractor', () => {
     it('records nested blocks with their keyword, on the same line or the line before', () => {
       const menu = "menu\n{\n\tname 'MAIN'\n\tbutton {\n\t\taction \"f()\"\n\t}\n\tlabel\n\t{\n\t}\n}\nmenu\n{\n}\n";
       assert.equal(outline(extractMenuLua(menu).blocks), 'menu(MAIN)[button label] menu');
+    });
+
+    it('names blocks written on one line, and takes unquoted names', () => {
+      assert.equal(outline(extractMenuLua('menu { name MAIN button { name "B" area 0 0 1 1 } }').blocks), 'menu(MAIN)[button(B)]');
     });
 
     it('records the offsets of the keyword, the braces and the name', () => {

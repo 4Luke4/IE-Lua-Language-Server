@@ -19,8 +19,11 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   syntax diagnostics from the official Lua 5.2.4 compiler, built to WebAssembly from the
   checksum-verified lua.org tarball (`third_party/lua52/`, reproducible build checked in CI).
 - `.menu` support: new `ie-menu` language (case-insensitive `.menu` extension), TextMate grammar
-  with embedded Lua highlighting, and validation of `` `…` `` blocks, `action*`/`onOpen`/`onClose`
-  scripts, `enabled "…"` and `<property> lua "…"` expressions.
+  with embedded Lua highlighting, and validation of the Lua the engine compiles, found with a lexer
+  that follows the engine's (per [IESDP](https://gibberlings3.github.io/iesdp/file_formats/ie_formats/menu_v1.htm)):
+  `` `…` `` blocks; `onOpen`, `onClose` and `action*` scripts; and the expressions of `enabled`,
+  `actionDrag`, `table`, `seperator`, `useOverlayTint`, `bitmap res` and every `lua` value. A value
+  can be `"…"`, `'…'` or an unquoted word that is not a keyword, anywhere on a line.
 - Settings `ieLua.validate.mode` (`manual`, `save` (default), `type`, `saveAndType`) and
   `ieLua.validate.debounce` (default 300 ms).
 - Command **IE Lua: Validate Current File** (`ieLua.validateDocument`).
