@@ -15,7 +15,7 @@
 //   string) are not followed, except `("…"):`, a method of the string library.
 // - Anywhere else: a variable (or a keyword).
 
-import type { ParsedDocument } from './document.ts';
+import type { ParsedChunk, ParsedDocument } from './document.ts';
 import { lex, type Comment, type ParseError, type Token } from './lexer.ts';
 
 export type CompletionContext =
@@ -105,13 +105,49 @@ function memberContext(tokens: readonly Token[], index: number): CompletionConte
   return { kind: 'member', path, operator };
 }
 
+/**
+ * Where to start lexing for a cursor at `offset`: the start of the last
+ * top-level statement of the chunk that starts before it and no later than
+ * the first syntax error, else the chunk start. Such a statement was parsed
+ * from the chunk start without errors, so it starts at a token of the whole
+ * chunk (never inside a string or comment), and the tokens the context looks
+ * back at belong to it or to later statements. After an error, the parser
+ * resumes at likely statement starts, such as a name at the start of a line,
+ * which may still be inside an expression (`t.` then `z` on the next line is
+ * `t.z`), so those are not used. This keeps a request proportional to one
+ * statement rather than to the file while the code above it parses.
+ */
+export function lexStart({ chunk, tree }: ParsedChunk, offset: number): number {
+  const statements = tree.body.body;
+  const limit = Math.min(offset - 1, tree.errors[0]?.start ?? Infinity);
+  let low = 0;
+  let high = statements.length - 1;
+  let from = chunk.offset;
+  while (low <= high) {
+    const middle = (low + high) >> 1;
+    const statement = statements[middle];
+    if (statement && statement.start <= limit) {
+      from = Math.max(from, statement.start);
+      low = middle + 1;
+    } else {
+      high = middle - 1;
+    }
+  }
+  return from;
+}
+
 /** The completion site at `offset` of a parsed document whose text is `text`, or `undefined` when nothing can be completed there. */
 export function completionSiteAt(document: ParsedDocument, text: string, offset: number): CompletionSite | undefined {
   const chunkIndex = document.chunks.findIndex(({ chunk }) => chunk.offset <= offset && offset <= chunk.offset + chunk.text.length);
   const parsed = document.chunks[chunkIndex];
   if (!parsed) return undefined;
+  return siteFrom(parsed, chunkIndex, text, offset, lexStart(parsed, offset));
+}
+
+/** `completionSiteAt` for the chunk `parsed`, lexing from `from` (exported for tests: from the chunk start, the result must be the same). */
+export function siteFrom(parsed: ParsedChunk, chunkIndex: number, text: string, offset: number, from: number): CompletionSite | undefined {
   const { chunk } = parsed;
-  const { tokens, comments, errors } = lex(text, chunk.offset, offset);
+  const { tokens, comments, errors } = lex(text, from, offset);
   if (inComment(comments, errors, offset)) return undefined;
   tokens.pop(); // eof
 

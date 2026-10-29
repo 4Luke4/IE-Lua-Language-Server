@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { completionSiteAt } from '../../../../src/server/syntax/completionContext.ts';
+import { completionSiteAt, lexStart, siteFrom } from '../../../../src/server/syntax/completionContext.ts';
 import { parseDocument } from '../../../../src/server/syntax/document.ts';
 
 /**
@@ -117,6 +117,57 @@ describe('server/syntax/completionContext', () => {
       assert.equal(site(menu('ena|bled "x"'), 'menu'), undefined);
       assert.equal(site(`\`\nstring.| \`\n${menu('')}`, 'menu'), 'string. [] 9-9');
       assert.equal(site(`|${menu('')}`, 'menu'), undefined);
+    });
+  });
+
+  describe('lexing from the last statement before the cursor', () => {
+    const sources: [string, 'lua' | 'menu'][] = [
+      [
+        [
+          'local a, b = 1, "two" -- comment',
+          '--[[ long',
+          'comment ]] local t = { x = [[long',
+          'string]] }',
+          '::top:: goto top',
+          'function M.f(p, q) for i = 1, p do print(i .. q) end return string.format("%d", p) end',
+          'local function g(...) return ("x"):rep(2), C:AddGold(1), _G.string.len end',
+          'if a then local c = a elseif b then t.x = b else repeat local d = 1 until d end',
+          'x = f(a, ',
+          'y = t.',
+          'z = 1 local',
+        ].join('\n'),
+        'lua',
+      ],
+      ['`\nshown = false\n`\nmenu { name "M" onOpen "local n = 1 shown = n" enabled "shown and not x." action "for k, v in pairs(t) do f(v) end" }', 'menu'],
+    ];
+
+    it('finds the same site at every offset as lexing the whole chunk', () => {
+      for (const [text, kind] of sources) {
+        const document = parseDocument(text, kind);
+        for (let offset = 0; offset <= text.length; offset++) {
+          const chunkIndex = document.chunks.findIndex(({ chunk }) => chunk.offset <= offset && offset <= chunk.offset + chunk.text.length);
+          const parsed = document.chunks[chunkIndex];
+          if (!parsed) continue;
+          assert.deepEqual(completionSiteAt(document, text, offset), siteFrom(parsed, chunkIndex, text, offset, parsed.chunk.offset), `offset ${String(offset)}`);
+        }
+      }
+    });
+
+    it('starts at the last top-level statement that starts before the cursor', () => {
+      const text = 'local a = 1\nlocal b = 2\nb = ';
+      const [parsed] = parseDocument(text, 'lua').chunks;
+      assert.ok(parsed);
+      assert.equal(lexStart(parsed, 0), 0);
+      assert.equal(lexStart(parsed, 12), 0);
+      assert.equal(lexStart(parsed, 13), 12);
+      assert.equal(lexStart(parsed, text.length), 12);
+    });
+
+    it('does not start at statements the parser found after a syntax error', () => {
+      const text = 'local a = 1\ny = t.\nz = 1';
+      const [parsed] = parseDocument(text, 'lua').chunks;
+      assert.ok(parsed);
+      assert.equal(lexStart(parsed, text.length), 12);
     });
   });
 });
