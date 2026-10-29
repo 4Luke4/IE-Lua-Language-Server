@@ -14,6 +14,9 @@ versions with an **even** middle number (for example 1.**2**.0) are stable relea
   with the official Lua 5.2 compiler, and errors appear in the Problems panel.
 - **`.menu` files are recognized**, including upper-case names such as `UI.MENU`, with
   Lua highlighting inside them.
+- **Warnings for `.menu` text the game reads differently than it looks**: an underscore in
+  unquoted text (`My_Menu` is read as two words), a Lua block whose last character the game
+  drops, and unquoted words long enough to make the game abort.
 - **Choose when files are checked** with the *IE Lua › Validate: Mode* setting: on save
   (the default), while typing, both, or only on request.
 - **Check a file on request** with the **IE Lua: Validate Current File** command.

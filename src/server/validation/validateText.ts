@@ -89,5 +89,6 @@ function problem(chunk: LuaChunk, start: number, end: number, message: string): 
     end: chunk.offset + end,
     message,
     code: DiagnosticCode.LuaSyntax,
+    severity: 'error',
   };
 }

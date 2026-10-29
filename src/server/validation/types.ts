@@ -59,8 +59,14 @@ export const DiagnosticCode = {
   LuaSyntax: 'lua-syntax',
   /** A `` ` `` Lua block in a .menu file is never closed. */
   MenuUnterminatedBlock: 'menu-unterminated-block',
-  /** A `"` string in a .menu file is never closed. */
+  /** A `"` or `'` string in a .menu file is never closed. */
   MenuUnterminatedString: 'menu-unterminated-string',
+  /** The character before the closing `` ` `` of a .menu Lua block is not white space; the engine drops it. */
+  MenuInlineLuaLastCharacter: 'menu-inline-lua-last-character',
+  /** An unquoted word of 64 or more characters in a .menu file; the engine aborts. */
+  MenuWordTooLong: 'menu-word-too-long',
+  /** `_` joined to unquoted text in a .menu file; the engine skips it and splits the text. */
+  MenuUnquotedUnderscore: 'menu-unquoted-underscore',
 } as const;
 export type DiagnosticCode = (typeof DiagnosticCode)[keyof typeof DiagnosticCode];
 
@@ -70,4 +76,5 @@ export interface Problem {
   readonly end: number;
   readonly message: string;
   readonly code: DiagnosticCode;
+  readonly severity: 'error' | 'warning';
 }

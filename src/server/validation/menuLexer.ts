@@ -64,6 +64,25 @@ function isDigit(c: string | undefined): boolean {
   return c !== undefined && /^[0-9]$/.test(c);
 }
 
+/** IESDP, Limits: "A longer unquoted word [than 63 characters] aborts the game." */
+export const MAX_WORD_LENGTH = 64;
+
+function isWordOrUnderscore(c: string | undefined): boolean {
+  return c === '_' || isLetter(c) || isDigit(c);
+}
+
+/**
+ * The run of letters, digits and `_` around the `_` at `at`, and the words and
+ * numbers the engine reads from it (none when the run is only underscores).
+ */
+function underscoreRun(text: string, at: number): { start: number; end: number; parts: string[] } {
+  let start = at;
+  while (start > 0 && isWordOrUnderscore(text[start - 1])) start--;
+  let end = at;
+  while (isWordOrUnderscore(text[end])) end++;
+  return { start, end, parts: text.slice(start, end).match(/[A-Za-z][A-Za-z0-9]*|[0-9]+/g) ?? [] };
+}
+
 /** Splits a MENU file into tokens. Never throws. */
 export function lexMenu(text: string): MenuLexResult {
   const tokens: MenuToken[] = [];
@@ -72,6 +91,8 @@ export function lexMenu(text: string): MenuLexResult {
   const simple = (type: '{' | '}' | '-', start: number): void => {
     tokens.push({ type, start, end: start + 1, valueStart: start, valueEnd: start + 1 });
   };
+  /** End of the last run reported by the underscore check, so each run is reported once. */
+  let underscoreRunEnd = 0;
   let i = 0;
   while (i < text.length) {
     const c = text[i];
@@ -88,10 +109,21 @@ export function lexMenu(text: string): MenuLexResult {
           end: i + 1,
           message: 'Unterminated Lua block: missing closing "`".',
           code: DiagnosticCode.MenuUnterminatedBlock,
+          severity: 'error',
         });
         break;
       }
       inline.push({ start: i, close });
+      const last = close - 1;
+      if (last > i && !isMenuSpace(text[last])) {
+        problems.push({
+          start: last,
+          end: close,
+          message: `The engine drops the last character before the closing "\`", so ${JSON.stringify(text[last])} is not run. End the block with a line break or a space.`,
+          code: DiagnosticCode.MenuInlineLuaLastCharacter,
+          severity: 'warning',
+        });
+      }
       i = close + 1;
     } else if (c === '"' || c === "'") {
       const close = text.indexOf(c, i + 1);
@@ -101,6 +133,7 @@ export function lexMenu(text: string): MenuLexResult {
           end: i + 1,
           message: c === '"' ? 'Unterminated string: missing closing \'"\'.' : 'Unterminated string: missing closing "\'".',
           code: DiagnosticCode.MenuUnterminatedString,
+          severity: 'error',
         });
         tokens.push({ type: 'string', start: i, end: text.length, valueStart: i + 1, valueEnd: text.length, quote: c });
         break;
@@ -114,6 +147,15 @@ export function lexMenu(text: string): MenuLexResult {
     } else if (isLetter(c)) {
       const start = i;
       while (isLetter(text[i]) || isDigit(text[i])) i++;
+      if (i - start >= MAX_WORD_LENGTH) {
+        problems.push({
+          start,
+          end: i,
+          message: `This unquoted word has ${i - start} characters; the engine aborts on words of ${MAX_WORD_LENGTH} or more. Quote it.`,
+          code: DiagnosticCode.MenuWordTooLong,
+          severity: 'error',
+        });
+      }
       const keyword = menuKeyword(text.slice(start, i));
       tokens.push(
         keyword === undefined
@@ -121,6 +163,20 @@ export function lexMenu(text: string): MenuLexResult {
           : { type: 'keyword', start, end: i, valueStart: start, valueEnd: i, keyword },
       );
     } else {
+      if (c === '_' && i >= underscoreRunEnd) {
+        const run = underscoreRun(text, i);
+        underscoreRunEnd = run.end;
+        if (run.parts.length > 0) {
+          const written = text.slice(run.start, run.end);
+          problems.push({
+            start: run.start,
+            end: run.end,
+            message: `The engine skips "_" in unquoted text, so ${written} is read as ${run.parts.join(' ')}. Quote it: "${written}".`,
+            code: DiagnosticCode.MenuUnquotedUnderscore,
+            severity: 'warning',
+          });
+        }
+      }
       i++;
     }
   }

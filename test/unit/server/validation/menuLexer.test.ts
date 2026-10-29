@@ -68,6 +68,31 @@ describe('server/validation/menuLexer', () => {
     ]);
   });
 
+  it('warns when the character before a closing backtick is not white space, since the engine drops it', () => {
+    const text = '`a()`\n`b()\n`\n`c() `\n``';
+    const { problems } = lexMenu(text);
+    assert.deepEqual(problems.map((p) => [p.code, p.severity, text.slice(p.start, p.end)]), [
+      ['menu-inline-lua-last-character', 'warning', ')'],
+    ]);
+    assert.match(problems[0]?.message ?? '', /drops the last character before the closing "`", so "\)" is not run/);
+  });
+
+  it('reports unquoted words of 64 or more characters, which abort the engine', () => {
+    const text = `name ${'a'.repeat(63)} name ${'b'.repeat(64)} name "${'c'.repeat(100)}"`;
+    const { problems } = lexMenu(text);
+    assert.deepEqual(problems.map((p) => [p.code, p.severity, p.end - p.start]), [['menu-word-too-long', 'error', 64]]);
+  });
+
+  it('warns once per run about "_" joined to unquoted text, naming what the engine reads', () => {
+    const text = 'name My_Menu_1 name "Quoted_Name" -- a_b\n`x_y = 1\n` _ __ v_';
+    const { problems } = lexMenu(text);
+    assert.deepEqual(problems.map((p) => [p.code, p.severity, text.slice(p.start, p.end)]), [
+      ['menu-unquoted-underscore', 'warning', 'My_Menu_1'],
+      ['menu-unquoted-underscore', 'warning', 'v_'],
+    ]);
+    assert.equal(problems[0]?.message, 'The engine skips "_" in unquoted text, so My_Menu_1 is read as My Menu 1. Quote it: "My_Menu_1".');
+  });
+
   it('reports an unterminated inline Lua block and stops', () => {
     const { tokens: found, problems } = lexMenu('a `b c');
     assert.equal(found.length, 1);

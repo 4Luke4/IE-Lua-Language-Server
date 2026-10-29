@@ -29,6 +29,11 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   `return` value, and `` `…` `` blocks without their last character, which the engine drops.
   `slotinfo`, `spellInfo` and `memorizedSpellInfo` strings are checked in every expression and
   statement the engine generates from them (`T.item.icon`, `Infinity_SwapSlot(T.id)`, …).
+- `.menu` diagnostics for text the engine misreads (codes are stable): `menu-unterminated-string`
+  for `"` and `'` strings, `menu-unterminated-block`, and the new `menu-word-too-long` (error: an
+  unquoted word of 64 or more characters aborts the game), `menu-inline-lua-last-character`
+  (warning: the character before a closing backtick is dropped) and `menu-unquoted-underscore`
+  (warning: unquoted `My_Menu` is read as `My` and `Menu`).
 - Settings `ieLua.validate.mode` (`manual`, `save` (default), `type`, `saveAndType`) and
   `ieLua.validate.debounce` (default 300 ms).
 - Command **IE Lua: Validate Current File** (`ieLua.validateDocument`).

@@ -37,7 +37,7 @@ export function register(connection: Connection, documents: TextDocuments<TextDo
     }
     const diagnostics: Diagnostic[] = validateText(document.getText(), documentKind(uri, document.languageId), lua).map((problem) => ({
       range: { start: document.positionAt(problem.start), end: document.positionAt(problem.end) },
-      severity: DiagnosticSeverity.Error,
+      severity: problem.severity === 'warning' ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error,
       source: DIAGNOSTIC_SOURCE,
       code: problem.code,
       message: problem.message,

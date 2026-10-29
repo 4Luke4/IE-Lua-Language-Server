@@ -73,8 +73,9 @@ describe('server/validation/validateText (official Lua 5.2.4 compiler)', () => {
     });
 
     it('compiles a backtick block without its last character, as the engine does', () => {
-      assert.deepEqual(problems('`x = 1`', 'menu', lua).map(([code, , message]) => [code, message]), [
-        ['lua-syntax', 'unexpected symbol near <eof>'],
+      assert.deepEqual(problems('`x = 1`', 'menu', lua).map(([code, found]) => [code, found]), [
+        ['menu-inline-lua-last-character', '1'],
+        ['lua-syntax', ''],
       ]);
       assert.deepEqual(problems('`x = 1\n`', 'menu', lua), []);
     });
@@ -105,6 +106,14 @@ describe('server/validation/validateText (official Lua 5.2.4 compiler)', () => {
 
     it('rejects statements where an expression is required', () => {
       assert.equal(validateText('enabled "x = 1"', 'menu', lua).length, 1);
+    });
+
+    it('reports Lua syntax errors as errors and misread menu text as warnings', () => {
+      const found = validateText('a_b action "f("', 'menu', lua);
+      assert.deepEqual(found.map((p) => [p.code, p.severity]), [
+        ['menu-unquoted-underscore', 'warning'],
+        ['lua-syntax', 'error'],
+      ]);
     });
 
     it('includes extractor problems', () => {
