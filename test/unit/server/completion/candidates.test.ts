@@ -92,6 +92,14 @@ describe('server/completion/candidates', () => {
       assert.deepEqual(all.filter((label) => KEYWORDS_22.includes(label)), ['and', 'false', 'function', 'nil', 'not', 'or', 'true']);
     });
 
+    it('describes a document global by its first assignment, in document order across .menu chunks', () => {
+      assert.equal(candidate('G = 1 function G() end |', 'G'), 'variable 1 global assignment -');
+      assert.equal(candidate('function G() end G = 1 |', 'G'), 'function 1 global functionDeclaration -');
+      const menu = 'menu { name "M" onOpen "function G() end" action "G = 1 |" }';
+      const found = candidates(menu, 'menu').find((c) => c.label === 'G');
+      assert.equal(found?.target?.kind === 'global' ? found.target.site?.kind : undefined, 'functionDeclaration');
+    });
+
     it('does not offer globals the document only reads', () => {
       assert.ok(!labels('print(undefinedName) |').includes('undefinedName'));
     });

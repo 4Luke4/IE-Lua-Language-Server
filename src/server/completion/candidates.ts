@@ -36,6 +36,7 @@ import {
   type ExternalEntry,
   type ManualEntry,
 } from '../hover/knowledge.ts';
+import type * as Ast from '../syntax/ast.ts';
 import type { CompletionSite } from '../syntax/completionContext.ts';
 import type { ParsedDocument } from '../syntax/document.ts';
 import { fieldWrites, withoutG } from '../syntax/globalPaths.ts';
@@ -119,14 +120,21 @@ const documentGlobalLists = new WeakMap<ParsedDocument, readonly Candidate[]>();
 function documentGlobals(document: ParsedDocument): readonly Candidate[] {
   let list = documentGlobalLists.get(document);
   if (!list) {
-    const names = new Set<string>();
+    // One pass in document order (chunks, then identifiers in source order). The
+    // first write of each name is what hover describes (`definitions(…)[0]`).
+    const firstWrites = new Map<string, Ast.Identifier>();
+    const assigned = new Set<string>();
     for (const { scopes } of document.chunks) {
       for (const [name, identifiers] of scopes.globals) {
-        if (identifiers.some((identifier) => scopes.writes.has(identifier) && !scopes.environmentFields.has(identifier))) names.add(name);
+        for (const identifier of identifiers) {
+          if (!scopes.writes.has(identifier)) continue;
+          if (!firstWrites.has(name)) firstWrites.set(name, identifier);
+          if (!scopes.environmentFields.has(identifier)) assigned.add(name);
+        }
       }
     }
-    list = [...names].map((name): Candidate => {
-      const write = definitions(document, { kind: 'global', name })[0];
+    list = [...assigned].map((name): Candidate => {
+      const write = firstWrites.get(name);
       const site = write && declarationSite(document, write);
       return { label: name, kind: isFunctionValue(site) ? 'function' : 'variable', group: CandidateGroup.Document, target: { kind: 'global', name, site, link: externalEntry(name) } };
     });
