@@ -68,6 +68,7 @@ node /path/to/server.js --stdio
 | Go to definition | `textDocument/definition` | The declaration of a local, or every assignment to a global, in the same file. |
 | Find references | `textDocument/references` | Every use of a local or global in the same file. |
 | Rename | `textDocument/prepareRename`, `textDocument/rename` | Same file only; refused, with the reason as the error message, when the rename could change what the code does. |
+| Hover | `textDocument/hover` | Markdown or plain text, whichever the editor prefers (`hover.contentFormat`); the server's own words follow the editor's `locale`. See below. |
 | Workspace symbols | `workspace/symbol` | Every `*.lua` and `*.menu` file under the workspace folders, plus open files. See below. |
 
 Workspace symbols need an editor that sends **workspace folders** when it starts the server;
@@ -80,6 +81,13 @@ through `workspace/configuration` (your guide says whether it does), you can add
 `ieLua`, for example `{ "files": { "exclude": { "**/backup": true } } }`.
 Only folders on the local disk are scanned.
 
-Symbols, folding and navigation always reflect the current text, whatever `validate.mode` is.
+Hover shows the [Lua 5.2 manual](https://www.lua.org/manual/5.2/manual.html) text for the
+libraries the game provides, a link to the EEex documentation for EEex and game functions, and
+how your own variables are declared. Editors that render Markdown get code blocks and links;
+others get plain text with the links written out. The few words of the server's own (such as
+`parameter`) are translated when the editor sends a `locale` the extension supports (one of the
+14 VS Code display languages, or its language alone: `de-AT` uses German); otherwise English.
+
+Symbols, folding, hover and navigation always reflect the current text, whatever `validate.mode` is.
 Navigation works on variables: table fields (`t.x`) and `goto` labels are not followed, and in a
 `.menu` file globals are shared by all its Lua, while locals stay in their own block or script.

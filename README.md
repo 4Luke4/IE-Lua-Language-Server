@@ -13,9 +13,10 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
 `.menu` files such as `UI.MENU`.
 
 > [!NOTE]
-> This is an early version. It currently provides **syntax diagnostics**, **document symbols**,
-> **workspace symbols**, **folding**, and **go to definition**, **find references** and **rename**
-> within a file; completion, hover, cross-file navigation, formatting and more are planned.
+> This is an early version. It currently provides **syntax diagnostics**, **hover**,
+> **document symbols**, **workspace symbols**, **folding**, and **go to definition**,
+> **find references** and **rename** within a file; completion, cross-file navigation, formatting
+> and more are planned.
 
 ## Features
 
@@ -36,6 +37,13 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
   you haven't opened; files hidden with *Files: Exclude* are left out.
 - **Folding that follows the code:** functions, loops, each `if`/`elseif`/`else` branch, tables,
   comments, and every `{ … }` block and Lua script of a `.menu` file.
+- **Documentation on hover.** Lua functions such as `string.format` show their description from
+  the [Lua 5.2 manual](https://www.lua.org/manual/5.2/manual.html), word for word, with a link to
+  it. Only the libraries the game provides are documented (`io`, `os`, `require` and coroutines
+  are not), and `print` tells you that the game replaces it. EEex and game functions such as
+  `Infinity_DisplayString` or `C:AddGold` link to the
+  [EEex documentation](https://eeex-docs.readthedocs.io/en/latest/), and your own variables show
+  how they are declared.
 - **Go to Definition, Find All References and Rename Symbol** for variables within a file. Locals
   follow Lua's scoping rules; globals are followed across all the Lua of a `.menu` file. Rename
   refuses, and says why, when it could change what the code does: a name already in use nearby,

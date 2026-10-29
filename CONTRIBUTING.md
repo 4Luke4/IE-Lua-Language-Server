@@ -29,11 +29,14 @@ server (port 6009).
 | `src/client/` | VS Code extension host code: activation, command, settings, language client |
 | `src/server/` | Language server (separate Node process; no `vscode` import) |
 | `src/server/validation/` | Pure validation logic, unit-tested without LSP or VS Code |
+| `src/server/hover/` | What a hover describes and its text (pure; library data from `data/lua52/` and `data/eeex/`) |
 | `src/server/syntax/` | Error-tolerant Lua 5.2 parser, scope analysis, document symbols and folding (pure; checked against the official compiler by `test/unit/server/syntax/differential.test.ts`) |
 | `src/server/workspace/` | Index of the workspace's Lua and `.menu` files, and `files.exclude` matching as VS Code applies it (file system injected, unit-tested with an in-memory one) |
 | `src/shared/` | Types and constants used by both sides |
 | `third_party/lua52/` | Reproducible build of the official Lua 5.2.4 compiler to WebAssembly |
 | `data/eeex/` | Generated EEex documentation index (names and links) |
+| `data/lua52/` | Lua 5.2 library reference generated from the official manual (see below) |
+| `l10n/server/` | The language server's own messages, per locale |
 | `scripts/` | Repository tooling (TypeScript run directly by Node.js) |
 | `test/unit/`, `test/integration/` | Mocha unit tests; VS Code integration tests |
 | `docs/editors/` | Setup guides for other editors |
@@ -53,6 +56,7 @@ See [`CLAUDE.md`](CLAUDE.md) for the architecture rules.
 | `npm run package` | Production bundle |
 | `npm run notices` | Regenerate `THIRD_PARTY_NOTICES.md` (after `npm run package`) |
 | `npm run build:wasm` | Rebuild the Lua 5.2 WebAssembly module (needs Emscripten, see below) |
+| `npm run lua-manual` | Regenerate `data/lua52/manual.json` from the official Lua 5.2 manual (see below) |
 
 **Definition of done:** `check-types`, `lint` and `test:unit` pass. Run `npm test` too when you
 touch activation, commands, settings or the language client/server wiring.
@@ -91,6 +95,9 @@ The extension is translated into the 14 display languages VS Code offers
 - Manifest strings: `package.nls.json` (English) and `package.nls.<locale>.json`.
 - Runtime strings: `vscode.l10n.t('…')` in `src/client/`. After adding or changing one, run
   `npx @vscode/l10n-dev export --outDir l10n src/client` and update every `l10n/bundle.l10n.<locale>.json`.
+- Language server strings: `messages.t('key', …)` in `src/server/` (`src/server/l10n.ts`), with the
+  English text in `l10n/server/messages.json` and one `l10n/server/messages.<locale>.json` per
+  locale. The server picks the table from the client's `locale`, so they work in every editor.
 - Keep code spans, setting links (`` `#ieLua.validate.mode#` ``) and `{0}` placeholders unchanged, and
   refer to commands by the locale's translated title. `npm run check-l10n` enforces all of this.
 
@@ -111,6 +118,22 @@ npm run build:wasm -- --check # verify the committed files are reproducible
 
 The Emscripten version is pinned in `third_party/lua52/build.mts` (`EMSCRIPTEN_VERSION`); CI reads
 it from there. The Lua tarball is verified against the SHA-256 published on <https://www.lua.org/ftp/>.
+
+## The Lua 5.2 manual data
+
+Hovers quote the library reference of the Lua 5.2 manual from `data/lua52/manual.json`, which is
+generated and committed. `npm run lua-manual` rebuilds it from `doc/manual.html` in the same
+checksum-verified Lua 5.2.4 tarball as the WebAssembly module (downloaded once into `.cache/lua`):
+
+```sh
+npm run lua-manual                      # regenerate
+npm run lua-manual -- --check           # verify the committed file (CI does this)
+npm run lua-manual -- --compare-online  # audit: compare with https://www.lua.org/manual/5.2/
+```
+
+Only the libraries the game engine opens are included (see CLAUDE.md, section 7). The converter
+in `scripts/lua-manual/convert.mts` accepts exactly the HTML the manual uses and fails on anything
+else; its header lists the three places where Markdown cannot show the manual's formatting.
 
 ## Releases
 
