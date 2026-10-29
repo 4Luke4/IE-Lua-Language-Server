@@ -83,6 +83,16 @@ describe('server/validation/validateText (official Lua 5.2.4 compiler)', () => {
       assert.deepEqual(problems('action "a b"', 'menu', lua), [['lua-syntax', 'b', "syntax error near 'b'"]]);
     });
 
+    it('validates slotinfo, spellInfo and memorizedSpellInfo in every form the engine generates', () => {
+      const valid = 'slot { slotinfo "characters[id].equipment.weapon0" spellInfo \'t[1]\' memorizedSpellInfo "s" }';
+      assert.deepEqual(problems(valid, 'menu', lua), []);
+      // `return 1` compiles, but the engine generates `return 1.item.icon`: `1.` is a number, then `item`
+      // (generated text) is unexpected, so the problem is an empty range at the end of the string.
+      assert.deepEqual(problems('slotinfo "1"', 'menu', lua), [['lua-syntax', '', "'end' expected near 'item'"]]);
+      assert.equal(validateText('spellInfo "\'s\'"', 'menu', lua).length, 1);
+      assert.equal(validateText('memorizedSpellInfo "a b"', 'menu', lua).length, 1);
+    });
+
     it('rejects code that only parses as a chunk, not as a function body or return value', () => {
       assert.equal(validateText('enabled "a; b"', 'menu', lua).length, 1);
       assert.equal(validateText('enabled "a return b"', 'menu', lua).length, 1);

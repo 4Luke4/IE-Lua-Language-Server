@@ -183,6 +183,24 @@ describe('server/validation/menuExtractor', () => {
     ]);
   });
 
+  it('extracts slotinfo, spellInfo and memorizedSpellInfo strings as expressions with the forms the engine generates', () => {
+    const { chunks } = extractMenuLua('slotinfo "T" spellInfo "T" memorizedSpellInfo "T"');
+    assert.deepEqual(chunks.map((c) => [c.kind, c.text, c.forms.length]), [
+      ['expression', 'T', 10],
+      ['expression', 'T', 6],
+      ['expression', 'T', 6],
+    ]);
+    assert.deepEqual(chunks[0]?.forms.map((f) => `${f.prefix}T${f.suffix}`).slice(-3), [
+      'function f () return Infinity_SwapSlot(T.id) end',
+      'function f () showItemDescriptionInventory(T.slotName) end',
+      'function f () slotDoubleClick(T.slotName) end',
+    ]);
+    assert.deepEqual(chunks[2]?.forms.map((f) => `${f.prefix}T${f.suffix}`).slice(-2), [
+      'function f () return unmemorizeSpell(T) end',
+      'function f () showSpellDetails(T, true) end',
+    ]);
+  });
+
   it('tells backtick blocks from property values', () => {
     assert.deepEqual(extractMenuLua('`a()`\naction "b()"').chunks.map((c) => c.origin), ['block', 'property']);
   });

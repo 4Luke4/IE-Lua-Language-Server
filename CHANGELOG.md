@@ -27,6 +27,8 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   compiled in the shape the engine compiles it: property code as the body of
   `function f () … end` (so `...` and a trailing `--` comment are errors), expressions as its
   `return` value, and `` `…` `` blocks without their last character, which the engine drops.
+  `slotinfo`, `spellInfo` and `memorizedSpellInfo` strings are checked in every expression and
+  statement the engine generates from them (`T.item.icon`, `Infinity_SwapSlot(T.id)`, …).
 - Settings `ieLua.validate.mode` (`manual`, `save` (default), `type`, `saveAndType`) and
   `ieLua.validate.debounce` (default 300 ms).
 - Command **IE Lua: Validate Current File** (`ieLua.validateDocument`).

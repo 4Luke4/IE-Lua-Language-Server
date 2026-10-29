@@ -1,5 +1,5 @@
 import { lexMenu, type MenuToken } from './menuLexer.ts';
-import { CHUNK_FORM, EXPRESSION_FORM, STATEMENT_FORM, type LuaChunk, type Problem } from './types.ts';
+import { CHUNK_FORM, EXPRESSION_FORM, STATEMENT_FORM, type CompiledForm, type LuaChunk, type Problem } from './types.ts';
 
 // Which property values are Lua, from IESDP, "MENU file format", section "How a
 // menu becomes Lua" (https://gibberlings3.github.io/iesdp/file_formats/ie_formats/menu_v1.htm,
@@ -31,6 +31,63 @@ const EXPRESSION_PROPERTIES: ReadonlySet<string> = new Set([
   'table',
   'seperator',
   'useoverlaytint',
+]);
+
+/** An expression the engine generates from a shorthand STRING `T`: `<before>T<after>`. */
+function generatedExpression(before: string, after: string): CompiledForm {
+  return { prefix: EXPRESSION_FORM.prefix + before, suffix: after + EXPRESSION_FORM.suffix };
+}
+
+/** A statement the engine generates from a shorthand STRING `T`: `<before>T<after>`. */
+function generatedStatement(before: string, after: string): CompiledForm {
+  return { prefix: STATEMENT_FORM.prefix + before, suffix: after + STATEMENT_FORM.suffix };
+}
+
+const SPELL_INFO_COMMON: readonly CompiledForm[] = [
+  generatedExpression('', ' ~= nil'), // enabled
+  generatedExpression('', '.icon'), // icon lua
+  generatedExpression('Infinity_FetchString(', '.name)'), // tooltip lua
+  generatedExpression('', '.castable == 0'), // greyscale lua
+  // bam lua "'IVSLOT'" does not contain T, so it cannot fail.
+];
+
+/**
+ * Shorthand properties whose STRING `T` the engine pastes into generated Lua
+ * (IESDP, MENU file format, Item properties › Slots). Each STRING is validated
+ * in every generated form, and parsed as an expression for navigation.
+ */
+const SHORTHAND_FORMS: ReadonlyMap<string, readonly CompiledForm[]> = new Map([
+  [
+    'slotinfo',
+    [
+      generatedExpression('', '.item.icon'), // icon lua
+      generatedExpression('', '.item.count'), // count lua
+      generatedExpression('', '.item.usages'), // usages lua
+      generatedExpression('', '.highlight'), // highlight lua
+      generatedExpression('', '.item.tint'), // tint lua
+      generatedExpression('', '.tooltip'), // tooltip lua
+      generatedExpression('', '.valid'), // enabled
+      generatedExpression('Infinity_SwapSlot(', '.id)'), // action (expression)
+      generatedStatement('showItemDescriptionInventory(', '.slotName)'), // actionalt
+      generatedStatement('slotDoubleClick(', '.slotName)'), // actiondbl
+    ],
+  ],
+  [
+    'spellinfo',
+    [
+      ...SPELL_INFO_COMMON,
+      generatedExpression('memorizeSpell(', ')'), // action (expression)
+      generatedStatement('showSpellDetails(', ', false)'), // actionalt
+    ],
+  ],
+  [
+    'memorizedspellinfo',
+    [
+      ...SPELL_INFO_COMMON,
+      generatedExpression('unmemorizeSpell(', ')'), // action (expression)
+      generatedStatement('showSpellDetails(', ', true)'), // actionalt
+    ],
+  ],
 ]);
 
 /** A word of a .menu file, as half-open document offsets. */
@@ -83,6 +140,8 @@ interface OpenBlock {
  * - a STRING after a property in STATEMENT_PROPERTIES: Lua statements.
  * - a STRING after a property in EXPRESSION_PROPERTIES, after `bitmap res`, or
  *   after `lua`: a Lua expression.
+ * - a STRING after `slotinfo`, `spellInfo` or `memorizedSpellInfo`: an
+ *   expression the engine pastes into the Lua of SHORTHAND_FORMS.
  *
  * A STRING is a `"…"` or `'…'` string, or a word that is not a keyword (the
  * engine treats both alike: `enabled currentSave` is the expression
@@ -129,16 +188,17 @@ export function extractMenuLua(text: string): MenuExtraction {
       if (block) block.close = token.start;
     } else if (token.type === 'string' && previous?.type === 'keyword') {
       const kind = classify(previous, tokens[index - 2]);
+      const shorthand = previous.keyword === undefined ? undefined : SHORTHAND_FORMS.get(previous.keyword);
       // An unterminated string runs to the end of the file; it is reported, not validated.
       const terminated = token.quote === undefined || token.end > token.valueEnd;
-      if (kind && terminated) {
+      if ((kind || shorthand) && terminated) {
         chunks.push({
-          kind,
+          kind: kind ?? 'expression',
           origin: 'property',
           offset: token.valueStart,
           region: { start: token.start, end: token.end },
           text: text.slice(token.valueStart, token.valueEnd),
-          forms: [kind === 'statements' ? STATEMENT_FORM : EXPRESSION_FORM],
+          forms: shorthand ?? [kind === 'statements' ? STATEMENT_FORM : EXPRESSION_FORM],
         });
       }
       const block = open.at(-1);
