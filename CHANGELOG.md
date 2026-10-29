@@ -81,6 +81,9 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
 
 ### Changed
 
+- The extension also activates in workspaces that contain `.lua` or `.menu` files, in any letter
+  case (`workspaceContains:**/*.[lL][uU][aA]`, `workspaceContains:**/*.[mM][eE][nN][uU]`), so
+  *Go to Symbol in Workspace* works before any file is opened.
 - Minimum VS Code version is 1.91.0 (required by `vscode-languageclient` 10 and later).
 - Versioning starts at 1.0.0: when no release exists yet, the Release workflow ships the
   committed `VERSION` as the first stable release (a pre-release before it would be 1.1.0).

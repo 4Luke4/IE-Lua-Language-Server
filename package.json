@@ -36,7 +36,9 @@
   "l10n": "./l10n",
   "main": "./dist/client/extension.js",
   "activationEvents": [
-    "onLanguage:lua"
+    "onLanguage:lua",
+    "workspaceContains:**/*.[lL][uU][aA]",
+    "workspaceContains:**/*.[mM][eE][nN][uU]"
   ],
   "contributes": {
     "languages": [
