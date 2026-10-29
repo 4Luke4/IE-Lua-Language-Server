@@ -50,6 +50,11 @@ describe('server/hover/resolve', () => {
       assert.equal(hover(menu, 'Total', { occurrence: 2, kind: 'menu' }), 'Total -> global Total assignment -');
     });
 
+    it('describes a global by its own first assignment, not by an earlier assignment to a local of the same name', () => {
+      const text = 'do local G function G() end end G = 2 function G() end return G';
+      assert.equal(hover(text, 'return G', { offset: 7 }), 'G -> global G assignment -');
+    });
+
     it('lets the document\'s own definition win over the libraries, keeping EEex-Docs links', () => {
       assert.equal(hover('function print() end print()', 'print', { occurrence: 1 }), 'print -> global print functionDeclaration -');
       assert.equal(hover('string = {} string.format()', 'format'), undefined);
