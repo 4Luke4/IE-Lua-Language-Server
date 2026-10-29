@@ -30,6 +30,9 @@ versions with an **even** middle number (for example 1.**2**.0) are stable relea
 - **Find All References** lists every use of a variable in the same file.
 - **Rename Symbol** renames a variable everywhere in the file. It refuses, and tells you why,
   when the rename could break your code — for example when the new name is already used nearby.
+- **Go to Symbol in Workspace** (Ctrl+T) finds functions, variables and menus in every Lua and
+  `.menu` file of your workspace, even files you haven't opened. Files hidden with
+  *Files: Exclude* are left out.
 - **Available in 14 languages**, following your VS Code display language.
 - **Works in other editors too**: setup guides for Sublime Text, Neovim, Emacs, JetBrains
   IDEs, Helix, Zed, Kate, Notepad++ and Geany are on the project page.

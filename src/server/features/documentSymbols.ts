@@ -41,6 +41,12 @@ export function toLspSymbols(symbols: readonly OutlineSymbol[], options: SymbolC
     });
     return symbols.map(convert);
   }
+  return flatSymbols(symbols, options);
+}
+
+/** Flat `SymbolInformation[]` in document order, each with the name of its parent as container. */
+export function flatSymbols(symbols: readonly OutlineSymbol[], options: Omit<SymbolConversion, 'hierarchical'>): SymbolInformation[] {
+  const range = (start: number, end: number) => ({ start: options.positionAt(start), end: options.positionAt(end) });
   const flat: SymbolInformation[] = [];
   const flatten = (symbol: OutlineSymbol, container: string | undefined): void => {
     flat.push({

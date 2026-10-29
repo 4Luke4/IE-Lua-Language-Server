@@ -24,7 +24,12 @@ export interface DiagnosticsDeps {
  * | `type`        | ✓                        |         | ✓                        |
  * | `saveAndType` | ✓                        | ✓       | ✓                        |
  */
-export function register(connection: Connection, documents: TextDocuments<TextDocument>, deps: DiagnosticsDeps): void {
+export interface DiagnosticsFeature {
+  /** Handles `workspace/didChangeConfiguration` (the server owns the single handler). */
+  configurationChanged(settings: unknown): void;
+}
+
+export function register(connection: Connection, documents: TextDocuments<TextDocument>, deps: DiagnosticsDeps): DiagnosticsFeature {
   const debouncer = new Debouncer<string>(deps.timers);
   /** Document version whose diagnostics were last published, per URI. */
   const published = new Map<string, number>();
@@ -100,7 +105,7 @@ export function register(connection: Connection, documents: TextDocuments<TextDo
     }
   });
 
-  connection.onDidChangeConfiguration(({ settings }) => {
+  const configurationChanged = (settings: unknown): void => {
     deps.settings.changed(settings);
     // A switch to a `type` mode should take effect without waiting for the next edit.
     for (const document of documents.all()) {
@@ -116,9 +121,11 @@ export function register(connection: Connection, documents: TextDocuments<TextDo
         })
         .catch(report(uri));
     }
-  });
+  };
 
   connection.onShutdown(() => {
     debouncer.dispose();
   });
+
+  return { configurationChanged };
 }

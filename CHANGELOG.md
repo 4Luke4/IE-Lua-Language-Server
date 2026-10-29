@@ -61,6 +61,14 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   that are not Lua names or are reserved words, and any rename that would change what a name
   refers to (checked by re-analyzing the renamed text). Edits are versioned when the client
   supports `documentChanges`.
+- Workspace symbols (`workspace/symbol`; *Go to Symbol in Workspace*): the outline symbols of every
+  `.lua` and `.menu` file (any letter case) in the `file:` workspace folders, and of every open
+  document, whose unsaved text wins over the file. The query matches loosely (its characters in
+  order, case-insensitively), as LSP recommends. Files are indexed in the background, one per
+  event-loop turn, and kept current through watched-file events (`**/*.[lL][uU][aA]`,
+  `**/*.[mM][eE][nN][uU]`, and creates and deletes of folders), workspace folder changes and
+  document closes. `files.exclude` is honored as VS Code's explorer applies it, with an original
+  matcher checked against VS Code's own; changing it rescans.
 - Error-tolerant Lua 5.2 parser and scope analysis (`src/server/syntax/`), checked against the
   official compiler by a differential test; it publishes no diagnostics of its own.
 - Localization of the manifest and UI strings into all 14 VS Code display languages

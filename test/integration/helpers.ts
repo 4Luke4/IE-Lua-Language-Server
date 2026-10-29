@@ -71,3 +71,19 @@ export async function openFixture(file: string): Promise<vscode.Uri> {
   await vscode.window.showTextDocument(await vscode.workspace.openTextDocument(uri));
   return uri;
 }
+
+/**
+ * Resolves with the workspace symbols for `query` as soon as `predicate` accepts
+ * them. The server answers only after the file events it has received are indexed,
+ * so this asks again until the client has delivered them; the Mocha test timeout
+ * bounds the wait instead of a fixed sleep.
+ */
+export async function waitForWorkspaceSymbols(
+  query: string,
+  predicate: (symbols: vscode.SymbolInformation[]) => boolean,
+): Promise<vscode.SymbolInformation[]> {
+  for (;;) {
+    const symbols = await vscode.commands.executeCommand<vscode.SymbolInformation[]>('vscode.executeWorkspaceSymbolProvider', query);
+    if (predicate(symbols)) return symbols;
+  }
+}
