@@ -69,10 +69,29 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   `**/*.[mM][eE][nN][uU]`, and creates and deletes of folders), workspace folder changes and
   document closes. `files.exclude` is honored as VS Code's explorer applies it, with an original
   matcher checked against VS Code's own; changing it rescans.
+- Hover (`textDocument/hover`), in Markdown or plain text as the client prefers:
+  - Lua 5.2 library functions, values and module tables, with the text of the
+    [Lua 5.2 manual](https://www.lua.org/manual/5.2/manual.html) verbatim and a link to the entry:
+    the basic functions and the `string`, `table`, `math`, `bit32` and `debug` libraries, the ones
+    the engine opens (IESDP), also as `_G.string.format` and `("x"):rep()`. The text is generated
+    from `doc/manual.html` of the checksum-verified Lua 5.2.4 tarball (`npm run lua-manual`, checked
+    in CI) and is identical to the online manual's. `io`, `os`, `package` (`require`) and
+    `coroutine` are not documented, as the engine does not provide them.
+  - `print`: a note that the engine replaces it, linking IESDP's *Engine Lua globals*, instead of
+    the manual's description.
+  - EEex and game functions (`EEex_*`, `Infinity_*`, `C:AddGold`, also called as `C.AddGold`):
+    the name and a link to EEex-Docs; no EEex-Docs text is copied.
+  - Locals and globals of the document: how they are declared (`local function f(a, b)`,
+    `(parameter) a`, `(for variable) i`, `(global) function G(x)`), from the first assignment for
+    a global, shared across the Lua chunks of a `.menu` file.
+  - No library text for names a local shadows (`local string = {}`), globals the document assigns
+    itself, or names resolved through a local `_ENV`.
+  - The server's own labels are localized into the 14 VS Code display languages from the client's
+    `locale` (`InitializeParams.locale`), in every editor.
 - Error-tolerant Lua 5.2 parser and scope analysis (`src/server/syntax/`), checked against the
   official compiler by a differential test; it publishes no diagnostics of its own.
-- Localization of the manifest and UI strings into all 14 VS Code display languages
-  (machine-produced; review welcome).
+- Localization of the manifest, UI strings and the language server's hover labels into all 14 VS
+  Code display languages (machine-produced; review welcome).
 - Setup guides for Sublime Text, Neovim, Emacs, JetBrains IDEs, Helix, Zed, Kate, Notepad++ and Geany.
 - EEex documentation index (`data/eeex/`): names and deep links only, synced from the published
   Read the Docs build.

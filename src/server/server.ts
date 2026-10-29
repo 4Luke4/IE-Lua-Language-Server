@@ -19,9 +19,11 @@ import * as definition from './features/definition.ts';
 import * as diagnostics from './features/diagnostics.ts';
 import * as documentSymbols from './features/documentSymbols.ts';
 import * as foldingRanges from './features/foldingRanges.ts';
+import * as hover from './features/hover.ts';
 import * as references from './features/references.ts';
 import * as rename from './features/rename.ts';
 import * as workspaceSymbols from './features/workspaceSymbols.ts';
+import { createMessages } from './l10n.ts';
 import { SettingsStore } from './settingsStore.ts';
 import { loadLua52 } from './validation/lua52.ts';
 import { nodeFileSystem } from './workspace/nodeFileSystem.ts';
@@ -97,6 +99,11 @@ connection.onInitialize((params) => {
   references.register(connection, documents, { cache: parsed });
   rename.register(connection, documents, { cache: parsed, documentChanges: workspace?.workspaceEdit?.documentChanges === true });
   workspaceSymbols.register(connection, documents, { cache: parsed, index });
+  hover.register(connection, documents, {
+    cache: parsed,
+    format: hover.hoverFormat(params.capabilities.textDocument?.hover?.contentFormat),
+    messages: createMessages(params.locale),
+  });
   // One handler per notification: settings changes go to every feature that needs them.
   connection.onDidChangeConfiguration(({ settings }) => {
     diagnosticsFeature.configurationChanged(settings);
@@ -117,6 +124,7 @@ connection.onInitialize((params) => {
       // Without prepareSupport the client must not be sent `prepareProvider` (LSP 3.17).
       renameProvider: prepareRename ? { prepareProvider: true } : true,
       workspaceSymbolProvider: true,
+      hoverProvider: true,
       ...(workspaceFolderChanges ? { workspace: { workspaceFolders: { supported: true, changeNotifications: true } } } : {}),
     },
     serverInfo: { name: 'IE Lua Language Server' },
