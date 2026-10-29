@@ -22,8 +22,8 @@
 
 import type * as Ast from '../syntax/ast.ts';
 import type { ParsedDocument } from '../syntax/document.ts';
+import { fieldWrites, globalPath, withoutG } from '../syntax/globalPaths.ts';
 import { memberAt, type MemberOccurrence } from '../syntax/members.ts';
-import { walk } from '../syntax/walk.ts';
 import { definitions, targetAt, type TargetHit } from '../syntax/navigation.ts';
 import type { Declaration } from '../syntax/scope.ts';
 import { declarationSite, type DeclarationSite } from '../syntax/signatures.ts';
@@ -77,64 +77,6 @@ function variableTarget(document: ParsedDocument, { target, identifier, chunkInd
     return undefined;
   }
   return globalTarget(document, target.name);
-}
-
-/**
- * The names of a `.` chain on a global: `string` for `string`, `[_G, string]`
- * for `_G.string`; `undefined` when the chain starts with anything else (a
- * local, a call, an index, a field of a local `_ENV`).
- */
-function globalPath(document: ParsedDocument, chunkIndex: number, expression: Ast.Expression): string[] | undefined {
-  if (expression.kind === 'MemberExpression') {
-    const base = globalPath(document, chunkIndex, expression.base);
-    return base && [...base, expression.member.name];
-  }
-  if (expression.kind !== 'Identifier') return undefined;
-  const scopes = document.chunks[chunkIndex]?.scopes;
-  if (!scopes || scopes.resolved.has(expression) || scopes.environmentFields.has(expression)) return undefined;
-  return [expression.name];
-}
-
-/** `[a, b]` for `_G.a.b`: the `_G.` prefix removed while another name follows (manual §6.1, `_G`). */
-function withoutG(names: string[]): string[] {
-  const rest = [...names];
-  while (rest.length > 1 && rest[0] === '_G') rest.shift();
-  return rest;
-}
-
-/** Fields of global tables each document assigns, as `table.field`; dropped with the document. */
-const fieldWriteIndexes = new WeakMap<ParsedDocument, ReadonlySet<string>>();
-
-/**
- * The `table.field` names the document assigns on a global table:
- * `t.f = …` (`_G.t.f = …` too), `function t.f()` and `function t:f()`.
- */
-function fieldWrites(document: ParsedDocument): ReadonlySet<string> {
-  let writes = fieldWriteIndexes.get(document);
-  if (!writes) {
-    const found = new Set<string>();
-    document.chunks.forEach(({ tree, scopes }, chunkIndex) => {
-      const isGlobal = (identifier: Ast.Identifier): boolean => !scopes.resolved.has(identifier) && !scopes.environmentFields.has(identifier);
-      walk(tree.body, (node) => {
-        if (node.kind === 'AssignmentStatement') {
-          for (const target of node.targets) {
-            const path = target.kind === 'MemberExpression' ? globalPath(document, chunkIndex, target) : undefined;
-            const names = path && withoutG(path);
-            if (names?.length === 2) found.add(names.join('.'));
-          }
-        } else if (node.kind === 'FunctionDeclaration') {
-          const [head, field] = node.path;
-          if (head && isGlobal(head)) {
-            if (node.path.length === 2 && field && node.method === undefined) found.add(`${head.name}.${field.name}`);
-            if (node.path.length === 1 && node.method) found.add(`${head.name}.${node.method.name}`);
-          }
-        }
-      });
-    });
-    writes = found;
-    fieldWriteIndexes.set(document, writes);
-  }
-  return writes;
 }
 
 /** The manual's entry for the library member `dotted` (`string.format`), unless the document defines that member itself. */
