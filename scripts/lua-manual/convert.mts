@@ -264,9 +264,12 @@ export interface Converted {
 /** HTML collapses runs of ASCII whitespace; U+00A0 (&nbsp;) is not whitespace. */
 const collapse = (text: string): string => text.replace(/[ \t\r\n]+/g, ' ');
 
-/** Backslash-escapes the characters that Markdown (CommonMark + GFM) would interpret in text. */
+/**
+ * Backslash-escapes the characters that Markdown (CommonMark + GFM) would
+ * interpret in text; `!` too, which would turn a following link into an image.
+ */
 function escapeMarkdown(text: string): string {
-  return text.replace(/[\\`*_[\]<>&~|]/g, '\\$&');
+  return text.replace(/[\\`*_[\]<>&~|!]/g, '\\$&');
 }
 
 /** Escapes a paragraph or list item start that Markdown would read as a heading, list, quote or rule. */

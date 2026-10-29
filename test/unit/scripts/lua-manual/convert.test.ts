@@ -75,6 +75,8 @@ describe('scripts/lua-manual/convert', () => {
 
   it('escapes text Markdown would interpret', () => {
     assert.equal(convert('a*b_c [d] &lt;e&gt; &amp; ~f~ \\ `').markdown, 'a\\*b\\_c \\[d\\] \\<e\\> \\& \\~f\\~ \\\\ \\`');
+    assert.equal(convert('Wow! <a href="#x">link</a>').markdown, `Wow\\! [link](${BASE}#x)`);
+    assert.equal(convert('Wow!<a href="#x">link</a>').markdown, `Wow\\![link](${BASE}#x)`);
     assert.equal(convert('# not a heading').markdown, '\\# not a heading');
     assert.equal(convert('- not a list').markdown, '\\- not a list');
     assert.equal(convert('1. not a list').markdown, '1\\. not a list');
