@@ -13,7 +13,9 @@
 //      and coroutine, which the engine does not provide.
 // - A field or method name: library and EEex-Docs names only (`string.format`,
 //   `_G.string.format`, `("x"):rep()`, `C:AddGold()`, `EEex_Options_Option.new`).
-//   Fields of anything else (locals, tables built in Lua) have no hover.
+//   Fields of anything else (locals, tables built in Lua) have no hover. As for
+//   globals, a library member the document defines itself (`string.format = f`,
+//   `function string.trim()`) is not described by the manual.
 //
 // Names resolved through a local `_ENV` are fields of that table, so they get
 // no hover. Without type inference that is the only safe answer.
@@ -21,6 +23,7 @@
 import type * as Ast from '../syntax/ast.ts';
 import type { ParsedDocument } from '../syntax/document.ts';
 import { memberAt, type MemberOccurrence } from '../syntax/members.ts';
+import { walk } from '../syntax/walk.ts';
 import { definitions, targetAt, type TargetHit } from '../syntax/navigation.ts';
 import type { Declaration } from '../syntax/scope.ts';
 import { declarationSite, type DeclarationSite } from '../syntax/signatures.ts';
@@ -92,6 +95,53 @@ function globalPath(document: ParsedDocument, chunkIndex: number, expression: As
   return [expression.name];
 }
 
+/** `[a, b]` for `_G.a.b`: the `_G.` prefix removed while another name follows (manual §6.1, `_G`). */
+function withoutG(names: string[]): string[] {
+  const rest = [...names];
+  while (rest.length > 1 && rest[0] === '_G') rest.shift();
+  return rest;
+}
+
+/** Fields of global tables each document assigns, as `table.field`; dropped with the document. */
+const fieldWriteIndexes = new WeakMap<ParsedDocument, ReadonlySet<string>>();
+
+/**
+ * The `table.field` names the document assigns on a global table:
+ * `t.f = …` (`_G.t.f = …` too), `function t.f()` and `function t:f()`.
+ */
+function fieldWrites(document: ParsedDocument): ReadonlySet<string> {
+  let writes = fieldWriteIndexes.get(document);
+  if (!writes) {
+    const found = new Set<string>();
+    document.chunks.forEach(({ tree, scopes }, chunkIndex) => {
+      const isGlobal = (identifier: Ast.Identifier): boolean => !scopes.resolved.has(identifier) && !scopes.environmentFields.has(identifier);
+      walk(tree.body, (node) => {
+        if (node.kind === 'AssignmentStatement') {
+          for (const target of node.targets) {
+            const path = target.kind === 'MemberExpression' ? globalPath(document, chunkIndex, target) : undefined;
+            const names = path && withoutG(path);
+            if (names?.length === 2) found.add(names.join('.'));
+          }
+        } else if (node.kind === 'FunctionDeclaration') {
+          const [head, field] = node.path;
+          if (head && isGlobal(head)) {
+            if (node.path.length === 2 && field && node.method === undefined) found.add(`${head.name}.${field.name}`);
+            if (node.path.length === 1 && node.method) found.add(`${head.name}.${node.method.name}`);
+          }
+        }
+      });
+    });
+    writes = found;
+    fieldWriteIndexes.set(document, writes);
+  }
+  return writes;
+}
+
+/** The manual's entry for the library member `dotted` (`string.format`), unless the document defines that member itself. */
+function libraryMember(document: ParsedDocument, dotted: string): ManualEntry | undefined {
+  return fieldWrites(document).has(dotted) ? undefined : manualEntry(dotted);
+}
+
 const isStringLiteral = (expression: Ast.Expression): boolean =>
   expression.kind === 'StringLiteral' || (expression.kind === 'ParenthesizedExpression' && isStringLiteral(expression.expression));
 
@@ -99,7 +149,7 @@ function memberTarget(document: ParsedDocument, { node, chunkIndex }: MemberOccu
   if (node.kind === 'MethodCallExpression') {
     // Strings have the string table as their metatable's __index (manual §6.4).
     if (isStringLiteral(node.base)) {
-      const entry = manualEntry(`string.${node.method.name}`);
+      const entry = libraryMember(document, `string.${node.method.name}`);
       return entry && { kind: 'library', entry };
     }
     const path = globalPath(document, chunkIndex, node.base);
@@ -108,9 +158,7 @@ function memberTarget(document: ParsedDocument, { node, chunkIndex }: MemberOccu
   }
   const path = globalPath(document, chunkIndex, node.base);
   if (!path) return undefined;
-  const names = [...path, node.member.name];
-  // `_G.x` is the global `x` (manual §6.1, `_G`).
-  while (names.length > 1 && names[0] === '_G') names.shift();
+  const names = withoutG([...path, node.member.name]);
   const [head = ''] = names;
   if (names.length === 1) {
     return globalTarget(document, head);
@@ -118,7 +166,7 @@ function memberTarget(document: ParsedDocument, { node, chunkIndex }: MemberOccu
   const dotted = names.join('.');
   // Library members are documented one level deep (`string.format`); a module
   // table the document assigns itself is not the library's.
-  const library = names.length === 2 && !firstWrite(document, head) ? manualEntry(dotted) : undefined;
+  const library = names.length === 2 && !firstWrite(document, head) ? libraryMember(document, dotted) : undefined;
   if (library) return { kind: 'library', entry: library };
   // EEex-Docs documents methods of game objects as `C:AddGold`; `C.AddGold` is the same function.
   const external = externalEntry(dotted) ?? (names.length === 2 ? externalEntry(names.join(':')) : undefined);

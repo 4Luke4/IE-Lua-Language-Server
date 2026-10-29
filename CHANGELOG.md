@@ -84,8 +84,9 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   - Locals and globals of the document: how they are declared (`local function f(a, b)`,
     `(parameter) a`, `(for variable) i`, `(global) function G(x)`), from the first assignment for
     a global, shared across the Lua chunks of a `.menu` file.
-  - No library text for names a local shadows (`local string = {}`), globals the document assigns
-    itself, or names resolved through a local `_ENV`.
+  - No library text for names a local shadows (`local string = {}`), globals or library members the
+    document assigns itself (`string = …`, `string.format = …`, `function string.trim()`), or names
+    resolved through a local `_ENV`.
   - The server's own labels are localized into the 14 VS Code display languages from the client's
     `locale` (`InitializeParams.locale`), in every editor.
 - Error-tolerant Lua 5.2 parser and scope analysis (`src/server/syntax/`), checked against the

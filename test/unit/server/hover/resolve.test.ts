@@ -88,6 +88,17 @@ describe('server/hover/resolve', () => {
       assert.equal(hover('local s = "x" .. ("y"):upper()', 'upper'), 'upper -> library string.upper');
     });
 
+    it('lets the document\'s own definition of a library member win over the manual', () => {
+      assert.equal(hover('string.format = nil string.format()', 'format', { occurrence: 1 }), undefined);
+      assert.equal(hover('_G.string.format = nil string.format()', 'format', { occurrence: 1 }), undefined);
+      assert.equal(hover('function string.format() end string.format()', 'format', { occurrence: 1 }), undefined);
+      assert.equal(hover('function string:rep() end ("x"):rep()', 'rep', { occurrence: 1 }), undefined);
+      // Only that member, and only on the global table.
+      assert.equal(hover('string.format = nil string.rep()', 'rep'), 'rep -> library string.rep');
+      assert.equal(hover('local string = {} string.format = nil', 'format'), undefined);
+      assert.equal(hover('do local string = {} string.format = nil end string.format()', 'format', { occurrence: 1 }), 'format -> library string.format');
+    });
+
     it('documents EEex-Docs methods and dotted names', () => {
       assert.equal(hover('C:AddGold(10)', 'AddGold'), 'AddGold -> external C:AddGold');
       assert.equal(hover('C.AddGold(C, 10)', 'AddGold'), 'AddGold -> external C:AddGold');
