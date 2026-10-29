@@ -19,8 +19,21 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   syntax diagnostics from the official Lua 5.2.4 compiler, built to WebAssembly from the
   checksum-verified lua.org tarball (`third_party/lua52/`, reproducible build checked in CI).
 - `.menu` support: new `ie-menu` language (case-insensitive `.menu` extension), TextMate grammar
-  with embedded Lua highlighting, and validation of `` `…` `` blocks, `action*`/`onOpen`/`onClose`
-  scripts, `enabled "…"` and `<property> lua "…"` expressions.
+  that highlights the engine's keywords and embeds Lua where validation finds it, and validation of the Lua the engine compiles, found with a lexer
+  that follows the engine's (per [IESDP](https://gibberlings3.github.io/iesdp/file_formats/ie_formats/menu_v1.htm)):
+  `` `…` `` blocks; `onOpen`, `onClose` and `action*` scripts; and the expressions of `enabled`,
+  `actionDrag`, `table`, `seperator`, `useOverlayTint`, `bitmap res` and every `lua` value. A value
+  can be `"…"`, `'…'` or an unquoted word that is not a keyword, anywhere on a line. Each is
+  compiled in the shape the engine compiles it: property code as the body of
+  `function f () … end` (so `...` and a trailing `--` comment are errors), expressions as its
+  `return` value, and `` `…` `` blocks without their last character, which the engine drops.
+  `slotinfo`, `spellInfo` and `memorizedSpellInfo` strings are checked in every expression and
+  statement the engine generates from them (`T.item.icon`, `Infinity_SwapSlot(T.id)`, …).
+- `.menu` diagnostics for text the engine misreads (codes are stable): `menu-unterminated-string`
+  for `"` and `'` strings, `menu-unterminated-block`, and the new `menu-word-too-long` (error: an
+  unquoted word of 64 or more characters aborts the game), `menu-inline-lua-last-character`
+  (warning: the character before a closing backtick is dropped) and `menu-unquoted-underscore`
+  (warning: unquoted `My_Menu` is read as `My` and `Menu`).
 - Settings `ieLua.validate.mode` (`manual`, `save` (default), `type`, `saveAndType`) and
   `ieLua.validate.debounce` (default 300 ms).
 - Command **IE Lua: Validate Current File** (`ieLua.validateDocument`).
@@ -48,6 +61,14 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   that are not Lua names or are reserved words, and any rename that would change what a name
   refers to (checked by re-analyzing the renamed text). Edits are versioned when the client
   supports `documentChanges`.
+- Workspace symbols (`workspace/symbol`; *Go to Symbol in Workspace*): the outline symbols of every
+  `.lua` and `.menu` file (any letter case) in the `file:` workspace folders, and of every open
+  document, whose unsaved text wins over the file. The query matches loosely (its characters in
+  order, case-insensitively), as LSP recommends. Files are indexed in the background, one per
+  event-loop turn, and kept current through watched-file events (`**/*.[lL][uU][aA]`,
+  `**/*.[mM][eE][nN][uU]`, and creates and deletes of folders), workspace folder changes and
+  document closes. `files.exclude` is honored as VS Code's explorer applies it, with an original
+  matcher checked against VS Code's own; changing it rescans.
 - Error-tolerant Lua 5.2 parser and scope analysis (`src/server/syntax/`), checked against the
   official compiler by a differential test; it publishes no diagnostics of its own.
 - Localization of the manifest and UI strings into all 14 VS Code display languages
@@ -60,6 +81,9 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
 
 ### Changed
 
+- The extension also activates in workspaces that contain `.lua` or `.menu` files, in any letter
+  case (`workspaceContains:**/*.[lL][uU][aA]`, `workspaceContains:**/*.[mM][eE][nN][uU]`), so
+  *Go to Symbol in Workspace* works before any file is opened.
 - Minimum VS Code version is 1.91.0 (required by `vscode-languageclient` 10 and later).
 - Versioning starts at 1.0.0: when no release exists yet, the Release workflow ships the
   committed `VERSION` as the first stable release (a pre-release before it would be 1.1.0).

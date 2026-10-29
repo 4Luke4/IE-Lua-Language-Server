@@ -24,10 +24,16 @@ export interface ParseOptions {
   readonly to?: number;
   /**
    * `statements` (default): a chunk. `expression`: a value the engine evaluates
-   * (`enabled "…"` in .menu files), parsed as if preceded by `return `, which is
-   * how the validator compiles it.
+   * (`enabled "…"` in .menu files), parsed as if preceded by `return `.
    */
   readonly mode?: 'statements' | 'expression';
+  /**
+   * Parse the code as the body of `function f () <code> end`, the shape in which
+   * the engine compiles .menu property code: `...` is not allowed (the function
+   * is not vararg), and every statement is one level deeper (`enterlevel` of the
+   * enclosing `function` statement). Default `false`: a top-level chunk.
+   */
+  readonly functionBody?: boolean;
 }
 
 /** lparser.c `priority`: [left, right]; right < left means right-associative. */
@@ -69,9 +75,12 @@ class Parser {
   private previousEnd: number;
   private level = 0;
   private readonly functions: FunctionState[] = [];
+  /** `ParseOptions.functionBody`. */
+  private readonly insideFunction: boolean;
 
-  constructor(source: string, tokens: readonly Token[], from: number, to: number) {
+  constructor(source: string, tokens: readonly Token[], from: number, to: number, functionBody: boolean) {
     this.source = source;
+    this.insideFunction = functionBody;
     this.tokens = tokens;
     this.eof = tokens.at(-1) ?? { type: 'eof', value: '<eof>', start: to, end: to };
     this.previousEnd = from;
@@ -177,8 +186,14 @@ class Parser {
 
   // --------------------------------------------------------------- chunks
 
+  /** Enters the function the chunk is compiled as (see `ParseOptions.functionBody`). */
+  private enterChunk(): void {
+    this.functions.push({ isVararg: !this.insideFunction, loopDepth: 0 });
+    if (this.insideFunction) this.enterLevel();
+  }
+
   chunk(from: number): Ast.Block {
-    this.functions.push({ isVararg: true, loopDepth: 0 });
+    this.enterChunk();
     const body: Ast.Statement[] = [];
     for (;;) {
       body.push(...this.statementList());
@@ -192,9 +207,11 @@ class Parser {
 
   /** `return <explist> [;]` followed by the end of the chunk. */
   expressionChunk(from: number): Ast.Block {
-    this.functions.push({ isVararg: true, loopDepth: 0 });
+    this.enterChunk();
     const body: Ast.Statement[] = [];
     try {
+      // The implied `return` is a statement: lparser.c `statement` enters a level.
+      this.enterLevel();
       const values = this.token.type === 'eof' || this.check(';') ? [] : this.expressionList();
       this.accept(';');
       body.push({ kind: 'ReturnStatement', values, start: from, end: this.previousEnd });
@@ -609,7 +626,7 @@ export function parseChunk(source: string, options: ParseOptions = {}): Ast.Chun
   const from = options.from ?? 0;
   const to = options.to ?? source.length;
   const { tokens, comments, errors: lexErrors } = lex(source, from, to);
-  const parser = new Parser(source, tokens, from, to);
+  const parser = new Parser(source, tokens, from, to, options.functionBody ?? false);
   const body = options.mode === 'expression' ? parser.expressionChunk(from) : parser.chunk(from);
   const errors = [...lexErrors, ...parser.errors].sort((a, b) => a.start - b.start);
   return { kind: 'Chunk', body, comments, errors, start: from, end: to };

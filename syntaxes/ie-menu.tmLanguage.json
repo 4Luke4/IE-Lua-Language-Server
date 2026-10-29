@@ -2,17 +2,16 @@
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
   "name": "Infinity Engine Menu",
   "scopeName": "source.ie-menu",
-  "comment": "Lua regions mirror src/server/validation/menuExtractor.ts: `…` blocks, <property> lua \"…\", and the action*/onOpen/onClose/enabled properties. Element keywords are those used in the game's UI.MENU.",
+  "comment": "Approximates src/server/validation/menuLexer.ts and menuExtractor.ts, which follow the engine's lexer and its list of Lua properties as described by IESDP (menu_v1.htm). TextMate matches regular expressions rather than the engine's tokens, so a Lua property is only recognized when white space and comments alone separate it from its string, and unquoted Lua words are not highlighted as Lua. test/unit/syntaxes/ieMenuGrammar.test.ts checks the keyword, element and Lua property lists against the TypeScript sources.",
   "patterns": [
     { "include": "#comment" },
     { "include": "#lua-block" },
     { "include": "#lua-property" },
-    { "include": "#lua-expression" },
     { "include": "#element" },
+    { "include": "#keyword" },
     { "include": "#string-double" },
     { "include": "#string-single" },
-    { "include": "#number" },
-    { "include": "#property" }
+    { "include": "#number" }
   ],
   "repository": {
     "comment": {
@@ -28,21 +27,22 @@
       "patterns": [{ "include": "source.lua" }]
     },
     "lua-property": {
-      "begin": "(?i)^\\s*(action(?:alt|dbl|drag|enter|exit|hold|scroll|simpledrag|simpledrop|update)?|onopen|onclose|enabled)\\b",
-      "beginCaptures": { "1": { "name": "keyword.other.property.ie-menu" } },
-      "end": "(?<=\")",
+      "comment": "Statement properties, expression properties, the slot shorthands, bitmap res and lua, up to the string that follows them.",
+      "begin": "(?i)\\b(?:(bitmap)\\s+(res)|(onopen|onclose|action|actionalt|actiondbl|actionenter|actionexit|actionUpdate|actionsimpledrag|actionsimpledrop|actionHold|actionScroll|enabled|actiondrag|table|seperator|useOverlayTint|slotinfo|spellInfo|memorizedSpellInfo)|(lua))\\b",
+      "beginCaptures": {
+        "1": { "name": "variable.other.property.ie-menu" },
+        "2": { "name": "keyword.other.property.ie-menu" },
+        "3": { "name": "keyword.other.property.ie-menu" },
+        "4": { "name": "storage.modifier.lua.ie-menu" }
+      },
+      "end": "(?<=[\"'])|(?=[^\\s\"'-]|-(?!-))",
       "patterns": [
         { "include": "#comment" },
-        { "include": "#lua-string" }
+        { "include": "#lua-string-double" },
+        { "include": "#lua-string-single" }
       ]
     },
-    "lua-expression": {
-      "begin": "\\b(lua)\\s*(?=\")",
-      "beginCaptures": { "1": { "name": "storage.modifier.lua.ie-menu" } },
-      "end": "(?<=\")",
-      "patterns": [{ "include": "#lua-string" }]
-    },
-    "lua-string": {
+    "lua-string-double": {
       "begin": "\"",
       "end": "\"",
       "beginCaptures": { "0": { "name": "punctuation.section.embedded.begin.ie-menu" } },
@@ -50,9 +50,23 @@
       "contentName": "meta.embedded.inline.lua",
       "patterns": [{ "include": "source.lua" }]
     },
+    "lua-string-single": {
+      "begin": "'",
+      "end": "'",
+      "beginCaptures": { "0": { "name": "punctuation.section.embedded.begin.ie-menu" } },
+      "endCaptures": { "0": { "name": "punctuation.section.embedded.end.ie-menu" } },
+      "contentName": "meta.embedded.inline.lua",
+      "patterns": [{ "include": "source.lua" }]
+    },
     "element": {
-      "match": "^\\s*(button|column|edit|handle|label|list|map|menu|movie|slider|template|text)\\s*$",
+      "comment": "Item types and menu/column, when a block follows.",
+      "match": "(?i)\\b(menu|label|text|button|list|edit|movie|slider|handle|slot|map|template|column)\\b(?=\\s*(?:\\{|$))",
       "captures": { "1": { "name": "storage.type.element.ie-menu" } }
+    },
+    "keyword": {
+      "comment": "The 122 keywords of the engine (src/server/validation/menuKeywords.ts).",
+      "match": "(?i)\\b(?:action|actionalt|actionbar|actiondbl|actiondrag|actionenter|actionexit|actionHold|actionScroll|actionsimpledrag|actionsimpledrop|actionUpdate|align|area|areamap|background|bam|bitmap|bottom|button|center|clickable|clunkyScroll|color|colordisplay|column|count|dynamic|edit|enabled|encumbrance|fill|font|force|frame|frameTimes|full|func|glow|greyscale|handle|hide|hidehighlight|highlight|highlightgroup|icon|ignoreEsc|ignoreEvents|label|left|list|loop|lower|lua|map|maxchars|maxlines|memorizedSpellInfo|menu|modal|mosaic|movie|name|offset|on|onclose|onopen|opacity|overlayTint|pad|palette|panel|paperdoll|placeholder|point|portrait|position|progressbar|pulse|queuedMovie|rectangle|res|respectClipping|respectConstraints|right|rowbackground|rowheight|rowwidth|scaleToClip|scrollbar|seperator|sequence|sequenceonce|settings|shadow|size|skipReset|slider|sliderBackground|slot|slotinfo|sound|spellInfo|state|style|subtitle|table|template|text|tint|toggle|tooltip|top|transparent|upper|usages|usealpha|useFontZoom|useOverlayTint|var|width|worldmap)\\b",
+      "name": "variable.other.property.ie-menu"
     },
     "string-double": {
       "begin": "\"",
@@ -65,12 +79,8 @@
       "name": "string.quoted.single.ie-menu"
     },
     "number": {
-      "match": "(?<![\\w.])-?\\d+(?:\\.\\d+)?\\b",
+      "match": "(?<![A-Za-z0-9])[0-9]+",
       "name": "constant.numeric.ie-menu"
-    },
-    "property": {
-      "match": "^\\s*([A-Za-z_][A-Za-z_]*)",
-      "captures": { "1": { "name": "variable.other.property.ie-menu" } }
     }
   }
 }

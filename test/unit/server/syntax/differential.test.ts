@@ -117,4 +117,46 @@ describe('server/syntax/parser agrees with the official Lua 5.2.4 compiler', () 
     // The mutations must exercise both outcomes to be meaningful.
     assert.ok(rejected > 400, `only ${rejected} mutants were invalid`);
   });
+
+  it('on expression chunks at the nesting limit, where the implied return is a statement level', () => {
+    for (let depth = 196; depth <= 200; depth++) {
+      const code = `${'('.repeat(depth)}1${')'.repeat(depth)}`;
+      const official = lua.check(`return ${code}`);
+      assert.equal(parseChunk(code, { mode: 'expression' }).errors.length === 0, official === undefined, `depth ${depth}: ${official ?? 'accepted'}`);
+    }
+  });
+
+  // .menu property code: the engine compiles `function f () <code> end` (statements)
+  // or `function f () return <code> end` (expressions); see CompiledForm.
+  describe('on .menu property code, against the form the engine compiles', () => {
+    const agreeAsBody = (code: string, mode: 'statements' | 'expression'): void => {
+      const official = lua.check(`function f () ${mode === 'expression' ? 'return ' : ''}${code} end`);
+      const ours = parseChunk(code, { mode, functionBody: true }).errors;
+      assert.equal(ours.length === 0, official === undefined, `${mode} ${JSON.stringify(code)}\n  official: ${official ?? 'accepted'}\n  parser: ${JSON.stringify(ours)}`);
+    };
+
+    it('on the fixed corpus and the seeds, as statements', () => {
+      for (const code of [...CORPUS, ...SEEDS]) agreeAsBody(code, 'statements');
+    });
+
+    it('on expressions', () => {
+      for (const code of ['a', 'a, b', 'f(...)', '...', 'a; b', 'a = 1', 'function() end', '(a)', 'a b', '', 'x == 1 and not y']) {
+        agreeAsBody(code, 'expression');
+      }
+    });
+
+    it('on 1,600 deterministic token mutations of the seeds, as statements', () => {
+      SEEDS.forEach((seed, index) => {
+        for (const mutant of mutations(seed, 400, index + 1)) agreeAsBody(mutant, 'statements');
+      });
+    });
+
+    it('at the nesting limit, which the enclosing function statement lowers by one level', () => {
+      for (let depth = 196; depth <= 200; depth++) {
+        agreeAsBody(`${'do '.repeat(depth)}${'end '.repeat(depth)}`, 'statements');
+        agreeAsBody(`${'('.repeat(depth)}1${')'.repeat(depth)}`, 'expression');
+        agreeAsBody(`x = ${'('.repeat(depth)}1${')'.repeat(depth)}`, 'statements');
+      }
+    });
+  });
 });

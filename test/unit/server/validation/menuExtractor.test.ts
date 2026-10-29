@@ -11,10 +11,10 @@ function chunksOf(menu: string): [string, string][] {
 }
 
 describe('server/validation/menuExtractor', () => {
-  it('extracts top-level backtick blocks as statements', () => {
+  it('extracts backtick blocks without their last character, which the engine drops', () => {
     assert.deepEqual(chunksOf('`\nlocal x = 1\n`\nmenu\n{\n}\n`y = 2`'), [
-      ['statements', '\nlocal x = 1\n'],
-      ['statements', 'y = 2'],
+      ['statements', '\nlocal x = 1'],
+      ['statements', 'y = '],
     ]);
   });
 
@@ -60,6 +60,59 @@ describe('server/validation/menuExtractor', () => {
     assert.deepEqual(chunksOf('action\r\n"\r\n\tx()\r\n"'), [['statements', '\r\n\tx()\r\n']]);
   });
 
+  it('extracts Lua from single-quoted strings like double-quoted ones', () => {
+    assert.deepEqual(chunksOf("action 'Close()'\nbam lua 'getBam()'\nenabled 'a == 1'"), [
+      ['statements', 'Close()'],
+      ['expression', 'getBam()'],
+      ['expression', 'a == 1'],
+    ]);
+  });
+
+  it('extracts unquoted words that are not keywords, which the engine reads as strings', () => {
+    assert.deepEqual(chunksOf('table characterDetails\nenabled\tcurrentSave\ntext lua someName'), [
+      ['expression', 'characterDetails'],
+      ['expression', 'currentSave'],
+      ['expression', 'someName'],
+    ]);
+  });
+
+  it('extracts table, seperator, useOverlayTint, actiondrag and bitmap res as expressions', () => {
+    assert.deepEqual(
+      chunksOf('table "rows"\nseperator "sep()"\nuseOverlayTint "tint"\nactionDrag "drag()"\nbitmap res "resName()"'),
+      [
+        ['expression', 'rows'],
+        ['expression', 'sep()'],
+        ['expression', 'tint'],
+        ['expression', 'drag()'],
+        ['expression', 'resName()'],
+      ],
+    );
+  });
+
+  it('extracts res only after bitmap', () => {
+    assert.deepEqual(chunksOf('res "x"\nbitmap "y"'), []);
+  });
+
+  it('finds properties anywhere on a line, since the grammar ignores line breaks', () => {
+    assert.deepEqual(chunksOf('button { name "B" area 0 0 10 10 action "f()" enabled "g()" }'), [
+      ['statements', 'f()'],
+      ['expression', 'g()'],
+    ]);
+  });
+
+  it('keeps a property and its string together across inline Lua, which produces no token', () => {
+    assert.deepEqual(chunksOf('action `x = 1\n` "f()"'), [
+      ['statements', 'x = 1'],
+      ['statements', 'f()'],
+    ]);
+  });
+
+  it('does not validate an unterminated string, which runs to the end of the file', () => {
+    const { chunks, problems } = extractMenuLua("action 'f()\n");
+    assert.deepEqual(chunks, []);
+    assert.deepEqual(problems.map((p) => p.code), ['menu-unterminated-string']);
+  });
+
   it('reports an unterminated backtick block', () => {
     const { chunks, problems } = extractMenuLua('menu\n{\n}\n`\nlocal x = 1\n');
     assert.deepEqual(chunks, []);
@@ -82,6 +135,10 @@ describe('server/validation/menuExtractor', () => {
     it('records nested blocks with their keyword, on the same line or the line before', () => {
       const menu = "menu\n{\n\tname 'MAIN'\n\tbutton {\n\t\taction \"f()\"\n\t}\n\tlabel\n\t{\n\t}\n}\nmenu\n{\n}\n";
       assert.equal(outline(extractMenuLua(menu).blocks), 'menu(MAIN)[button label] menu');
+    });
+
+    it('names blocks written on one line, and takes unquoted names', () => {
+      assert.equal(outline(extractMenuLua('menu { name MAIN button { name "B" area 0 0 1 1 } }').blocks), 'menu(MAIN)[button(B)]');
     });
 
     it('records the offsets of the keyword, the braces and the name', () => {
@@ -107,6 +164,41 @@ describe('server/validation/menuExtractor', () => {
     it('leaves unclosed blocks open and ignores unmatched closing braces', () => {
       assert.equal(outline(extractMenuLua('}\nmenu\n{\n\tbutton\n\t{\n').blocks), 'menu![button!]');
     });
+  });
+
+  it('keeps an empty backtick block empty', () => {
+    assert.deepEqual(chunksOf('``'), [['statements', '']]);
+  });
+
+  it('records the region of each chunk, delimiters included', () => {
+    const menu = '`a()\n` action "b()" table rows';
+    assert.deepEqual(extractMenuLua(menu).chunks.map((c) => menu.slice(c.region.start, c.region.end)), ['`a()\n`', '"b()"', 'rows']);
+  });
+
+  it('compiles statement properties as a function body and expressions as its return value', () => {
+    assert.deepEqual(extractMenuLua('`x` action "a()" enabled "b"').chunks.map((c) => c.forms), [
+      [{ prefix: '', suffix: '' }],
+      [{ prefix: 'function f () ', suffix: ' end' }],
+      [{ prefix: 'function f () return ', suffix: ' end' }],
+    ]);
+  });
+
+  it('extracts slotinfo, spellInfo and memorizedSpellInfo strings as expressions with the forms the engine generates', () => {
+    const { chunks } = extractMenuLua('slotinfo "T" spellInfo "T" memorizedSpellInfo "T"');
+    assert.deepEqual(chunks.map((c) => [c.kind, c.text, c.forms.length]), [
+      ['expression', 'T', 10],
+      ['expression', 'T', 6],
+      ['expression', 'T', 6],
+    ]);
+    assert.deepEqual(chunks[0]?.forms.map((f) => `${f.prefix}T${f.suffix}`).slice(-3), [
+      'function f () return Infinity_SwapSlot(T.id) end',
+      'function f () showItemDescriptionInventory(T.slotName) end',
+      'function f () slotDoubleClick(T.slotName) end',
+    ]);
+    assert.deepEqual(chunks[2]?.forms.map((f) => `${f.prefix}T${f.suffix}`).slice(-2), [
+      'function f () return unmemorizeSpell(T) end',
+      'function f () showSpellDetails(T, true) end',
+    ]);
   });
 
   it('tells backtick blocks from property values', () => {

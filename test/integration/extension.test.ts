@@ -58,6 +58,24 @@ suite('IE Lua Language Server', () => {
     assert.equal(diagnostics[0]?.range.start.line, 6);
   });
 
+  test('validateDocument checks .menu Lua as the engine compiles and reads it', async () => {
+    const uri = fixtureUri('MISREAD.MENU');
+    await vscode.window.showTextDocument(await vscode.workspace.openTextDocument(uri));
+    await vscode.commands.executeCommand('ieLua.validateDocument', uri);
+    const diagnostics = await waitForDiagnostics(uri, (found) => found.length === 2);
+    assert.deepEqual(
+      diagnostics
+        .map((d) => [d.code, d.severity, d.range.start.line, d.range.start.character])
+        .sort((a, b) => Number(a[2]) - Number(b[2])),
+      [
+        // The engine drops the `e` before the closing backtick.
+        ['menu-inline-lua-last-character', vscode.DiagnosticSeverity.Warning, 2, 18],
+        // `action` code is compiled as the body of a function that is not vararg.
+        ['lua-syntax', vscode.DiagnosticSeverity.Error, 8, 31],
+      ],
+    );
+  });
+
   test('"type" mode validates while editing', async () => {
     const restore = await withSetting('validate.mode', 'type');
     try {

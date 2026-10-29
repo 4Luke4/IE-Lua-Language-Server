@@ -1,0 +1,11 @@
+-- Original fixture: text the engine misreads, and Lua that only its compiled form rejects.
+`
+fixtureReady = true`
+menu
+{
+	name 'MISREAD'
+	button
+	{
+		area 0 0 10 10 action "print(...)"
+	}
+}

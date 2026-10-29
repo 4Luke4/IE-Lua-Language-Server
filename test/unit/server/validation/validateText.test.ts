@@ -51,12 +51,52 @@ describe('server/validation/validateText (official Lua 5.2.4 compiler)', () => {
   describe('.menu documents', () => {
     it('validates each embedded chunk and maps problems back into the document', () => {
       const text = '`\nfunction ok() return 1 end\n`\nmenu\n{\n\tbutton\n\t{\n\t\tenabled "a =="\n\t\taction\n\t\t"\n\t\t\tfoo(\n\t\t"\n\t}\n}\n';
-      const found = problems(text, 'menu', lua);
-      assert.equal(found.length, 2);
-      assert.deepEqual(found.map(([code]) => code), ['lua-syntax', 'lua-syntax']);
-      for (const [, , message] of found) {
-        assert.match(message, /near <eof>/);
-      }
+      const found = validateText(text, 'menu', lua);
+      // The `end` the engine appends is what the compiler stumbles on: an empty range at the end of each chunk.
+      assert.deepEqual(found.map((p) => [p.code, text[p.start], p.start === p.end, p.message]), [
+        ['lua-syntax', '"', true, "unexpected symbol near 'end'"],
+        ['lua-syntax', '"', true, "unexpected symbol near 'end'"],
+      ]);
+    });
+
+    it('rejects ... in property code, which the engine compiles into a function that is not vararg', () => {
+      assert.deepEqual(problems('action "print(...)"', 'menu', lua), [
+        ['lua-syntax', '...', "cannot use '...' outside a vararg function near '...'"],
+      ]);
+      assert.deepEqual(problems('`print(...) `', 'menu', lua), []);
+    });
+
+    it('rejects a trailing -- comment in property code, which comments out the end the engine appends', () => {
+      const [problem] = problems('action "f() -- note"', 'menu', lua);
+      assert.match(problem?.[2] ?? '', /'end' expected near <eof>/);
+      assert.deepEqual(problems('action "f() -- note\n"', 'menu', lua), []);
+    });
+
+    it('compiles a backtick block without its last character, as the engine does', () => {
+      assert.deepEqual(problems('`x = 1`', 'menu', lua).map(([code, found]) => [code, found]), [
+        ['menu-inline-lua-last-character', '1'],
+        ['lua-syntax', ''],
+      ]);
+      assert.deepEqual(problems('`x = 1\n`', 'menu', lua), []);
+    });
+
+    it('points at a token of the property code when it occurs once on the line', () => {
+      assert.deepEqual(problems('action "a b"', 'menu', lua), [['lua-syntax', 'b', "syntax error near 'b'"]]);
+    });
+
+    it('validates slotinfo, spellInfo and memorizedSpellInfo in every form the engine generates', () => {
+      const valid = 'slot { slotinfo "characters[id].equipment.weapon0" spellInfo \'t[1]\' memorizedSpellInfo "s" }';
+      assert.deepEqual(problems(valid, 'menu', lua), []);
+      // `return 1` compiles, but the engine generates `return 1.item.icon`: `1.` is a number, then `item`
+      // (generated text) is unexpected, so the problem is an empty range at the end of the string.
+      assert.deepEqual(problems('slotinfo "1"', 'menu', lua), [['lua-syntax', '', "'end' expected near 'item'"]]);
+      assert.equal(validateText('spellInfo "\'s\'"', 'menu', lua).length, 1);
+      assert.equal(validateText('memorizedSpellInfo "a b"', 'menu', lua).length, 1);
+    });
+
+    it('rejects code that only parses as a chunk, not as a function body or return value', () => {
+      assert.equal(validateText('enabled "a; b"', 'menu', lua).length, 1);
+      assert.equal(validateText('enabled "a return b"', 'menu', lua).length, 1);
     });
 
     it('accepts valid expressions and statements', () => {
@@ -66,6 +106,14 @@ describe('server/validation/validateText (official Lua 5.2.4 compiler)', () => {
 
     it('rejects statements where an expression is required', () => {
       assert.equal(validateText('enabled "x = 1"', 'menu', lua).length, 1);
+    });
+
+    it('reports Lua syntax errors as errors and misread menu text as warnings', () => {
+      const found = validateText('a_b action "f("', 'menu', lua);
+      assert.deepEqual(found.map((p) => [p.code, p.severity]), [
+        ['menu-unquoted-underscore', 'warning'],
+        ['lua-syntax', 'error'],
+      ]);
     });
 
     it('includes extractor problems', () => {

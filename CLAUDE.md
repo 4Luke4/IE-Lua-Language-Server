@@ -11,7 +11,7 @@
 |---|---|
 | Name | `IE Lua Language Server` |
 | Publisher | `infinity-engine-tools` |
-| Purpose | Lua 5.2 language support (diagnostics, document symbols, folding, and same-file definition, references and rename now; more LSP features planned) for Infinity Engine EE `.lua` files and the Lua embedded in `.menu` files, usable from VS Code and other LSP editors |
+| Purpose | Lua 5.2 language support (diagnostics, document and workspace symbols, folding, and same-file definition, references and rename now; more LSP features planned) for Infinity Engine EE `.lua` files and the Lua embedded in `.menu` files, usable from VS Code and other LSP editors |
 | Language | TypeScript (strict) |
 | Bundler | esbuild (two bundles: client + language server) |
 | Minimum VS Code | `^1.91.0` (see `engines.vscode` in `package.json`; required by `vscode-languageclient` ≥ 10) |
@@ -33,7 +33,8 @@
 │   │   ├── server.ts        # Connection, capabilities, handlers
 │   │   ├── features/        # completion.ts, diagnostics.ts, hover.ts, ...
 │   │   ├── syntax/          # Lua 5.2 lexer, parser, scopes, symbols, folding (pure, no LSP imports)
-│   │   └── validation/      # Pure analysis logic (no LSP imports) — unit-tested directly
+│   │   ├── validation/      # Pure analysis logic (no LSP imports) — unit-tested directly
+│   │   └── workspace/       # Workspace index, files.exclude glob matching (fs injected; no LSP)
 │   └── shared/              # Types/constants used by BOTH sides — no vscode imports
 ├── test/
 │   ├── unit/                # Pure logic, runs in plain Node (no VS Code)
@@ -131,6 +132,12 @@ esbuild does **not** type-check. Always run `npm run check-types` — a green bu
 - Only advertise capabilities that are actually implemented.
 - Debug the server with `--inspect=6009` via the `debug` server options.
 - Full details: `.claude/rules/language-server.md`.
+- **Engine facts come from IESDP** (checked against the 2.6.6.0 and 2.7.3.0 executables), never from guesses:
+  [MENU format](https://gibberlings3.github.io/iesdp/file_formats/ie_formats/menu_v1.htm) (lexer, grammar,
+  which properties are Lua and the exact text compiled for them: see `src/server/validation/menu*.ts`) and
+  [Engine Lua globals](https://gibberlings3.github.io/iesdp/file_formats/ie_formats/lua_globals.htm). The engine's
+  Lua state opens only `_G`, `table`, `string`, `bit32`, `math` and `debug` and replaces `print`; `io`, `os` and
+  `package` (hence `require`) exist only as test-automation stubs. Hover/completion must not offer them.
 
 ---
 
