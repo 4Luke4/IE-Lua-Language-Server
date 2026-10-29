@@ -6,7 +6,7 @@ import { CHUNK_FORM, EXPRESSION_FORM, STATEMENT_FORM, type CompiledForm, type Lu
 // commit 38e7532). Keywords in lower case, as `menuKeyword` returns them.
 
 /** Properties whose STRING is compiled as a function body (one or more statements). */
-const STATEMENT_PROPERTIES: ReadonlySet<string> = new Set([
+export const STATEMENT_PROPERTIES: ReadonlySet<string> = new Set([
   'onopen',
   'onclose',
   'action',
@@ -25,7 +25,7 @@ const STATEMENT_PROPERTIES: ReadonlySet<string> = new Set([
  * Properties whose STRING is compiled as `return <expression>`. `bitmap res` and
  * every `lua STRING` value are expressions too; they are recognized separately.
  */
-const EXPRESSION_PROPERTIES: ReadonlySet<string> = new Set([
+export const EXPRESSION_PROPERTIES: ReadonlySet<string> = new Set([
   'enabled',
   'actiondrag',
   'table',
@@ -56,7 +56,7 @@ const SPELL_INFO_COMMON: readonly CompiledForm[] = [
  * (IESDP, MENU file format, Item properties › Slots). Each STRING is validated
  * in every generated form, and parsed as an expression for navigation.
  */
-const SHORTHAND_FORMS: ReadonlyMap<string, readonly CompiledForm[]> = new Map([
+export const SHORTHAND_FORMS: ReadonlyMap<string, readonly CompiledForm[]> = new Map([
   [
     'slotinfo',
     [
