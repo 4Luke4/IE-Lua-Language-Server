@@ -66,7 +66,8 @@ function globalTarget(document: ParsedDocument, name: string): HoverTarget {
   return knownGlobal(name) ?? { kind: 'global', name, site: undefined, link: undefined };
 }
 
-function variableTarget(document: ParsedDocument, { target, identifier, chunkIndex }: TargetHit): HoverTarget | undefined {
+/** What to describe for a variable occurrence (see `targetAt`), or `undefined` when there is nothing to say. */
+export function variableTarget(document: ParsedDocument, { target, identifier, chunkIndex }: TargetHit): HoverTarget | undefined {
   if (target.kind === 'local') {
     const declaring = target.declaration.identifier;
     return { kind: 'local', declaration: target.declaration, site: declaring && declarationSite(document, declaring) };
@@ -87,7 +88,8 @@ function libraryMember(document: ParsedDocument, dotted: string): ManualEntry | 
 const isStringLiteral = (expression: Ast.Expression): boolean =>
   expression.kind === 'StringLiteral' || (expression.kind === 'ParenthesizedExpression' && isStringLiteral(expression.expression));
 
-function memberTarget(document: ParsedDocument, { node, chunkIndex }: MemberOccurrence): HoverTarget | undefined {
+/** What to describe for a field or method name (see `memberIndex`), or `undefined` when there is nothing to say. */
+export function memberTarget(document: ParsedDocument, { node, chunkIndex }: MemberOccurrence): HoverTarget | undefined {
   if (node.kind === 'MethodCallExpression') {
     // Strings have the string table as their metatable's __index (manual §6.4).
     if (isStringLiteral(node.base)) {
