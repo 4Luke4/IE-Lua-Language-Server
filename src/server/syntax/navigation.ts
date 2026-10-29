@@ -22,6 +22,8 @@ export interface TargetHit {
   readonly target: NavigationTarget;
   /** The identifier under the cursor. */
   readonly identifier: Ast.Identifier;
+  /** Index in `ParsedDocument.chunks` of the chunk the identifier is in. */
+  readonly chunkIndex: number;
 }
 
 export interface VariableOccurrence {
@@ -88,6 +90,7 @@ export function targetAt(document: ParsedDocument, offset: number): TargetHit | 
   const declaration = document.chunks[chunkIndex]?.scopes.resolved.get(identifier);
   return {
     identifier,
+    chunkIndex,
     target: declaration ? { kind: 'local', chunkIndex, declaration } : { kind: 'global', name: identifier.name },
   };
 }
