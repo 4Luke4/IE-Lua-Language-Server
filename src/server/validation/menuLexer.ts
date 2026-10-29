@@ -57,12 +57,16 @@ export function isMenuSpace(c: string | undefined): boolean {
 }
 
 function isLetter(c: string | undefined): boolean {
-  return c !== undefined && /^[A-Za-z]$/.test(c);
+  if (c === undefined) return false;
+  const code = c.charCodeAt(0) | 0x20; // ASCII upper case to lower case
+  return code >= 0x61 && code <= 0x7a;
 }
 
 function isDigit(c: string | undefined): boolean {
-  return c !== undefined && /^[0-9]$/.test(c);
+  return c !== undefined && c >= '0' && c <= '9';
 }
+
+const LINE_END = /[\n\r]/g;
 
 /** IESDP, Limits: "A longer unquoted word [than 63 characters] aborts the game." */
 export const MAX_WORD_LENGTH = 64;
@@ -97,7 +101,8 @@ export function lexMenu(text: string): MenuLexResult {
   while (i < text.length) {
     const c = text[i];
     if (c === '-' && text[i + 1] === '-') {
-      while (i < text.length && text[i] !== '\n' && text[i] !== '\r') i++;
+      LINE_END.lastIndex = i + 2;
+      i = LINE_END.exec(text)?.index ?? text.length;
     } else if (c === '-' || c === '{' || c === '}') {
       simple(c, i);
       i++;
