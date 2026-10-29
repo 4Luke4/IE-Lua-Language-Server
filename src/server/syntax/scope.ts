@@ -6,7 +6,9 @@
 // - Parameters, and the implicit `self` of `function a:m()`, are visible in the
 //   function body; `for` variables in the loop body.
 // - `repeat … until cond`: `cond` sees the locals of the body.
-// - Any other name is a global (a field of _ENV).
+// - Any other name is a global (a field of _ENV). While a local named `_ENV`
+//   is visible, such a name is a field of that local table instead (§2.2); it
+//   is still listed with the globals, and also in `environmentFields`.
 
 import type * as Ast from './ast.ts';
 
@@ -34,6 +36,12 @@ export interface ScopeAnalysis {
    * identifiers are not included (see `declarations`).
    */
   readonly writes: ReadonlySet<Ast.Identifier>;
+  /**
+   * Global-looking identifiers resolved while a local, parameter or `for`
+   * variable named `_ENV` was visible: fields of that table, not of the
+   * global environment. Also listed in `globals`.
+   */
+  readonly environmentFields: ReadonlySet<Ast.Identifier>;
 }
 
 export function analyzeScopes(chunk: Ast.Chunk): ScopeAnalysis {
@@ -41,6 +49,7 @@ export function analyzeScopes(chunk: Ast.Chunk): ScopeAnalysis {
   const resolved = new Map<Ast.Identifier, Declaration>();
   const globals = new Map<string, Ast.Identifier[]>();
   const writes = new Set<Ast.Identifier>();
+  const environmentFields = new Set<Ast.Identifier>();
   const scopes: Map<string, Declaration>[] = [];
 
   const declare = (kind: DeclarationKind, name: string, identifier: Ast.Identifier | undefined): void => {
@@ -50,15 +59,23 @@ export function analyzeScopes(chunk: Ast.Chunk): ScopeAnalysis {
     scopes.at(-1)?.set(name, declaration);
   };
 
-  const use = (identifier: Ast.Identifier): void => {
+  const lookup = (name: string): Declaration | undefined => {
     for (let i = scopes.length - 1; i >= 0; i--) {
-      const declaration = scopes[i]?.get(identifier.name);
-      if (declaration) {
-        declaration.references.push(identifier);
-        resolved.set(identifier, declaration);
-        return;
-      }
+      const declaration = scopes[i]?.get(name);
+      if (declaration) return declaration;
     }
+    return undefined;
+  };
+
+  const use = (identifier: Ast.Identifier): void => {
+    const declaration = lookup(identifier.name);
+    if (declaration) {
+      declaration.references.push(identifier);
+      resolved.set(identifier, declaration);
+      return;
+    }
+    // The chunk's own _ENV is an upvalue, never in `scopes`: only a local one is found.
+    if (lookup('_ENV')) environmentFields.add(identifier);
     const uses = globals.get(identifier.name);
     if (uses) uses.push(identifier);
     else globals.set(identifier.name, [identifier]);
@@ -220,5 +237,5 @@ export function analyzeScopes(chunk: Ast.Chunk): ScopeAnalysis {
   scoped(() => {
     block(chunk.body);
   });
-  return { declarations, resolved, globals, writes };
+  return { declarations, resolved, globals, writes, environmentFields };
 }
