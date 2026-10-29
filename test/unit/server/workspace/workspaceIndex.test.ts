@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { posix } from 'node:path';
+import { posix, win32 } from 'node:path';
 import { isIndexedFileName, WorkspaceIndex, type DirectoryEntry, type WorkspaceFileSystem } from '../../../../src/server/workspace/workspaceIndex.ts';
 
 /** An in-memory file system keyed by full path; `links` marks symbolic links. */
@@ -158,6 +158,38 @@ describe('server/workspace/workspaceIndex', () => {
     index.settingsChanged();
     await index.ready();
     assert.deepEqual(indexed(), ['file:///w/a.lua=A']);
+  });
+
+  it('handles Windows paths: separators, drive letters and URIs', async () => {
+    const fs = new MemoryFileSystem('\\').add('c:\\Mods\\My Mod\\a.lua', 'A').add('c:\\Mods\\out\\b.lua', 'B');
+    const log: string[] = [];
+    const index = new WorkspaceIndex<string>({
+      fs,
+      path: win32,
+      // fileURLToPath as on Windows, for the two URI spellings clients use.
+      toPath: (uri) => decodeURIComponent(new URL(uri).pathname).replace(/^\/([A-Za-z]):/, '$1:').replaceAll('/', '\\'),
+      analyze: (text) => text,
+      filesExclude: () => Promise.resolve({ out: true }),
+      yieldToEventLoop: () => Promise.resolve(),
+      log: (message) => log.push(message),
+    });
+    index.setFolders(['file:///c%3A/Mods']);
+    await index.ready();
+    assert.deepEqual([...index.entries()].map((e) => [e.uri, e.key, e.value]), [
+      ['file:///c%3A/Mods/My%20Mod/a.lua', 'c:\\Mods\\My Mod\\a.lua', 'A'],
+    ]);
+    // An open document spelled with an upper-case drive letter is the same file.
+    assert.equal(index.pathKey('file:///C:/Mods/My%20Mod/a.lua'), 'c:\\Mods\\My Mod\\a.lua');
+    index.fileDeleted('file:///C:/Mods/My%20Mod');
+    await index.ready();
+    assert.deepEqual([...index.entries()], []);
+  });
+
+  it('scans only file: folders and says so for the others', async () => {
+    const { index, log } = setup(new MemoryFileSystem());
+    index.setFolders(['vscode-vfs://github/x/y']);
+    await index.ready();
+    assert.ok(log.some((line) => line.includes('vscode-vfs://github/x/y is not on the local file system')));
   });
 
   it('reindexes changed files and drops deleted files and folders', async () => {
