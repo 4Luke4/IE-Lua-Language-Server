@@ -16,6 +16,7 @@
 # Generated or vendored content: collapsed in diffs, excluded from language stats.
 third_party/lua52/dist/**  linguist-generated=true
 data/eeex/**.json          linguist-generated=true
+data/lua52/**.json         linguist-generated=true
 package-lock.json          linguist-generated=true -diff
 
 # Third-party upstream sources.

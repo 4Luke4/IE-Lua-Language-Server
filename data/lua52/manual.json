@@ -1,0 +1,998 @@
+{
+  "source": {
+    "url": "https://www.lua.org/ftp/lua-5.2.4.tar.gz",
+    "sha256": "b9e2e4aad6789b3b63a056d442f7b39f0ecfca3ae0f1fc0ae4e9614401b69f4b",
+    "member": "lua-5.2.4/doc/manual.html",
+    "encoding": "iso-8859-1"
+  },
+  "title": "Lua 5.2 Reference Manual",
+  "copyright": "Copyright © 2011–2015 Lua.org, PUC-Rio. Freely available under the terms of the Lua license.",
+  "baseUrl": "https://www.lua.org/manual/5.2/manual.html",
+  "sections": [
+    {
+      "number": "6.1",
+      "title": "Basic Functions"
+    },
+    {
+      "number": "6.4",
+      "title": "String Manipulation",
+      "module": "string"
+    },
+    {
+      "number": "6.5",
+      "title": "Table Manipulation",
+      "module": "table"
+    },
+    {
+      "number": "6.6",
+      "title": "Mathematical Functions",
+      "module": "math"
+    },
+    {
+      "number": "6.7",
+      "title": "Bitwise Operations",
+      "module": "bit32"
+    },
+    {
+      "number": "6.10",
+      "title": "The Debug Library",
+      "module": "debug"
+    }
+  ],
+  "entries": [
+    {
+      "name": "assert",
+      "kind": "function",
+      "section": "6.1",
+      "anchor": "pdf-assert",
+      "heading": "assert (v [, message])",
+      "markdown": "Issues an error when the value of its argument `v` is false (i.e., **nil** or **false**); otherwise, returns all its arguments. `message` is an error message; when absent, it defaults to \"assertion failed!\"",
+      "plaintext": "Issues an error when the value of its argument v is false (i.e., nil or false); otherwise, returns all its arguments. message is an error message; when absent, it defaults to \"assertion failed!\""
+    },
+    {
+      "name": "collectgarbage",
+      "kind": "function",
+      "section": "6.1",
+      "anchor": "pdf-collectgarbage",
+      "heading": "collectgarbage ([opt [, arg]])",
+      "markdown": "This function is a generic interface to the garbage collector. It performs different functions according to its first argument, `opt`:\n\n- **\"`collect`\":** performs a full garbage-collection cycle. This is the default option.\n\n- **\"`stop`\":** stops automatic execution of the garbage collector. The collector will run only when explicitly invoked, until a call to restart it.\n\n- **\"`restart`\":** restarts automatic execution of the garbage collector.\n\n- **\"`count`\":** returns the total memory in use by Lua (in Kbytes) and a second value with the total memory in bytes modulo 1024. The first value has a fractional part, so the following equality is always true:\n\n  ```\n       k, b = collectgarbage(\"count\")\n       assert(k*1024 == math.floor(k)*1024 + b)\n  ```\n\n  (The second result is useful when Lua is compiled with a non floating-point type for numbers.)\n\n- **\"`step`\":** performs a garbage-collection step. The step \"size\" is controlled by `arg` (larger values mean more steps) in a non-specified way. If you want to control the step size you must experimentally tune the value of `arg`. Returns **true** if the step finished a collection cycle.\n\n- **\"`setpause`\":** sets `arg` as the new value for the *pause* of the collector (see [§2.5](https://www.lua.org/manual/5.2/manual.html#2.5)). Returns the previous value for *pause*.\n\n- **\"`setstepmul`\":** sets `arg` as the new value for the *step multiplier* of the collector (see [§2.5](https://www.lua.org/manual/5.2/manual.html#2.5)). Returns the previous value for *step*.\n\n- **\"`isrunning`\":** returns a boolean that tells whether the collector is running (i.e., not stopped).\n\n- **\"`generational`\":** changes the collector to generational mode. This is an experimental feature (see [§2.5](https://www.lua.org/manual/5.2/manual.html#2.5)).\n\n- **\"`incremental`\":** changes the collector to incremental mode. This is the default mode.",
+      "plaintext": "This function is a generic interface to the garbage collector. It performs different functions according to its first argument, opt:\n\n- \"collect\": performs a full garbage-collection cycle. This is the default option.\n\n- \"stop\": stops automatic execution of the garbage collector. The collector will run only when explicitly invoked, until a call to restart it.\n\n- \"restart\": restarts automatic execution of the garbage collector.\n\n- \"count\": returns the total memory in use by Lua (in Kbytes) and a second value with the total memory in bytes modulo 1024. The first value has a fractional part, so the following equality is always true:\n\n       k, b = collectgarbage(\"count\")\n       assert(k*1024 == math.floor(k)*1024 + b)\n\n  (The second result is useful when Lua is compiled with a non floating-point type for numbers.)\n\n- \"step\": performs a garbage-collection step. The step \"size\" is controlled by arg (larger values mean more steps) in a non-specified way. If you want to control the step size you must experimentally tune the value of arg. Returns true if the step finished a collection cycle.\n\n- \"setpause\": sets arg as the new value for the pause of the collector (see §2.5 (https://www.lua.org/manual/5.2/manual.html#2.5)). Returns the previous value for pause.\n\n- \"setstepmul\": sets arg as the new value for the step multiplier of the collector (see §2.5 (https://www.lua.org/manual/5.2/manual.html#2.5)). Returns the previous value for step.\n\n- \"isrunning\": returns a boolean that tells whether the collector is running (i.e., not stopped).\n\n- \"generational\": changes the collector to generational mode. This is an experimental feature (see §2.5 (https://www.lua.org/manual/5.2/manual.html#2.5)).\n\n- \"incremental\": changes the collector to incremental mode. This is the default mode."
+    },
+    {
+      "name": "dofile",
+      "kind": "function",
+      "section": "6.1",
+      "anchor": "pdf-dofile",
+      "heading": "dofile ([filename])",
+      "markdown": "Opens the named file and executes its contents as a Lua chunk. When called without arguments, `dofile` executes the contents of the standard input (`stdin`). Returns all values returned by the chunk. In case of errors, `dofile` propagates the error to its caller (that is, `dofile` does not run in protected mode).",
+      "plaintext": "Opens the named file and executes its contents as a Lua chunk. When called without arguments, dofile executes the contents of the standard input (stdin). Returns all values returned by the chunk. In case of errors, dofile propagates the error to its caller (that is, dofile does not run in protected mode)."
+    },
+    {
+      "name": "error",
+      "kind": "function",
+      "section": "6.1",
+      "anchor": "pdf-error",
+      "heading": "error (message [, level])",
+      "markdown": "Terminates the last protected function called and returns `message` as the error message. Function `error` never returns.\n\nUsually, `error` adds some information about the error position at the beginning of the message, if the message is a string. The `level` argument specifies how to get the error position. With level 1 (the default), the error position is where the `error` function was called. Level 2 points the error to where the function that called `error` was called; and so on. Passing a level 0 avoids the addition of error position information to the message.",
+      "plaintext": "Terminates the last protected function called and returns message as the error message. Function error never returns.\n\nUsually, error adds some information about the error position at the beginning of the message, if the message is a string. The level argument specifies how to get the error position. With level 1 (the default), the error position is where the error function was called. Level 2 points the error to where the function that called error was called; and so on. Passing a level 0 avoids the addition of error position information to the message."
+    },
+    {
+      "name": "_G",
+      "kind": "value",
+      "section": "6.1",
+      "anchor": "pdf-_G",
+      "heading": "_G",
+      "markdown": "A global variable (not a function) that holds the global environment (see [§2.2](https://www.lua.org/manual/5.2/manual.html#2.2)). Lua itself does not use this variable; changing its value does not affect any environment, nor vice-versa.",
+      "plaintext": "A global variable (not a function) that holds the global environment (see §2.2 (https://www.lua.org/manual/5.2/manual.html#2.2)). Lua itself does not use this variable; changing its value does not affect any environment, nor vice-versa."
+    },
+    {
+      "name": "getmetatable",
+      "kind": "function",
+      "section": "6.1",
+      "anchor": "pdf-getmetatable",
+      "heading": "getmetatable (object)",
+      "markdown": "If `object` does not have a metatable, returns **nil**. Otherwise, if the object's metatable has a `\"__metatable\"` field, returns the associated value. Otherwise, returns the metatable of the given object.",
+      "plaintext": "If object does not have a metatable, returns nil. Otherwise, if the object's metatable has a \"__metatable\" field, returns the associated value. Otherwise, returns the metatable of the given object."
+    },
+    {
+      "name": "ipairs",
+      "kind": "function",
+      "section": "6.1",
+      "anchor": "pdf-ipairs",
+      "heading": "ipairs (t)",
+      "markdown": "If `t` has a metamethod `__ipairs`, calls it with `t` as argument and returns the first three results from the call.\n\nOtherwise, returns three values: an iterator function, the table `t`, and 0, so that the construction\n\n```\n     for i,v in ipairs(t) do body end\n```\n\nwill iterate over the pairs (`1,t[1]`), (`2,t[2]`), ..., up to the first integer key absent from the table.",
+      "plaintext": "If t has a metamethod __ipairs, calls it with t as argument and returns the first three results from the call.\n\nOtherwise, returns three values: an iterator function, the table t, and 0, so that the construction\n\n     for i,v in ipairs(t) do body end\n\nwill iterate over the pairs (1,t[1]), (2,t[2]), ..., up to the first integer key absent from the table."
+    },
+    {
+      "name": "load",
+      "kind": "function",
+      "section": "6.1",
+      "anchor": "pdf-load",
+      "heading": "load (ld [, source [, mode [, env]]])",
+      "markdown": "Loads a chunk.\n\nIf `ld` is a string, the chunk is this string. If `ld` is a function, `load` calls it repeatedly to get the chunk pieces. Each call to `ld` must return a string that concatenates with previous results. A return of an empty string, **nil**, or no value signals the end of the chunk.\n\nIf there are no syntactic errors, returns the compiled chunk as a function; otherwise, returns **nil** plus the error message.\n\nIf the resulting function has upvalues, the first upvalue is set to the value of `env`, if that parameter is given, or to the value of the global environment. (When you load a main chunk, the resulting function will always have exactly one upvalue, the `_ENV` variable (see [§2.2](https://www.lua.org/manual/5.2/manual.html#2.2)). When you load a binary chunk created from a function (see [`string.dump`](https://www.lua.org/manual/5.2/manual.html#pdf-string.dump)), the resulting function can have arbitrary upvalues.)\n\n`source` is used as the source of the chunk for error messages and debug information (see [§4.9](https://www.lua.org/manual/5.2/manual.html#4.9)). When absent, it defaults to `ld`, if `ld` is a string, or to \"`=(load)`\" otherwise.\n\nThe string `mode` controls whether the chunk can be text or binary (that is, a precompiled chunk). It may be the string \"`b`\" (only binary chunks), \"`t`\" (only text chunks), or \"`bt`\" (both binary and text). The default is \"`bt`\".",
+      "plaintext": "Loads a chunk.\n\nIf ld is a string, the chunk is this string. If ld is a function, load calls it repeatedly to get the chunk pieces. Each call to ld must return a string that concatenates with previous results. A return of an empty string, nil, or no value signals the end of the chunk.\n\nIf there are no syntactic errors, returns the compiled chunk as a function; otherwise, returns nil plus the error message.\n\nIf the resulting function has upvalues, the first upvalue is set to the value of env, if that parameter is given, or to the value of the global environment. (When you load a main chunk, the resulting function will always have exactly one upvalue, the _ENV variable (see §2.2 (https://www.lua.org/manual/5.2/manual.html#2.2)). When you load a binary chunk created from a function (see string.dump (https://www.lua.org/manual/5.2/manual.html#pdf-string.dump)), the resulting function can have arbitrary upvalues.)\n\nsource is used as the source of the chunk for error messages and debug information (see §4.9 (https://www.lua.org/manual/5.2/manual.html#4.9)). When absent, it defaults to ld, if ld is a string, or to \"=(load)\" otherwise.\n\nThe string mode controls whether the chunk can be text or binary (that is, a precompiled chunk). It may be the string \"b\" (only binary chunks), \"t\" (only text chunks), or \"bt\" (both binary and text). The default is \"bt\"."
+    },
+    {
+      "name": "loadfile",
+      "kind": "function",
+      "section": "6.1",
+      "anchor": "pdf-loadfile",
+      "heading": "loadfile ([filename [, mode [, env]]])",
+      "markdown": "Similar to [`load`](https://www.lua.org/manual/5.2/manual.html#pdf-load), but gets the chunk from file `filename` or from the standard input, if no file name is given.",
+      "plaintext": "Similar to load (https://www.lua.org/manual/5.2/manual.html#pdf-load), but gets the chunk from file filename or from the standard input, if no file name is given."
+    },
+    {
+      "name": "next",
+      "kind": "function",
+      "section": "6.1",
+      "anchor": "pdf-next",
+      "heading": "next (table [, index])",
+      "markdown": "Allows a program to traverse all fields of a table. Its first argument is a table and its second argument is an index in this table. `next` returns the next index of the table and its associated value. When called with **nil** as its second argument, `next` returns an initial index and its associated value. When called with the last index, or with **nil** in an empty table, `next` returns **nil**. If the second argument is absent, then it is interpreted as **nil**. In particular, you can use `next(t)` to check whether a table is empty.\n\nThe order in which the indices are enumerated is not specified, *even for numeric indices*. (To traverse a table in numeric order, use a numerical **for**.)\n\nThe behavior of `next` is undefined if, during the traversal, you assign any value to a non-existent field in the table. You may however modify existing fields. In particular, you may clear existing fields.",
+      "plaintext": "Allows a program to traverse all fields of a table. Its first argument is a table and its second argument is an index in this table. next returns the next index of the table and its associated value. When called with nil as its second argument, next returns an initial index and its associated value. When called with the last index, or with nil in an empty table, next returns nil. If the second argument is absent, then it is interpreted as nil. In particular, you can use next(t) to check whether a table is empty.\n\nThe order in which the indices are enumerated is not specified, even for numeric indices. (To traverse a table in numeric order, use a numerical for.)\n\nThe behavior of next is undefined if, during the traversal, you assign any value to a non-existent field in the table. You may however modify existing fields. In particular, you may clear existing fields."
+    },
+    {
+      "name": "pairs",
+      "kind": "function",
+      "section": "6.1",
+      "anchor": "pdf-pairs",
+      "heading": "pairs (t)",
+      "markdown": "If `t` has a metamethod `__pairs`, calls it with `t` as argument and returns the first three results from the call.\n\nOtherwise, returns three values: the [`next`](https://www.lua.org/manual/5.2/manual.html#pdf-next) function, the table `t`, and **nil**, so that the construction\n\n```\n     for k,v in pairs(t) do body end\n```\n\nwill iterate over all key–value pairs of table `t`.\n\nSee function [`next`](https://www.lua.org/manual/5.2/manual.html#pdf-next) for the caveats of modifying the table during its traversal.",
+      "plaintext": "If t has a metamethod __pairs, calls it with t as argument and returns the first three results from the call.\n\nOtherwise, returns three values: the next (https://www.lua.org/manual/5.2/manual.html#pdf-next) function, the table t, and nil, so that the construction\n\n     for k,v in pairs(t) do body end\n\nwill iterate over all key–value pairs of table t.\n\nSee function next (https://www.lua.org/manual/5.2/manual.html#pdf-next) for the caveats of modifying the table during its traversal."
+    },
+    {
+      "name": "pcall",
+      "kind": "function",
+      "section": "6.1",
+      "anchor": "pdf-pcall",
+      "heading": "pcall (f [, arg1, ···])",
+      "markdown": "Calls function `f` with the given arguments in *protected mode*. This means that any error inside `f` is not propagated; instead, `pcall` catches the error and returns a status code. Its first result is the status code (a boolean), which is true if the call succeeds without errors. In such case, `pcall` also returns all results from the call, after this first result. In case of any error, `pcall` returns **false** plus the error message.",
+      "plaintext": "Calls function f with the given arguments in protected mode. This means that any error inside f is not propagated; instead, pcall catches the error and returns a status code. Its first result is the status code (a boolean), which is true if the call succeeds without errors. In such case, pcall also returns all results from the call, after this first result. In case of any error, pcall returns false plus the error message."
+    },
+    {
+      "name": "print",
+      "kind": "function",
+      "section": "6.1",
+      "anchor": "pdf-print",
+      "heading": "print (···)",
+      "markdown": "Receives any number of arguments and prints their values to `stdout`, using the [`tostring`](https://www.lua.org/manual/5.2/manual.html#pdf-tostring) function to convert each argument to a string. `print` is not intended for formatted output, but only as a quick way to show a value, for instance for debugging. For complete control over the output, use [`string.format`](https://www.lua.org/manual/5.2/manual.html#pdf-string.format) and [`io.write`](https://www.lua.org/manual/5.2/manual.html#pdf-io.write).",
+      "plaintext": "Receives any number of arguments and prints their values to stdout, using the tostring (https://www.lua.org/manual/5.2/manual.html#pdf-tostring) function to convert each argument to a string. print is not intended for formatted output, but only as a quick way to show a value, for instance for debugging. For complete control over the output, use string.format (https://www.lua.org/manual/5.2/manual.html#pdf-string.format) and io.write (https://www.lua.org/manual/5.2/manual.html#pdf-io.write)."
+    },
+    {
+      "name": "rawequal",
+      "kind": "function",
+      "section": "6.1",
+      "anchor": "pdf-rawequal",
+      "heading": "rawequal (v1, v2)",
+      "markdown": "Checks whether `v1` is equal to `v2`, without invoking any metamethod. Returns a boolean.",
+      "plaintext": "Checks whether v1 is equal to v2, without invoking any metamethod. Returns a boolean."
+    },
+    {
+      "name": "rawget",
+      "kind": "function",
+      "section": "6.1",
+      "anchor": "pdf-rawget",
+      "heading": "rawget (table, index)",
+      "markdown": "Gets the real value of `table[index]`, without invoking any metamethod. `table` must be a table; `index` may be any value.",
+      "plaintext": "Gets the real value of table[index], without invoking any metamethod. table must be a table; index may be any value."
+    },
+    {
+      "name": "rawlen",
+      "kind": "function",
+      "section": "6.1",
+      "anchor": "pdf-rawlen",
+      "heading": "rawlen (v)",
+      "markdown": "Returns the length of the object `v`, which must be a table or a string, without invoking any metamethod. Returns an integer number.",
+      "plaintext": "Returns the length of the object v, which must be a table or a string, without invoking any metamethod. Returns an integer number."
+    },
+    {
+      "name": "rawset",
+      "kind": "function",
+      "section": "6.1",
+      "anchor": "pdf-rawset",
+      "heading": "rawset (table, index, value)",
+      "markdown": "Sets the real value of `table[index]` to `value`, without invoking any metamethod. `table` must be a table, `index` any value different from **nil** and NaN, and `value` any Lua value.\n\nThis function returns `table`.",
+      "plaintext": "Sets the real value of table[index] to value, without invoking any metamethod. table must be a table, index any value different from nil and NaN, and value any Lua value.\n\nThis function returns table."
+    },
+    {
+      "name": "select",
+      "kind": "function",
+      "section": "6.1",
+      "anchor": "pdf-select",
+      "heading": "select (index, ···)",
+      "markdown": "If `index` is a number, returns all arguments after argument number `index`; a negative number indexes from the end (-1 is the last argument). Otherwise, `index` must be the string `\"#\"`, and `select` returns the total number of extra arguments it received.",
+      "plaintext": "If index is a number, returns all arguments after argument number index; a negative number indexes from the end (-1 is the last argument). Otherwise, index must be the string \"#\", and select returns the total number of extra arguments it received."
+    },
+    {
+      "name": "setmetatable",
+      "kind": "function",
+      "section": "6.1",
+      "anchor": "pdf-setmetatable",
+      "heading": "setmetatable (table, metatable)",
+      "markdown": "Sets the metatable for the given table. (You cannot change the metatable of other types from Lua, only from C.) If `metatable` is **nil**, removes the metatable of the given table. If the original metatable has a `\"__metatable\"` field, raises an error.\n\nThis function returns `table`.",
+      "plaintext": "Sets the metatable for the given table. (You cannot change the metatable of other types from Lua, only from C.) If metatable is nil, removes the metatable of the given table. If the original metatable has a \"__metatable\" field, raises an error.\n\nThis function returns table."
+    },
+    {
+      "name": "tonumber",
+      "kind": "function",
+      "section": "6.1",
+      "anchor": "pdf-tonumber",
+      "heading": "tonumber (e [, base])",
+      "markdown": "When called with no `base`, `tonumber` tries to convert its argument to a number. If the argument is already a number or a string convertible to a number (see [§3.4.2](https://www.lua.org/manual/5.2/manual.html#3.4.2)), then `tonumber` returns this number; otherwise, it returns **nil**.\n\nWhen called with `base`, then `e` should be a string to be interpreted as an integer numeral in that base. The base may be any integer between 2 and 36, inclusive. In bases above 10, the letter '`A`' (in either upper or lower case) represents 10, '`B`' represents 11, and so forth, with '`Z`' representing 35. If the string `e` is not a valid numeral in the given base, the function returns **nil**.",
+      "plaintext": "When called with no base, tonumber tries to convert its argument to a number. If the argument is already a number or a string convertible to a number (see §3.4.2 (https://www.lua.org/manual/5.2/manual.html#3.4.2)), then tonumber returns this number; otherwise, it returns nil.\n\nWhen called with base, then e should be a string to be interpreted as an integer numeral in that base. The base may be any integer between 2 and 36, inclusive. In bases above 10, the letter 'A' (in either upper or lower case) represents 10, 'B' represents 11, and so forth, with 'Z' representing 35. If the string e is not a valid numeral in the given base, the function returns nil."
+    },
+    {
+      "name": "tostring",
+      "kind": "function",
+      "section": "6.1",
+      "anchor": "pdf-tostring",
+      "heading": "tostring (v)",
+      "markdown": "Receives a value of any type and converts it to a string in a reasonable format. (For complete control of how numbers are converted, use [`string.format`](https://www.lua.org/manual/5.2/manual.html#pdf-string.format).)\n\nIf the metatable of `v` has a `\"__tostring\"` field, then `tostring` calls the corresponding value with `v` as argument, and uses the result of the call as its result.",
+      "plaintext": "Receives a value of any type and converts it to a string in a reasonable format. (For complete control of how numbers are converted, use string.format (https://www.lua.org/manual/5.2/manual.html#pdf-string.format).)\n\nIf the metatable of v has a \"__tostring\" field, then tostring calls the corresponding value with v as argument, and uses the result of the call as its result."
+    },
+    {
+      "name": "type",
+      "kind": "function",
+      "section": "6.1",
+      "anchor": "pdf-type",
+      "heading": "type (v)",
+      "markdown": "Returns the type of its only argument, coded as a string. The possible results of this function are \"`nil`\" (a string, not the value **nil**), \"`number`\", \"`string`\", \"`boolean`\", \"`table`\", \"`function`\", \"`thread`\", and \"`userdata`\".",
+      "plaintext": "Returns the type of its only argument, coded as a string. The possible results of this function are \"nil\" (a string, not the value nil), \"number\", \"string\", \"boolean\", \"table\", \"function\", \"thread\", and \"userdata\"."
+    },
+    {
+      "name": "_VERSION",
+      "kind": "value",
+      "section": "6.1",
+      "anchor": "pdf-_VERSION",
+      "heading": "_VERSION",
+      "markdown": "A global variable (not a function) that holds a string containing the current interpreter version. The current contents of this variable is \"`Lua 5.2`\".",
+      "plaintext": "A global variable (not a function) that holds a string containing the current interpreter version. The current contents of this variable is \"Lua 5.2\"."
+    },
+    {
+      "name": "xpcall",
+      "kind": "function",
+      "section": "6.1",
+      "anchor": "pdf-xpcall",
+      "heading": "xpcall (f, msgh [, arg1, ···])",
+      "markdown": "This function is similar to [`pcall`](https://www.lua.org/manual/5.2/manual.html#pdf-pcall), except that it sets a new message handler `msgh`.",
+      "plaintext": "This function is similar to pcall (https://www.lua.org/manual/5.2/manual.html#pdf-pcall), except that it sets a new message handler msgh."
+    },
+    {
+      "name": "string",
+      "kind": "module",
+      "section": "6.4",
+      "anchor": "6.4",
+      "heading": "string",
+      "markdown": "This library provides generic functions for string manipulation, such as finding and extracting substrings, and pattern matching. When indexing a string in Lua, the first character is at position 1 (not at 0, as in C). Indices are allowed to be negative and are interpreted as indexing backwards, from the end of the string. Thus, the last character is at position -1, and so on.\n\nThe string library provides all its functions inside the table `string`. It also sets a metatable for strings where the `__index` field points to the `string` table. Therefore, you can use the string functions in object-oriented style. For instance, `string.byte(s,i)` can be written as `s:byte(i)`.\n\nThe string library assumes one-byte character encodings.",
+      "plaintext": "This library provides generic functions for string manipulation, such as finding and extracting substrings, and pattern matching. When indexing a string in Lua, the first character is at position 1 (not at 0, as in C). Indices are allowed to be negative and are interpreted as indexing backwards, from the end of the string. Thus, the last character is at position -1, and so on.\n\nThe string library provides all its functions inside the table string. It also sets a metatable for strings where the __index field points to the string table. Therefore, you can use the string functions in object-oriented style. For instance, string.byte(s,i) can be written as s:byte(i).\n\nThe string library assumes one-byte character encodings."
+    },
+    {
+      "name": "string.byte",
+      "kind": "function",
+      "section": "6.4",
+      "anchor": "pdf-string.byte",
+      "heading": "string.byte (s [, i [, j]])",
+      "markdown": "Returns the internal numerical codes of the characters `s[i]`, `s[i+1]`, ..., `s[j]`. The default value for `i` is 1; the default value for `j` is `i`. These indices are corrected following the same rules of function [`string.sub`](https://www.lua.org/manual/5.2/manual.html#pdf-string.sub).\n\nNumerical codes are not necessarily portable across platforms.",
+      "plaintext": "Returns the internal numerical codes of the characters s[i], s[i+1], ..., s[j]. The default value for i is 1; the default value for j is i. These indices are corrected following the same rules of function string.sub (https://www.lua.org/manual/5.2/manual.html#pdf-string.sub).\n\nNumerical codes are not necessarily portable across platforms."
+    },
+    {
+      "name": "string.char",
+      "kind": "function",
+      "section": "6.4",
+      "anchor": "pdf-string.char",
+      "heading": "string.char (···)",
+      "markdown": "Receives zero or more integers. Returns a string with length equal to the number of arguments, in which each character has the internal numerical code equal to its corresponding argument.\n\nNumerical codes are not necessarily portable across platforms.",
+      "plaintext": "Receives zero or more integers. Returns a string with length equal to the number of arguments, in which each character has the internal numerical code equal to its corresponding argument.\n\nNumerical codes are not necessarily portable across platforms."
+    },
+    {
+      "name": "string.dump",
+      "kind": "function",
+      "section": "6.4",
+      "anchor": "pdf-string.dump",
+      "heading": "string.dump (function)",
+      "markdown": "Returns a string containing a binary representation of the given function, so that a later [`load`](https://www.lua.org/manual/5.2/manual.html#pdf-load) on this string returns a copy of the function (but with new upvalues).",
+      "plaintext": "Returns a string containing a binary representation of the given function, so that a later load (https://www.lua.org/manual/5.2/manual.html#pdf-load) on this string returns a copy of the function (but with new upvalues)."
+    },
+    {
+      "name": "string.find",
+      "kind": "function",
+      "section": "6.4",
+      "anchor": "pdf-string.find",
+      "heading": "string.find (s, pattern [, init [, plain]])",
+      "markdown": "Looks for the first match of `pattern` in the string `s`. If it finds a match, then `find` returns the indices of `s` where this occurrence starts and ends; otherwise, it returns **nil**. A third, optional numerical argument `init` specifies where to start the search; its default value is 1 and can be negative. A value of **true** as a fourth, optional argument `plain` turns off the pattern matching facilities, so the function does a plain \"find substring\" operation, with no characters in `pattern` being considered magic. Note that if `plain` is given, then `init` must be given as well.\n\nIf the pattern has captures, then in a successful match the captured values are also returned, after the two indices.",
+      "plaintext": "Looks for the first match of pattern in the string s. If it finds a match, then find returns the indices of s where this occurrence starts and ends; otherwise, it returns nil. A third, optional numerical argument init specifies where to start the search; its default value is 1 and can be negative. A value of true as a fourth, optional argument plain turns off the pattern matching facilities, so the function does a plain \"find substring\" operation, with no characters in pattern being considered magic. Note that if plain is given, then init must be given as well.\n\nIf the pattern has captures, then in a successful match the captured values are also returned, after the two indices."
+    },
+    {
+      "name": "string.format",
+      "kind": "function",
+      "section": "6.4",
+      "anchor": "pdf-string.format",
+      "heading": "string.format (formatstring, ···)",
+      "markdown": "Returns a formatted version of its variable number of arguments following the description given in its first argument (which must be a string). The format string follows the same rules as the ISO C function `sprintf`. The only differences are that the options/modifiers `*`, `h`, `L`, `l`, `n`, and `p` are not supported and that there is an extra option, `q`. The `q` option formats a string between double quotes, using escape sequences when necessary to ensure that it can safely be read back by the Lua interpreter. For instance, the call\n\n```\n     string.format('%q', 'a string with \"quotes\" and \\n new line')\n```\n\nmay produce the string:\n\n```\n     \"a string with \\\"quotes\\\" and \\\n      new line\"\n```\n\nOptions `A` and `a` (when available), `E`, `e`, `f`, `G`, and `g` all expect a number as argument. Options `c`, `d`, `i`, `o`, `u`, `X`, and `x` also expect a number, but the range of that number may be limited by the underlying C implementation. For options `o`, `u`, `X`, and `x`, the number cannot be negative. Option `q` expects a string; option `s` expects a string without embedded zeros. If the argument to option `s` is not a string, it is converted to one following the same rules of [`tostring`](https://www.lua.org/manual/5.2/manual.html#pdf-tostring).",
+      "plaintext": "Returns a formatted version of its variable number of arguments following the description given in its first argument (which must be a string). The format string follows the same rules as the ISO C function sprintf. The only differences are that the options/modifiers *, h, L, l, n, and p are not supported and that there is an extra option, q. The q option formats a string between double quotes, using escape sequences when necessary to ensure that it can safely be read back by the Lua interpreter. For instance, the call\n\n     string.format('%q', 'a string with \"quotes\" and \\n new line')\n\nmay produce the string:\n\n     \"a string with \\\"quotes\\\" and \\\n      new line\"\n\nOptions A and a (when available), E, e, f, G, and g all expect a number as argument. Options c, d, i, o, u, X, and x also expect a number, but the range of that number may be limited by the underlying C implementation. For options o, u, X, and x, the number cannot be negative. Option q expects a string; option s expects a string without embedded zeros. If the argument to option s is not a string, it is converted to one following the same rules of tostring (https://www.lua.org/manual/5.2/manual.html#pdf-tostring)."
+    },
+    {
+      "name": "string.gmatch",
+      "kind": "function",
+      "section": "6.4",
+      "anchor": "pdf-string.gmatch",
+      "heading": "string.gmatch (s, pattern)",
+      "markdown": "Returns an iterator function that, each time it is called, returns the next captures from `pattern` over the string `s`. If `pattern` specifies no captures, then the whole match is produced in each call.\n\nAs an example, the following loop will iterate over all the words from string `s`, printing one per line:\n\n```\n     s = \"hello world from Lua\"\n     for w in string.gmatch(s, \"%a+\") do\n       print(w)\n     end\n```\n\nThe next example collects all pairs `key=value` from the given string into a table:\n\n```\n     t = {}\n     s = \"from=world, to=Lua\"\n     for k, v in string.gmatch(s, \"(%w+)=(%w+)\") do\n       t[k] = v\n     end\n```\n\nFor this function, a caret '`^`' at the start of a pattern does not work as an anchor, as this would prevent the iteration.",
+      "plaintext": "Returns an iterator function that, each time it is called, returns the next captures from pattern over the string s. If pattern specifies no captures, then the whole match is produced in each call.\n\nAs an example, the following loop will iterate over all the words from string s, printing one per line:\n\n     s = \"hello world from Lua\"\n     for w in string.gmatch(s, \"%a+\") do\n       print(w)\n     end\n\nThe next example collects all pairs key=value from the given string into a table:\n\n     t = {}\n     s = \"from=world, to=Lua\"\n     for k, v in string.gmatch(s, \"(%w+)=(%w+)\") do\n       t[k] = v\n     end\n\nFor this function, a caret '^' at the start of a pattern does not work as an anchor, as this would prevent the iteration."
+    },
+    {
+      "name": "string.gsub",
+      "kind": "function",
+      "section": "6.4",
+      "anchor": "pdf-string.gsub",
+      "heading": "string.gsub (s, pattern, repl [, n])",
+      "markdown": "Returns a copy of `s` in which all (or the first `n`, if given) occurrences of the `pattern` have been replaced by a replacement string specified by `repl`, which can be a string, a table, or a function. `gsub` also returns, as its second value, the total number of matches that occurred. The name `gsub` comes from *Global SUBstitution*.\n\nIf `repl` is a string, then its value is used for replacement. The character `%` works as an escape character: any sequence in `repl` of the form `%`*`d`*, with *d* between 1 and 9, stands for the value of the *d*-th captured substring. The sequence `%0` stands for the whole match. The sequence `%%` stands for a single `%`.\n\nIf `repl` is a table, then the table is queried for every match, using the first capture as the key.\n\nIf `repl` is a function, then this function is called every time a match occurs, with all captured substrings passed as arguments, in order.\n\nIn any case, if the pattern specifies no captures, then it behaves as if the whole pattern was inside a capture.\n\nIf the value returned by the table query or by the function call is a string or a number, then it is used as the replacement string; otherwise, if it is **false** or **nil**, then there is no replacement (that is, the original match is kept in the string).\n\nHere are some examples:\n\n```\n     x = string.gsub(\"hello world\", \"(%w+)\", \"%1 %1\")\n     --> x=\"hello hello world world\"\n     \n     x = string.gsub(\"hello world\", \"%w+\", \"%0 %0\", 1)\n     --> x=\"hello hello world\"\n     \n     x = string.gsub(\"hello world from Lua\", \"(%w+)%s*(%w+)\", \"%2 %1\")\n     --> x=\"world hello Lua from\"\n     \n     x = string.gsub(\"home = $HOME, user = $USER\", \"%$(%w+)\", os.getenv)\n     --> x=\"home = /home/roberto, user = roberto\"\n     \n     x = string.gsub(\"4+5 = $return 4+5$\", \"%$(.-)%$\", function (s)\n           return load(s)()\n         end)\n     --> x=\"4+5 = 9\"\n     \n     local t = {name=\"lua\", version=\"5.2\"}\n     x = string.gsub(\"$name-$version.tar.gz\", \"%$(%w+)\", t)\n     --> x=\"lua-5.2.tar.gz\"\n```",
+      "plaintext": "Returns a copy of s in which all (or the first n, if given) occurrences of the pattern have been replaced by a replacement string specified by repl, which can be a string, a table, or a function. gsub also returns, as its second value, the total number of matches that occurred. The name gsub comes from Global SUBstitution.\n\nIf repl is a string, then its value is used for replacement. The character % works as an escape character: any sequence in repl of the form %d, with d between 1 and 9, stands for the value of the d-th captured substring. The sequence %0 stands for the whole match. The sequence %% stands for a single %.\n\nIf repl is a table, then the table is queried for every match, using the first capture as the key.\n\nIf repl is a function, then this function is called every time a match occurs, with all captured substrings passed as arguments, in order.\n\nIn any case, if the pattern specifies no captures, then it behaves as if the whole pattern was inside a capture.\n\nIf the value returned by the table query or by the function call is a string or a number, then it is used as the replacement string; otherwise, if it is false or nil, then there is no replacement (that is, the original match is kept in the string).\n\nHere are some examples:\n\n     x = string.gsub(\"hello world\", \"(%w+)\", \"%1 %1\")\n     --> x=\"hello hello world world\"\n     \n     x = string.gsub(\"hello world\", \"%w+\", \"%0 %0\", 1)\n     --> x=\"hello hello world\"\n     \n     x = string.gsub(\"hello world from Lua\", \"(%w+)%s*(%w+)\", \"%2 %1\")\n     --> x=\"world hello Lua from\"\n     \n     x = string.gsub(\"home = $HOME, user = $USER\", \"%$(%w+)\", os.getenv)\n     --> x=\"home = /home/roberto, user = roberto\"\n     \n     x = string.gsub(\"4+5 = $return 4+5$\", \"%$(.-)%$\", function (s)\n           return load(s)()\n         end)\n     --> x=\"4+5 = 9\"\n     \n     local t = {name=\"lua\", version=\"5.2\"}\n     x = string.gsub(\"$name-$version.tar.gz\", \"%$(%w+)\", t)\n     --> x=\"lua-5.2.tar.gz\""
+    },
+    {
+      "name": "string.len",
+      "kind": "function",
+      "section": "6.4",
+      "anchor": "pdf-string.len",
+      "heading": "string.len (s)",
+      "markdown": "Receives a string and returns its length. The empty string `\"\"` has length 0. Embedded zeros are counted, so `\"a\\000bc\\000\"` has length 5.",
+      "plaintext": "Receives a string and returns its length. The empty string \"\" has length 0. Embedded zeros are counted, so \"a\\000bc\\000\" has length 5."
+    },
+    {
+      "name": "string.lower",
+      "kind": "function",
+      "section": "6.4",
+      "anchor": "pdf-string.lower",
+      "heading": "string.lower (s)",
+      "markdown": "Receives a string and returns a copy of this string with all uppercase letters changed to lowercase. All other characters are left unchanged. The definition of what an uppercase letter is depends on the current locale.",
+      "plaintext": "Receives a string and returns a copy of this string with all uppercase letters changed to lowercase. All other characters are left unchanged. The definition of what an uppercase letter is depends on the current locale."
+    },
+    {
+      "name": "string.match",
+      "kind": "function",
+      "section": "6.4",
+      "anchor": "pdf-string.match",
+      "heading": "string.match (s, pattern [, init])",
+      "markdown": "Looks for the first *match* of `pattern` in the string `s`. If it finds one, then `match` returns the captures from the pattern; otherwise it returns **nil**. If `pattern` specifies no captures, then the whole match is returned. A third, optional numerical argument `init` specifies where to start the search; its default value is 1 and can be negative.",
+      "plaintext": "Looks for the first match of pattern in the string s. If it finds one, then match returns the captures from the pattern; otherwise it returns nil. If pattern specifies no captures, then the whole match is returned. A third, optional numerical argument init specifies where to start the search; its default value is 1 and can be negative."
+    },
+    {
+      "name": "string.rep",
+      "kind": "function",
+      "section": "6.4",
+      "anchor": "pdf-string.rep",
+      "heading": "string.rep (s, n [, sep])",
+      "markdown": "Returns a string that is the concatenation of `n` copies of the string `s` separated by the string `sep`. The default value for `sep` is the empty string (that is, no separator).",
+      "plaintext": "Returns a string that is the concatenation of n copies of the string s separated by the string sep. The default value for sep is the empty string (that is, no separator)."
+    },
+    {
+      "name": "string.reverse",
+      "kind": "function",
+      "section": "6.4",
+      "anchor": "pdf-string.reverse",
+      "heading": "string.reverse (s)",
+      "markdown": "Returns a string that is the string `s` reversed.",
+      "plaintext": "Returns a string that is the string s reversed."
+    },
+    {
+      "name": "string.sub",
+      "kind": "function",
+      "section": "6.4",
+      "anchor": "pdf-string.sub",
+      "heading": "string.sub (s, i [, j])",
+      "markdown": "Returns the substring of `s` that starts at `i` and continues until `j`; `i` and `j` can be negative. If `j` is absent, then it is assumed to be equal to -1 (which is the same as the string length). In particular, the call `string.sub(s,1,j)` returns a prefix of `s` with length `j`, and `string.sub(s, -i)` returns a suffix of `s` with length `i`.\n\nIf, after the translation of negative indices, `i` is less than 1, it is corrected to 1. If `j` is greater than the string length, it is corrected to that length. If, after these corrections, `i` is greater than `j`, the function returns the empty string.",
+      "plaintext": "Returns the substring of s that starts at i and continues until j; i and j can be negative. If j is absent, then it is assumed to be equal to -1 (which is the same as the string length). In particular, the call string.sub(s,1,j) returns a prefix of s with length j, and string.sub(s, -i) returns a suffix of s with length i.\n\nIf, after the translation of negative indices, i is less than 1, it is corrected to 1. If j is greater than the string length, it is corrected to that length. If, after these corrections, i is greater than j, the function returns the empty string."
+    },
+    {
+      "name": "string.upper",
+      "kind": "function",
+      "section": "6.4",
+      "anchor": "pdf-string.upper",
+      "heading": "string.upper (s)",
+      "markdown": "Receives a string and returns a copy of this string with all lowercase letters changed to uppercase. All other characters are left unchanged. The definition of what a lowercase letter is depends on the current locale.",
+      "plaintext": "Receives a string and returns a copy of this string with all lowercase letters changed to uppercase. All other characters are left unchanged. The definition of what a lowercase letter is depends on the current locale."
+    },
+    {
+      "name": "table",
+      "kind": "module",
+      "section": "6.5",
+      "anchor": "6.5",
+      "heading": "table",
+      "markdown": "This library provides generic functions for table manipulation. It provides all its functions inside the table `table`.\n\nRemember that, whenever an operation needs the length of a table, the table should be a proper sequence or have a `__len` metamethod (see [§3.4.6](https://www.lua.org/manual/5.2/manual.html#3.4.6)). All functions ignore non-numeric keys in tables given as arguments.\n\nFor performance reasons, all table accesses (get/set) performed by these functions are raw.",
+      "plaintext": "This library provides generic functions for table manipulation. It provides all its functions inside the table table.\n\nRemember that, whenever an operation needs the length of a table, the table should be a proper sequence or have a __len metamethod (see §3.4.6 (https://www.lua.org/manual/5.2/manual.html#3.4.6)). All functions ignore non-numeric keys in tables given as arguments.\n\nFor performance reasons, all table accesses (get/set) performed by these functions are raw."
+    },
+    {
+      "name": "table.concat",
+      "kind": "function",
+      "section": "6.5",
+      "anchor": "pdf-table.concat",
+      "heading": "table.concat (list [, sep [, i [, j]]])",
+      "markdown": "Given a list where all elements are strings or numbers, returns the string `list[i]..sep..list[i+1] ··· sep..list[j]`. The default value for `sep` is the empty string, the default for `i` is 1, and the default for `j` is `#list`. If `i` is greater than `j`, returns the empty string.",
+      "plaintext": "Given a list where all elements are strings or numbers, returns the string list[i]..sep..list[i+1] ··· sep..list[j]. The default value for sep is the empty string, the default for i is 1, and the default for j is #list. If i is greater than j, returns the empty string."
+    },
+    {
+      "name": "table.insert",
+      "kind": "function",
+      "section": "6.5",
+      "anchor": "pdf-table.insert",
+      "heading": "table.insert (list, [pos,] value)",
+      "markdown": "Inserts element `value` at position `pos` in `list`, shifting up the elements `list[pos], list[pos+1], ···, list[#list]`. The default value for `pos` is `#list+1`, so that a call `table.insert(t,x)` inserts `x` at the end of list `t`.",
+      "plaintext": "Inserts element value at position pos in list, shifting up the elements list[pos], list[pos+1], ···, list[#list]. The default value for pos is #list+1, so that a call table.insert(t,x) inserts x at the end of list t."
+    },
+    {
+      "name": "table.pack",
+      "kind": "function",
+      "section": "6.5",
+      "anchor": "pdf-table.pack",
+      "heading": "table.pack (···)",
+      "markdown": "Returns a new table with all parameters stored into keys 1, 2, etc. and with a field \"`n`\" with the total number of parameters. Note that the resulting table may not be a sequence.",
+      "plaintext": "Returns a new table with all parameters stored into keys 1, 2, etc. and with a field \"n\" with the total number of parameters. Note that the resulting table may not be a sequence."
+    },
+    {
+      "name": "table.remove",
+      "kind": "function",
+      "section": "6.5",
+      "anchor": "pdf-table.remove",
+      "heading": "table.remove (list [, pos])",
+      "markdown": "Removes from `list` the element at position `pos`, returning the value of the removed element. When `pos` is an integer between 1 and `#list`, it shifts down the elements `list[pos+1], list[pos+2], ···, list[#list]` and erases element `list[#list]`; The index `pos` can also be 0 when `#list` is 0, or `#list + 1`; in those cases, the function erases the element `list[pos]`.\n\nThe default value for `pos` is `#list`, so that a call `table.remove(t)` removes the last element of list `t`.",
+      "plaintext": "Removes from list the element at position pos, returning the value of the removed element. When pos is an integer between 1 and #list, it shifts down the elements list[pos+1], list[pos+2], ···, list[#list] and erases element list[#list]; The index pos can also be 0 when #list is 0, or #list + 1; in those cases, the function erases the element list[pos].\n\nThe default value for pos is #list, so that a call table.remove(t) removes the last element of list t."
+    },
+    {
+      "name": "table.sort",
+      "kind": "function",
+      "section": "6.5",
+      "anchor": "pdf-table.sort",
+      "heading": "table.sort (list [, comp])",
+      "markdown": "Sorts list elements in a given order, *in-place*, from `list[1]` to `list[#list]`. If `comp` is given, then it must be a function that receives two list elements and returns true when the first element must come before the second in the final order (so that `not comp(list[i+1],list[i])` will be true after the sort). If `comp` is not given, then the standard Lua operator `<` is used instead.\n\nThe sort algorithm is not stable; that is, elements considered equal by the given order may have their relative positions changed by the sort.",
+      "plaintext": "Sorts list elements in a given order, in-place, from list[1] to list[#list]. If comp is given, then it must be a function that receives two list elements and returns true when the first element must come before the second in the final order (so that not comp(list[i+1],list[i]) will be true after the sort). If comp is not given, then the standard Lua operator < is used instead.\n\nThe sort algorithm is not stable; that is, elements considered equal by the given order may have their relative positions changed by the sort."
+    },
+    {
+      "name": "table.unpack",
+      "kind": "function",
+      "section": "6.5",
+      "anchor": "pdf-table.unpack",
+      "heading": "table.unpack (list [, i [, j]])",
+      "markdown": "Returns the elements from the given table. This function is equivalent to\n\n```\n     return list[i], list[i+1], ···, list[j]\n```\n\nBy default, `i` is 1 and `j` is `#list`.",
+      "plaintext": "Returns the elements from the given table. This function is equivalent to\n\n     return list[i], list[i+1], ···, list[j]\n\nBy default, i is 1 and j is #list."
+    },
+    {
+      "name": "math",
+      "kind": "module",
+      "section": "6.6",
+      "anchor": "6.6",
+      "heading": "math",
+      "markdown": "This library is an interface to the standard C math library. It provides all its functions inside the table `math`.",
+      "plaintext": "This library is an interface to the standard C math library. It provides all its functions inside the table math."
+    },
+    {
+      "name": "math.abs",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.abs",
+      "heading": "math.abs (x)",
+      "markdown": "Returns the absolute value of `x`.",
+      "plaintext": "Returns the absolute value of x."
+    },
+    {
+      "name": "math.acos",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.acos",
+      "heading": "math.acos (x)",
+      "markdown": "Returns the arc cosine of `x` (in radians).",
+      "plaintext": "Returns the arc cosine of x (in radians)."
+    },
+    {
+      "name": "math.asin",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.asin",
+      "heading": "math.asin (x)",
+      "markdown": "Returns the arc sine of `x` (in radians).",
+      "plaintext": "Returns the arc sine of x (in radians)."
+    },
+    {
+      "name": "math.atan",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.atan",
+      "heading": "math.atan (x)",
+      "markdown": "Returns the arc tangent of `x` (in radians).",
+      "plaintext": "Returns the arc tangent of x (in radians)."
+    },
+    {
+      "name": "math.atan2",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.atan2",
+      "heading": "math.atan2 (y, x)",
+      "markdown": "Returns the arc tangent of `y/x` (in radians), but uses the signs of both parameters to find the quadrant of the result. (It also handles correctly the case of `x` being zero.)",
+      "plaintext": "Returns the arc tangent of y/x (in radians), but uses the signs of both parameters to find the quadrant of the result. (It also handles correctly the case of x being zero.)"
+    },
+    {
+      "name": "math.ceil",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.ceil",
+      "heading": "math.ceil (x)",
+      "markdown": "Returns the smallest integer larger than or equal to `x`.",
+      "plaintext": "Returns the smallest integer larger than or equal to x."
+    },
+    {
+      "name": "math.cos",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.cos",
+      "heading": "math.cos (x)",
+      "markdown": "Returns the cosine of `x` (assumed to be in radians).",
+      "plaintext": "Returns the cosine of x (assumed to be in radians)."
+    },
+    {
+      "name": "math.cosh",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.cosh",
+      "heading": "math.cosh (x)",
+      "markdown": "Returns the hyperbolic cosine of `x`.",
+      "plaintext": "Returns the hyperbolic cosine of x."
+    },
+    {
+      "name": "math.deg",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.deg",
+      "heading": "math.deg (x)",
+      "markdown": "Returns the angle `x` (given in radians) in degrees.",
+      "plaintext": "Returns the angle x (given in radians) in degrees."
+    },
+    {
+      "name": "math.exp",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.exp",
+      "heading": "math.exp (x)",
+      "markdown": "Returns the value *eˣ*.",
+      "plaintext": "Returns the value eˣ."
+    },
+    {
+      "name": "math.floor",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.floor",
+      "heading": "math.floor (x)",
+      "markdown": "Returns the largest integer smaller than or equal to `x`.",
+      "plaintext": "Returns the largest integer smaller than or equal to x."
+    },
+    {
+      "name": "math.fmod",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.fmod",
+      "heading": "math.fmod (x, y)",
+      "markdown": "Returns the remainder of the division of `x` by `y` that rounds the quotient towards zero.",
+      "plaintext": "Returns the remainder of the division of x by y that rounds the quotient towards zero."
+    },
+    {
+      "name": "math.frexp",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.frexp",
+      "heading": "math.frexp (x)",
+      "markdown": "Returns `m` and `e` such that *x = m2ᵉ*, `e` is an integer and the absolute value of `m` is in the range *\\[0.5, 1)* (or zero when `x` is zero).",
+      "plaintext": "Returns m and e such that x = m2ᵉ, e is an integer and the absolute value of m is in the range [0.5, 1) (or zero when x is zero)."
+    },
+    {
+      "name": "math.huge",
+      "kind": "value",
+      "section": "6.6",
+      "anchor": "pdf-math.huge",
+      "heading": "math.huge",
+      "markdown": "The value `HUGE_VAL`, a value larger than or equal to any other numerical value.",
+      "plaintext": "The value HUGE_VAL, a value larger than or equal to any other numerical value."
+    },
+    {
+      "name": "math.ldexp",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.ldexp",
+      "heading": "math.ldexp (m, e)",
+      "markdown": "Returns *m2ᵉ* (`e` should be an integer).",
+      "plaintext": "Returns m2ᵉ (e should be an integer)."
+    },
+    {
+      "name": "math.log",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.log",
+      "heading": "math.log (x [, base])",
+      "markdown": "Returns the logarithm of `x` in the given base. The default for `base` is *e* (so that the function returns the natural logarithm of `x`).",
+      "plaintext": "Returns the logarithm of x in the given base. The default for base is e (so that the function returns the natural logarithm of x)."
+    },
+    {
+      "name": "math.max",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.max",
+      "heading": "math.max (x, ···)",
+      "markdown": "Returns the maximum value among its arguments.",
+      "plaintext": "Returns the maximum value among its arguments."
+    },
+    {
+      "name": "math.min",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.min",
+      "heading": "math.min (x, ···)",
+      "markdown": "Returns the minimum value among its arguments.",
+      "plaintext": "Returns the minimum value among its arguments."
+    },
+    {
+      "name": "math.modf",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.modf",
+      "heading": "math.modf (x)",
+      "markdown": "Returns two numbers, the integral part of `x` and the fractional part of `x`.",
+      "plaintext": "Returns two numbers, the integral part of x and the fractional part of x."
+    },
+    {
+      "name": "math.pi",
+      "kind": "value",
+      "section": "6.6",
+      "anchor": "pdf-math.pi",
+      "heading": "math.pi",
+      "markdown": "The value of *π*.",
+      "plaintext": "The value of π."
+    },
+    {
+      "name": "math.pow",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.pow",
+      "heading": "math.pow (x, y)",
+      "markdown": "Returns *xʸ*. (You can also use the expression `x^y` to compute this value.)",
+      "plaintext": "Returns xʸ. (You can also use the expression x^y to compute this value.)"
+    },
+    {
+      "name": "math.rad",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.rad",
+      "heading": "math.rad (x)",
+      "markdown": "Returns the angle `x` (given in degrees) in radians.",
+      "plaintext": "Returns the angle x (given in degrees) in radians."
+    },
+    {
+      "name": "math.random",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.random",
+      "heading": "math.random ([m [, n]])",
+      "markdown": "This function is an interface to the simple pseudo-random generator function `rand` provided by Standard C. (No guarantees can be given for its statistical properties.)\n\nWhen called without arguments, returns a uniform pseudo-random real number in the range *\\[0,1)*. When called with an integer number `m`, `math.random` returns a uniform pseudo-random integer in the range *\\[1, m\\]*. When called with two integer numbers `m` and `n`, `math.random` returns a uniform pseudo-random integer in the range *\\[m, n\\]*.",
+      "plaintext": "This function is an interface to the simple pseudo-random generator function rand provided by Standard C. (No guarantees can be given for its statistical properties.)\n\nWhen called without arguments, returns a uniform pseudo-random real number in the range [0,1). When called with an integer number m, math.random returns a uniform pseudo-random integer in the range [1, m]. When called with two integer numbers m and n, math.random returns a uniform pseudo-random integer in the range [m, n]."
+    },
+    {
+      "name": "math.randomseed",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.randomseed",
+      "heading": "math.randomseed (x)",
+      "markdown": "Sets `x` as the \"seed\" for the pseudo-random generator: equal seeds produce equal sequences of numbers.",
+      "plaintext": "Sets x as the \"seed\" for the pseudo-random generator: equal seeds produce equal sequences of numbers."
+    },
+    {
+      "name": "math.sin",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.sin",
+      "heading": "math.sin (x)",
+      "markdown": "Returns the sine of `x` (assumed to be in radians).",
+      "plaintext": "Returns the sine of x (assumed to be in radians)."
+    },
+    {
+      "name": "math.sinh",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.sinh",
+      "heading": "math.sinh (x)",
+      "markdown": "Returns the hyperbolic sine of `x`.",
+      "plaintext": "Returns the hyperbolic sine of x."
+    },
+    {
+      "name": "math.sqrt",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.sqrt",
+      "heading": "math.sqrt (x)",
+      "markdown": "Returns the square root of `x`. (You can also use the expression `x^0.5` to compute this value.)",
+      "plaintext": "Returns the square root of x. (You can also use the expression x^0.5 to compute this value.)"
+    },
+    {
+      "name": "math.tan",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.tan",
+      "heading": "math.tan (x)",
+      "markdown": "Returns the tangent of `x` (assumed to be in radians).",
+      "plaintext": "Returns the tangent of x (assumed to be in radians)."
+    },
+    {
+      "name": "math.tanh",
+      "kind": "function",
+      "section": "6.6",
+      "anchor": "pdf-math.tanh",
+      "heading": "math.tanh (x)",
+      "markdown": "Returns the hyperbolic tangent of `x`.",
+      "plaintext": "Returns the hyperbolic tangent of x."
+    },
+    {
+      "name": "bit32",
+      "kind": "module",
+      "section": "6.7",
+      "anchor": "6.7",
+      "heading": "bit32",
+      "markdown": "This library provides bitwise operations. It provides all its functions inside the table `bit32`.\n\nUnless otherwise stated, all functions accept numeric arguments in the range *(-2⁵¹,+2⁵¹)*; each argument is normalized to the remainder of its division by *2³²* and truncated to an integer (in some unspecified way), so that its final value falls in the range *\\[0,2³² - 1\\]*. Similarly, all results are in the range *\\[0,2³² - 1\\]*. Note that `bit32.bnot(0)` is `0xFFFFFFFF`, which is different from `-1`.",
+      "plaintext": "This library provides bitwise operations. It provides all its functions inside the table bit32.\n\nUnless otherwise stated, all functions accept numeric arguments in the range (-2⁵¹,+2⁵¹); each argument is normalized to the remainder of its division by 2³² and truncated to an integer (in some unspecified way), so that its final value falls in the range [0,2³² - 1]. Similarly, all results are in the range [0,2³² - 1]. Note that bit32.bnot(0) is 0xFFFFFFFF, which is different from -1."
+    },
+    {
+      "name": "bit32.arshift",
+      "kind": "function",
+      "section": "6.7",
+      "anchor": "pdf-bit32.arshift",
+      "heading": "bit32.arshift (x, disp)",
+      "markdown": "Returns the number `x` shifted `disp` bits to the right. The number `disp` may be any representable integer. Negative displacements shift to the left.\n\nThis shift operation is what is called arithmetic shift. Vacant bits on the left are filled with copies of the higher bit of `x`; vacant bits on the right are filled with zeros. In particular, displacements with absolute values higher than 31 result in zero or `0xFFFFFFFF` (all original bits are shifted out).",
+      "plaintext": "Returns the number x shifted disp bits to the right. The number disp may be any representable integer. Negative displacements shift to the left.\n\nThis shift operation is what is called arithmetic shift. Vacant bits on the left are filled with copies of the higher bit of x; vacant bits on the right are filled with zeros. In particular, displacements with absolute values higher than 31 result in zero or 0xFFFFFFFF (all original bits are shifted out)."
+    },
+    {
+      "name": "bit32.band",
+      "kind": "function",
+      "section": "6.7",
+      "anchor": "pdf-bit32.band",
+      "heading": "bit32.band (···)",
+      "markdown": "Returns the bitwise *and* of its operands.",
+      "plaintext": "Returns the bitwise and of its operands."
+    },
+    {
+      "name": "bit32.bnot",
+      "kind": "function",
+      "section": "6.7",
+      "anchor": "pdf-bit32.bnot",
+      "heading": "bit32.bnot (x)",
+      "markdown": "Returns the bitwise negation of `x`. For any integer `x`, the following identity holds:\n\n```\n     assert(bit32.bnot(x) == (-1 - x) % 2^32)\n```",
+      "plaintext": "Returns the bitwise negation of x. For any integer x, the following identity holds:\n\n     assert(bit32.bnot(x) == (-1 - x) % 2^32)"
+    },
+    {
+      "name": "bit32.bor",
+      "kind": "function",
+      "section": "6.7",
+      "anchor": "pdf-bit32.bor",
+      "heading": "bit32.bor (···)",
+      "markdown": "Returns the bitwise *or* of its operands.",
+      "plaintext": "Returns the bitwise or of its operands."
+    },
+    {
+      "name": "bit32.btest",
+      "kind": "function",
+      "section": "6.7",
+      "anchor": "pdf-bit32.btest",
+      "heading": "bit32.btest (···)",
+      "markdown": "Returns a boolean signaling whether the bitwise *and* of its operands is different from zero.",
+      "plaintext": "Returns a boolean signaling whether the bitwise and of its operands is different from zero."
+    },
+    {
+      "name": "bit32.bxor",
+      "kind": "function",
+      "section": "6.7",
+      "anchor": "pdf-bit32.bxor",
+      "heading": "bit32.bxor (···)",
+      "markdown": "Returns the bitwise *exclusive or* of its operands.",
+      "plaintext": "Returns the bitwise exclusive or of its operands."
+    },
+    {
+      "name": "bit32.extract",
+      "kind": "function",
+      "section": "6.7",
+      "anchor": "pdf-bit32.extract",
+      "heading": "bit32.extract (n, field [, width])",
+      "markdown": "Returns the unsigned number formed by the bits `field` to `field + width - 1` from `n`. Bits are numbered from 0 (least significant) to 31 (most significant). All accessed bits must be in the range *\\[0, 31\\]*.\n\nThe default for `width` is 1.",
+      "plaintext": "Returns the unsigned number formed by the bits field to field + width - 1 from n. Bits are numbered from 0 (least significant) to 31 (most significant). All accessed bits must be in the range [0, 31].\n\nThe default for width is 1."
+    },
+    {
+      "name": "bit32.replace",
+      "kind": "function",
+      "section": "6.7",
+      "anchor": "pdf-bit32.replace",
+      "heading": "bit32.replace (n, v, field [, width])",
+      "markdown": "Returns a copy of `n` with the bits `field` to `field + width - 1` replaced by the value `v`. See [`bit32.extract`](https://www.lua.org/manual/5.2/manual.html#pdf-bit32.extract) for details about `field` and `width`.",
+      "plaintext": "Returns a copy of n with the bits field to field + width - 1 replaced by the value v. See bit32.extract (https://www.lua.org/manual/5.2/manual.html#pdf-bit32.extract) for details about field and width."
+    },
+    {
+      "name": "bit32.lrotate",
+      "kind": "function",
+      "section": "6.7",
+      "anchor": "pdf-bit32.lrotate",
+      "heading": "bit32.lrotate (x, disp)",
+      "markdown": "Returns the number `x` rotated `disp` bits to the left. The number `disp` may be any representable integer.\n\nFor any valid displacement, the following identity holds:\n\n```\n     assert(bit32.lrotate(x, disp) == bit32.lrotate(x, disp % 32))\n```\n\nIn particular, negative displacements rotate to the right.",
+      "plaintext": "Returns the number x rotated disp bits to the left. The number disp may be any representable integer.\n\nFor any valid displacement, the following identity holds:\n\n     assert(bit32.lrotate(x, disp) == bit32.lrotate(x, disp % 32))\n\nIn particular, negative displacements rotate to the right."
+    },
+    {
+      "name": "bit32.lshift",
+      "kind": "function",
+      "section": "6.7",
+      "anchor": "pdf-bit32.lshift",
+      "heading": "bit32.lshift (x, disp)",
+      "markdown": "Returns the number `x` shifted `disp` bits to the left. The number `disp` may be any representable integer. Negative displacements shift to the right. In any direction, vacant bits are filled with zeros. In particular, displacements with absolute values higher than 31 result in zero (all bits are shifted out).\n\nFor positive displacements, the following equality holds:\n\n```\n     assert(bit32.lshift(b, disp) == (b * 2^disp) % 2^32)\n```",
+      "plaintext": "Returns the number x shifted disp bits to the left. The number disp may be any representable integer. Negative displacements shift to the right. In any direction, vacant bits are filled with zeros. In particular, displacements with absolute values higher than 31 result in zero (all bits are shifted out).\n\nFor positive displacements, the following equality holds:\n\n     assert(bit32.lshift(b, disp) == (b * 2^disp) % 2^32)"
+    },
+    {
+      "name": "bit32.rrotate",
+      "kind": "function",
+      "section": "6.7",
+      "anchor": "pdf-bit32.rrotate",
+      "heading": "bit32.rrotate (x, disp)",
+      "markdown": "Returns the number `x` rotated `disp` bits to the right. The number `disp` may be any representable integer.\n\nFor any valid displacement, the following identity holds:\n\n```\n     assert(bit32.rrotate(x, disp) == bit32.rrotate(x, disp % 32))\n```\n\nIn particular, negative displacements rotate to the left.",
+      "plaintext": "Returns the number x rotated disp bits to the right. The number disp may be any representable integer.\n\nFor any valid displacement, the following identity holds:\n\n     assert(bit32.rrotate(x, disp) == bit32.rrotate(x, disp % 32))\n\nIn particular, negative displacements rotate to the left."
+    },
+    {
+      "name": "bit32.rshift",
+      "kind": "function",
+      "section": "6.7",
+      "anchor": "pdf-bit32.rshift",
+      "heading": "bit32.rshift (x, disp)",
+      "markdown": "Returns the number `x` shifted `disp` bits to the right. The number `disp` may be any representable integer. Negative displacements shift to the left. In any direction, vacant bits are filled with zeros. In particular, displacements with absolute values higher than 31 result in zero (all bits are shifted out).\n\nFor positive displacements, the following equality holds:\n\n```\n     assert(bit32.rshift(b, disp) == math.floor(b % 2^32 / 2^disp))\n```\n\nThis shift operation is what is called logical shift.",
+      "plaintext": "Returns the number x shifted disp bits to the right. The number disp may be any representable integer. Negative displacements shift to the left. In any direction, vacant bits are filled with zeros. In particular, displacements with absolute values higher than 31 result in zero (all bits are shifted out).\n\nFor positive displacements, the following equality holds:\n\n     assert(bit32.rshift(b, disp) == math.floor(b % 2^32 / 2^disp))\n\nThis shift operation is what is called logical shift."
+    },
+    {
+      "name": "debug",
+      "kind": "module",
+      "section": "6.10",
+      "anchor": "6.10",
+      "heading": "debug",
+      "markdown": "This library provides the functionality of the debug interface ([§4.9](https://www.lua.org/manual/5.2/manual.html#4.9)) to Lua programs. You should exert care when using this library. Several of its functions violate basic assumptions about Lua code (e.g., that variables local to a function cannot be accessed from outside; that userdata metatables cannot be changed by Lua code; that Lua programs do not crash) and therefore can compromise otherwise secure code. Moreover, some functions in this library may be slow.\n\nAll functions in this library are provided inside the `debug` table. All functions that operate over a thread have an optional first argument which is the thread to operate over. The default is always the current thread.",
+      "plaintext": "This library provides the functionality of the debug interface (§4.9 (https://www.lua.org/manual/5.2/manual.html#4.9)) to Lua programs. You should exert care when using this library. Several of its functions violate basic assumptions about Lua code (e.g., that variables local to a function cannot be accessed from outside; that userdata metatables cannot be changed by Lua code; that Lua programs do not crash) and therefore can compromise otherwise secure code. Moreover, some functions in this library may be slow.\n\nAll functions in this library are provided inside the debug table. All functions that operate over a thread have an optional first argument which is the thread to operate over. The default is always the current thread."
+    },
+    {
+      "name": "debug.debug",
+      "kind": "function",
+      "section": "6.10",
+      "anchor": "pdf-debug.debug",
+      "heading": "debug.debug ()",
+      "markdown": "Enters an interactive mode with the user, running each string that the user enters. Using simple commands and other debug facilities, the user can inspect global and local variables, change their values, evaluate expressions, and so on. A line containing only the word `cont` finishes this function, so that the caller continues its execution.\n\nNote that commands for `debug.debug` are not lexically nested within any function and so have no direct access to local variables.",
+      "plaintext": "Enters an interactive mode with the user, running each string that the user enters. Using simple commands and other debug facilities, the user can inspect global and local variables, change their values, evaluate expressions, and so on. A line containing only the word cont finishes this function, so that the caller continues its execution.\n\nNote that commands for debug.debug are not lexically nested within any function and so have no direct access to local variables."
+    },
+    {
+      "name": "debug.gethook",
+      "kind": "function",
+      "section": "6.10",
+      "anchor": "pdf-debug.gethook",
+      "heading": "debug.gethook ([thread])",
+      "markdown": "Returns the current hook settings of the thread, as three values: the current hook function, the current hook mask, and the current hook count (as set by the [`debug.sethook`](https://www.lua.org/manual/5.2/manual.html#pdf-debug.sethook) function).",
+      "plaintext": "Returns the current hook settings of the thread, as three values: the current hook function, the current hook mask, and the current hook count (as set by the debug.sethook (https://www.lua.org/manual/5.2/manual.html#pdf-debug.sethook) function)."
+    },
+    {
+      "name": "debug.getinfo",
+      "kind": "function",
+      "section": "6.10",
+      "anchor": "pdf-debug.getinfo",
+      "heading": "debug.getinfo ([thread,] f [, what])",
+      "markdown": "Returns a table with information about a function. You can give the function directly or you can give a number as the value of `f`, which means the function running at level `f` of the call stack of the given thread: level 0 is the current function (`getinfo` itself); level 1 is the function that called `getinfo` (except for tail calls, which do not count on the stack); and so on. If `f` is a number larger than the number of active functions, then `getinfo` returns **nil**.\n\nThe returned table can contain all the fields returned by [`lua_getinfo`](https://www.lua.org/manual/5.2/manual.html#lua_getinfo), with the string `what` describing which fields to fill in. The default for `what` is to get all information available, except the table of valid lines. If present, the option '`f`' adds a field named `func` with the function itself. If present, the option '`L`' adds a field named `activelines` with the table of valid lines.\n\nFor instance, the expression `debug.getinfo(1,\"n\").name` returns a table with a name for the current function, if a reasonable name can be found, and the expression `debug.getinfo(print)` returns a table with all available information about the [`print`](https://www.lua.org/manual/5.2/manual.html#pdf-print) function.",
+      "plaintext": "Returns a table with information about a function. You can give the function directly or you can give a number as the value of f, which means the function running at level f of the call stack of the given thread: level 0 is the current function (getinfo itself); level 1 is the function that called getinfo (except for tail calls, which do not count on the stack); and so on. If f is a number larger than the number of active functions, then getinfo returns nil.\n\nThe returned table can contain all the fields returned by lua_getinfo (https://www.lua.org/manual/5.2/manual.html#lua_getinfo), with the string what describing which fields to fill in. The default for what is to get all information available, except the table of valid lines. If present, the option 'f' adds a field named func with the function itself. If present, the option 'L' adds a field named activelines with the table of valid lines.\n\nFor instance, the expression debug.getinfo(1,\"n\").name returns a table with a name for the current function, if a reasonable name can be found, and the expression debug.getinfo(print) returns a table with all available information about the print (https://www.lua.org/manual/5.2/manual.html#pdf-print) function."
+    },
+    {
+      "name": "debug.getlocal",
+      "kind": "function",
+      "section": "6.10",
+      "anchor": "pdf-debug.getlocal",
+      "heading": "debug.getlocal ([thread,] f, local)",
+      "markdown": "This function returns the name and the value of the local variable with index `local` of the function at level `f` of the stack. This function accesses not only explicit local variables, but also parameters, temporaries, etc.\n\nThe first parameter or local variable has index 1, and so on, until the last active variable. Negative indices refer to vararg parameters; -1 is the first vararg parameter. The function returns **nil** if there is no variable with the given index, and raises an error when called with a level out of range. (You can call [`debug.getinfo`](https://www.lua.org/manual/5.2/manual.html#pdf-debug.getinfo) to check whether the level is valid.)\n\nVariable names starting with '`(`' (open parenthesis) represent internal variables (loop control variables, temporaries, varargs, and C function locals).\n\nThe parameter `f` may also be a function. In that case, `getlocal` returns only the name of function parameters.",
+      "plaintext": "This function returns the name and the value of the local variable with index local of the function at level f of the stack. This function accesses not only explicit local variables, but also parameters, temporaries, etc.\n\nThe first parameter or local variable has index 1, and so on, until the last active variable. Negative indices refer to vararg parameters; -1 is the first vararg parameter. The function returns nil if there is no variable with the given index, and raises an error when called with a level out of range. (You can call debug.getinfo (https://www.lua.org/manual/5.2/manual.html#pdf-debug.getinfo) to check whether the level is valid.)\n\nVariable names starting with '(' (open parenthesis) represent internal variables (loop control variables, temporaries, varargs, and C function locals).\n\nThe parameter f may also be a function. In that case, getlocal returns only the name of function parameters."
+    },
+    {
+      "name": "debug.getmetatable",
+      "kind": "function",
+      "section": "6.10",
+      "anchor": "pdf-debug.getmetatable",
+      "heading": "debug.getmetatable (value)",
+      "markdown": "Returns the metatable of the given `value` or **nil** if it does not have a metatable.",
+      "plaintext": "Returns the metatable of the given value or nil if it does not have a metatable."
+    },
+    {
+      "name": "debug.getregistry",
+      "kind": "function",
+      "section": "6.10",
+      "anchor": "pdf-debug.getregistry",
+      "heading": "debug.getregistry ()",
+      "markdown": "Returns the registry table (see [§4.5](https://www.lua.org/manual/5.2/manual.html#4.5)).",
+      "plaintext": "Returns the registry table (see §4.5 (https://www.lua.org/manual/5.2/manual.html#4.5))."
+    },
+    {
+      "name": "debug.getupvalue",
+      "kind": "function",
+      "section": "6.10",
+      "anchor": "pdf-debug.getupvalue",
+      "heading": "debug.getupvalue (f, up)",
+      "markdown": "This function returns the name and the value of the upvalue with index `up` of the function `f`. The function returns **nil** if there is no upvalue with the given index.",
+      "plaintext": "This function returns the name and the value of the upvalue with index up of the function f. The function returns nil if there is no upvalue with the given index."
+    },
+    {
+      "name": "debug.getuservalue",
+      "kind": "function",
+      "section": "6.10",
+      "anchor": "pdf-debug.getuservalue",
+      "heading": "debug.getuservalue (u)",
+      "markdown": "Returns the Lua value associated to `u`. If `u` is not a userdata, returns **nil**.",
+      "plaintext": "Returns the Lua value associated to u. If u is not a userdata, returns nil."
+    },
+    {
+      "name": "debug.sethook",
+      "kind": "function",
+      "section": "6.10",
+      "anchor": "pdf-debug.sethook",
+      "heading": "debug.sethook ([thread,] hook, mask [, count])",
+      "markdown": "Sets the given function as a hook. The string `mask` and the number `count` describe when the hook will be called. The string mask may have any combination of the following characters, with the given meaning:\n\n- **'`c`':** the hook is called every time Lua calls a function;\n- **'`r`':** the hook is called every time Lua returns from a function;\n- **'`l`':** the hook is called every time Lua enters a new line of code.\n\nMoreover, with a `count` different from zero, the hook is called also after every `count` instructions.\n\nWhen called without arguments, [`debug.sethook`](https://www.lua.org/manual/5.2/manual.html#pdf-debug.sethook) turns off the hook.\n\nWhen the hook is called, its first parameter is a string describing the event that has triggered its call: `\"call\"` (or `\"tail call\"`), `\"return\"`, `\"line\"`, and `\"count\"`. For line events, the hook also gets the new line number as its second parameter. Inside a hook, you can call `getinfo` with level 2 to get more information about the running function (level 0 is the `getinfo` function, and level 1 is the hook function).",
+      "plaintext": "Sets the given function as a hook. The string mask and the number count describe when the hook will be called. The string mask may have any combination of the following characters, with the given meaning:\n\n- 'c': the hook is called every time Lua calls a function;\n- 'r': the hook is called every time Lua returns from a function;\n- 'l': the hook is called every time Lua enters a new line of code.\n\nMoreover, with a count different from zero, the hook is called also after every count instructions.\n\nWhen called without arguments, debug.sethook (https://www.lua.org/manual/5.2/manual.html#pdf-debug.sethook) turns off the hook.\n\nWhen the hook is called, its first parameter is a string describing the event that has triggered its call: \"call\" (or \"tail call\"), \"return\", \"line\", and \"count\". For line events, the hook also gets the new line number as its second parameter. Inside a hook, you can call getinfo with level 2 to get more information about the running function (level 0 is the getinfo function, and level 1 is the hook function)."
+    },
+    {
+      "name": "debug.setlocal",
+      "kind": "function",
+      "section": "6.10",
+      "anchor": "pdf-debug.setlocal",
+      "heading": "debug.setlocal ([thread,] level, local, value)",
+      "markdown": "This function assigns the value `value` to the local variable with index `local` of the function at level `level` of the stack. The function returns **nil** if there is no local variable with the given index, and raises an error when called with a `level` out of range. (You can call `getinfo` to check whether the level is valid.) Otherwise, it returns the name of the local variable.\n\nSee [`debug.getlocal`](https://www.lua.org/manual/5.2/manual.html#pdf-debug.getlocal) for more information about variable indices and names.",
+      "plaintext": "This function assigns the value value to the local variable with index local of the function at level level of the stack. The function returns nil if there is no local variable with the given index, and raises an error when called with a level out of range. (You can call getinfo to check whether the level is valid.) Otherwise, it returns the name of the local variable.\n\nSee debug.getlocal (https://www.lua.org/manual/5.2/manual.html#pdf-debug.getlocal) for more information about variable indices and names."
+    },
+    {
+      "name": "debug.setmetatable",
+      "kind": "function",
+      "section": "6.10",
+      "anchor": "pdf-debug.setmetatable",
+      "heading": "debug.setmetatable (value, table)",
+      "markdown": "Sets the metatable for the given `value` to the given `table` (which can be **nil**). Returns `value`.",
+      "plaintext": "Sets the metatable for the given value to the given table (which can be nil). Returns value."
+    },
+    {
+      "name": "debug.setupvalue",
+      "kind": "function",
+      "section": "6.10",
+      "anchor": "pdf-debug.setupvalue",
+      "heading": "debug.setupvalue (f, up, value)",
+      "markdown": "This function assigns the value `value` to the upvalue with index `up` of the function `f`. The function returns **nil** if there is no upvalue with the given index. Otherwise, it returns the name of the upvalue.",
+      "plaintext": "This function assigns the value value to the upvalue with index up of the function f. The function returns nil if there is no upvalue with the given index. Otherwise, it returns the name of the upvalue."
+    },
+    {
+      "name": "debug.setuservalue",
+      "kind": "function",
+      "section": "6.10",
+      "anchor": "pdf-debug.setuservalue",
+      "heading": "debug.setuservalue (udata, value)",
+      "markdown": "Sets the given `value` as the Lua value associated to the given `udata`. `value` must be a table or **nil**; `udata` must be a full userdata.\n\nReturns `udata`.",
+      "plaintext": "Sets the given value as the Lua value associated to the given udata. value must be a table or nil; udata must be a full userdata.\n\nReturns udata."
+    },
+    {
+      "name": "debug.traceback",
+      "kind": "function",
+      "section": "6.10",
+      "anchor": "pdf-debug.traceback",
+      "heading": "debug.traceback ([thread,] [message [, level]])",
+      "markdown": "If `message` is present but is neither a string nor **nil**, this function returns `message` without further processing. Otherwise, it returns a string with a traceback of the call stack. An optional `message` string is appended at the beginning of the traceback. An optional `level` number tells at which level to start the traceback (default is 1, the function calling `traceback`).",
+      "plaintext": "If message is present but is neither a string nor nil, this function returns message without further processing. Otherwise, it returns a string with a traceback of the call stack. An optional message string is appended at the beginning of the traceback. An optional level number tells at which level to start the traceback (default is 1, the function calling traceback)."
+    },
+    {
+      "name": "debug.upvalueid",
+      "kind": "function",
+      "section": "6.10",
+      "anchor": "pdf-debug.upvalueid",
+      "heading": "debug.upvalueid (f, n)",
+      "markdown": "Returns an unique identifier (as a light userdata) for the upvalue numbered `n` from the given function.\n\nThese unique identifiers allow a program to check whether different closures share upvalues. Lua closures that share an upvalue (that is, that access a same external local variable) will return identical ids for those upvalue indices.",
+      "plaintext": "Returns an unique identifier (as a light userdata) for the upvalue numbered n from the given function.\n\nThese unique identifiers allow a program to check whether different closures share upvalues. Lua closures that share an upvalue (that is, that access a same external local variable) will return identical ids for those upvalue indices."
+    },
+    {
+      "name": "debug.upvaluejoin",
+      "kind": "function",
+      "section": "6.10",
+      "anchor": "pdf-debug.upvaluejoin",
+      "heading": "debug.upvaluejoin (f1, n1, f2, n2)",
+      "markdown": "Make the `n1`-th upvalue of the Lua closure `f1` refer to the `n2`-th upvalue of the Lua closure `f2`.",
+      "plaintext": "Make the n1-th upvalue of the Lua closure f1 refer to the n2-th upvalue of the Lua closure f2."
+    }
+  ]
+}
