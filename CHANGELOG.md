@@ -89,6 +89,28 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
     resolved through a local `_ENV`.
   - The server's own labels are localized into the 14 VS Code display languages from the client's
     `locale` (`InitializeParams.locale`), in every editor.
+- Completion (`textDocument/completion`, `completionItem/resolve`; triggered by `.` and `:`), with
+  the rules of hover so that a completed name hovers as offered:
+  - Variables: the locals visible at the cursor (the innermost of each name, the implicit
+    `self` included), then the globals the document assigns (in any Lua chunk of a `.menu` file),
+    the Lua 5.2 library globals the engine opens, the EEex and game functions, and the keywords.
+    Each name once, from the first of these that has it. While a local `_ENV` is visible, only
+    locals and keywords. Keywords are the 22 reserved words (manual §3.1); in `.menu` expressions
+    (`enabled "…"`, …) only `nil`, `false`, `true`, `function`, `not`, `and` and `or` (§3.4).
+  - Members of globals (`_G.` prefixes removed): after `_G.` the globals; after `t.` and `t:` the
+    fields the document assigns on `t`; the manual's members of `string`, `table`, `math`,
+    `bit32` and `debug`, unless the document assigns the module table or defines that member;
+    EEex-Docs names after the operator they are documented with (`EEex_Options_Option.new`,
+    `C:AddGold`). After `("…"):`, the string library (§6.4). Nothing after locals, calls or
+    indexes (no type inference).
+  - Nothing in comments, strings and numbers, outside the Lua of a `.menu` file, or where a name
+    is declared (after `local`, `function`, `for`, `goto`, `::`, in their name lists and in
+    parameter lists). `io`, `os`, `package` (`require`) and `coroutine` are never offered.
+  - Each item has the hover's code line as `detail`; the manual text or EEex-Docs link is added
+    when the item is resolved, in Markdown or plain text as the client prefers
+    (`completionItem.documentationFormat`). The edit range is the name around the cursor, sent
+    once per list when the client supports `itemDefaults.editRange`, as an insert/replace edit
+    when it supports `insertReplaceSupport`.
 - Error-tolerant Lua 5.2 parser and scope analysis (`src/server/syntax/`), checked against the
   official compiler by a differential test; it publishes no diagnostics of its own.
 - Localization of the manifest, UI strings and the language server's hover labels into all 14 VS

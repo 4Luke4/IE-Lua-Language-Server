@@ -15,11 +15,13 @@ import {
 } from 'vscode-languageserver/node';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { ParsedDocumentCache } from './documentCache.ts';
+import * as completion from './features/completion.ts';
 import * as definition from './features/definition.ts';
 import * as diagnostics from './features/diagnostics.ts';
 import * as documentSymbols from './features/documentSymbols.ts';
 import * as foldingRanges from './features/foldingRanges.ts';
 import * as hover from './features/hover.ts';
+import { markupFormat } from './features/markup.ts';
 import * as references from './features/references.ts';
 import * as rename from './features/rename.ts';
 import * as workspaceSymbols from './features/workspaceSymbols.ts';
@@ -80,6 +82,8 @@ connection.onInitialize((params) => {
   // Null or absent when no folder is open or the client does not support workspace folders
   // (the deprecated rootUri is not used): then only open documents are searched.
   folders = params.workspaceFolders?.map((folder) => folder.uri) ?? [];
+  /** The server's messages in the client's display language. */
+  const messages = createMessages(params.locale);
   const diagnosticsFeature = diagnostics.register(connection, documents, {
     lua,
     settings: new SettingsStore(connection, configurationPull, params.initializationOptions),
@@ -101,8 +105,16 @@ connection.onInitialize((params) => {
   workspaceSymbols.register(connection, documents, { cache: parsed, index });
   hover.register(connection, documents, {
     cache: parsed,
-    format: hover.hoverFormat(params.capabilities.textDocument?.hover?.contentFormat),
-    messages: createMessages(params.locale),
+    format: markupFormat(params.capabilities.textDocument?.hover?.contentFormat),
+    messages,
+  });
+  const completionCapabilities = params.capabilities.textDocument?.completion;
+  completion.register(connection, documents, {
+    cache: parsed,
+    format: markupFormat(completionCapabilities?.completionItem?.documentationFormat),
+    insertReplace: completionCapabilities?.completionItem?.insertReplaceSupport === true,
+    defaultEditRange: completionCapabilities?.completionList?.itemDefaults?.includes('editRange') === true,
+    messages,
   });
   // One handler per notification: settings changes go to every feature that needs them.
   connection.onDidChangeConfiguration(({ settings }) => {
@@ -125,6 +137,7 @@ connection.onInitialize((params) => {
       renameProvider: prepareRename ? { prepareProvider: true } : true,
       workspaceSymbolProvider: true,
       hoverProvider: true,
+      completionProvider: { triggerCharacters: [...completion.TRIGGER_CHARACTERS], resolveProvider: true },
       ...(workspaceFolderChanges ? { workspace: { workspaceFolders: { supported: true, changeNotifications: true } } } : {}),
     },
     serverInfo: { name: 'IE Lua Language Server' },
