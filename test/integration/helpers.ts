@@ -85,5 +85,7 @@ export async function waitForWorkspaceSymbols(
   for (;;) {
     const symbols = await vscode.commands.executeCommand<vscode.SymbolInformation[]>('vscode.executeWorkspaceSymbolProvider', query);
     if (predicate(symbols)) return symbols;
+    // Let pending events (the client's file-event batch) run before asking again.
+    await new Promise((resolve) => setImmediate(resolve));
   }
 }

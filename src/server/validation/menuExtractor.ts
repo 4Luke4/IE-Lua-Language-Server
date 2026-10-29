@@ -3,7 +3,9 @@ import { CHUNK_FORM, EXPRESSION_FORM, STATEMENT_FORM, type CompiledForm, type Lu
 
 // Which property values are Lua, from IESDP, "MENU file format", section "How a
 // menu becomes Lua" (https://gibberlings3.github.io/iesdp/file_formats/ie_formats/menu_v1.htm,
-// commit 38e7532). Keywords in lower case, as `menuKeyword` returns them.
+// commit 38e7532). Keywords in lower case, as `menuKeyword` returns them. The tables
+// are exported only so that test/unit/syntaxes/ieMenuGrammar.test.ts can check the
+// TextMate grammar against them.
 
 /** Properties whose STRING is compiled as a function body (one or more statements). */
 export const STATEMENT_PROPERTIES: ReadonlySet<string> = new Set([
