@@ -161,9 +161,10 @@ export function foldingRanges(document: ParsedDocument, text: string, lineAt: (o
   }
 
   for (const { chunk, tree } of document.chunks) {
-    if (chunk.origin !== 'file') {
-      // The delimiters of the chunk: a backtick or a double quote on each side.
-      fold(chunk.offset - 1, chunk.offset + chunk.text.length, chunk.offset + chunk.text.length);
+    const { region } = chunk;
+    if (region.start < chunk.offset) {
+      // From the opening backtick or quote to the closing one.
+      fold(region.start, region.end - 1, region.end - 1);
     }
     block(tree.body);
     // Runs of `--` comments that each start their own, consecutive line.

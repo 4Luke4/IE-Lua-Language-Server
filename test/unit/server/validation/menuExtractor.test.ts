@@ -11,10 +11,10 @@ function chunksOf(menu: string): [string, string][] {
 }
 
 describe('server/validation/menuExtractor', () => {
-  it('extracts top-level backtick blocks as statements', () => {
+  it('extracts backtick blocks without their last character, which the engine drops', () => {
     assert.deepEqual(chunksOf('`\nlocal x = 1\n`\nmenu\n{\n}\n`y = 2`'), [
-      ['statements', '\nlocal x = 1\n'],
-      ['statements', 'y = 2'],
+      ['statements', '\nlocal x = 1'],
+      ['statements', 'y = '],
     ]);
   });
 
@@ -102,7 +102,7 @@ describe('server/validation/menuExtractor', () => {
 
   it('keeps a property and its string together across inline Lua, which produces no token', () => {
     assert.deepEqual(chunksOf('action `x = 1\n` "f()"'), [
-      ['statements', 'x = 1\n'],
+      ['statements', 'x = 1'],
       ['statements', 'f()'],
     ]);
   });
@@ -164,6 +164,23 @@ describe('server/validation/menuExtractor', () => {
     it('leaves unclosed blocks open and ignores unmatched closing braces', () => {
       assert.equal(outline(extractMenuLua('}\nmenu\n{\n\tbutton\n\t{\n').blocks), 'menu![button!]');
     });
+  });
+
+  it('keeps an empty backtick block empty', () => {
+    assert.deepEqual(chunksOf('``'), [['statements', '']]);
+  });
+
+  it('records the region of each chunk, delimiters included', () => {
+    const menu = '`a()\n` action "b()" table rows';
+    assert.deepEqual(extractMenuLua(menu).chunks.map((c) => menu.slice(c.region.start, c.region.end)), ['`a()\n`', '"b()"', 'rows']);
+  });
+
+  it('compiles statement properties as a function body and expressions as its return value', () => {
+    assert.deepEqual(extractMenuLua('`x` action "a()" enabled "b"').chunks.map((c) => c.forms), [
+      [{ prefix: '', suffix: '' }],
+      [{ prefix: 'function f () ', suffix: ' end' }],
+      [{ prefix: 'function f () return ', suffix: ' end' }],
+    ]);
   });
 
   it('tells backtick blocks from property values', () => {

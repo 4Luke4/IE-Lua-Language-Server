@@ -1,5 +1,5 @@
 import { lexMenu, type MenuToken } from './menuLexer.ts';
-import type { LuaChunk, Problem } from './types.ts';
+import { CHUNK_FORM, EXPRESSION_FORM, STATEMENT_FORM, type LuaChunk, type Problem } from './types.ts';
 
 // Which property values are Lua, from IESDP, "MENU file format", section "How a
 // menu becomes Lua" (https://gibberlings3.github.io/iesdp/file_formats/ie_formats/menu_v1.htm,
@@ -78,7 +78,8 @@ interface OpenBlock {
  * Finds the Lua embedded in an Infinity Engine `.menu` file, from the tokens of
  * `lexMenu` (which follows the engine's lexer):
  *
- * - `` `…` `` blocks: Lua statements.
+ * - `` `…` `` blocks: a Lua chunk, without the last character before the
+ *   closing backtick, which the engine drops.
  * - a STRING after a property in STATEMENT_PROPERTIES: Lua statements.
  * - a STRING after a property in EXPRESSION_PROPERTIES, after `bitmap res`, or
  *   after `lua`: a Lua expression.
@@ -96,7 +97,11 @@ export function extractMenuLua(text: string): MenuExtraction {
     kind: 'statements',
     origin: 'block',
     offset: block.start + 1,
-    text: text.slice(block.start + 1, block.close),
+    region: { start: block.start, end: block.close + 1 },
+    // The engine drops the last character before the closing backtick (IESDP,
+    // Lexical structure); the chunk is the text it actually runs.
+    text: text.slice(block.start + 1, Math.max(block.start + 1, block.close - 1)),
+    forms: [CHUNK_FORM],
   }));
   const blocks: OpenBlock[] = [];
   /** Blocks whose `}` has not been seen yet, innermost last. */
@@ -127,7 +132,14 @@ export function extractMenuLua(text: string): MenuExtraction {
       // An unterminated string runs to the end of the file; it is reported, not validated.
       const terminated = token.quote === undefined || token.end > token.valueEnd;
       if (kind && terminated) {
-        chunks.push({ kind, origin: 'property', offset: token.valueStart, text: text.slice(token.valueStart, token.valueEnd) });
+        chunks.push({
+          kind,
+          origin: 'property',
+          offset: token.valueStart,
+          region: { start: token.start, end: token.end },
+          text: text.slice(token.valueStart, token.valueEnd),
+          forms: [kind === 'statements' ? STATEMENT_FORM : EXPRESSION_FORM],
+        });
       }
       const block = open.at(-1);
       if (block && block.name === undefined && previous.keyword === 'name') {

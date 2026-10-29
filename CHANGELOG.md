@@ -23,7 +23,10 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   that follows the engine's (per [IESDP](https://gibberlings3.github.io/iesdp/file_formats/ie_formats/menu_v1.htm)):
   `` `…` `` blocks; `onOpen`, `onClose` and `action*` scripts; and the expressions of `enabled`,
   `actionDrag`, `table`, `seperator`, `useOverlayTint`, `bitmap res` and every `lua` value. A value
-  can be `"…"`, `'…'` or an unquoted word that is not a keyword, anywhere on a line.
+  can be `"…"`, `'…'` or an unquoted word that is not a keyword, anywhere on a line. Each is
+  compiled in the shape the engine compiles it: property code as the body of
+  `function f () … end` (so `...` and a trailing `--` comment are errors), expressions as its
+  `return` value, and `` `…` `` blocks without their last character, which the engine drops.
 - Settings `ieLua.validate.mode` (`manual`, `save` (default), `type`, `saveAndType`) and
   `ieLua.validate.debounce` (default 300 ms).
 - Command **IE Lua: Validate Current File** (`ieLua.validateDocument`).
