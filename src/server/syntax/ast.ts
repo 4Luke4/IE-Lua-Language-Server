@@ -19,6 +19,11 @@ export interface Chunk extends Node {
   readonly comments: readonly Comment[];
   /** Lexical and syntax errors, in source order. Empty when the chunk is valid Lua 5.2 (see parser.ts for the checks that are not done). */
   readonly errors: readonly ParseError[];
+  /**
+   * Offset of the first token of every statement the parser began, in source order,
+   * including statements abandoned after an error (which are missing from `body`).
+   */
+  readonly statementStarts: readonly number[];
 }
 
 export interface Block extends Node {

@@ -212,6 +212,17 @@ describe('server/syntax/parser', () => {
       assert.deepEqual(declaration.func.body.body.map((s) => s.kind), ['CallStatement']);
       assert.notEqual(declaration.func.closeStart, undefined);
     });
+
+    it('records the start of every statement it began, also of statements abandoned after an error', () => {
+      const source = 'local a = 1\nif a then\n  do x() end\n  elseif';
+      const chunk = parseChunk(source);
+      // The `if` statement is abandoned at `<eof>`: it is missing from the body, not from `statementStarts`.
+      assert.deepEqual(chunk.body.body.map((s) => s.kind), ['LocalStatement']);
+      assert.deepEqual(
+        chunk.statementStarts.map((offset) => source.slice(offset).split(/\s/, 1)[0]),
+        ['local', 'if', 'do', 'x()'],
+      );
+    });
   });
 
   describe('slices and expression mode', () => {

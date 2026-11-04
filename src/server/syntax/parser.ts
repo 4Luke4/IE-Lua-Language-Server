@@ -67,6 +67,8 @@ interface FunctionState {
 
 class Parser {
   readonly errors: ParseError[] = [];
+  /** See `Ast.Chunk.statementStarts`. */
+  readonly statementStarts: number[] = [];
   private readonly tokens: readonly Token[];
   private readonly eof: Token;
   private readonly source: string;
@@ -238,6 +240,7 @@ class Parser {
     while (!this.blockFollow(true)) {
       const isReturn = this.check('return');
       const startIndex = this.p;
+      this.statementStarts.push(this.token.start);
       try {
         const statement = this.statement();
         if (statement) body.push(statement);
@@ -629,5 +632,5 @@ export function parseChunk(source: string, options: ParseOptions = {}): Ast.Chun
   const parser = new Parser(source, tokens, from, to, options.functionBody ?? false);
   const body = options.mode === 'expression' ? parser.expressionChunk(from) : parser.chunk(from);
   const errors = [...lexErrors, ...parser.errors].sort((a, b) => a.start - b.start);
-  return { kind: 'Chunk', body, comments, errors, start: from, end: to };
+  return { kind: 'Chunk', body, comments, errors, statementStarts: parser.statementStarts, start: from, end: to };
 }
