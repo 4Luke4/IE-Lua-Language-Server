@@ -99,6 +99,10 @@ describe('server/formatting/format', () => {
       assert.equal(line('f"x" g  "y"'), 'f"x" g "y"');
       assert.equal(line('f{1} g  {2}'), 'f{ 1 } g { 2 }');
       assert.equal(line('f[[x]] g   [[y]]'), 'f[[x]] g [[y]]');
+      // Chains: an argument after another argument, or after an index.
+      assert.equal(line('f"a""b"  "c"'), 'f"a""b" "c"');
+      assert.equal(line('f{}{}  {}'), 'f{}{} {}');
+      assert.equal(line('t[1]"x" t[1]  "y"'), 't[1]"x" t[1] "y"');
     });
 
     it('puts one space around keywords', () => {
@@ -245,6 +249,18 @@ describe('server/formatting/format', () => {
         assert.match(text.slice(edit.start, edit.end), /^[ \t]*$/);
         assert.doesNotMatch(edit.newText, /[\r\n]/);
       }
+    });
+  });
+
+  describe('options', () => {
+    it('refuses a tabSize outside VS Code\'s bounds (1 to 100) or not an integer, with insertSpaces only', () => {
+      const text = 'do\nx()\nend';
+      for (const tabSize of [0, 101, 2.5, Number.NaN, -1]) {
+        assert.deepEqual(formatDocument(text, parseChunk(text), { tabSize, insertSpaces: true }), { ok: false, reason: 'invalid-options' }, String(tabSize));
+        assert.deepEqual(formatRange(text, parseChunk(text), { tabSize, insertSpaces: true }, 0, 1), { ok: false, reason: 'invalid-options' }, String(tabSize));
+      }
+      assert.equal(apply(text, edits(formatDocument(text, parseChunk(text), { tabSize: 0, insertSpaces: false }))), 'do\n\tx()\nend');
+      assert.equal(apply(text, edits(formatDocument(text, parseChunk(text), { tabSize: 100, insertSpaces: true }))).split('\n')[1]?.length, 103);
     });
   });
 

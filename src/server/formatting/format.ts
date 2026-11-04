@@ -52,9 +52,21 @@ export type FormatResult =
   /**
    * `syntax-error`: the chunk has a lexical or syntax error where the formatted lines
    * depend on it. `unsafe`: the result would not have lexed to the same tokens (a
-   * bug in the rules; nothing is changed).
+   * bug in the rules; nothing is changed). `invalid-options`: `insertSpaces` with a
+   * `tabSize` that is not an integer from `MIN_TAB_SIZE` to `MAX_TAB_SIZE`.
    */
-  | { readonly ok: false; readonly reason: 'syntax-error' | 'unsafe' };
+  | { readonly ok: false; readonly reason: 'syntax-error' | 'unsafe' | 'invalid-options' };
+
+/**
+ * The `tabSize` values accepted with `insertSpaces`: the bounds of VS Code's
+ * `editor.tabSize` setting (`minimum: 1, maximum: 100` in its settings schema). LSP
+ * only says `uinteger`; anything outside is refused rather than replaced by a guess.
+ */
+export const MIN_TAB_SIZE = 1;
+export const MAX_TAB_SIZE = 100;
+
+const validOptions = (options: FormattingOptions): boolean =>
+  !options.insertSpaces || (Number.isInteger(options.tabSize) && options.tabSize >= MIN_TAB_SIZE && options.tabSize <= MAX_TAB_SIZE);
 
 /** Characters after which clients ask for on-type formatting. */
 export const ON_TYPE_FIRST_TRIGGER = '\n';
@@ -258,7 +270,8 @@ function allEdits(text: string, tree: Ast.Chunk, options: FormattingOptions, fin
     ...comments.map((comment) => ({ start: comment.start, end: comment.end, token: undefined, comment })),
   ].sort((a, b) => a.start - b.start);
   const facts = tokenFacts(tokens, tree);
-  const unit = options.insertSpaces ? ' '.repeat(Number.isFinite(options.tabSize) ? Math.max(0, Math.floor(options.tabSize)) : 0) : '\t';
+  // `validOptions` was checked by the caller.
+  const unit = options.insertSpaces ? ' '.repeat(options.tabSize) : '\t';
   const edits: OffsetEdit[] = [];
   const replace = (start: number, end: number, newText: string): void => {
     if (text.slice(start, end) !== newText) edits.push({ start, end, newText });
@@ -417,6 +430,7 @@ const errorBefore = (tree: Ast.Chunk, offset: number): boolean => tree.errors.so
 
 /** Formats a whole chunk. Refused when it has any lexical or syntax error. */
 export function formatDocument(text: string, tree: Ast.Chunk, options: FormattingOptions): FormatResult {
+  if (!validOptions(options)) return { ok: false, reason: 'invalid-options' };
   if (tree.errors.length > 0) return { ok: false, reason: 'syntax-error' };
   const { edits, lexed } = allEdits(text, tree, options, true);
   return checked(text, tree, edits, lexed);
@@ -446,6 +460,7 @@ interface Span {
 }
 
 function formatSpan(text: string, tree: Ast.Chunk, options: FormattingOptions, span: Span): FormatResult {
+  if (!validOptions(options)) return { ok: false, reason: 'invalid-options' };
   if (errorBefore(tree, span.to)) return { ok: false, reason: 'syntax-error' };
   const { edits: all, lexed } = allEdits(text, tree, options, false, span.to);
   const edits = all.filter(
@@ -472,6 +487,11 @@ export function formatOnType(text: string, tree: Ast.Chunk, options: FormattingO
     return formatSpan(text, tree, options, { from: starts[line - 1] ?? 0, to: lineEnd, keep: (edit) => !(blank && edit.start >= lineStart) });
   }
   if (!ON_TYPE_MORE_TRIGGERS.includes(character)) return { ok: true, edits: [] };
+  // Cheap test first: these characters are typed inside any word (`field`, `self`), and lexing
+  // the document for each of them would cost a full pass. The lexer then confirms the closer
+  // is a token, not part of a string, a comment or a longer name.
+  const typed = text.slice(lineStart, offset).trim();
+  if (!CLOSERS.has(typed) || !typed.endsWith(character)) return { ok: true, edits: [] };
   const { tokens } = lex(text, tree.start, tree.end);
   const index = tokens.findIndex((token) => token.end === offset && token.type !== 'string');
   const token = tokens[index];
