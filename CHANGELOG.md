@@ -130,6 +130,32 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   - Fields are `property`, or `method` after `:`; library and EEex-Docs members (`string.format`,
     `C:AddGold`) as documented. Assignment targets have `modification`, declared names
     `declaration`, labels are `label`.
+- Formatting of `.lua` files (`textDocument/formatting`, `/rangeFormatting` and
+  `/onTypeFormatting`), layout-preserving: only the white space between tokens and comments
+  changes. `.menu` files are not formatted (no formatter is offered for them).
+  - Line breaks are kept exactly as written; strings, long strings and long comments are never
+    touched. Trailing white space is removed (also after a `--` comment) and blank lines are
+    emptied.
+  - Indentation by the constructs open at the start of each line (`function`, `do`, `then`,
+    `else`, `repeat`, `(`, `[`, `{`), counted once per line that opens them (`f(function()` indents
+    its body once); a line that starts with `end`, `until`, `else`, `elseif`, `)`, `]` or `}` is
+    indented like the line that opened the construct; a line that continues a statement gets one
+    more level. One level is a tab, or `tabSize` spaces with `insertSpaces`; a `tabSize` that is
+    not an integer from 1 to 100 (the bounds of VS Code's `editor.tabSize`) is refused and logged.
+  - Spacing within a line: one space around binary operators, `=` and keywords and after `,`/`;`;
+    none inside `()`/`[]`, around `.`/`:`, after unary `-`/`#` or before the parentheses of a call
+    or function; `{ a }` and `{}`; string and table call arguments (`f"x"`, `f{…}`) stay joined or
+    apart as written; the space before a trailing comment is kept.
+  - `insertFinalNewline` and `trimFinalNewlines` are honored for document formatting when the
+    client sends `true`. No new settings.
+  - A file with a syntax error is not formatted (the reason is logged); range and on-type
+    formatting only refuse errors before the end of the lines they change.
+  - On-type: after a line break the finished line is formatted (a blank new line keeps the
+    editor's indentation); after the last character of `end`, `else`, `elseif`, `until`, `)`,
+    `]` or `}` that starts a line, the line is re-indented. VS Code needs `editor.formatOnType`.
+  - Every result is lexed again and must have the same tokens and comments, or nothing changes.
+  - Registered dynamically for Lua documents only (language `lua`, or `*.lua` in any letter case)
+    when the client supports it, so `.menu` files have no formatter; static otherwise.
 - Error-tolerant Lua 5.2 parser and scope analysis (`src/server/syntax/`), checked against the
   official compiler by a differential test; it publishes no diagnostics of its own.
 - Localization of the manifest, UI strings and the language server's hover labels into all 14 VS

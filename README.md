@@ -14,9 +14,9 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
 
 > [!NOTE]
 > This is an early version. It currently provides **syntax diagnostics**, **hover**,
-> **completion**, **semantic highlighting**, **document symbols**, **workspace symbols**, **folding**,
-> and **go to definition**, **find references** and **rename** within a file; cross-file navigation,
-> formatting and more are planned.
+> **completion**, **semantic highlighting**, **formatting** (Lua files), **document symbols**,
+> **workspace symbols**, **folding**, and **go to definition**, **find references** and **rename**
+> within a file; cross-file navigation, formatting of `.menu` files and more are planned.
 
 ## Features
 
@@ -60,6 +60,12 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
     "rules": { "*.global": { "bold": true } }
   }
   ```
+- **Format Document and Format Selection** for Lua files: indentation, spacing within a line and
+  trailing white space are fixed, while your line breaks stay where they are and strings and
+  comments are never changed (apart from trailing white space after a `--` comment). Tabs or spaces follow your editor settings (*Editor: Tab Size*,
+  *Editor: Insert Spaces*). Turn on *Editor: Format On Type* to have `end`, `else` and closing
+  brackets re-indented as you type them, or *Editor: Format On Save*. Files with a syntax error
+  are left unchanged. `.menu` files are not formatted yet.
 - **Go to Definition, Find All References and Rename Symbol** for variables within a file. Locals
   follow Lua's scoping rules; globals are followed across all the Lua of a `.menu` file. Rename
   refuses, and says why, when it could change what the code does: a name already in use nearby,

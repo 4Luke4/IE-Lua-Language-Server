@@ -47,6 +47,11 @@ versions with an **even** middle number (for example 1.**2**.0) are stable relea
   VS Code's default theme, parameters, local and global variables, functions, table fields and
   the functions the game provides can be colored differently, in Lua files and the Lua of `.menu`
   files. Themes can style globals with the `global` modifier.
+- **Format Document and Format Selection** for Lua files. Fixes indentation and spacing without
+  moving your line breaks, and never changes strings or the text of comments. It uses your
+  editor's tab and indentation settings, and with *Editor: Format On Type* it re-indents `end`,
+  `else` and closing brackets as you type them. Files with syntax errors are left as they are;
+  `.menu` files are not formatted yet.
 - **Available in 14 languages**, following your VS Code display language.
 - **Works in other editors too**: setup guides for Sublime Text, Neovim, Emacs, JetBrains
   IDEs, Helix, Zed, Kate, Notepad++ and Geany are on the project page.
