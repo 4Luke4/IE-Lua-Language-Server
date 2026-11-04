@@ -1,4 +1,8 @@
 # https://docs.github.com/en/code-security/dependabot/working-with-dependabot/dependabot-options-reference
+#
+# No `labels:` keys: Dependabot then applies its default labels (`dependencies` plus the
+# ecosystem, e.g. `javascript`, `github_actions`) and creates them when missing. Custom labels
+# must already exist in the repository, otherwise they are dropped with a warning comment.
 version: 2
 updates:
   - package-ecosystem: npm
@@ -10,12 +14,15 @@ updates:
     commit-message:
       prefix: build
       include: scope
-    labels: [dependencies]
     ignore:
       # Must equal engines.vscode; both are bumped together by hand (CLAUDE.md §5).
       - dependency-name: "@types/vscode"
       # Must match the Node.js major of the oldest supported VS Code (Electron 29 → Node 20).
       - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      # TypeScript 7 (the Go port) no longer ships the JS compiler API, and typescript-eslint
+      # (type-aware linting) requires typescript <6.1.0. Remove once typescript-eslint supports 7.x.
+      - dependency-name: "typescript"
         update-types: ["version-update:semver-major"]
     groups:
       # One pull request for all low-risk development tooling updates.
@@ -34,7 +41,6 @@ updates:
     commit-message:
       prefix: ci
       include: scope
-    labels: [dependencies]
     groups:
       actions:
         patterns: ["*"]
