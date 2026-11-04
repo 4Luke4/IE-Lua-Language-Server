@@ -20,6 +20,7 @@ import * as definition from './features/definition.ts';
 import * as diagnostics from './features/diagnostics.ts';
 import * as documentSymbols from './features/documentSymbols.ts';
 import * as foldingRanges from './features/foldingRanges.ts';
+import * as formatting from './features/formatting.ts';
 import * as hover from './features/hover.ts';
 import { markupFormat } from './features/markup.ts';
 import * as references from './features/references.ts';
@@ -48,6 +49,8 @@ lua.catch((error: unknown) => {
 let configurationPull = false;
 let watchedFilesRegistration = false;
 let workspaceFolderChanges = false;
+/** Formatting requests registered in `initialized`, for .lua documents only. */
+let formattingRegistration: formatting.FormattingRegistration = { document: false, range: false, onType: false };
 /** Workspace folder URIs, kept up to date from `workspace/didChangeWorkspaceFolders`. */
 let folders: string[] = [];
 
@@ -105,6 +108,8 @@ connection.onInitialize((params) => {
   rename.register(connection, documents, { cache: parsed, documentChanges: workspace?.workspaceEdit?.documentChanges === true });
   workspaceSymbols.register(connection, documents, { cache: parsed, index });
   semanticTokens.register(connection, documents, { cache: parsed });
+  formatting.register(connection, documents, { cache: parsed });
+  formattingRegistration = formatting.dynamicRegistration(params.capabilities.textDocument);
   hover.register(connection, documents, {
     cache: parsed,
     format: markupFormat(params.capabilities.textDocument?.hover?.contentFormat),
@@ -141,6 +146,7 @@ connection.onInitialize((params) => {
       hoverProvider: true,
       completionProvider: { triggerCharacters: [...completion.TRIGGER_CHARACTERS], resolveProvider: true },
       semanticTokensProvider: { legend: semanticTokens.LEGEND, full: { delta: true }, range: true },
+      ...formatting.staticCapabilities(formattingRegistration),
       ...(workspaceFolderChanges ? { workspace: { workspaceFolders: { supported: true, changeNotifications: true } } } : {}),
     },
     serverInfo: { name: 'IE Lua Language Server' },
@@ -166,6 +172,7 @@ connection.onInitialized(() => {
       connection.console.warn(`Could not register file watchers; files changed outside the editor are indexed again only on restart: ${String(error)}`);
     });
   }
+  formatting.registerDynamically(connection, formattingRegistration);
   if (workspaceFolderChanges) {
     connection.workspace.onDidChangeWorkspaceFolders(({ added, removed }) => {
       const gone = new Set(removed.map((folder) => folder.uri));
