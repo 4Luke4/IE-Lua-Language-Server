@@ -71,6 +71,7 @@ node /path/to/server.js --stdio
 | Hover | `textDocument/hover` | Markdown or plain text, whichever the editor prefers (`hover.contentFormat`); the server's own words follow the editor's `locale`. See below. |
 | Completion | `textDocument/completion`, `completionItem/resolve` | Triggered by `.` and `:`. Documentation is sent on resolve, in the editor's preferred `completionItem.documentationFormat`. See below. |
 | Semantic tokens | `textDocument/semanticTokens/full`, `/full/delta`, `/range` | Names only (keywords, strings and comments are left to the editor's highlighting). See below. |
+| Formatting | `textDocument/formatting`, `/rangeFormatting`, `/onTypeFormatting` | `.lua` files only. Keeps your line breaks; uses the editor's tab size and spaces/tabs option. See below. |
 | Workspace symbols | `workspace/symbol` | Every `*.lua` and `*.menu` file under the workspace folders, plus open files. See below. |
 
 Workspace symbols need an editor that sends **workspace folders** when it starts the server;
@@ -104,6 +105,18 @@ Semantic tokens classify every name in the Lua with standard token types (`names
 functions. How the names are colored depends on the editor and its color scheme; an editor that
 ignores the `global` modifier still gets the token type.
 
-Symbols, folding, hover, completion, semantic tokens and navigation always reflect the current text, whatever `validate.mode` is.
+Formatting changes only the white space between tokens and comments: indentation, spacing
+within a line and trailing white space. Line breaks stay where you put them, and strings and
+comments are never changed, apart from trailing white space after a `--` comment. It follows the
+`tabSize` and `insertSpaces` the editor sends, and `insertFinalNewline` / `trimFinalNewlines`
+when the editor sends them. A file with a syntax error is not formatted (the reason goes to the
+server log). On-type formatting re-indents a line when you type the last character of `end`,
+`else`, `elseif`, `until`, `)`, `]` or `}` at its start, and formats the line you leave with
+Enter, if your editor sends on-type formatting requests (some send them only when an option is
+turned on; see its documentation). When the editor supports dynamic registration, formatting is
+offered for Lua documents only (language `lua`, or `*.lua` in any letter case), so `.menu` files
+have no formatter; other editors get no edits for `.menu` files.
+
+Symbols, folding, hover, completion, semantic tokens, formatting and navigation always reflect the current text, whatever `validate.mode` is.
 Navigation works on variables: table fields (`t.x`) and `goto` labels are not followed, and in a
 `.menu` file globals are shared by all its Lua, while locals stay in their own block or script.
