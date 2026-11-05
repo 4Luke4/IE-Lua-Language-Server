@@ -48,10 +48,16 @@ export interface DocumentDocs {
 const NEXT_LINE = /^(?:\r\n|\n|\r)[ \t\v\f]*$/;
 /** The same at `lastIndex` (sticky): where the next line's first non-blank character is. */
 const NEXT_LINE_AT = /(?:\r\n|\n|\r)[ \t\v\f]*/y;
-const LINE_INDENT = /(?:^|[\r\n])[ \t\v\f]*$/;
-
-/** Whether only white space precedes `offset` on its line. */
-const aloneOnLine = (text: string, offset: number): boolean => LINE_INDENT.test(text.slice(Math.max(0, text.lastIndexOf('\n', offset - 1), text.lastIndexOf('\r', offset - 1)), offset));
+/**
+ * Whether only white space precedes `offset` on its line. Scans back over the
+ * indentation only: searching for the line break with `lastIndexOf` would scan
+ * the whole text for a `\r` that LF files never have.
+ */
+function aloneOnLine(text: string, offset: number): boolean {
+  let i = offset - 1;
+  while (i >= 0 && /[ \t\v\f]/.test(text[i] ?? '')) i--;
+  return i < 0 || text[i] === '\n' || text[i] === '\r';
+}
 
 const isDocLine = (text: string, comment: { readonly start: number; readonly end: number; readonly long: boolean }): boolean =>
   !comment.long && text.startsWith('---', comment.start) && text[comment.start + 3] !== '-' && aloneOnLine(text, comment.start);
