@@ -6,5 +6,10 @@
   "codeAction.quote": "Uzavřít do uvozovek",
   "codeAction.insertSpace": "Vložit mezeru před uzavírací zpětný apostrof",
   "codeAction.fixAllOfCode": "Opravit všechny problémy {0}",
-  "codeAction.fixAll": "Opravit všechny automaticky opravitelné problémy IE Lua"
+  "codeAction.fixAll": "Opravit všechny automaticky opravitelné problémy IE Lua",
+  "doc.paramNameMissing": "{0} vyžaduje název parametru a za ním typ.",
+  "doc.paramTypeMissing": "{0} vyžaduje typ za názvem parametru.",
+  "doc.typeMissing": "{0} vyžaduje typ.",
+  "doc.paramUnknown": "Dokumentovaná funkce nemá parametr {0}.",
+  "doc.paramDuplicate": "Parametr {0} je v tomto komentáři již zdokumentován."
 }

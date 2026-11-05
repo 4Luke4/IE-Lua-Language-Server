@@ -6,5 +6,10 @@
   "codeAction.quote": "Mettre entre guillemets",
   "codeAction.insertSpace": "Insérer un espace avant l'accent grave fermant",
   "codeAction.fixAllOfCode": "Corriger tous les problèmes {0}",
-  "codeAction.fixAll": "Corriger tous les problèmes IE Lua corrigibles automatiquement"
+  "codeAction.fixAll": "Corriger tous les problèmes IE Lua corrigibles automatiquement",
+  "doc.paramNameMissing": "{0} nécessite un nom de paramètre suivi d'un type.",
+  "doc.paramTypeMissing": "{0} nécessite un type après le nom du paramètre.",
+  "doc.typeMissing": "{0} nécessite un type.",
+  "doc.paramUnknown": "La fonction documentée n'a pas de paramètre {0}.",
+  "doc.paramDuplicate": "Le paramètre {0} est déjà documenté dans ce commentaire."
 }

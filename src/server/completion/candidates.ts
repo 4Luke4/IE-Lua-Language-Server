@@ -26,6 +26,7 @@
 // The manual data covers only the libraries the engine opens, so `io`, `os`,
 // `require` and `coroutine` are never offered.
 
+import { docCommentFor, parameterDoc } from '../docComments/attach.ts';
 import type { HoverTarget } from '../hover/resolve.ts';
 import {
   allExternalEntries,
@@ -81,12 +82,19 @@ const isFunctionValue = (site: DeclarationSite | undefined): boolean =>
   site?.kind === 'localFunction' || site?.kind === 'functionDeclaration' || ((site?.kind === 'local' || site?.kind === 'assignment') && site.value?.kind === 'FunctionExpression');
 
 function localCandidate(document: ParsedDocument, declaration: Declaration): Candidate {
-  const site = declaration.identifier && declarationSite(document, declaration.identifier);
+  const { identifier } = declaration;
+  const site = identifier && declarationSite(document, identifier);
   return {
     label: declaration.name,
     kind: isFunctionValue(site) ? 'function' : 'variable',
     group: CandidateGroup.Local,
-    target: { kind: 'local', declaration, site },
+    target: {
+      kind: 'local',
+      declaration,
+      site,
+      doc: identifier && docCommentFor(document, identifier),
+      param: identifier && declaration.kind === 'parameter' ? parameterDoc(document, identifier) : undefined,
+    },
   };
 }
 
@@ -136,7 +144,7 @@ function documentGlobals(document: ParsedDocument): readonly Candidate[] {
     list = [...assigned].map((name): Candidate => {
       const write = firstWrites.get(name);
       const site = write && declarationSite(document, write);
-      return { label: name, kind: isFunctionValue(site) ? 'function' : 'variable', group: CandidateGroup.Document, target: { kind: 'global', name, site, link: externalEntry(name) } };
+      return { label: name, kind: isFunctionValue(site) ? 'function' : 'variable', group: CandidateGroup.Document, target: { kind: 'global', name, site, doc: write && docCommentFor(document, write), link: externalEntry(name) } };
     });
     documentGlobalLists.set(document, list);
   }

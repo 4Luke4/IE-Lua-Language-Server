@@ -6,5 +6,10 @@
   "codeAction.quote": "In Anführungszeichen setzen",
   "codeAction.insertSpace": "Leerzeichen vor dem schließenden Backtick einfügen",
   "codeAction.fixAllOfCode": "Alle {0}-Probleme beheben",
-  "codeAction.fixAll": "Alle automatisch behebbaren IE Lua-Probleme beheben"
+  "codeAction.fixAll": "Alle automatisch behebbaren IE Lua-Probleme beheben",
+  "doc.paramNameMissing": "{0} benötigt einen Parameternamen, gefolgt von einem Typ.",
+  "doc.paramTypeMissing": "{0} benötigt einen Typ nach dem Parameternamen.",
+  "doc.typeMissing": "{0} benötigt einen Typ.",
+  "doc.paramUnknown": "Die dokumentierte Funktion hat keinen Parameter {0}.",
+  "doc.paramDuplicate": "Der Parameter {0} ist in diesem Kommentar bereits dokumentiert."
 }

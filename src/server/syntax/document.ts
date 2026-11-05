@@ -15,6 +15,8 @@ export interface ParsedChunk {
 
 export interface ParsedDocument {
   readonly kind: DocumentKind;
+  /** The text that was parsed (offsets in the trees index into it). */
+  readonly text: string;
   /** Lua chunks in document order. */
   readonly chunks: readonly ParsedChunk[];
   /** `{ … }` blocks of a .menu file; empty for Lua. */
@@ -34,8 +36,8 @@ export function parseDocument(text: string, kind: DocumentKind): ParsedDocument 
     return { chunk, tree, scopes: analyzeScopes(tree) };
   };
   if (kind === 'lua') {
-    return { kind, chunks: [parse({ kind: 'statements', origin: 'file', offset: 0, region: { start: 0, end: text.length }, text, forms: [CHUNK_FORM] })], blocks: [] };
+    return { kind, text, chunks: [parse({ kind: 'statements', origin: 'file', offset: 0, region: { start: 0, end: text.length }, text, forms: [CHUNK_FORM] })], blocks: [] };
   }
   const { chunks, blocks } = extractMenuLua(text);
-  return { kind, chunks: chunks.map(parse), blocks };
+  return { kind, text, chunks: chunks.map(parse), blocks };
 }

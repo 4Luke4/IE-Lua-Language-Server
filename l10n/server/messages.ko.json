@@ -6,5 +6,10 @@
   "codeAction.quote": "따옴표로 묶기",
   "codeAction.insertSpace": "닫는 백틱 앞에 공백 삽입",
   "codeAction.fixAllOfCode": "모든 {0} 문제 해결",
-  "codeAction.fixAll": "자동 수정 가능한 모든 IE Lua 문제 해결"
+  "codeAction.fixAll": "자동 수정 가능한 모든 IE Lua 문제 해결",
+  "doc.paramNameMissing": "{0}에는 매개 변수 이름과 그 뒤에 형식이 필요합니다.",
+  "doc.paramTypeMissing": "{0}에는 매개 변수 이름 뒤에 형식이 필요합니다.",
+  "doc.typeMissing": "{0}에는 형식이 필요합니다.",
+  "doc.paramUnknown": "문서화된 함수에 {0} 매개 변수가 없습니다.",
+  "doc.paramDuplicate": "{0} 매개 변수는 이 주석에 이미 문서화되어 있습니다."
 }

@@ -182,6 +182,33 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
     dropped or split text hid.
   - Titles are localized like the hover labels. Advertised only to clients that accept
     `CodeAction` literals (`codeActionLiteralSupport`).
+- LuaCATS doc comments ([annotation reference](https://luals.github.io/wiki/annotations/)) on the
+  document's own code, in hover, completion and diagnostics. Types are shown as written; nothing checks or infers them.
+  - A doc block is a run of `---` comments, each alone on its line, on consecutive lines; it
+    documents the statement that starts on the next line. A blank line detaches it, and `----`
+    banners and `---` after code are not doc comments. The reference does not state this rule;
+    its examples follow it. The same applies inside the Lua of `.menu` files.
+  - Documented: `local function f`, `local x = …` (one name), `function G()` and `G = …` (one
+    name), a global by the block above its first assignment, as its hover code line already is.
+    Each parameter shows its own `@param` entry, also for `function M.f(a)`, `function M:m(a)`
+    and `M.f = function(a) … end`, whose names have no hover.
+  - Rendered: the description (Markdown, one leading space removed from each line), then
+    `@param`, `@return`, `@type`, `@deprecated` and `@see` in the order written, laid out as VS
+    Code's own TypeScript hovers lay out JSDoc tags (``*@param* `name` — text``), with the type in
+    a code span after the name. The other reference tags (`@class`, `@field`, `@overload`, …) and
+    `---|` lines are not rendered and never show up as description. Tags are `---@tag`, as the
+    reference writes them; `--- @tag` stays description text.
+  - The code line of the hover, and the `detail` of a completion item, do not change.
+  - Completion items of documented names carry the same text as their hover in `documentation`,
+    sent with the list rather than on `completionItem/resolve`: the resolve request names no
+    document, so a later lookup could read a newer version of it.
+  - Diagnostics (warnings, published with the others under `ieLua.validate.mode`; codes are
+    stable): `doc-tag-malformed` for `---@param` without a name or type and `---@return` or
+    `---@type` without a type, in any doc block; `doc-param-unknown` for a `---@param` the
+    documented function does not have (`...` needs a vararg function, `self` a method), checked
+    only where the statement writes the function itself, never for a call result; and
+    `doc-param-duplicate` for a parameter documented twice. Messages are localized like the hover
+    labels.
 - Error-tolerant Lua 5.2 parser and scope analysis (`src/server/syntax/`), checked against the
   official compiler by a differential test; it publishes no diagnostics of its own.
 - Localization of the manifest, UI strings and the language server's hover labels into all 14 VS

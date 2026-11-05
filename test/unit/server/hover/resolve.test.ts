@@ -55,6 +55,24 @@ describe('server/hover/resolve', () => {
       assert.equal(hover(text, 'return G', { offset: 7 }), 'G -> global G assignment -');
     });
 
+    it('attaches the doc comment of the declaration, at every use, and parameters\' @param entries', () => {
+      const text = '--- F.\n---@param a integer\nlocal function f(a) return a end\nreturn f';
+      const at = (needle: string, from = 0): HoverTarget | undefined => hoverTargetAt(parseDocument(text, 'lua'), text.indexOf(needle, from))?.target;
+      const use = at('f', text.indexOf('return f'));
+      assert.equal(use?.kind === 'local' && use.doc?.description, 'F.');
+      const parameter = at('a', text.indexOf('return a'));
+      assert.ok(parameter?.kind === 'local');
+      assert.equal(parameter.doc, undefined);
+      assert.equal(parameter.param?.type, 'integer');
+    });
+
+    it('documents a global by its first assignment only', () => {
+      const text = 'G = 1\n--- Later.\nG = 2\nreturn G';
+      const target = hoverTargetAt(parseDocument(text, 'lua'), text.indexOf('return G') + 7)?.target;
+      assert.ok(target?.kind === 'global');
+      assert.equal(target.doc, undefined);
+    });
+
     it('lets the document\'s own definition win over the libraries, keeping EEex-Docs links', () => {
       assert.equal(hover('function print() end print()', 'print', { occurrence: 1 }), 'print -> global print functionDeclaration -');
       assert.equal(hover('string = {} string.format()', 'format'), undefined);
