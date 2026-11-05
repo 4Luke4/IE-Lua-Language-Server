@@ -11,10 +11,13 @@
 // sources. Only names and deep links are stored; no documentation text is copied.
 // Names and URLs come from that build's Sphinx inventory (objects.inv), which is
 // the authority on the anchors Sphinx generated.
-import { appendFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
+//
+// Everything fetched is untrusted: commits must be full SHAs and every entry must pass
+// isSafeEntry() before anything is written to the data file or to $GITHUB_OUTPUT.
+import { appendFileSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { DOCS_BASE, parseInventory, sectionEntries } from './inventory.mts';
+import { DOCS_BASE, isCommitSha, isSafeEntry, parseInventory, sectionEntries } from './inventory.mts';
 
 const SECTIONS = {
   'eeex-functions': { title: 'EEex Functions', directory: 'EEex Functions' },
@@ -95,6 +98,9 @@ async function latestBuildCommit(): Promise<string> {
   if (!build?.commit) {
     fail(`No successful "latest" build found in the 50 most recent Read the Docs builds (${BUILDS_API}).`);
   }
+  if (!isCommitSha(build.commit)) {
+    fail(`Read the Docs reported build commit ${JSON.stringify(build.commit)}, which is not a 40-character commit SHA (${BUILDS_API}).`);
+  }
   return build.commit;
 }
 
@@ -105,7 +111,26 @@ async function lastSourceCommit(directory: string, at: string): Promise<string> 
   if (!sha) {
     fail(`No commit touches source/${directory}/ at ${at}; has the section been renamed upstream?`);
   }
+  if (!isCommitSha(sha)) {
+    fail(`GitHub reported commit ${JSON.stringify(sha)} for source/${directory}/, which is not a 40-character commit SHA (${url}).`);
+  }
   return sha;
+}
+
+/** sourceCommit of the existing data file, or undefined when there is none yet. */
+function readRecorded(file: string): string | undefined {
+  // Read directly instead of checking existsSync() first: the check and the read could see
+  // different files (time-of-check to time-of-use).
+  let text: string;
+  try {
+    text = readFileSync(file, 'utf8');
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+      return undefined;
+    }
+    throw error;
+  }
+  return (JSON.parse(text) as EeexDataFile).upstream.sourceCommit;
 }
 
 function output(values: Record<string, string>): void {
@@ -125,7 +150,7 @@ async function main(): Promise<void> {
   }
   const section = SECTIONS[id as SectionId];
   const file = join(root, 'data', 'eeex', `${id}.json`);
-  const recorded = existsSync(file) ? (JSON.parse(readFileSync(file, 'utf8')) as EeexDataFile).upstream.sourceCommit : undefined;
+  const recorded = readRecorded(file);
 
   const buildCommit = await latestBuildCommit();
   const sourceCommit = await lastSourceCommit(section.directory, buildCommit);
@@ -148,6 +173,14 @@ async function main(): Promise<void> {
   const entries = sectionEntries(parseInventory(Buffer.from(await response.arrayBuffer())), section.directory);
   if (entries.length === 0) {
     fail(`objects.inv has no entries under "${section.directory}/"; refusing to write an empty data file.`);
+  }
+  const unsafe = entries.filter((entry) => !isSafeEntry(entry));
+  if (unsafe.length > 0) {
+    const shown = unsafe.slice(0, 10).map((entry) => `  ${JSON.stringify(entry)}`).join('\n');
+    fail(
+      `objects.inv has ${unsafe.length} entr${unsafe.length === 1 ? 'y' : 'ies'} under "${section.directory}/" that are not an identifier ` +
+        `with a deep link inside ${DOCS_BASE}; refusing to write the data file.\n${shown}`,
+    );
   }
   const data: EeexDataFile = {
     section: id,
