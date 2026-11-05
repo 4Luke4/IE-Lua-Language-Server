@@ -3,6 +3,9 @@ import { DiagnosticSeverity } from 'vscode-languageserver/node';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { DIAGNOSTIC_SOURCE, ValidateDocumentRequest, type ValidateDocumentResult } from '../../shared/protocol.ts';
 import { validatesOnSave, validatesOnType } from '../../shared/settings.ts';
+import { checkDocComments } from '../docComments/check.ts';
+import type { ParsedDocumentCache } from '../documentCache.ts';
+import type { Messages } from '../l10n.ts';
 import type { SettingsStore } from '../settingsStore.ts';
 import { Debouncer, type Timers } from '../validation/debouncer.ts';
 import type { Lua52Checker } from '../validation/lua52.ts';
@@ -10,12 +13,17 @@ import { documentKind, validateText } from '../validation/validateText.ts';
 
 export interface DiagnosticsDeps {
   readonly lua: Promise<Lua52Checker>;
+  /** Parse results, for the doc-comment checks. */
+  readonly cache: ParsedDocumentCache;
+  /** Messages in the client's locale (doc-comment problems). */
+  readonly messages: Messages;
   readonly settings: SettingsStore;
   readonly timers: Timers;
 }
 
 /**
- * Publishes syntax diagnostics according to `ieLua.validate.mode`:
+ * Publishes syntax diagnostics, and the problems of LuaCATS doc comments
+ * (docComments/check.ts), according to `ieLua.validate.mode`:
  *
  * | mode          | on open/edit (debounced) | on save | `ieLua/validateDocument` |
  * | ------------- | ------------------------ | ------- | ------------------------ |
@@ -40,7 +48,8 @@ export function register(connection: Connection, documents: TextDocuments<TextDo
     if (!document || token?.isCancellationRequested) {
       return { validated: false, diagnosticCount: 0 };
     }
-    const diagnostics: Diagnostic[] = validateText(document.getText(), documentKind(uri, document.languageId), lua).map((problem) => ({
+    const problems = [...validateText(document.getText(), documentKind(uri, document.languageId), lua), ...checkDocComments(deps.cache.get(document), deps.messages)];
+    const diagnostics: Diagnostic[] = problems.map((problem) => ({
       range: { start: document.positionAt(problem.start), end: document.positionAt(problem.end) },
       severity: problem.severity === 'warning' ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error,
       source: DIAGNOSTIC_SOURCE,

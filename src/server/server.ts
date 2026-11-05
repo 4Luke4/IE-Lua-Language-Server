@@ -91,6 +91,8 @@ connection.onInitialize((params) => {
   const messages = createMessages(params.locale);
   const diagnosticsFeature = diagnostics.register(connection, documents, {
     lua,
+    cache: parsed,
+    messages,
     settings: new SettingsStore(connection, configurationPull, params.initializationOptions),
     timers: { setTimeout, clearTimeout: (handle) => { clearTimeout(handle as NodeJS.Timeout); } },
   });
