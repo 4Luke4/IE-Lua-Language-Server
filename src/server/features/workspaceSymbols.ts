@@ -1,4 +1,4 @@
-import type { CancellationToken, Connection, SymbolInformation, TextDocuments } from 'vscode-languageserver/node';
+import type { Connection, SymbolInformation, TextDocuments } from 'vscode-languageserver/node';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import type { ParsedDocumentCache } from '../documentCache.ts';
 import { parseDocument } from '../syntax/document.ts';
@@ -6,6 +6,7 @@ import { documentSymbols } from '../syntax/symbols.ts';
 import { matchesQuery } from '../syntax/workspaceSymbols.ts';
 import { documentKind } from '../validation/validateText.ts';
 import type { IndexedFile, WorkspaceIndex } from '../workspace/workspaceIndex.ts';
+import { untilCancelled } from './cancellation.ts';
 import { flatSymbols } from './documentSymbols.ts';
 
 export interface WorkspaceSymbolsDeps {
@@ -51,20 +52,6 @@ export function collectWorkspaceSymbols(
     if (!openKeys.has(file.key)) add(file.value);
   }
   return result;
-}
-
-/** Resolves when `promise` settles or `token` is cancelled, whichever comes first. */
-function untilCancelled(promise: Promise<void>, token: CancellationToken): Promise<void> {
-  return new Promise((resolve) => {
-    const listener = token.onCancellationRequested(() => {
-      listener.dispose();
-      resolve();
-    });
-    void promise.finally(() => {
-      listener.dispose();
-      resolve();
-    });
-  });
 }
 
 /**
