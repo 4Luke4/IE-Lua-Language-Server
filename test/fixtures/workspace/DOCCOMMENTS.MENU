@@ -1,0 +1,13 @@
+`
+--- Opens the doc menu.
+---@param force boolean
+function DocOpen(force)
+	return force
+end
+`
+
+menu
+{
+	name "DOC_MENU"
+	onOpen "DocOpen(true)"
+}
