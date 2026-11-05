@@ -1,34 +1,44 @@
-import type { Connection, Location, TextDocuments } from 'vscode-languageserver/node';
+import type { Connection, Location, ResponseError, TextDocuments } from 'vscode-languageserver/node';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
-import type { ParsedDocumentCache } from '../documentCache.ts';
-import { definitions, targetAt } from '../syntax/navigation.ts';
+import { definitions, sharedGlobalName, targetAt } from '../syntax/navigation.ts';
+import { otherFileLocations, type CrossFileDeps } from './workspaceFiles.ts';
 
-export interface DefinitionDeps {
-  readonly cache: ParsedDocumentCache;
-}
+export type DefinitionDeps = CrossFileDeps;
 
 /**
- * `textDocument/definition` within the document: the declaration of a local, or
- * every assignment to a global (see src/server/syntax/navigation.ts).
+ * `textDocument/definition`: the declaration of a local, or every assignment
+ * to a global, first in the document (see src/server/syntax/navigation.ts),
+ * then in the other Lua and .menu files of the workspace, which share the
+ * engine's global state (see src/server/features/workspaceFiles.ts).
  */
 export function register(connection: Connection, documents: TextDocuments<TextDocument>, deps: DefinitionDeps): void {
-  connection.onDefinition(({ textDocument, position }, token): Location[] | null => {
+  connection.onDefinition(async ({ textDocument, position }, token): Promise<Location[] | ResponseError | null> => {
     try {
       const document = documents.get(textDocument.uri);
       if (!document || token.isCancellationRequested) {
         return null;
       }
-      // Synchronous from here on: a cancellation can only arrive after the response.
       const parsed = deps.cache.get(document);
       const hit = targetAt(parsed, document.offsetAt(position));
-      const found = hit ? definitions(parsed, hit.target) : [];
-      if (found.length === 0) {
+      if (!hit) {
         return null;
       }
-      return found.map(({ start, end }) => ({
+      const here: Location[] = definitions(parsed, hit.target).map(({ start, end }) => ({
         uri: document.uri,
         range: { start: document.positionAt(start), end: document.positionAt(end) },
       }));
+      const name = sharedGlobalName(parsed, hit);
+      // Locals, `_ENV` and fields of a local `_ENV` belong to this document alone.
+      if (name === undefined) {
+        return here.length > 0 ? here : null;
+      }
+      const elsewhere = await otherFileLocations(documents, document, name, (location) => location.isWrite, deps, token);
+      // Cancelled (`null`) or the document changed meanwhile (`ContentModified`).
+      if (!Array.isArray(elsewhere)) {
+        return elsewhere;
+      }
+      const all = [...here, ...elsewhere];
+      return all.length > 0 ? all : null;
     } catch (error) {
       connection.console.error(`Definition for ${textDocument.uri} failed: ${error instanceof Error ? (error.stack ?? error.message) : String(error)}`);
       return null;

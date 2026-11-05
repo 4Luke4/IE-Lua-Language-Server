@@ -1,5 +1,16 @@
 import assert from 'node:assert/strict';
-import { analyzeFile, type GlobalLocation } from '../../../../src/server/features/workspaceFiles.ts';
+import { CancellationTokenSource, LSPErrorCodes, ResponseError, type Location } from 'vscode-languageserver/node';
+import { TextDocument } from 'vscode-languageserver-textdocument';
+import { ParsedDocumentCache } from '../../../../src/server/documentCache.ts';
+import {
+  analyzeFile,
+  collectGlobalLocations,
+  otherFileLocations,
+  type CrossFileDeps,
+  type GlobalLocation,
+  type IndexedFileFacts,
+} from '../../../../src/server/features/workspaceFiles.ts';
+import type { IndexedFile } from '../../../../src/server/workspace/workspaceIndex.ts';
 
 /** `line:character` of each location, with `=` for assignments. */
 const where = (locations: readonly GlobalLocation[] | undefined): string[] | undefined =>
@@ -41,6 +52,99 @@ describe('server/features/workspaceFiles', () => {
       assert.deepEqual([...globals.keys()], []);
       const free = analyzeFile('_ENV.a = 1\nb = 2\n', 'file:///w/free.lua').globals;
       assert.deepEqual([...free.keys()], ['b']);
+    });
+  });
+
+  describe('collectGlobalLocations', () => {
+    /** An indexed file analyzed from `text`, keyed by its path. */
+    const indexed = (path: string, text: string): IndexedFile<IndexedFileFacts> => ({ uri: `file://${path}`, key: path, value: analyzeFile(text, `file://${path}`) });
+    const all = (): boolean => true;
+    const writes = (location: GlobalLocation): boolean => location.isWrite;
+    const show = (locations: Location[] | undefined): string[] | undefined =>
+      locations?.map(({ uri, range }) => `${uri.slice('file:///w/'.length)} ${String(range.start.line)}:${String(range.start.character)}`);
+
+    it('lists the uses in other files, in URI order, skipping the current document', () => {
+      const files = [indexed('/w/c.lua', 'print(G)\n'), indexed('/w/a.lua', 'G = 1\nG = G + 1\n'), indexed('/w/self.lua', 'G = 2\n'), indexed('/w/b.lua', 'local G = 0\n')];
+      assert.deepEqual(show(collectGlobalLocations('G', all, '/w/self.lua', [], files, () => false)), ['a.lua 0:0', 'a.lua 1:0', 'a.lua 1:4', 'c.lua 0:6']);
+      assert.deepEqual(show(collectGlobalLocations('G', writes, '/w/self.lua', [], files, () => false)), ['a.lua 0:0', 'a.lua 1:0']);
+      assert.deepEqual(collectGlobalLocations('Missing', all, '/w/self.lua', [], files, () => false), []);
+    });
+
+    it('takes an open document over its saved version, once', () => {
+      const saved = indexed('/w/a.lua', 'G = 1\n');
+      const reads: string[] = [];
+      const open = [
+        { uri: 'file:///w/a.lua', key: '/w/a.lua', globals: () => (reads.push('a'), analyzeFile('\n\nG = 1\n', 'file:///w/a.lua').globals) },
+        { uri: 'untitled:Untitled-1', key: 'untitled:Untitled-1', globals: () => (reads.push('untitled'), analyzeFile('x = G\n', 'untitled:Untitled-1').globals) },
+        { uri: 'file:///w/a.lua', key: '/w/a.lua', globals: () => (reads.push('again'), new Map()) },
+      ];
+      const found = collectGlobalLocations('G', all, '/w/self.lua', open, [saved], () => false);
+      assert.deepEqual(found?.map(({ uri, range }) => `${uri} ${String(range.start.line)}`), ['file:///w/a.lua 2', 'untitled:Untitled-1 0']);
+      assert.deepEqual(reads, ['a', 'untitled']);
+    });
+
+    it('stops when cancelled', () => {
+      let calls = 0;
+      assert.equal(collectGlobalLocations('G', all, '/w/self.lua', [], [indexed('/w/a.lua', 'G = 1')], () => ++calls > 0), undefined);
+    });
+  });
+
+  describe('otherFileLocations', () => {
+    /** Open documents as `TextDocuments` exposes them. */
+    const openDocuments = (...open: TextDocument[]) => ({
+      get: (uri: string) => open.find((document) => document.uri === uri),
+      all: () => open,
+    });
+    const deps = (entries: IndexedFile<IndexedFileFacts>[], ready: Promise<void> = Promise.resolve()): CrossFileDeps => ({
+      cache: new ParsedDocumentCache(),
+      index: { ready: () => ready, pathKey: (uri) => (uri.startsWith('file://') ? uri.slice('file://'.length) : undefined), entries: () => entries.values() },
+    });
+    const saved: IndexedFile<IndexedFileFacts> = { uri: 'file:///w/b.lua', key: '/w/b.lua', value: analyzeFile('G = 1\n', 'file:///w/b.lua') };
+
+    it('finds the uses in the open documents and the indexed files', async () => {
+      const current = TextDocument.create('file:///w/a.lua', 'lua', 1, 'print(G)\n');
+      const other = TextDocument.create('untitled:Untitled-1', 'lua', 1, 'G = 2\n');
+      const found = await otherFileLocations(openDocuments(current, other), current, 'G', () => true, deps([saved]), new CancellationTokenSource().token);
+      assert.ok(Array.isArray(found));
+      assert.deepEqual(found.map(({ uri }) => uri), ['file:///w/b.lua', 'untitled:Untitled-1']);
+    });
+
+    it('waits for the files queued for indexing', async () => {
+      const current = TextDocument.create('file:///w/a.lua', 'lua', 1, 'print(G)\n');
+      const entries: IndexedFile<IndexedFileFacts>[] = [];
+      let finish = (): void => undefined;
+      const ready = new Promise<void>((resolve) => {
+        finish = () => {
+          entries.push(saved);
+          resolve();
+        };
+      });
+      let settled = false;
+      const pending = otherFileLocations(openDocuments(current), current, 'G', () => true, deps(entries, ready), new CancellationTokenSource().token);
+      void pending.then(() => (settled = true));
+      // Every pending callback runs before `setImmediate` fires: the request is still waiting.
+      await new Promise<void>((resolve) => setImmediate(resolve));
+      assert.equal(settled, false);
+      finish();
+      const found = await pending;
+      assert.ok(Array.isArray(found));
+      assert.deepEqual(found.map(({ uri }) => uri), ['file:///w/b.lua']);
+    });
+
+    it('answers null when cancelled while waiting', async () => {
+      const current = TextDocument.create('file:///w/a.lua', 'lua', 1, 'print(G)\n');
+      const source = new CancellationTokenSource();
+      const pending = otherFileLocations(openDocuments(current), current, 'G', () => true, deps([saved], new Promise(() => undefined)), source.token);
+      source.cancel();
+      assert.equal(await pending, null);
+    });
+
+    it('answers ContentModified when the document changed while waiting', async () => {
+      const current = TextDocument.create('file:///w/a.lua', 'lua', 1, 'print(G)\n');
+      const newer = TextDocument.create('file:///w/a.lua', 'lua', 2, 'print(G, G)\n');
+      const found = await otherFileLocations(openDocuments(newer), current, 'G', () => true, deps([saved]), new CancellationTokenSource().token);
+      assert.ok(found instanceof ResponseError);
+      assert.equal(found.code, LSPErrorCodes.ContentModified);
     });
   });
 });

@@ -106,8 +106,8 @@ connection.onInitialize((params) => {
     rangeLimit: folding?.rangeLimit,
     kinds: folding?.foldingRangeKind?.valueSet,
   });
-  definition.register(connection, documents, { cache: parsed });
-  references.register(connection, documents, { cache: parsed });
+  definition.register(connection, documents, { cache: parsed, index });
+  references.register(connection, documents, { cache: parsed, index });
   const documentChanges = workspace?.workspaceEdit?.documentChanges === true;
   rename.register(connection, documents, { cache: parsed, documentChanges });
   const codeActionLiterals = codeActions.supportsCodeActionLiterals(params.capabilities.textDocument?.codeAction?.codeActionLiteralSupport);
