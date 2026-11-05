@@ -8,6 +8,8 @@ versions with an **even** middle number (for example 1.**2**.0) are stable relea
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-05
+
 ### Added
 
 - **Syntax errors as you work.** Lua files and the Lua inside `.menu` files are checked
@@ -68,3 +70,6 @@ versions with an **even** middle number (for example 1.**2**.0) are stable relea
 - **Available in 14 languages**, following your VS Code display language.
 - **Works in other editors too**: setup guides for Sublime Text, Neovim, Emacs, JetBrains
   IDEs, Helix, Zed, Kate, Notepad++ and Geany are on the project page.
+
+[Unreleased]: https://github.com/4Luke4/IE-Lua-Language-Server/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/4Luke4/IE-Lua-Language-Server/releases/tag/v1.0.0
