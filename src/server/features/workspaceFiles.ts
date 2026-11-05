@@ -2,56 +2,27 @@
 // parse of its text: the outline for `workspace/symbol`, and where it names each
 // global shared with other files, for go to definition and find references,
 // which look the globals up across files here.
-import {
-  LSPErrorCodes,
-  ResponseError,
-  type CancellationToken,
-  type Location,
-  type Position,
-  type Range,
-  type SymbolInformation,
-  type TextDocuments,
-} from 'vscode-languageserver/node';
-import { TextDocument } from 'vscode-languageserver-textdocument';
+import { LSPErrorCodes, ResponseError, type CancellationToken, type Location, type SymbolInformation, type TextDocuments } from 'vscode-languageserver/node';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 import type { ParsedDocumentCache } from '../documentCache.ts';
 import { parseDocument, type ParsedDocument } from '../syntax/document.ts';
-import { globalOccurrences } from '../syntax/navigation.ts';
+import { fileGlobals, globalRanges, positionAt, usesGlobal, type FileGlobals } from '../syntax/fileGlobals.ts';
 import { documentKind } from '../validation/validateText.ts';
 import type { IndexedFile, WorkspaceIndex } from '../workspace/workspaceIndex.ts';
 import { untilCancelled } from './cancellation.ts';
 import { outlineSymbols } from './workspaceSymbols.ts';
 
-/** Where a file names a global. */
-export interface GlobalLocation {
-  readonly range: Range;
-  /** Whether it assigns the global (`x = …`, `function x()`). */
-  readonly isWrite: boolean;
-}
-
 export interface IndexedFileFacts {
   readonly symbols: readonly SymbolInformation[];
-  /** The globals the file names, by name, each list in document order (see `globalOccurrences`). */
-  readonly globals: ReadonlyMap<string, readonly GlobalLocation[]>;
-}
-
-/** The shared globals of a parsed document, with LSP positions. */
-export function globalLocations(parsed: ParsedDocument, positionAt: (offset: number) => Position): Map<string, GlobalLocation[]> {
-  const result = new Map<string, GlobalLocation[]>();
-  for (const [name, occurrences] of globalOccurrences(parsed)) {
-    result.set(
-      name,
-      occurrences.map(({ start, end, isWrite }) => ({ range: { start: positionAt(start), end: positionAt(end) }, isWrite })),
-    );
-  }
-  return result;
+  /** Where the file names each global shared with other files, compactly (see syntax/fileGlobals.ts). */
+  readonly globals: FileGlobals;
 }
 
 /** The facts of a file that is not open, for the workspace index. */
 export function analyzeFile(text: string, uri: string): IndexedFileFacts {
-  const document = TextDocument.create(uri, '', 0, text);
   const parsed = parseDocument(text, documentKind(uri, ''));
-  const positionAt = (offset: number): Position => document.positionAt(offset);
-  return { symbols: outlineSymbols(parsed, { uri, positionAt }), globals: globalLocations(parsed, positionAt) };
+  const globals = fileGlobals(parsed);
+  return { symbols: outlineSymbols(parsed, { uri, positionAt: (offset) => positionAt(globals.lineStarts, offset) }), globals };
 }
 
 /** The globals of a file other than the one the request is for. */
@@ -59,11 +30,12 @@ export interface GlobalSource {
   readonly uri: string;
   /** Index key (see `WorkspaceIndex.pathKey`), or the URI for a document that is not a local file. */
   readonly key: string;
-  readonly globals: () => ReadonlyMap<string, readonly GlobalLocation[]>;
+  readonly globals: () => FileGlobals;
 }
 
 /**
- * The locations in other files where `keep` accepts a use of the global `name`:
+ * The locations in other files where `keep` accepts a use of the global `name`
+ * (by whether it assigns the global):
  * first those of the open documents, then those of the indexed files that are
  * not open (an open document wins over its saved version); `current` (the
  * document the request is for, answered from its own text) is skipped. Files
@@ -72,17 +44,16 @@ export interface GlobalSource {
  */
 export function collectGlobalLocations(
   name: string,
-  keep: (location: GlobalLocation) => boolean,
+  keep: (isWrite: boolean) => boolean,
   currentKey: string,
   open: readonly GlobalSource[],
   indexed: Iterable<IndexedFile<Pick<IndexedFileFacts, 'globals'>>>,
   isCancelled: () => boolean,
 ): Location[] | undefined {
-  const files: { uri: string; locations: readonly GlobalLocation[] }[] = [];
+  const files: { uri: string; globals: FileGlobals }[] = [];
   const seen = new Set<string>([currentKey]);
-  const add = (uri: string, globals: ReadonlyMap<string, readonly GlobalLocation[]>): void => {
-    const locations = globals.get(name)?.filter(keep);
-    if (locations && locations.length > 0) files.push({ uri, locations });
+  const add = (uri: string, globals: FileGlobals): void => {
+    if (usesGlobal(globals, name)) files.push({ uri, globals });
   };
   for (const source of open) {
     if (isCancelled()) return undefined;
@@ -95,11 +66,12 @@ export function collectGlobalLocations(
     if (!seen.has(file.key)) add(file.uri, file.value.globals);
   }
   files.sort((a, b) => (a.uri < b.uri ? -1 : a.uri > b.uri ? 1 : 0));
-  return files.flatMap(({ uri, locations }) => locations.map(({ range }) => ({ uri, range })));
+  // Positions are computed only here, for the files that use the name.
+  return files.flatMap(({ uri, globals }) => globalRanges(globals, name, keep).map((range) => ({ uri, range })));
 }
 
 /** Globals of each open document version, dropped with it (see `ParsedDocumentCache`). */
-const openGlobals = new WeakMap<ParsedDocument, Map<string, GlobalLocation[]>>();
+const openGlobals = new WeakMap<ParsedDocument, FileGlobals>();
 
 export interface CrossFileDeps {
   readonly cache: ParsedDocumentCache;
@@ -116,7 +88,7 @@ export async function otherFileLocations(
   documents: Pick<TextDocuments<TextDocument>, 'get' | 'all'>,
   document: TextDocument,
   name: string,
-  keep: (location: GlobalLocation) => boolean,
+  keep: (isWrite: boolean) => boolean,
   deps: CrossFileDeps,
   token: CancellationToken,
 ): Promise<Location[] | ResponseError | null> {
@@ -133,7 +105,7 @@ export async function otherFileLocations(
       const parsed = deps.cache.get(other);
       let globals = openGlobals.get(parsed);
       if (!globals) {
-        globals = globalLocations(parsed, (offset) => other.positionAt(offset));
+        globals = fileGlobals(parsed);
         openGlobals.set(parsed, globals);
       }
       return globals;

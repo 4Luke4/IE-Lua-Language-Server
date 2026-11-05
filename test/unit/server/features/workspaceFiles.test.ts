@@ -7,14 +7,18 @@ import {
   collectGlobalLocations,
   otherFileLocations,
   type CrossFileDeps,
-  type GlobalLocation,
   type IndexedFileFacts,
 } from '../../../../src/server/features/workspaceFiles.ts';
+import { globalRanges, type FileGlobals } from '../../../../src/server/syntax/fileGlobals.ts';
 import type { IndexedFile } from '../../../../src/server/workspace/workspaceIndex.ts';
 
-/** `line:character` of each location, with `=` for assignments. */
-const where = (locations: readonly GlobalLocation[] | undefined): string[] | undefined =>
-  locations?.map(({ range, isWrite }) => `${String(range.start.line)}:${String(range.start.character)}${isWrite ? '=' : ''}`);
+/** `line:character` of each use of `name`, with `=` for assignments; `undefined` when the file has none. */
+function where(globals: FileGlobals, name: string): string[] | undefined {
+  if (!globals.slots.has(name)) return undefined;
+  const at = ({ start }: { start: { line: number; character: number } }): string => `${String(start.line)}:${String(start.character)}`;
+  const writes = new Set(globalRanges(globals, name, (isWrite) => isWrite).map(at));
+  return globalRanges(globals, name, () => true).map((range) => `${at(range)}${writes.has(at(range)) ? '=' : ''}`);
+}
 
 describe('server/features/workspaceFiles', () => {
   describe('analyzeFile', () => {
@@ -36,22 +40,22 @@ describe('server/features/workspaceFiles', () => {
 
     it('lists where a Lua file names each global, with its assignments', () => {
       const { globals } = analyzeFile('local x = 1\nTotal = x\nfunction Add(n)\n\tTotal = Total + n\nend\nprint(Total)\n', 'file:///w/a.lua');
-      assert.deepEqual([...globals.keys()].sort(), ['Add', 'Total', 'print']);
-      assert.deepEqual(where(globals.get('Total')), ['1:0=', '3:1=', '3:9', '5:6']);
-      assert.deepEqual(where(globals.get('Add')), ['2:9=']);
-      assert.equal(globals.get('x'), undefined);
+      assert.deepEqual([...globals.slots.keys()].sort(), ['Add', 'Total', 'print']);
+      assert.deepEqual(where(globals, 'Total'), ['1:0=', '3:1=', '3:9', '5:6']);
+      assert.deepEqual(where(globals, 'Add'), ['2:9=']);
+      assert.equal(where(globals, 'x'), undefined);
     });
 
     it('collects the globals of every Lua chunk of a .menu file, in document order', () => {
       const text = '`\nshown = 0\n`\nmenu\n{\n\tname "MAIN"\n\tonOpen "shown = shown + 1"\n\tlabel { enabled "shown > 0" }\n}\n';
-      assert.deepEqual(where(analyzeFile(text, 'file:///w/UI.menu').globals.get('shown')), ['1:0=', '6:9=', '6:17', '7:18']);
+      assert.deepEqual(where(analyzeFile(text, 'file:///w/UI.menu').globals, 'shown'), ['1:0=', '6:9=', '6:17', '7:18']);
     });
 
     it('leaves out _ENV and the names resolved through a local _ENV', () => {
       const { globals } = analyzeFile('local _ENV = { y = 1 }\nz = y\n', 'file:///w/env.lua');
-      assert.deepEqual([...globals.keys()], []);
+      assert.deepEqual([...globals.slots.keys()], []);
       const free = analyzeFile('_ENV.a = 1\nb = 2\n', 'file:///w/free.lua').globals;
-      assert.deepEqual([...free.keys()], ['b']);
+      assert.deepEqual([...free.slots.keys()], ['b']);
     });
   });
 
@@ -59,7 +63,7 @@ describe('server/features/workspaceFiles', () => {
     /** An indexed file analyzed from `text`, keyed by its path. */
     const indexed = (path: string, text: string): IndexedFile<IndexedFileFacts> => ({ uri: `file://${path}`, key: path, value: analyzeFile(text, `file://${path}`) });
     const all = (): boolean => true;
-    const writes = (location: GlobalLocation): boolean => location.isWrite;
+    const writes = (isWrite: boolean): boolean => isWrite;
     const show = (locations: Location[] | undefined): string[] | undefined =>
       locations?.map(({ uri, range }) => `${uri.slice('file:///w/'.length)} ${String(range.start.line)}:${String(range.start.character)}`);
 
@@ -76,7 +80,7 @@ describe('server/features/workspaceFiles', () => {
       const open = [
         { uri: 'file:///w/a.lua', key: '/w/a.lua', globals: () => (reads.push('a'), analyzeFile('\n\nG = 1\n', 'file:///w/a.lua').globals) },
         { uri: 'untitled:Untitled-1', key: 'untitled:Untitled-1', globals: () => (reads.push('untitled'), analyzeFile('x = G\n', 'untitled:Untitled-1').globals) },
-        { uri: 'file:///w/a.lua', key: '/w/a.lua', globals: () => (reads.push('again'), new Map()) },
+        { uri: 'file:///w/a.lua', key: '/w/a.lua', globals: () => (reads.push('again'), analyzeFile('', 'file:///w/a.lua').globals) },
       ];
       const found = collectGlobalLocations('G', all, '/w/self.lua', open, [saved], () => false);
       assert.deepEqual(found?.map(({ uri, range }) => `${uri} ${String(range.start.line)}`), ['file:///w/a.lua 2', 'untitled:Untitled-1 0']);

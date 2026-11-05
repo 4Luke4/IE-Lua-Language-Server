@@ -34,7 +34,7 @@ export function register(connection: Connection, documents: TextDocuments<TextDo
       if (name === undefined) {
         return here;
       }
-      const keep = context.includeDeclaration ? () => true : (location: { readonly isWrite: boolean }) => !location.isWrite;
+      const keep = context.includeDeclaration ? () => true : (isWrite: boolean) => !isWrite;
       const elsewhere = await otherFileLocations(documents, document, name, keep, deps, token);
       // Cancelled (`null`) or the document changed meanwhile (`ContentModified`).
       if (!Array.isArray(elsewhere)) {

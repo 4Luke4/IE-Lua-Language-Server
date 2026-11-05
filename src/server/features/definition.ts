@@ -32,7 +32,7 @@ export function register(connection: Connection, documents: TextDocuments<TextDo
       if (name === undefined) {
         return here.length > 0 ? here : null;
       }
-      const elsewhere = await otherFileLocations(documents, document, name, (location) => location.isWrite, deps, token);
+      const elsewhere = await otherFileLocations(documents, document, name, (isWrite) => isWrite, deps, token);
       // Cancelled (`null`) or the document changed meanwhile (`ContentModified`).
       if (!Array.isArray(elsewhere)) {
         return elsewhere;
