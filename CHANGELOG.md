@@ -176,6 +176,10 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
     the file (published on save, before later edits) gets no fix rather than an edit in the wrong
     place. Every set of edits is checked by lexing the result: the remaining problems must be
     exactly those no fix touches, or nothing is offered (and an error is logged).
+  - The fixes change the Lua the engine compiles, as intended: the character it dropped before
+    the backtick now runs, and a quoted property value is compiled whole (`enabled "My_Var"` is
+    `My_Var`, not `My`). The Lua is validated as usual afterwards; it may report an error the
+    dropped or split text hid.
   - Titles are localized like the hover labels. Advertised only to clients that accept
     `CodeAction` literals (`codeActionLiteralSupport`).
 - Error-tolerant Lua 5.2 parser and scope analysis (`src/server/syntax/`), checked against the

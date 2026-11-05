@@ -122,6 +122,9 @@ Quick fixes cover three `.menu` diagnostics, with the remedy IESDP gives:
 `menu-unquoted-underscore` and `menu-word-too-long` put the text in `"…"`, and
 `menu-inline-lua-last-character` inserts a space before the closing backtick. The action is
 offered for a diagnostic only while its problem is still at the same place in the current text.
+A fix changes the Lua the game compiles, as intended: the character it dropped before the
+backtick now runs, and a quoted Lua property value is compiled whole, so validation may then
+report an error the misread text hid.
 The `source.fixAll.ieLua` action applies every fix of the file, whether or not diagnostics were
 published; ask for that kind (or `source.fixAll`) to run it on save, if your editor can request
 code actions on save. Action titles follow the editor's `locale`, like hover.
