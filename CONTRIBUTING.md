@@ -18,6 +18,10 @@ npm may report that `esbuild` and `@vscode/vsce-sign` have install scripts that 
 is needed: esbuild works from its platform package, and vsce-sign is only used for Marketplace
 signing, which this project never does. Leave them unapproved.
 
+`package.json` `overrides` forces `serialize-javascript` ^7.1.3 inside `@vscode/test-cli`, whose
+mocha 11 still asks for the vulnerable 6.x (GHSA-5c6j-r48x-rmvq, GHSA-qj8w-gfj5-8c6v,
+GHSA-m5mm-p8h7-m29v). Remove the override once `@vscode/test-cli` depends on mocha 12 or later.
+
 Press <kbd>F5</kbd> in VS Code (**Run Extension**) to start an Extension Development Host with
 `test/fixtures/workspace` open. **Extension + Language Server** also attaches the debugger to the
 server (port 6009).
