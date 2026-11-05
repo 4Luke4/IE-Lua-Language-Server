@@ -41,9 +41,11 @@ const TITLE_KEYS: Readonly<Record<FixAction, 'codeAction.quote' | 'codeAction.in
   insertSpace: 'codeAction.insertSpace',
 };
 
-function sameRange(a: Range, b: Range): boolean {
-  return a.start.line === b.start.line && a.start.character === b.start.character && a.end.line === b.end.line && a.end.character === b.end.character;
-}
+/**
+ * Resolves `true` when the request should stop. Called between the diagnostics
+ * of a request, each of which lexes the document again for its safety check.
+ */
+export type Pause = () => Promise<boolean>;
 
 /**
  * The code actions for a .menu document (none for Lua files, which have no
@@ -58,13 +60,17 @@ function sameRange(a: Range, b: Range): boolean {
  * - `source.fixAll.ieLua`: every fixable problem of the current text, whether
  *   or not its diagnostics were published (`ieLua.validate.mode` `manual`).
  *
- * Every set of changes passes the safety check of `applyChecked` first.
+ * Every set of changes passes the safety check of `applyChecked` first, which
+ * lexes the edited document: `pause` is awaited before each further diagnostic,
+ * so that a request for a selection with many diagnostics can be cancelled.
+ * `undefined` when `pause` stopped the request.
  */
-export function codeActions(
+export async function codeActions(
   document: TextDocument,
   params: Pick<CodeActionParams, 'context'>,
   deps: CodeActionDeps,
-): { actions: CodeAction[]; refused: string[] } {
+  pause: Pause = () => Promise.resolve(false),
+): Promise<{ actions: CodeAction[]; refused: string[] } | undefined> {
   const actions: CodeAction[] = [];
   const refused: string[] = [];
   if (documentKind(document.uri, document.languageId) !== 'menu') return { actions, refused };
@@ -89,14 +95,17 @@ export function codeActions(
   };
 
   if (quickFixes) {
+    /** The fixes by code and problem offsets, the identity of a diagnostic. */
+    const byProblem = new Map(analysis.fixes.map((fix) => [problemKey(fix.problem.code, fix.problem.start, fix.problem.end), fix]));
     /** Codes whose "fix all" action was already added. */
     const allOffered = new Set<string>();
+    let first = true;
     for (const diagnostic of params.context.diagnostics) {
       if (diagnostic.source !== DIAGNOSTIC_SOURCE || !isFixableCode(diagnostic.code)) continue;
-      const fix = analysis.fixes.find(
-        (candidate) => candidate.problem.code === diagnostic.code && sameRange(rangeOf(candidate.problem.start, candidate.problem.end), diagnostic.range),
-      );
+      const fix = byProblem.get(problemKey(diagnostic.code, ...offsetsOf(document, diagnostic.range)));
       if (!fix) continue;
+      if (!first && (await pause())) return undefined;
+      first = false;
       const changes = checked([fix], `the ${fix.problem.code} fix at offset ${String(fix.problem.start)}`);
       if (changes) {
         actions.push({
@@ -135,16 +144,49 @@ export function codeActions(
   return { actions, refused };
 }
 
+function problemKey(code: string, start: number, end: number): string {
+  return `${code}:${String(start)}:${String(end)}`;
+}
+
+/**
+ * The offsets of a diagnostic's range, or `[-1, -1]` (matching no problem) when
+ * the range is not a range of the current text, such as positions past the end
+ * of a line, which `offsetAt` would clamp.
+ */
+function offsetsOf(document: TextDocument, range: Range): [number, number] {
+  const start = document.offsetAt(range.start);
+  const end = document.offsetAt(range.end);
+  const exact = (offset: number, position: Range['start']) => {
+    const back = document.positionAt(offset);
+    return back.line === position.line && back.character === position.character;
+  };
+  return exact(start, range.start) && exact(end, range.end) ? [start, end] : [-1, -1];
+}
+
 /** `textDocument/codeAction` (see `codeActions`). */
 export function register(connection: Connection, documents: TextDocuments<TextDocument>, deps: CodeActionDeps): void {
-  connection.onCodeAction((params, token): CodeAction[] | null => {
+  connection.onCodeAction(async (params, token): Promise<CodeAction[] | null> => {
     try {
       const document = documents.get(params.textDocument.uri);
       if (!document || token.isCancellationRequested) {
         return null;
       }
-      // Synchronous from here on: a cancellation can only arrive after the response.
-      const { actions, refused } = codeActions(document, params, deps);
+      // Between diagnostics, let the cancellation (and edits) arrive. `TextDocuments`
+      // updates a document in place, so an edit meanwhile shows as a new version, and
+      // the actions computed for the old text are dropped.
+      const { version } = document;
+      const stale = (): boolean => token.isCancellationRequested || documents.get(document.uri)?.version !== version;
+      const pause: Pause = () =>
+        new Promise((resolve) => {
+          setImmediate(() => {
+            resolve(stale());
+          });
+        });
+      const result = await codeActions(document, params, deps, pause);
+      if (!result || stale()) {
+        return null;
+      }
+      const { actions, refused } = result;
       for (const what of refused) {
         connection.console.error(`Code actions for ${params.textDocument.uri}: ${what} would change problems it does not fix; not offered.`);
       }
