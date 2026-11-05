@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
+import { readdirSync, readFileSync } from 'node:fs';
 import { deflateSync } from 'node:zlib';
-import { DOCS_BASE, parseInventory, sectionEntries } from '../../../../scripts/eeex-docs/inventory.mts';
+import { DOCS_BASE, isCommitSha, isSafeEntry, parseInventory, sectionEntries } from '../../../../scripts/eeex-docs/inventory.mts';
+import type { EeexDataFile } from '../../../../scripts/eeex-docs/sync.mts';
 
 /** Builds a Sphinx v2 inventory in memory. */
 function inventory(lines: string[]): Buffer {
@@ -49,5 +51,65 @@ describe('scripts/eeex-docs/inventory', () => {
       ['EEex_Menu_UnscaleX', 'self'],
     );
     assert.deepEqual(sectionEntries(items, 'EE Game Lua Functions').map((entry) => entry.name), ['C:AddGold']);
+  });
+
+  it('accepts only full lowercase commit SHAs', () => {
+    assert.equal(isCommitSha('2b175c02656e12ba22fa56c311d564e41bd0cae4'), true);
+    assert.equal(isCommitSha('2b175c0'), false);
+    assert.equal(isCommitSha('2B175C02656E12BA22FA56C311D564E41BD0CAE4'), false);
+    assert.equal(isCommitSha('2b175c02656e12ba22fa56c311d564e41bd0cae4\nchanged=true'), false);
+    assert.equal(isCommitSha('2b175c02656e12ba22fa56c311d564e41bd0cae4 '), false);
+    assert.equal(isCommitSha(undefined), false);
+    assert.equal(isCommitSha(42), false);
+  });
+
+  it('accepts every entry sectionEntries produces', () => {
+    const items = parseInventory(SAMPLE);
+    const entries = ['EE Game Structures (x64)', 'EEex Functions', 'EE Game Lua Functions'].flatMap((directory) => sectionEntries(items, directory));
+    assert.equal(entries.length, 4);
+    assert.ok(entries.every(isSafeEntry));
+  });
+
+  it('rejects entries that are not an identifier with a deep link inside the docs', () => {
+    const name = 'EEex_Menu_UnscaleX';
+    const path = 'EEex%20Functions/Menu/index.html#eeex-menu-unscalex';
+    assert.equal(isSafeEntry({ name, url: DOCS_BASE + path }), true);
+    for (const url of [
+      `https://example.com/en/latest/${path}`,
+      `http://eeex-docs.readthedocs.io/en/latest/${path}`,
+      `javascript:alert(1)//${DOCS_BASE}${path}`,
+      `${DOCS_BASE}EEex%20Functions/Menu/index.html`, // no anchor
+      `${DOCS_BASE}EEex%20Functions/Menu/index.html#a#b`,
+      `${DOCS_BASE}EEex Functions/Menu/index.html#eeex-menu-unscalex`, // whitespace
+      `${DOCS_BASE}${path}\n`,
+      `${DOCS_BASE}${path})`, // ends a Markdown link
+      `${DOCS_BASE}${path}](https://example.com)`,
+      `${DOCS_BASE}${path}"`,
+      `${DOCS_BASE}${path}<`,
+      `${DOCS_BASE}EEex%2/index.html#x`, // malformed percent-encoding
+      `${DOCS_BASE}../../other/index.html#x`,
+      `${DOCS_BASE}EEex%20Functions/./index.html#x`,
+    ]) {
+      assert.equal(isSafeEntry({ name, url }), false, url);
+    }
+    for (const bad of ['CA Structures', 'EEex_Menu_UnscaleX)', '1abc', '', 'a..b']) {
+      assert.equal(isSafeEntry({ name: bad, url: DOCS_BASE + path }), false, bad);
+    }
+    assert.equal(isSafeEntry({ name: 1, url: DOCS_BASE + path }), false);
+    assert.equal(isSafeEntry({ name, url: null }), false);
+  });
+
+  it('holds for the committed data files', () => {
+    const directory = new URL('../../../../data/eeex/', import.meta.url);
+    const files = readdirSync(directory).filter((file) => file.endsWith('.json'));
+    assert.deepEqual(files.sort(), ['eeex-functions.json', 'game-lua-functions.json', 'game-structures-x64.json']);
+    for (const file of files) {
+      const data = JSON.parse(readFileSync(new URL(file, directory), 'utf8')) as EeexDataFile;
+      assert.ok(isCommitSha(data.upstream.buildCommit), `${file}: buildCommit`);
+      assert.ok(isCommitSha(data.upstream.sourceCommit), `${file}: sourceCommit`);
+      assert.ok(data.entries.length > 0, `${file}: entries`);
+      const unsafe = data.entries.filter((entry) => !isSafeEntry(entry));
+      assert.deepEqual(unsafe, [], `${file}: unsafe entries`);
+    }
   });
 });

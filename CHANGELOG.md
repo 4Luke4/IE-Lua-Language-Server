@@ -251,3 +251,19 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   `.vsix.sha256` file into the release notes, so the download count covers VSIX downloads only.
 - CI integration jobs build the tests before running them, and a test run that finds no tests now
   fails. Until now the CI integration jobs ran 0 tests and passed.
+
+### Security
+
+Development tooling only; the extension's bundles are unchanged.
+
+- `@azure/msal-node` (used by `@vscode/vsce` through `@azure/identity`) is 7.2.0, fixing
+  [GHSA-xcx6-jx8p-x3h5](https://github.com/advisories/GHSA-xcx6-jx8p-x3h5).
+- `serialize-javascript` in `@vscode/test-cli`'s mocha 11 is forced to 7.x with an npm override,
+  fixing [GHSA-5c6j-r48x-rmvq](https://github.com/advisories/GHSA-5c6j-r48x-rmvq),
+  [GHSA-qj8w-gfj5-8c6v](https://github.com/advisories/GHSA-qj8w-gfj5-8c6v) and
+  [GHSA-m5mm-p8h7-m29v](https://github.com/advisories/GHSA-m5mm-p8h7-m29v). See CONTRIBUTING.md › Setup
+  for when to remove it.
+- The EEex docs sync script (`scripts/eeex-docs/sync.mts`) validates everything it fetches
+  before using it: commits must be full SHAs, and every entry must be an identifier with a deep
+  link inside the EEex documentation. Otherwise it stops without writing. It also reads the
+  existing data file without a separate existence check (CodeQL `js/file-system-race`).

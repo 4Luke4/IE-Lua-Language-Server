@@ -5,6 +5,33 @@ export const DOCS_BASE = 'https://eeex-docs.readthedocs.io/en/latest/';
 /** Lua-style identifiers, optionally qualified with `:`, `.` or `::` (excludes page titles). */
 const IDENTIFIER = /^[A-Za-z_]\w*(?:(?:::|[:.])[A-Za-z_]\w*)*$/;
 
+/** A full, lowercase Git object name (SHA-1), as Read the Docs and the GitHub API report commits. */
+const COMMIT_SHA = /^[0-9a-f]{40}$/;
+/**
+ * Path and fragment after DOCS_BASE: RFC 3986 unreserved characters and percent-encoded octets,
+ * `/` between path segments, and exactly one `#`. Nothing else can appear in a URL Sphinx wrote
+ * with percent-encoding, and none of these characters can end a Markdown link or start markup
+ * (the URL is rendered as a hover link by src/server/hover/).
+ */
+const SAFE_RELATIVE_URL = /^(?:[\w.~-]|%[0-9A-Fa-f]{2}|\/)+#(?:[\w.~-]|%[0-9A-Fa-f]{2})+$/;
+
+/** Whether `value` is a full commit SHA, safe to put in a URL or a `$GITHUB_OUTPUT` line. */
+export function isCommitSha(value: unknown): value is string {
+  return typeof value === 'string' && COMMIT_SHA.test(value);
+}
+
+/**
+ * Whether a data-file entry is safe to write and later render: the name is a Lua-style identifier
+ * and the URL is a deep link inside DOCS_BASE (no `..` segments, no other host or scheme).
+ */
+export function isSafeEntry(entry: { readonly name: unknown; readonly url: unknown }): boolean {
+  if (typeof entry.name !== 'string' || typeof entry.url !== 'string' || !IDENTIFIER.test(entry.name) || !entry.url.startsWith(DOCS_BASE)) {
+    return false;
+  }
+  const relative = entry.url.slice(DOCS_BASE.length);
+  return SAFE_RELATIVE_URL.test(relative) && !relative.split(/[/#]/).some((segment) => segment === '..' || segment === '.');
+}
+
 export interface InventoryItem {
   readonly name: string;
   readonly role: string;
