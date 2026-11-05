@@ -183,7 +183,7 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   - Titles are localized like the hover labels. Advertised only to clients that accept
     `CodeAction` literals (`codeActionLiteralSupport`).
 - LuaCATS doc comments ([annotation reference](https://luals.github.io/wiki/annotations/)) on the
-  document's own code, in hover. Types are shown as written; nothing checks or infers them.
+  document's own code, in hover and completion. Types are shown as written; nothing checks or infers them.
   - A doc block is a run of `---` comments, each alone on its line, on consecutive lines; it
     documents the statement that starts on the next line. A blank line detaches it, and `----`
     banners and `---` after code are not doc comments. The reference does not state this rule;
@@ -198,7 +198,10 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
     a code span after the name. The other reference tags (`@class`, `@field`, `@overload`, …) and
     `---|` lines are not rendered and never show up as description. Tags are `---@tag`, as the
     reference writes them; `--- @tag` stays description text.
-  - The code line of the hover does not change.
+  - The code line of the hover, and the `detail` of a completion item, do not change.
+  - Completion items of documented names carry the same text as their hover in `documentation`,
+    sent with the list rather than on `completionItem/resolve`: the resolve request names no
+    document, so a later lookup could read a newer version of it.
 - Error-tolerant Lua 5.2 parser and scope analysis (`src/server/syntax/`), checked against the
   official compiler by a differential test; it publishes no diagnostics of its own.
 - Localization of the manifest, UI strings and the language server's hover labels into all 14 VS

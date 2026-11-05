@@ -1,9 +1,11 @@
 import assert from 'node:assert/strict';
 import { CompletionItemKind, MarkupKind, type CompletionItem, type Range } from 'vscode-languageserver/node';
-import type { Candidate } from '../../../../src/server/completion/candidates.ts';
+import { completionCandidates, type Candidate } from '../../../../src/server/completion/candidates.ts';
 import { resolveCompletionItem, toCompletionList, type CompletionClientOptions } from '../../../../src/server/features/completion.ts';
 import { allManualEntries, externalEntry } from '../../../../src/server/hover/knowledge.ts';
 import { createMessages } from '../../../../src/server/l10n.ts';
+import { completionSiteAt } from '../../../../src/server/syntax/completionContext.ts';
+import { parseDocument } from '../../../../src/server/syntax/document.ts';
 
 const english = createMessages(undefined);
 const insert: Range = { start: { line: 1, character: 4 }, end: { line: 1, character: 6 } };
@@ -32,6 +34,25 @@ describe('server/features/completion', () => {
         { label: 'field', kind: CompletionItemKind.Field, sortText: '1' },
         { label: 'while', kind: CompletionItemKind.Keyword, sortText: '4' },
       ]);
+    });
+
+    it('sends the documentation of doc comments with the item, in the client format, and no data to resolve', () => {
+      const text = '--- Adds.\n---@param a integer\nlocal function add(a)\n  return a\nend\n--- Redefined.\nInfinity_DisplayString = nil\nlocal plain\nreturn ';
+      const document = parseDocument(text, 'lua');
+      const site = completionSiteAt(document, text, text.length);
+      assert.ok(site);
+      const found = completionCandidates(document, site).filter((candidate) => ['add', 'plain', 'Infinity_DisplayString'].includes(candidate.label));
+      const items = (format: CompletionClientOptions['format']): CompletionItem[] => toCompletionList(found, insert, replace, options({ format, defaultEditRange: true }), english).items;
+      const [add, plain, eeex] = items('markdown');
+      assert.ok(add && plain && eeex);
+      assert.deepEqual(add.documentation, { kind: MarkupKind.Markdown, value: 'Adds.\n\n*@param* `a` `integer`' });
+      assert.equal(add.data, undefined);
+      assert.equal(plain.documentation, undefined);
+      // The doc comment and the EEex-Docs link, which needs no resolving either.
+      assert.ok(typeof eeex.documentation === 'object');
+      assert.match(eeex.documentation.value, /^Redefined\.\n\n---\n\n\[EE Game Lua Functions\]/);
+      assert.equal(eeex.data, undefined);
+      assert.deepEqual(items('plaintext')[0]?.documentation, { kind: MarkupKind.PlainText, value: 'Adds.\n\n@param a integer' });
     });
 
     it('sends the edit range once when the client supports item defaults', () => {

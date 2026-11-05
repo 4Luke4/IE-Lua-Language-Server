@@ -1,9 +1,10 @@
-import type { CompletionItem, CompletionList, Connection, Range, TextDocuments } from 'vscode-languageserver/node';
+import type { CompletionItem, CompletionList, Connection, MarkupContent, Range, TextDocuments } from 'vscode-languageserver/node';
 import { CompletionItemKind, InsertReplaceEdit, MarkupKind, TextEdit } from 'vscode-languageserver/node';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { completionCandidates, documentationSource, documentationTarget, type Candidate, type CandidateKind } from '../completion/candidates.ts';
 import type { ParsedDocumentCache } from '../documentCache.ts';
 import { renderDocumentation, renderSignature, type HoverFormat } from '../hover/render.ts';
+import type { HoverTarget } from '../hover/resolve.ts';
 import type { Messages } from '../l10n.ts';
 import { completionSiteAt } from '../syntax/completionContext.ts';
 
@@ -35,6 +36,20 @@ const ITEM_KINDS: Readonly<Record<CandidateKind, CompletionItemKind>> = {
   keyword: CompletionItemKind.Keyword,
 };
 
+const markup = (value: string, format: HoverFormat): MarkupContent => ({ kind: format === 'markdown' ? MarkupKind.Markdown : MarkupKind.PlainText, value });
+
+/**
+ * The documentation of a target documented by a doc comment of the document
+ * (docComments/), rendered now: `completionItem/resolve` names no document, and
+ * looking the name up again later could find a newer version of it. Only names
+ * with a doc comment pay for this.
+ */
+function documentDocumentation(target: HoverTarget | undefined, format: HoverFormat, messages: Messages): MarkupContent | undefined {
+  const documented = (target?.kind === 'local' && (target.doc !== undefined || target.param !== undefined)) || (target?.kind === 'global' && target.doc !== undefined);
+  const value = documented ? renderDocumentation(target, format, messages) : undefined;
+  return value === undefined ? undefined : markup(value, format);
+}
+
 /**
  * The completion list for candidates. `insert` is the name before the cursor,
  * `replace` the whole name around it; clients without insert/replace support
@@ -43,7 +58,9 @@ const ITEM_KINDS: Readonly<Record<CandidateKind, CompletionItemKind>> = {
 export function toCompletionList(candidates: readonly Candidate[], insert: Range, replace: Range, options: CompletionClientOptions, messages: Messages): CompletionList {
   const editRange = options.insertReplace ? { insert, replace } : insert;
   const items = candidates.map((candidate): CompletionItem => {
-    const data = documentationSource(candidate.target);
+    const documentation = documentDocumentation(candidate.target, options.format, messages);
+    // Documentation sent now needs nothing to resolve.
+    const data = documentation ? undefined : documentationSource(candidate.target);
     let textEdit: TextEdit | InsertReplaceEdit | undefined;
     if (!options.defaultEditRange) {
       textEdit = options.insertReplace ? InsertReplaceEdit.create(candidate.label, insert, replace) : TextEdit.replace(insert, candidate.label);
@@ -53,6 +70,7 @@ export function toCompletionList(candidates: readonly Candidate[], insert: Range
       kind: ITEM_KINDS[candidate.kind],
       sortText: String(candidate.group),
       ...(candidate.target ? { detail: renderSignature(candidate.target, messages) } : {}),
+      ...(documentation ? { documentation } : {}),
       ...(data ? { data } : {}),
       ...(textEdit ? { textEdit } : {}),
     };
@@ -65,7 +83,7 @@ export function resolveCompletionItem(item: CompletionItem, format: HoverFormat,
   const target = documentationTarget(item.data);
   const documentation = target && renderDocumentation(target, format, messages);
   if (documentation === undefined) return item;
-  return { ...item, documentation: { kind: format === 'markdown' ? MarkupKind.Markdown : MarkupKind.PlainText, value: documentation } };
+  return { ...item, documentation: markup(documentation, format) };
 }
 
 /** `textDocument/completion` and `completionItem/resolve` (see src/server/completion/). */
