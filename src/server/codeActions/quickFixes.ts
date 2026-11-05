@@ -4,11 +4,16 @@
 // Only fixes whose remedy IESDP states are offered ("MENU file format",
 // https://gibberlings3.github.io/iesdp/file_formats/ie_formats/menu_v1.htm):
 //
-// | Code                             | IESDP                                                              | Fix                                  |
-// | -------------------------------- | ------------------------------------------------------------------ | ------------------------------------ |
-// | `menu-unquoted-underscore`       | "Underscores are not part of a word … Always quote names."         | `"…"` around the run                 |
-// | `menu-word-too-long`             | "A longer unquoted word aborts the game. Quoted strings are not limited." | `"…"` around the word        |
-// | `menu-inline-lua-last-character` | "end every inline block with a line break or a space"              | a space before the closing backtick  |
+// | Code                             | IESDP                                                                     | Fix                                 |
+// | -------------------------------- | ------------------------------------------------------------------------- | ----------------------------------- |
+// | `menu-unquoted-underscore`       | "Underscores are not part of a word … Always quote names."                | `"…"` around the run                |
+// | `menu-word-too-long`             | "A longer unquoted word aborts the game. Quoted strings are not limited." | `"…"` around the word               |
+// | `menu-inline-lua-last-character` | "end every inline block with a line break or a space"                     | a space before the closing backtick |
+//
+// The fixes change the Lua the engine compiles, as intended: the character it
+// dropped before a backtick now runs, and a quoted property value is compiled
+// whole (`enabled "My_Var"` is `My_Var`, not `My`). The safety check covers the
+// .menu lexing only; the Lua is validated as usual.
 //
 // The other codes have no single correct fix: where an unterminated string or
 // block should end, or how to repair a Lua syntax error, would be a guess.

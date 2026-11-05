@@ -1,4 +1,4 @@
-import type { CodeAction, CodeActionParams, Connection, Diagnostic, Range, TextDocuments } from 'vscode-languageserver/node';
+import type { CodeAction, CodeActionClientCapabilities, CodeActionParams, Connection, Diagnostic, Range, TextDocuments } from 'vscode-languageserver/node';
 import { CodeActionKind } from 'vscode-languageserver/node';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { DIAGNOSTIC_SOURCE, FIX_ALL_KIND } from '../../shared/protocol.ts';
@@ -21,8 +21,8 @@ export const CODE_ACTION_KINDS = [CodeActionKind.QuickFix, FIX_ALL_KIND] as cons
  * only return `Command`s, which this server does not implement, so the
  * capability is not advertised.
  */
-export function supportsCodeActionLiterals(literalSupport: unknown): boolean {
-  return literalSupport !== undefined && literalSupport !== null;
+export function supportsCodeActionLiterals(literalSupport: CodeActionClientCapabilities['codeActionLiteralSupport']): boolean {
+  return literalSupport !== undefined;
 }
 
 /**
@@ -97,6 +97,13 @@ export async function codeActions(
   if (quickFixes) {
     /** The fixes by code and problem offsets, the identity of a diagnostic. */
     const byProblem = new Map(analysis.fixes.map((fix) => [problemKey(fix.problem.code, fix.problem.start, fix.problem.end), fix]));
+    /** The fixes of each code, for its "fix all" action. */
+    const byCode = new Map<string, MenuFix[]>();
+    for (const fix of analysis.fixes) {
+      const group = byCode.get(fix.problem.code);
+      if (group) group.push(fix);
+      else byCode.set(fix.problem.code, [fix]);
+    }
     /** Codes whose "fix all" action was already added. */
     const allOffered = new Set<string>();
     let first = true;
@@ -116,7 +123,7 @@ export async function codeActions(
           edit: edit(changes),
         });
       }
-      const sameCode = analysis.fixes.filter((candidate) => candidate.problem.code === fix.problem.code);
+      const sameCode = byCode.get(fix.problem.code) ?? [];
       if (sameCode.length > 1 && !allOffered.has(fix.problem.code)) {
         allOffered.add(fix.problem.code);
         const all = checked(sameCode, `the fixes of every ${fix.problem.code} problem`);
