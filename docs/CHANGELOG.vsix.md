@@ -26,8 +26,10 @@ versions with an **even** middle number (for example 1.**2**.0) are stable relea
 - **Code folding that follows the code.** Fold functions, loops, each branch of an `if`, tables,
   comments, and every block and script of a `.menu` file.
 - **Go to Definition** jumps from a variable to where it is declared, or to where a global
-  gets its value in the same file, including across the Lua of a `.menu` file.
-- **Find All References** lists every use of a variable in the same file.
+  gets its value: in the same file, including across the Lua of a `.menu` file, and in every
+  other Lua and `.menu` file of your workspace, even files you haven't opened.
+- **Find All References** lists every use of a variable: of a local in its file, of a global in
+  every Lua and `.menu` file of your workspace.
 - **Rename Symbol** renames a variable everywhere in the file. It refuses, and tells you why,
   when the rename could break your code — for example when the new name is already used nearby.
 - **Go to Symbol in Workspace** (Ctrl+T) finds functions, variables and menus in every Lua and

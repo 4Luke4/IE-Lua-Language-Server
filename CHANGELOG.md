@@ -46,14 +46,24 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   comments and runs of `--` lines; in `.menu` files every `{ … }` block, `` `…` `` blocks and
   `"…"` scripts, plus the Lua inside them. The closing line stays visible. Honors the client's
   `rangeLimit` and supported kinds.
-- Go to definition (`textDocument/definition`) within the document: from any use of a local to
-  its declaration, and from a global to every assignment to it (`x = …`, `function x()`). In
-  `.menu` files globals are shared by all Lua chunks, locals stay in their own chunk. No result
-  for the implicit `self`, for globals the document never assigns, or for table fields.
-- Find references (`textDocument/references`) within the document, with the same matching as
-  go to definition: the uses of a local, including the implicit `self` of a method, or every use
-  of a global across the Lua chunks of the document. `includeDeclaration` decides whether the
-  local's declaration, or the assignments to the global, are included.
+- Go to definition (`textDocument/definition`): from any use of a local to its declaration, and
+  from a global to every assignment to it (`x = …`, `function x()`), in the document and in
+  every other `.lua` and `.menu` file of the workspace. The engine runs "in one global Lua state
+  that is shared by the MENU file, the game's own Lua files and the engine"
+  ([IESDP](https://gibberlings3.github.io/iesdp/file_formats/ie_formats/lua_globals.htm)), so a
+  global is matched by name in every file; locals stay in their own chunk. No result for the
+  implicit `self`, for globals no file assigns (game, EEex and library functions), or for table
+  fields.
+- Find references (`textDocument/references`), with the same matching as go to definition: the
+  uses of a local, including the implicit `self` of a method, or every use of a global in the
+  document and in the other files. `includeDeclaration` decides whether the local's
+  declaration, or the assignments to the global, are included.
+- Across files, for go to definition and find references: the other files are the open
+  documents, whose unsaved text wins over the saved file, and the files of the workspace index
+  (the files of workspace symbols, `files.exclude` honored). The document's own results come
+  first, then the other files in URI order. A request waits for files still queued for
+  indexing, and answers `ContentModified` (LSP 3.17) if the document changed meanwhile. `_ENV`,
+  and names resolved through a local `_ENV`, are not globals and stay in their document.
 - Rename (`textDocument/prepareRename`, `textDocument/rename`) within the document, for locals
   and for globals the document assigns. Refused, with a reason localized in VS Code: anything
   that is not a variable, the implicit `self`, globals the document never assigns (defined in

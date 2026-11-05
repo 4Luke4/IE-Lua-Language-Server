@@ -16,8 +16,8 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
 > This is an early version. It currently provides **syntax diagnostics**, **hover**,
 > **completion**, **semantic highlighting**, **formatting** (Lua files), **document symbols**,
 > **workspace symbols**, **folding**, **quick fixes** (`.menu` files), **LuaCATS doc comments**
-> in hover, completion and diagnostics, and **go to definition**,
-> **find references** and **rename** within a file; cross-file navigation, formatting of `.menu`
+> in hover, completion and diagnostics, **go to definition** and **find references** across
+> the files of your workspace, and **rename** within a file; formatting of `.menu`
 > files and more are planned.
 
 ## Features
@@ -68,10 +68,14 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
   *Editor: Insert Spaces*). Turn on *Editor: Format On Type* to have `end`, `else` and closing
   brackets re-indented as you type them, or *Editor: Format On Save*. Files with a syntax error
   are left unchanged. `.menu` files are not formatted yet.
-- **Go to Definition, Find All References and Rename Symbol** for variables within a file. Locals
-  follow Lua's scoping rules; globals are followed across all the Lua of a `.menu` file. Rename
-  refuses, and says why, when it could change what the code does: a name already in use nearby,
-  a reserved word, or a global that is defined outside the file.
+- **Go to Definition and Find All References** for variables. Locals follow Lua's scoping rules.
+  Globals are followed across every Lua and `.menu` file of your workspace, even files you
+  haven't opened, because the game runs all of its Lua in
+  [one shared global state](https://gibberlings3.github.io/iesdp/file_formats/ie_formats/lua_globals.htm).
+  Files hidden with *Files: Exclude* are left out.
+- **Rename Symbol** for variables within a file. Rename refuses, and says why, when it could
+  change what the code does: a name already in use nearby, a reserved word, or a global that is
+  defined outside the file.
 - **Quick fixes for `.menu` text the game misreads.** Put an unquoted name such as `My_Menu`, or
   a word too long for the game, in quotes, or add the space the game needs before the closing
   backtick of a Lua block, from the light bulb (Ctrl+.). *Fix all IE Lua auto-fixable problems*
