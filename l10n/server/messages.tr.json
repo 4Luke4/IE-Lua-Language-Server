@@ -6,5 +6,10 @@
   "codeAction.quote": "Tırnak içine al",
   "codeAction.insertSpace": "Kapanış ters tırnağından önce boşluk ekle",
   "codeAction.fixAllOfCode": "Tüm {0} sorunlarını düzelt",
-  "codeAction.fixAll": "Otomatik olarak düzeltilebilen tüm IE Lua sorunlarını düzelt"
+  "codeAction.fixAll": "Otomatik olarak düzeltilebilen tüm IE Lua sorunlarını düzelt",
+  "doc.paramNameMissing": "{0} için bir parametre adı ve ardından bir tür gerekir.",
+  "doc.paramTypeMissing": "{0} için parametre adından sonra bir tür gerekir.",
+  "doc.typeMissing": "{0} için bir tür gerekir.",
+  "doc.paramUnknown": "Belgelenen işlevin {0} parametresi yok.",
+  "doc.paramDuplicate": "{0} parametresi bu açıklamada zaten belgelenmiş."
 }

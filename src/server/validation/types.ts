@@ -67,6 +67,12 @@ export const DiagnosticCode = {
   MenuWordTooLong: 'menu-word-too-long',
   /** `_` joined to unquoted text in a .menu file; the engine skips it and splits the text. */
   MenuUnquotedUnderscore: 'menu-unquoted-underscore',
+  /** A LuaCATS `---@param` names a parameter the documented function does not have. */
+  DocParamUnknown: 'doc-param-unknown',
+  /** A LuaCATS doc block documents the same parameter twice. */
+  DocParamDuplicate: 'doc-param-duplicate',
+  /** A LuaCATS `---@param`, `---@return` or `---@type` lacks its name or type. */
+  DocTagMalformed: 'doc-tag-malformed',
 } as const;
 export type DiagnosticCode = (typeof DiagnosticCode)[keyof typeof DiagnosticCode];
 

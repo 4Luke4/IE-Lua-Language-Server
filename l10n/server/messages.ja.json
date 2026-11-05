@@ -6,5 +6,10 @@
   "codeAction.quote": "引用符で囲む",
   "codeAction.insertSpace": "閉じるバッククォートの前にスペースを挿入する",
   "codeAction.fixAllOfCode": "すべての {0} の問題を修正する",
-  "codeAction.fixAll": "自動修正可能な IE Lua の問題をすべて修正する"
+  "codeAction.fixAll": "自動修正可能な IE Lua の問題をすべて修正する",
+  "doc.paramNameMissing": "{0} には、パラメーター名とそれに続く型が必要です。",
+  "doc.paramTypeMissing": "{0} には、パラメーター名の後に型が必要です。",
+  "doc.typeMissing": "{0} には型が必要です。",
+  "doc.paramUnknown": "ドキュメント化された関数にはパラメーター {0} がありません。",
+  "doc.paramDuplicate": "パラメーター {0} はこのコメントで既にドキュメント化されています。"
 }

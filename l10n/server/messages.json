@@ -6,5 +6,10 @@
   "codeAction.quote": "Enclose in quotes",
   "codeAction.insertSpace": "Insert a space before the closing backtick",
   "codeAction.fixAllOfCode": "Fix all {0} problems",
-  "codeAction.fixAll": "Fix all IE Lua auto-fixable problems"
+  "codeAction.fixAll": "Fix all IE Lua auto-fixable problems",
+  "doc.paramNameMissing": "{0} needs a parameter name followed by a type.",
+  "doc.paramTypeMissing": "{0} needs a type after the parameter name.",
+  "doc.typeMissing": "{0} needs a type.",
+  "doc.paramUnknown": "The documented function has no parameter {0}.",
+  "doc.paramDuplicate": "Parameter {0} is already documented in this comment."
 }

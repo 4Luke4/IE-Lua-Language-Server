@@ -6,5 +6,10 @@
   "codeAction.quote": "Idézőjelek közé tétel",
   "codeAction.insertSpace": "Szóköz beszúrása a záró fordított aposztróf elé",
   "codeAction.fixAllOfCode": "Az összes {0} probléma javítása",
-  "codeAction.fixAll": "Az összes automatikusan javítható IE Lua-probléma javítása"
+  "codeAction.fixAll": "Az összes automatikusan javítható IE Lua-probléma javítása",
+  "doc.paramNameMissing": "A(z) {0} címkéhez paraméternév és utána típus szükséges.",
+  "doc.paramTypeMissing": "A(z) {0} címkéhez típus szükséges a paraméternév után.",
+  "doc.typeMissing": "A(z) {0} címkéhez típus szükséges.",
+  "doc.paramUnknown": "A dokumentált függvénynek nincs {0} paramétere.",
+  "doc.paramDuplicate": "A(z) {0} paraméter már dokumentálva van ebben a megjegyzésben."
 }

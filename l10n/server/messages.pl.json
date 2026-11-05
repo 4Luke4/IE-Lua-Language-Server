@@ -6,5 +6,10 @@
   "codeAction.quote": "Ujmij w cudzysłów",
   "codeAction.insertSpace": "Wstaw spację przed zamykającym grawisem",
   "codeAction.fixAllOfCode": "Napraw wszystkie problemy {0}",
-  "codeAction.fixAll": "Napraw wszystkie automatycznie naprawialne problemy IE Lua"
+  "codeAction.fixAll": "Napraw wszystkie automatycznie naprawialne problemy IE Lua",
+  "doc.paramNameMissing": "{0} wymaga nazwy parametru, po której następuje typ.",
+  "doc.paramTypeMissing": "{0} wymaga typu po nazwie parametru.",
+  "doc.typeMissing": "{0} wymaga typu.",
+  "doc.paramUnknown": "Udokumentowana funkcja nie ma parametru {0}.",
+  "doc.paramDuplicate": "Parametr {0} jest już udokumentowany w tym komentarzu."
 }

@@ -6,5 +6,10 @@
   "codeAction.quote": "以引號括住",
   "codeAction.insertSpace": "在右反引號前插入空格",
   "codeAction.fixAllOfCode": "修正所有 {0} 問題",
-  "codeAction.fixAll": "修正所有可自動修正的 IE Lua 問題"
+  "codeAction.fixAll": "修正所有可自動修正的 IE Lua 問題",
+  "doc.paramNameMissing": "{0} 需要參數名稱，後面接著類型。",
+  "doc.paramTypeMissing": "{0} 需要在參數名稱後指定類型。",
+  "doc.typeMissing": "{0} 需要類型。",
+  "doc.paramUnknown": "所記錄的函式沒有參數 {0}。",
+  "doc.paramDuplicate": "參數 {0} 已在此註解中記錄。"
 }
