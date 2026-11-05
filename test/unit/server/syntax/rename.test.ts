@@ -120,6 +120,17 @@ describe('server/syntax/rename', () => {
       assert.deepEqual(renamed(text, 'G', 1, 'H'), { refusal: 'notAVariable' });
     });
 
+    it('refuses to change which names resolve through a local _ENV', () => {
+      assert.deepEqual(renamed('local _ENV = {} x = 1', '_ENV', 0, 'e'), { refusal: 'conflict' });
+      assert.deepEqual(renamed('local t = {} x = 1', 't', 0, '_ENV'), { refusal: 'conflict' });
+      assert.deepEqual(renamed('G = 1', 'G', 0, '_ENV'), { refusal: 'conflict' });
+    });
+
+    it('allows a global to take the name of a field of a local _ENV', () => {
+      const text = 'G = 1 do local _ENV = {} x = 2 end';
+      assert.equal(renamed(text, 'G', 0, 'x'), 'x = 1 do local _ENV = {} x = 2 end');
+    });
+
     it('refuses the same targets as prepareRename', () => {
       assert.deepEqual(renamed('print(1)', 'print', 0, 'p'), { refusal: 'globalNotDefinedHere' });
       assert.deepEqual(renamed('local t = {} t.x = 1', 'x', 0, 'y'), { refusal: 'notAVariable' });

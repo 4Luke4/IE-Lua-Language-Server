@@ -14,14 +14,16 @@
 // - the new name is not a Lua name, or is a reserved word;
 // - the new name would change what any name refers to: an inner local capturing
 //   a renamed use, the renamed local hiding an outer variable used in its scope,
-//   or two globals merging. This is decided by re-analyzing the renamed text,
+//   two globals merging, or a name moving into or out of a local `_ENV` (or
+//   the chunk's `_ENV` itself being assigned). This is decided by re-analyzing the renamed text,
 //   not by heuristics (see `checkBindings`).
 
 import type { RenameRefusal } from '../../shared/protocol.ts';
 import type * as Ast from './ast.ts';
 import { parseDocument, type ParsedDocument } from './document.ts';
+import type { Declaration } from './scope.ts';
 import { lex } from './lexer.ts';
-import { definitions, references, targetAt, variableIndex, type NavigationTarget, type VariableOccurrence } from './navigation.ts';
+import { definitions, isSharedGlobal, references, targetAt, variableIndex, type NavigationTarget, type VariableOccurrence } from './navigation.ts';
 
 export type RenameOutcome<T> = { readonly ok: true; readonly value: T } | { readonly ok: false; readonly refusal: RenameRefusal };
 
@@ -69,15 +71,26 @@ function nameRefusal(name: string): RenameRefusal | undefined {
   return 'invalidName';
 }
 
-/** What an identifier refers to: a declaration (by chunk and position), or a global by name. */
+/**
+ * What an identifier refers to: a declaration (by chunk and position), a field
+ * of a local `_ENV` (by that declaration and name), the chunk's own `_ENV`, or
+ * a global by name.
+ */
 function bindingKeys(document: ParsedDocument): Map<VariableOccurrence, string> {
   const keys = new Map<VariableOccurrence, string>();
   const declarationIndexes = document.chunks.map(({ scopes }) => new Map(scopes.declarations.map((d, i) => [d, i])));
   for (const occurrence of variableIndex(document)) {
     const { identifier, chunkIndex } = occurrence;
-    const declaration = document.chunks[chunkIndex]?.scopes.resolved.get(identifier);
-    const index = declaration && declarationIndexes[chunkIndex]?.get(declaration);
-    keys.set(occurrence, index === undefined ? `global ${identifier.name}` : `local ${String(chunkIndex)}:${String(index)}`);
+    const scopes = document.chunks[chunkIndex]?.scopes;
+    const declarationKey = (declaration: Declaration): string => `${String(chunkIndex)}:${String(declarationIndexes[chunkIndex]?.get(declaration))}`;
+    const declaration = scopes?.resolved.get(identifier);
+    const environment = scopes?.environmentFields.get(identifier);
+    let key: string;
+    if (declaration) key = `local ${declarationKey(declaration)}`;
+    else if (environment) key = `field ${declarationKey(environment)} ${identifier.name}`;
+    else if (identifier.name === '_ENV') key = `upvalue _ENV ${String(chunkIndex)}`;
+    else key = `global ${identifier.name}`;
+    keys.set(occurrence, key);
   }
   return keys;
 }
@@ -130,7 +143,7 @@ export function rename(document: ParsedDocument, text: string, offset: number, n
     return { ok: true, value: [] };
   }
   // Two globals would become one; the binding check cannot see that, since both keep a global binding.
-  if (target.kind === 'global' && document.chunks.some(({ scopes }) => scopes.globals.has(newName))) {
+  if (target.kind === 'global' && document.chunks.some(({ scopes }) => scopes.globals.get(newName)?.some((identifier) => isSharedGlobal(scopes, identifier)))) {
     return refuse('conflict');
   }
   const edits = references(document, target, true).map(({ start, end }) => ({ start, end, newText: newName }));

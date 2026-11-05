@@ -56,9 +56,10 @@ export interface ScopeAnalysis {
   /**
    * Global-looking identifiers resolved while a local, parameter or `for`
    * variable named `_ENV` was visible: fields of that table, not of the
-   * global environment. Also listed in `globals`.
+   * global environment. Also listed in `globals`. Mapped to the declaration
+   * of the `_ENV` they are resolved through.
    */
-  readonly environmentFields: ReadonlySet<Ast.Identifier>;
+  readonly environmentFields: ReadonlyMap<Ast.Identifier, Declaration>;
 }
 
 export function analyzeScopes(chunk: Ast.Chunk): ScopeAnalysis {
@@ -66,7 +67,7 @@ export function analyzeScopes(chunk: Ast.Chunk): ScopeAnalysis {
   const resolved = new Map<Ast.Identifier, Declaration>();
   const globals = new Map<string, Ast.Identifier[]>();
   const writes = new Set<Ast.Identifier>();
-  const environmentFields = new Set<Ast.Identifier>();
+  const environmentFields = new Map<Ast.Identifier, Declaration>();
   /** Open scopes, innermost last, each with the offset where it ends. */
   const scopes: { readonly names: Map<string, Declaration>; readonly end: number }[] = [];
   const scopeEnd = (): number => scopes.at(-1)?.end ?? chunk.end;
@@ -95,7 +96,8 @@ export function analyzeScopes(chunk: Ast.Chunk): ScopeAnalysis {
       return;
     }
     // The chunk's own _ENV is an upvalue, never in `scopes`: only a local one is found.
-    if (lookup('_ENV')) environmentFields.add(identifier);
+    const environment = lookup('_ENV');
+    if (environment) environmentFields.set(identifier, environment);
     const uses = globals.get(identifier.name);
     if (uses) uses.push(identifier);
     else globals.set(identifier.name, [identifier]);

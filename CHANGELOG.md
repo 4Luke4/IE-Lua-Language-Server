@@ -71,7 +71,8 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   implicit `self`, globals the document never assigns (defined in another file, the game or
   EEex), code with syntax errors where the variable can occur, new names that are not Lua names
   or are reserved words, and any rename that would change what a name
-  refers to (checked by re-analyzing the renamed text). Edits are versioned when the client
+  refers to, including moving a name into or out of a local `_ENV` (checked by re-analyzing the
+  renamed text). Edits are versioned when the client
   supports `documentChanges`.
 - Workspace symbols (`workspace/symbol`; *Go to Symbol in Workspace*): the outline symbols of every
   `.lua` and `.menu` file (any letter case) in the `file:` workspace folders, and of every open
