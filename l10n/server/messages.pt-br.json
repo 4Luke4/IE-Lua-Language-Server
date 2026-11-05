@@ -2,5 +2,9 @@
   "hover.kind.parameter": "parâmetro",
   "hover.kind.forVariable": "variável for",
   "hover.kind.global": "global",
-  "hover.engineReplaced": "O mecanismo do jogo substitui {0} por uma função própria, portanto a descrição do manual do Lua 5.2 não se aplica. Consulte {1}."
+  "hover.engineReplaced": "O mecanismo do jogo substitui {0} por uma função própria, portanto a descrição do manual do Lua 5.2 não se aplica. Consulte {1}.",
+  "codeAction.quote": "Colocar entre aspas",
+  "codeAction.insertSpace": "Inserir um espaço antes do acento grave de fechamento",
+  "codeAction.fixAllOfCode": "Corrigir todos os problemas {0}",
+  "codeAction.fixAll": "Corrigir todos os problemas do IE Lua que podem ser corrigidos automaticamente"
 }

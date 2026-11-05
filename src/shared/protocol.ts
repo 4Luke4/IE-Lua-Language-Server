@@ -11,6 +11,13 @@ export const DOCUMENT_SCHEMES = ['file', 'untitled'] as const;
 /** Value of `Diagnostic.source` for every diagnostic this server publishes. */
 export const DIAGNOSTIC_SOURCE = 'IE Lua';
 
+/**
+ * Code action kind of the action that applies every quick fix of a document
+ * (`editor.codeActionsOnSave`: `{ "source.fixAll.ieLua": "explicit" }`). Users put
+ * it in their settings: never rename it.
+ */
+export const FIX_ALL_KIND = 'source.fixAll.ieLua';
+
 export interface ValidateDocumentParams {
   readonly uri: string;
 }

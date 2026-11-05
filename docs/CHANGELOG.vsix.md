@@ -52,6 +52,11 @@ versions with an **even** middle number (for example 1.**2**.0) are stable relea
   editor's tab and indentation settings, and with *Editor: Format On Type* it re-indents `end`,
   `else` and closing brackets as you type them. Files with syntax errors are left as they are;
   `.menu` files are not formatted yet.
+- **Quick fixes for `.menu` text the game misreads.** Click the light bulb (or press Ctrl+.)
+  on a warning to put an unquoted name such as `My_Menu` or a too-long word in quotes, or to add
+  the space the game needs before the closing backtick of a Lua block. Fix them all at once with
+  *Fix all IE Lua auto-fixable problems*, or on every save with
+  `"editor.codeActionsOnSave": { "source.fixAll.ieLua": "explicit" }`.
 - **Available in 14 languages**, following your VS Code display language.
 - **Works in other editors too**: setup guides for Sublime Text, Neovim, Emacs, JetBrains
   IDEs, Helix, Zed, Kate, Notepad++ and Geany are on the project page.
