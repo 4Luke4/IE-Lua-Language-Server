@@ -129,3 +129,58 @@ export function references(document: ParsedDocument, target: NavigationTarget, i
     .filter((use) => includeDeclaration || !use.isWrite)
     .map((use) => use.identifier);
 }
+
+// ------------------------------------------------------------- across files
+//
+// The Enhanced Editions run all their Lua in one global state, "shared by the
+// MENU file, the game's own Lua files and the engine" (IESDP, Engine Lua
+// globals: https://gibberlings3.github.io/iesdp/file_formats/ie_formats/lua_globals.htm),
+// so a global of one file is the same variable in every other file. `_ENV` is
+// not: each chunk has its own (manual §2.2), and a name resolved through a local
+// `_ENV` is a field of that table, not a global.
+
+/** One identifier naming a global, by offset in the document text. */
+export interface GlobalOccurrence {
+  readonly start: number;
+  readonly end: number;
+  /** Whether it assigns the global (`x = …`, `function x()`). */
+  readonly isWrite: boolean;
+}
+
+/** Whether `identifier` (of the chunk `scopes` belongs to) names a variable shared with other files. */
+function isSharedGlobal(scopes: ParsedDocument['chunks'][number]['scopes'], identifier: Ast.Identifier): boolean {
+  return identifier.name !== '_ENV' && !scopes.resolved.has(identifier) && !scopes.environmentFields.has(identifier);
+}
+
+/**
+ * The identifiers of the document that name globals shared with other files,
+ * by name, each list in document order. `_ENV` and names resolved through a
+ * local `_ENV` are left out.
+ */
+export function globalOccurrences(document: ParsedDocument): Map<string, GlobalOccurrence[]> {
+  const result = new Map<string, GlobalOccurrence[]>();
+  for (const { scopes } of document.chunks) {
+    for (const [name, identifiers] of scopes.globals) {
+      for (const identifier of identifiers) {
+        if (!isSharedGlobal(scopes, identifier)) continue;
+        let list = result.get(name);
+        if (!list) {
+          list = [];
+          result.set(name, list);
+        }
+        list.push({ start: identifier.start, end: identifier.end, isWrite: scopes.writes.has(identifier) });
+      }
+    }
+  }
+  for (const list of result.values()) list.sort((a, b) => a.start - b.start);
+  return result;
+}
+
+/**
+ * The name of the global shared with other files that `hit` is on, or
+ * `undefined` for locals, `_ENV` and names resolved through a local `_ENV`.
+ */
+export function sharedGlobalName(document: ParsedDocument, hit: TargetHit): string | undefined {
+  const scopes = document.chunks[hit.chunkIndex]?.scopes;
+  return hit.target.kind === 'global' && scopes && isSharedGlobal(scopes, hit.identifier) ? hit.target.name : undefined;
+}

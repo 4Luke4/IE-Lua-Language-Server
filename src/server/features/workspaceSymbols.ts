@@ -1,24 +1,22 @@
-import type { Connection, SymbolInformation, TextDocuments } from 'vscode-languageserver/node';
-import { TextDocument } from 'vscode-languageserver-textdocument';
+import type { Connection, Position, SymbolInformation, TextDocuments } from 'vscode-languageserver/node';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 import type { ParsedDocumentCache } from '../documentCache.ts';
-import { parseDocument } from '../syntax/document.ts';
+import type { ParsedDocument } from '../syntax/document.ts';
 import { documentSymbols } from '../syntax/symbols.ts';
 import { matchesQuery } from '../syntax/workspaceSymbols.ts';
-import { documentKind } from '../validation/validateText.ts';
 import type { IndexedFile, WorkspaceIndex } from '../workspace/workspaceIndex.ts';
 import { untilCancelled } from './cancellation.ts';
 import { flatSymbols } from './documentSymbols.ts';
+import type { IndexedFileFacts } from './workspaceFiles.ts';
 
 export interface WorkspaceSymbolsDeps {
   readonly cache: ParsedDocumentCache;
-  readonly index: WorkspaceIndex<SymbolInformation[]>;
+  readonly index: WorkspaceIndex<IndexedFileFacts>;
 }
 
-/** The flat outline of a file that is not open, for the workspace index. */
-export function fileSymbols(text: string, uri: string): SymbolInformation[] {
-  const document = TextDocument.create(uri, '', 0, text);
-  const outline = documentSymbols(parseDocument(text, documentKind(uri, '')), text.length);
-  return flatSymbols(outline, { uri, positionAt: (offset) => document.positionAt(offset) });
+/** The flat outline of a parsed document, as `workspace/symbol` lists it. */
+export function outlineSymbols(parsed: ParsedDocument, document: { readonly uri: string; positionAt(offset: number): Position }): SymbolInformation[] {
+  return flatSymbols(documentSymbols(parsed, parsed.text.length), document);
 }
 
 export interface SymbolSource {
@@ -34,7 +32,7 @@ export interface SymbolSource {
  */
 export function collectWorkspaceSymbols(
   open: readonly SymbolSource[],
-  indexed: Iterable<IndexedFile<SymbolInformation[]>>,
+  indexed: Iterable<IndexedFile<Pick<IndexedFileFacts, 'symbols'>>>,
   query: string,
   isCancelled: () => boolean,
 ): SymbolInformation[] | undefined {
@@ -49,7 +47,7 @@ export function collectWorkspaceSymbols(
   }
   for (const file of indexed) {
     if (isCancelled()) return undefined;
-    if (!openKeys.has(file.key)) add(file.value);
+    if (!openKeys.has(file.key)) add(file.value.symbols);
   }
   return result;
 }
@@ -67,11 +65,7 @@ export function register(connection: Connection, documents: TextDocuments<TextDo
       if (token.isCancellationRequested) return null;
       const open: SymbolSource[] = documents.all().map((document) => ({
         key: deps.index.pathKey(document.uri) ?? document.uri,
-        symbols: () =>
-          flatSymbols(documentSymbols(deps.cache.get(document), document.getText().length), {
-            uri: document.uri,
-            positionAt: (offset) => document.positionAt(offset),
-          }),
+        symbols: () => outlineSymbols(deps.cache.get(document), document),
       }));
       return collectWorkspaceSymbols(open, deps.index.entries(), query, () => token.isCancellationRequested) ?? null;
     } catch (error) {
