@@ -11,7 +11,6 @@ import {
   TextDocuments,
   TextDocumentSyncKind,
   WatchKind,
-  type SymbolInformation,
 } from 'vscode-languageserver/node';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { ParsedDocumentCache } from './documentCache.ts';
@@ -27,6 +26,7 @@ import { markupFormat } from './features/markup.ts';
 import * as references from './features/references.ts';
 import * as rename from './features/rename.ts';
 import * as semanticTokens from './features/semanticTokens.ts';
+import { analyzeFile, type IndexedFileFacts } from './features/workspaceFiles.ts';
 import * as workspaceSymbols from './features/workspaceSymbols.ts';
 import { createMessages } from './l10n.ts';
 import { SettingsStore } from './settingsStore.ts';
@@ -55,11 +55,11 @@ let formattingRegistration: formatting.FormattingRegistration = { document: fals
 /** Workspace folder URIs, kept up to date from `workspace/didChangeWorkspaceFolders`. */
 let folders: string[] = [];
 
-/** Lua and .menu files of the workspace folders, for workspace symbols. */
-const index = new WorkspaceIndex<SymbolInformation[]>({
+/** Lua and .menu files of the workspace folders, for workspace symbols, definitions and references. */
+const index = new WorkspaceIndex<IndexedFileFacts>({
   fs: nodeFileSystem,
   path,
-  analyze: workspaceSymbols.fileSymbols,
+  analyze: analyzeFile,
   filesExclude: async (folderUri) => {
     if (!configurationPull) return undefined;
     try {
@@ -106,8 +106,8 @@ connection.onInitialize((params) => {
     rangeLimit: folding?.rangeLimit,
     kinds: folding?.foldingRangeKind?.valueSet,
   });
-  definition.register(connection, documents, { cache: parsed });
-  references.register(connection, documents, { cache: parsed });
+  definition.register(connection, documents, { cache: parsed, index });
+  references.register(connection, documents, { cache: parsed, index });
   const documentChanges = workspace?.workspaceEdit?.documentChanges === true;
   rename.register(connection, documents, { cache: parsed, documentChanges });
   const codeActionLiterals = codeActions.supportsCodeActionLiterals(params.capabilities.textDocument?.codeAction?.codeActionLiteralSupport);

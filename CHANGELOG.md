@@ -46,20 +46,33 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   comments and runs of `--` lines; in `.menu` files every `{ … }` block, `` `…` `` blocks and
   `"…"` scripts, plus the Lua inside them. The closing line stays visible. Honors the client's
   `rangeLimit` and supported kinds.
-- Go to definition (`textDocument/definition`) within the document: from any use of a local to
-  its declaration, and from a global to every assignment to it (`x = …`, `function x()`). In
-  `.menu` files globals are shared by all Lua chunks, locals stay in their own chunk. No result
-  for the implicit `self`, for globals the document never assigns, or for table fields.
-- Find references (`textDocument/references`) within the document, with the same matching as
-  go to definition: the uses of a local, including the implicit `self` of a method, or every use
-  of a global across the Lua chunks of the document. `includeDeclaration` decides whether the
-  local's declaration, or the assignments to the global, are included.
+- Go to definition (`textDocument/definition`): from any use of a local to its declaration, and
+  from a global to every assignment to it (`x = …`, `function x()`), in the document and in
+  every other `.lua` and `.menu` file of the workspace. The engine runs "in one global Lua state
+  that is shared by the MENU file, the game's own Lua files and the engine"
+  ([IESDP](https://gibberlings3.github.io/iesdp/file_formats/ie_formats/lua_globals.htm)), so a
+  global is matched by name in every file; locals stay in their own chunk. No result for the
+  implicit `self`, for globals no file assigns (game, EEex and library functions), or for table
+  fields.
+- Find references (`textDocument/references`), with the same matching as go to definition: the
+  uses of a local, including the implicit `self` of a method, or every use of a global in the
+  document and in the other files. `includeDeclaration` decides whether the local's
+  declaration, or the assignments to the global, are included.
+- Across files, for go to definition and find references: the other files are the open
+  documents, whose unsaved text wins over the saved file, and the files of the workspace index
+  (the files of workspace symbols, `files.exclude` honored). The document's own results come
+  first, then the other files in URI order. A request waits for files still queued for
+  indexing, and answers `ContentModified` (LSP 3.17) if the document changed meanwhile. `_ENV`,
+  and names resolved through a local `_ENV` (fields of that table, Lua 5.2 manual §2.2), are not
+  globals: they have no definition or references, in the document or elsewhere.
 - Rename (`textDocument/prepareRename`, `textDocument/rename`) within the document, for locals
   and for globals the document assigns. Refused, with a reason localized in VS Code: anything
-  that is not a variable, the implicit `self`, globals the document never assigns (defined in
-  another file, the game or EEex), code with syntax errors where the variable can occur, new names
-  that are not Lua names or are reserved words, and any rename that would change what a name
-  refers to (checked by re-analyzing the renamed text). Edits are versioned when the client
+  that is not a variable (including `_ENV` and names resolved through a local `_ENV`), the
+  implicit `self`, globals the document never assigns (defined in another file, the game or
+  EEex), code with syntax errors where the variable can occur, new names that are not Lua names
+  or are reserved words, and any rename that would change what a name
+  refers to, including moving a name into or out of a local `_ENV` (checked by re-analyzing the
+  renamed text). Edits are versioned when the client
   supports `documentChanges`.
 - Workspace symbols (`workspace/symbol`; *Go to Symbol in Workspace*): the outline symbols of every
   `.lua` and `.menu` file (any letter case) in the `file:` workspace folders, and of every open

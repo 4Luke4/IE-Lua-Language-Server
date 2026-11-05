@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { parseDocument, type ParsedDocument } from '../../../../src/server/syntax/document.ts';
-import { definitions, identifierAt, references, targetAt } from '../../../../src/server/syntax/navigation.ts';
+import { definitions, globalOccurrences, identifierAt, references, sharedGlobalName, targetAt } from '../../../../src/server/syntax/navigation.ts';
 
 /** `name@offset` for each identifier. */
 const at = (identifiers: readonly { name: string; start: number }[]): string[] => identifiers.map((i) => `${i.name}@${String(i.start)}`);
@@ -58,6 +58,16 @@ describe('server/syntax/navigation', () => {
       assert.deepEqual(hit?.target, { kind: 'global', name: 'x' });
     });
 
+    it('finds nothing on _ENV or on names resolved through a local _ENV, which are fields of a table', () => {
+      const text = '_ENV.x = 1\ndo local _ENV = {} G = 2 print(_ENV) end\n';
+      const document = parseDocument(text, 'lua');
+      for (const needle of ['_ENV.x', 'G', 'print']) {
+        assert.equal(targetAt(document, offsetOf(text, needle)), undefined, needle);
+      }
+      assert.equal(targetAt(document, offsetOf(text, '_ENV', 1))?.target.kind, 'local');
+      assert.equal(targetAt(document, offsetOf(text, '_ENV', 2))?.target.kind, 'local');
+    });
+
     it('returns nothing for an empty document', () => {
       assert.equal(targetAt(parseDocument('', 'lua'), 0), undefined);
     });
@@ -100,6 +110,11 @@ describe('server/syntax/navigation', () => {
       assert.deepEqual(definitionsAt(document, offsetOf(text, 'shown', 1)), ['shown@2', `shown@${String(offsetOf(text, 'shown', 1))}`]);
       assert.deepEqual(definitionsAt(document, offsetOf(text, 'hidden', 1)), []);
     });
+
+    it('leaves out fields of a local _ENV with the name of a global', () => {
+      const text = 'G = 1\ndo local _ENV = {} G = 2 end\n';
+      assert.deepEqual(definitionsAt(parseDocument(text, 'lua'), 0), ['G@0']);
+    });
   });
 
   describe('references', () => {
@@ -140,10 +155,46 @@ describe('server/syntax/navigation', () => {
       assert.deepEqual(referencesAt(text, 'g', 2, false), ['g@29']);
     });
 
+    it('leaves out fields of a local _ENV and _ENV itself', () => {
+      const text = 'print(G, _ENV)\ndo local _ENV = {} G = 2 print(G) end\n';
+      assert.deepEqual(referencesAt(text, 'G', 0, true), ['G@6']);
+      assert.deepEqual(referencesAt(text, 'print', 0, true), ['print@0']);
+    });
+
     it('finds globals in every Lua chunk of a .menu file, locals only in their own', () => {
       const text = "`\nflag = 1\nlocal own = flag\n`\nmenu\n{\n\tname 'M'\n\tenabled \"flag == own\"\n}\n";
       assert.deepEqual(referencesAt(text, 'flag', 2, true, 'menu'), ['flag@2', 'flag@23', `flag@${String(offsetOf(text, 'flag', 2))}`]);
       assert.deepEqual(referencesAt(text, 'own', 0, true, 'menu'), ['own@17']);
+    });
+  });
+
+  describe('across files', () => {
+    it('lists each shared global by name in document order, with its assignments', () => {
+      const text = 'print(n)\nn = 1\nlocal m = n\n';
+      assert.equal(text.slice(25, 26), 'n');
+      const occurrences = globalOccurrences(parseDocument(text, 'lua'));
+      assert.deepEqual([...occurrences.keys()].sort(), ['n', 'print']);
+      //            0          1          2
+      //            012345678 901234 56789012345
+      assert.deepEqual(occurrences.get('n'), [
+        { start: 6, end: 7, isWrite: false },
+        { start: 9, end: 10, isWrite: true },
+        { start: 25, end: 26, isWrite: false },
+      ]);
+    });
+
+    it('names the shared global under the cursor, and nothing for locals', () => {
+      const text = 'local l = g\nprint(l)\n';
+      const document = parseDocument(text, 'lua');
+      const nameAt = (needle: string): string | undefined => {
+        const hit = targetAt(document, offsetOf(text, needle));
+        assert.ok(hit, `no variable at "${needle}"`);
+        return sharedGlobalName(hit);
+      };
+      assert.equal(nameAt('g'), 'g');
+      assert.equal(nameAt('print'), 'print');
+      assert.equal(nameAt('l = g'), undefined);
+      assert.equal(nameAt('l)'), undefined);
     });
   });
 });

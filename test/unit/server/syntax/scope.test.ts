@@ -91,7 +91,7 @@ describe('server/syntax/scope', () => {
   });
 
   describe('environmentFields', () => {
-    const fields = (source: string): string[] => [...analyze(source).environmentFields].map((identifier) => `${identifier.name}@${String(identifier.start)}`);
+    const fields = (source: string): string[] => [...analyze(source).environmentFields.keys()].map((identifier) => `${identifier.name}@${String(identifier.start)}`);
 
     it('is empty while only the chunk\'s own _ENV is in effect', () => {
       assert.deepEqual(fields('print(x) _ENV.y = 1'), []);

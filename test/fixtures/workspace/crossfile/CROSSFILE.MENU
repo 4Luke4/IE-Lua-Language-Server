@@ -1,0 +1,14 @@
+-- Original fixture: Lua that uses the globals of crossfile/shared.lua (cross-file navigation).
+menu
+{
+	name 'CROSSFILE_MAIN'
+	button
+	{
+		enabled "CrossFile_Total > 0"
+		action
+		"
+			CrossFile_Add(1)
+			CrossFile_Total = 0
+		"
+	}
+}

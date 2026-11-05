@@ -65,8 +65,8 @@ node /path/to/server.js --stdio
 | Syntax errors | `textDocument/publishDiagnostics` | When `validate.mode` says so (see above). In `.menu` files, also warnings for text the game misreads. Warnings for doc comments (see below). |
 | Document symbols (outline) | `textDocument/documentSymbol` | Nested when the editor supports it, otherwise a flat list with container names. |
 | Folding | `textDocument/foldingRange` | Whole lines; the closing line of each construct stays visible. |
-| Go to definition | `textDocument/definition` | The declaration of a local, or every assignment to a global, in the same file. |
-| Find references | `textDocument/references` | Every use of a local or global in the same file. |
+| Go to definition | `textDocument/definition` | The declaration of a local, or every assignment to a global in the same file and in the other files of the workspace (as for workspace symbols, below). |
+| Find references | `textDocument/references` | Every use of a local in its file, or of a global in the same file and in the other files of the workspace (as for workspace symbols, below). |
 | Rename | `textDocument/prepareRename`, `textDocument/rename` | Same file only; refused, with the reason as the error message, when the rename could change what the code does. |
 | Hover | `textDocument/hover` | Markdown or plain text, whichever the editor prefers (`hover.contentFormat`); the server's own words follow the editor's `locale`. See below. |
 | Completion | `textDocument/completion`, `completionItem/resolve` | Triggered by `.` and `:`. Documentation is sent on resolve (with the item, for names with a doc comment), in the editor's preferred `completionItem.documentationFormat`. See below. |
@@ -75,9 +75,10 @@ node /path/to/server.js --stdio
 | Quick fixes | `textDocument/codeAction` | `.menu` files only: kinds `quickfix` and `source.fixAll.ieLua`. Needs `codeActionLiteralSupport`. See below. |
 | Workspace symbols | `workspace/symbol` | Every `*.lua` and `*.menu` file under the workspace folders, plus open files. See below. |
 
-Workspace symbols need an editor that sends **workspace folders** when it starts the server;
-otherwise only open files are searched. Files changed outside the editor are picked up when the
-editor supports **dynamic registration of watched files** (`workspace/didChangeWatchedFiles`);
+Workspace symbols, and go to definition and find references across files, need an editor that
+sends **workspace folders** when it starts the server; otherwise only open files are searched.
+Files changed outside the editor are picked up when the editor supports **dynamic registration
+of watched files** (`workspace/didChangeWatchedFiles`);
 otherwise they are picked up when the server restarts or the file is opened and closed. Files are
 skipped as VS Code's `files.exclude` setting says, which the server reads with
 `workspace/configuration` (section `files.exclude`). If your editor passes server *settings*
