@@ -56,6 +56,58 @@ describe('server/hover/render', () => {
     });
   });
 
+  describe('doc comments', () => {
+    const text = [
+      '--- Greets someone.',
+      '---',
+      '--- Uses **Markdown**.',
+      '---@param name string The name.',
+      '---@param times? integer',
+      '---@return string greeting # The text.',
+      '---@deprecated',
+      '---@see Other',
+      'local function greet(name, times) end',
+      '---@type integer',
+      'Count = 0',
+      '--- Redefined.',
+      'Infinity_DisplayString = nil',
+    ].join('\n');
+
+    it('renders the description, then each tag as VS Code renders JSDoc tags', () => {
+      assert.equal(
+        render(text, 'greet('),
+        `${fence('local function greet(name, times)')}\n\n---\n\nGreets someone.\n\nUses **Markdown**.\n\n` +
+          '*@param* `name` `string` — The name.  \n\n*@param* `times?` `integer`  \n\n*@return* `string` `greeting` — The text.  \n\n*@deprecated*  \n\n*@see* — Other',
+      );
+    });
+
+    it('renders plain text without markup', () => {
+      assert.equal(
+        render(text, 'greet(', 'plaintext'),
+        'local function greet(name, times)\n\nGreets someone.\n\nUses **Markdown**.\n\n' +
+          '@param name string — The name.\n@param times? integer\n@return string greeting — The text.\n@deprecated\n@see — Other',
+      );
+    });
+
+    it('shows a parameter\'s own @param entry', () => {
+      assert.equal(render(text, 'name, times)'), `${fence('(parameter) name')}\n\n---\n\n*@param* \`name\` \`string\` — The name.`);
+      assert.equal(render(text, 'times)', 'plaintext'), '(parameter) times\n\n@param times? integer');
+    });
+
+    it('documents a global by the doc comment of its first assignment, before its EEex-Docs link', () => {
+      assert.equal(render(text, 'Count'), `${fence('(global) Count')}\n\n---\n\n*@type* \`integer\``);
+      assert.match(render(text, 'Infinity'), /^```lua\n\(global\) Infinity_DisplayString\n```\n\n---\n\nRedefined\.\n\n---\n\n\[EE Game Lua Functions\]/);
+    });
+
+    it('widens code spans around types that contain backticks', () => {
+      assert.match(render('---@type `a`\nX = 1', 'X'), /\*@type\* `` `a` ``$/);
+    });
+
+    it('gives no documentation for a doc block without description or rendered tags', () => {
+      assert.equal(render('---@class Point\nlocal p = {}', 'p ='), fence('local p'));
+    });
+  });
+
   describe('libraries', () => {
     it('quotes the manual entry with its heading and a link to its section', () => {
       assert.equal(

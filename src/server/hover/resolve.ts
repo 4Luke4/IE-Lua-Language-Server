@@ -1,9 +1,11 @@
 // What a hover describes: the name under the cursor and what it refers to.
 // Pure: no LSP or `vscode` imports.
 //
-// - A local: its declaration (`local function f(a)`, a parameter, …).
+// - A local: its declaration (`local function f(a)`, a parameter, …), and its
+//   LuaCATS doc comment or `@param` entry (docComments/attach.ts).
 // - A global: shared by all chunks of a .menu file, as in navigation.ts.
-//   1. Assigned in this document: described by its first assignment; the
+//   1. Assigned in this document: described by its first assignment (and the
+//      doc comment above it); the
 //      document's own definition wins over the libraries (an EEex-Docs link is
 //      still given, since a link makes no claim about behaviour).
 //   2. Replaced by the engine (`print`): a note instead of the manual text.
@@ -20,6 +22,8 @@
 // Names resolved through a local `_ENV` are fields of that table, so they get
 // no hover. Without type inference that is the only safe answer.
 
+import { docCommentFor, parameterDoc } from '../docComments/attach.ts';
+import type { DocComment, DocParam } from '../docComments/parse.ts';
 import type * as Ast from '../syntax/ast.ts';
 import type { ParsedDocument } from '../syntax/document.ts';
 import { fieldWrites, globalPath, withoutG } from '../syntax/globalPaths.ts';
@@ -30,9 +34,13 @@ import { declarationSite, type DeclarationSite } from '../syntax/signatures.ts';
 import { engineReplacement, externalEntry, manualEntry, type EngineReplacement, type ExternalEntry, type ManualEntry } from './knowledge.ts';
 
 export type HoverTarget =
-  | { readonly kind: 'local'; readonly declaration: Declaration; readonly site: DeclarationSite | undefined }
-  /** A global without documentation; `site` is its first assignment in the document, if any. */
-  | { readonly kind: 'global'; readonly name: string; readonly site: DeclarationSite | undefined; readonly link: ExternalEntry | undefined }
+  /** `doc`: the doc comment of its declaration; `param`: the `@param` entry of a parameter (docComments/attach.ts). */
+  | { readonly kind: 'local'; readonly declaration: Declaration; readonly site: DeclarationSite | undefined; readonly doc: DocComment | undefined; readonly param: DocParam | undefined }
+  /**
+   * A global without library documentation; `site` is its first assignment in
+   * the document, if any, and `doc` the doc comment of that assignment.
+   */
+  | { readonly kind: 'global'; readonly name: string; readonly site: DeclarationSite | undefined; readonly doc: DocComment | undefined; readonly link: ExternalEntry | undefined }
   | { readonly kind: 'library'; readonly entry: ManualEntry }
   | { readonly kind: 'engineReplaced'; readonly replacement: EngineReplacement; readonly entry: ManualEntry | undefined }
   | { readonly kind: 'external'; readonly entry: ExternalEntry };
@@ -81,16 +89,22 @@ function knownGlobal(name: string): HoverTarget | undefined {
 function globalTarget(document: ParsedDocument, name: string): HoverTarget {
   const write = firstWrite(document, name);
   if (write) {
-    return { kind: 'global', name, site: declarationSite(document, write), link: externalEntry(name) };
+    return { kind: 'global', name, site: declarationSite(document, write), doc: docCommentFor(document, write), link: externalEntry(name) };
   }
-  return knownGlobal(name) ?? { kind: 'global', name, site: undefined, link: undefined };
+  return knownGlobal(name) ?? { kind: 'global', name, site: undefined, doc: undefined, link: undefined };
 }
 
 /** What to describe for a variable occurrence (see `targetAt`), or `undefined` when there is nothing to say. */
 export function variableTarget(document: ParsedDocument, { target, identifier, chunkIndex }: TargetHit): HoverTarget | undefined {
   if (target.kind === 'local') {
     const declaring = target.declaration.identifier;
-    return { kind: 'local', declaration: target.declaration, site: declaring && declarationSite(document, declaring) };
+    return {
+      kind: 'local',
+      declaration: target.declaration,
+      site: declaring && declarationSite(document, declaring),
+      doc: declaring && docCommentFor(document, declaring),
+      param: declaring && target.declaration.kind === 'parameter' ? parameterDoc(document, declaring) : undefined,
+    };
   }
   // A field of a local `_ENV` table, or `_ENV` itself (the chunk's upvalue, not a global).
   const scopes = document.chunks[chunkIndex]?.scopes;

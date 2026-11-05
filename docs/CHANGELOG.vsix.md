@@ -57,6 +57,10 @@ versions with an **even** middle number (for example 1.**2**.0) are stable relea
   the space the game needs before the closing backtick of a Lua block. Fix them all at once with
   *Fix all IE Lua auto-fixable problems*, or on every save with
   `"editor.codeActionsOnSave": { "source.fixAll.ieLua": "explicit" }`.
+- **Your own documentation on hover.** Write doc comments in the LuaCATS style used by other Lua
+  tools, `---` lines with `---@param`, `---@return`, `---@type`, `---@deprecated` and `---@see`,
+  right above a function or variable, and hovering it shows the description and tags. Hovering a
+  parameter shows its `---@param` line.
 - **Available in 14 languages**, following your VS Code display language.
 - **Works in other editors too**: setup guides for Sublime Text, Neovim, Emacs, JetBrains
   IDEs, Helix, Zed, Kate, Notepad++ and Geany are on the project page.

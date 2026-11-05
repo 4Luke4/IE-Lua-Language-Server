@@ -4,8 +4,10 @@
 // Layout: the name as Lua (a code block in Markdown), then the documentation,
 // then where it comes from. Documentation quoted from the Lua manual is
 // verbatim; only the server's own words (`parameter`, `global`, the note on
-// engine replacements) are localized.
+// engine replacements) are localized. The document's own LuaCATS doc comments
+// are rendered by docComments/render.ts.
 
+import { renderDocComment, renderParam } from '../docComments/render.ts';
 import type { Messages } from '../l10n.ts';
 import type * as Ast from '../syntax/ast.ts';
 import { parameterList, type DeclarationSite } from '../syntax/signatures.ts';
@@ -59,10 +61,18 @@ interface Parts {
 function parts(target: HoverTarget, format: HoverFormat, messages: Messages): Parts {
   const linkText = (link: Link): string => (format === 'markdown' ? `[${link.text}](${link.url})` : `${link.text} (${link.url})`);
   switch (target.kind) {
-    case 'local':
-      return { code: localSignature(target, messages) };
-    case 'global':
-      return { code: globalSignature(target.name, target.site, messages), ...(target.link ? { link: externalLink(target.link) } : {}) };
+    case 'local': {
+      const documentation = target.param ? renderParam(target.param, format) : target.doc && renderDocComment(target.doc, format);
+      return { code: localSignature(target, messages), ...(documentation === undefined ? {} : { documentation }) };
+    }
+    case 'global': {
+      const documentation = target.doc && renderDocComment(target.doc, format);
+      return {
+        code: globalSignature(target.name, target.site, messages),
+        ...(documentation === undefined ? {} : { documentation }),
+        ...(target.link ? { link: externalLink(target.link) } : {}),
+      };
+    }
     case 'library':
       return { code: target.entry.heading, documentation: format === 'markdown' ? target.entry.markdown : target.entry.plaintext, link: manualLink(target.entry) };
     case 'engineReplaced': {
