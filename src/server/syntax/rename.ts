@@ -2,7 +2,9 @@
 //
 // A rename is refused, rather than producing code that behaves differently,
 // when:
-// - the cursor is not on a variable name, or is on the implicit `self`;
+// - the cursor is not on a variable name (`_ENV` and names resolved through a
+//   local `_ENV`, which are fields of a table, are not), or is on the implicit
+//   `self`;
 // - the variable is a global the document never assigns: it is defined
 //   elsewhere (another file, the game, EEex), which a same-file rename cannot
 //   update;

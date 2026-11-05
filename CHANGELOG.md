@@ -63,12 +63,14 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   (the files of workspace symbols, `files.exclude` honored). The document's own results come
   first, then the other files in URI order. A request waits for files still queued for
   indexing, and answers `ContentModified` (LSP 3.17) if the document changed meanwhile. `_ENV`,
-  and names resolved through a local `_ENV`, are not globals and stay in their document.
+  and names resolved through a local `_ENV` (fields of that table, Lua 5.2 manual §2.2), are not
+  globals: they have no definition or references, in the document or elsewhere.
 - Rename (`textDocument/prepareRename`, `textDocument/rename`) within the document, for locals
   and for globals the document assigns. Refused, with a reason localized in VS Code: anything
-  that is not a variable, the implicit `self`, globals the document never assigns (defined in
-  another file, the game or EEex), code with syntax errors where the variable can occur, new names
-  that are not Lua names or are reserved words, and any rename that would change what a name
+  that is not a variable (including `_ENV` and names resolved through a local `_ENV`), the
+  implicit `self`, globals the document never assigns (defined in another file, the game or
+  EEex), code with syntax errors where the variable can occur, new names that are not Lua names
+  or are reserved words, and any rename that would change what a name
   refers to (checked by re-analyzing the renamed text). Edits are versioned when the client
   supports `documentChanges`.
 - Workspace symbols (`workspace/symbol`; *Go to Symbol in Workspace*): the outline symbols of every

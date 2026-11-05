@@ -27,8 +27,8 @@ export function register(connection: Connection, documents: TextDocuments<TextDo
         uri: document.uri,
         range: { start: document.positionAt(start), end: document.positionAt(end) },
       }));
-      const name = sharedGlobalName(parsed, hit);
-      // Locals, `_ENV` and fields of a local `_ENV` belong to this document alone.
+      const name = sharedGlobalName(hit);
+      // Locals belong to this document alone.
       if (name === undefined) {
         return here.length > 0 ? here : null;
       }

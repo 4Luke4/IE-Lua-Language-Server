@@ -95,7 +95,7 @@ function globalTarget(document: ParsedDocument, name: string): HoverTarget {
 }
 
 /** What to describe for a variable occurrence (see `targetAt`), or `undefined` when there is nothing to say. */
-export function variableTarget(document: ParsedDocument, { target, identifier, chunkIndex }: TargetHit): HoverTarget | undefined {
+export function variableTarget(document: ParsedDocument, { target }: TargetHit): HoverTarget | undefined {
   if (target.kind === 'local') {
     const declaring = target.declaration.identifier;
     return {
@@ -106,11 +106,7 @@ export function variableTarget(document: ParsedDocument, { target, identifier, c
       param: declaring && target.declaration.kind === 'parameter' ? parameterDoc(document, declaring) : undefined,
     };
   }
-  // A field of a local `_ENV` table, or `_ENV` itself (the chunk's upvalue, not a global).
-  const scopes = document.chunks[chunkIndex]?.scopes;
-  if (!scopes || scopes.environmentFields.has(identifier) || identifier.name === '_ENV') {
-    return undefined;
-  }
+  // `targetAt` never returns `_ENV` or a field of a local `_ENV` table.
   return globalTarget(document, target.name);
 }
 
