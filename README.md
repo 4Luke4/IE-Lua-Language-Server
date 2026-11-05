@@ -15,8 +15,9 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
 > [!NOTE]
 > This is an early version. It currently provides **syntax diagnostics**, **hover**,
 > **completion**, **semantic highlighting**, **formatting** (Lua files), **document symbols**,
-> **workspace symbols**, **folding**, and **go to definition**, **find references** and **rename**
-> within a file; cross-file navigation, formatting of `.menu` files and more are planned.
+> **workspace symbols**, **folding**, **quick fixes** (`.menu` files), and **go to definition**,
+> **find references** and **rename** within a file; cross-file navigation, formatting of `.menu`
+> files and more are planned.
 
 ## Features
 
@@ -70,6 +71,11 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
   follow Lua's scoping rules; globals are followed across all the Lua of a `.menu` file. Rename
   refuses, and says why, when it could change what the code does: a name already in use nearby,
   a reserved word, or a global that is defined outside the file.
+- **Quick fixes for `.menu` text the game misreads.** Put an unquoted name such as `My_Menu`, or
+  a word too long for the game, in quotes, or add the space the game needs before the closing
+  backtick of a Lua block, from the light bulb (Ctrl+.). *Fix all IE Lua auto-fixable problems*
+  fixes the whole file; to do it on every save, add
+  `"editor.codeActionsOnSave": { "source.fixAll.ieLua": "explicit" }` to your settings.
 - **Available in 14 languages**, following your VS Code display language.
 - **Works in other editors** through the Language Server Protocol.
 
