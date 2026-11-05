@@ -62,14 +62,14 @@ node /path/to/server.js --stdio
 
 | Feature | LSP request | Notes |
 | --- | --- | --- |
-| Syntax errors | `textDocument/publishDiagnostics` | When `validate.mode` says so (see above). In `.menu` files, also warnings for text the game misreads. |
+| Syntax errors | `textDocument/publishDiagnostics` | When `validate.mode` says so (see above). In `.menu` files, also warnings for text the game misreads. Warnings for doc comments (see below). |
 | Document symbols (outline) | `textDocument/documentSymbol` | Nested when the editor supports it, otherwise a flat list with container names. |
 | Folding | `textDocument/foldingRange` | Whole lines; the closing line of each construct stays visible. |
 | Go to definition | `textDocument/definition` | The declaration of a local, or every assignment to a global, in the same file. |
 | Find references | `textDocument/references` | Every use of a local or global in the same file. |
 | Rename | `textDocument/prepareRename`, `textDocument/rename` | Same file only; refused, with the reason as the error message, when the rename could change what the code does. |
 | Hover | `textDocument/hover` | Markdown or plain text, whichever the editor prefers (`hover.contentFormat`); the server's own words follow the editor's `locale`. See below. |
-| Completion | `textDocument/completion`, `completionItem/resolve` | Triggered by `.` and `:`. Documentation is sent on resolve, in the editor's preferred `completionItem.documentationFormat`. See below. |
+| Completion | `textDocument/completion`, `completionItem/resolve` | Triggered by `.` and `:`. Documentation is sent on resolve (with the item, for names with a doc comment), in the editor's preferred `completionItem.documentationFormat`. See below. |
 | Semantic tokens | `textDocument/semanticTokens/full`, `/full/delta`, `/range` | Names only (keywords, strings and comments are left to the editor's highlighting). See below. |
 | Formatting | `textDocument/formatting`, `/rangeFormatting`, `/onTypeFormatting` | `.lua` files only. Keeps your line breaks; uses the editor's tab size and spaces/tabs option. See below. |
 | Quick fixes | `textDocument/codeAction` | `.menu` files only: kinds `quickfix` and `source.fixAll.ieLua`. Needs `codeActionLiteralSupport`. See below. |
@@ -128,6 +128,18 @@ report an error the misread text hid.
 The `source.fixAll.ieLua` action applies every fix of the file, whether or not diagnostics were
 published; ask for that kind (or `source.fixAll`) to run it on save, if your editor can request
 code actions on save. Action titles follow the editor's `locale`, like hover.
+
+Hover and completion also show [LuaCATS](https://luals.github.io/wiki/annotations/) doc comments:
+a run of `---` lines, each alone on its line, directly above a `local function`, a `local` with
+one name, a `function` with one name or an assignment to one global (a global uses the comment
+above its first assignment). The description and the `---@param`, `---@return`, `---@type`,
+`---@deprecated` and `---@see` tags are shown in the order written, as VS Code shows JSDoc tags;
+a parameter shows its own `---@param` line. Types are shown as written and never checked. With
+the other diagnostics, the server publishes three warnings for doc comments:
+`doc-tag-malformed` (a `---@param` without a name or type, a `---@return` or `---@type` without a
+type), `doc-param-unknown` (a `---@param` the function written below does not have) and
+`doc-param-duplicate` (a parameter documented twice). Their messages follow the editor's
+`locale`, like hover.
 
 Symbols, folding, hover, completion, semantic tokens, formatting, quick fixes and navigation always reflect the current text, whatever `validate.mode` is.
 Navigation works on variables: table fields (`t.x`) and `goto` labels are not followed, and in a

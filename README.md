@@ -15,7 +15,8 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
 > [!NOTE]
 > This is an early version. It currently provides **syntax diagnostics**, **hover**,
 > **completion**, **semantic highlighting**, **formatting** (Lua files), **document symbols**,
-> **workspace symbols**, **folding**, **quick fixes** (`.menu` files), and **go to definition**,
+> **workspace symbols**, **folding**, **quick fixes** (`.menu` files), **LuaCATS doc comments**
+> in hover, completion and diagnostics, and **go to definition**,
 > **find references** and **rename** within a file; cross-file navigation, formatting of `.menu`
 > files and more are planned.
 
@@ -76,6 +77,21 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
   backtick of a Lua block, from the light bulb (Ctrl+.). *Fix all IE Lua auto-fixable problems*
   fixes the whole file; to do it on every save, add
   `"editor.codeActionsOnSave": { "source.fixAll.ieLua": "explicit" }` to your settings.
+- **Your own documentation from doc comments.** Write [LuaCATS](https://luals.github.io/wiki/annotations/)
+  doc comments, the `---` style other Lua tools read, on the lines right above a function or
+  variable:
+
+  ```lua
+  --- Builds a greeting.
+  ---@param name string Who to greet.
+  ---@return string greeting
+  local function greet(name) return "Hello, " .. name end
+  ```
+
+  Hover and completion then show the description and the `@param`, `@return`, `@type`,
+  `@deprecated` and `@see` tags, and hovering a parameter shows its `@param` line. Types are shown
+  as you write them; they are not checked. A warning points out a `---@param` that names a
+  parameter the function doesn't have, documents one twice, or misses its name or type.
 - **Available in 14 languages**, following your VS Code display language.
 - **Works in other editors** through the Language Server Protocol.
 
