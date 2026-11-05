@@ -13,6 +13,8 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-05
+
 ### Added
 
 - Language server (separate Node process; IPC in VS Code, `--stdio` for other editors) with
@@ -267,3 +269,6 @@ Development tooling only; the extension's bundles are unchanged.
   before using it: commits must be full SHAs, and every entry must be an identifier with a deep
   link inside the EEex documentation. Otherwise it stops without writing. It also reads the
   existing data file without a separate existence check (CodeQL `js/file-system-race`).
+
+[Unreleased]: https://github.com/4Luke4/IE-Lua-Language-Server/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/4Luke4/IE-Lua-Language-Server/releases/tag/v1.0.0
