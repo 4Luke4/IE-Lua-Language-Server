@@ -1,0 +1,12 @@
+-- Original fixture: text the engine misreads, each with a quick fix.
+`
+fixtureFixed = true`
+menu
+{
+	name Quick_Fix
+	label
+	{
+		area 0 0 10 10
+		text Another_Name
+	}
+}

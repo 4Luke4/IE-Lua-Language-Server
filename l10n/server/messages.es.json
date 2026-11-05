@@ -2,5 +2,9 @@
   "hover.kind.parameter": "parámetro",
   "hover.kind.forVariable": "variable for",
   "hover.kind.global": "global",
-  "hover.engineReplaced": "El motor del juego reemplaza {0} por una función propia, por lo que la descripción del manual de Lua 5.2 no se aplica. Consulte {1}."
+  "hover.engineReplaced": "El motor del juego reemplaza {0} por una función propia, por lo que la descripción del manual de Lua 5.2 no se aplica. Consulte {1}.",
+  "codeAction.quote": "Encerrar entre comillas",
+  "codeAction.insertSpace": "Insertar un espacio antes de la comilla invertida de cierre",
+  "codeAction.fixAllOfCode": "Corregir todos los problemas {0}",
+  "codeAction.fixAll": "Corregir todos los problemas de IE Lua que se pueden corregir automáticamente"
 }

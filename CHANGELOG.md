@@ -156,6 +156,32 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   - Every result is lexed again and must have the same tokens and comments, or nothing changes.
   - Registered dynamically for Lua documents only (language `lua`, or `*.lua` in any letter case)
     when the client supports it, so `.menu` files have no formatter; static otherwise.
+- Quick fixes (`textDocument/codeAction`) for three `.menu` diagnostics, with the remedy
+  [IESDP](https://gibberlings3.github.io/iesdp/file_formats/ie_formats/menu_v1.htm) states:
+  - `menu-unquoted-underscore`: *Enclose in quotes* (`My_Menu` → `"My_Menu"`; "Always quote
+    names"). A run without a letter (`10_0`) gets no fix: it is not a name, and quoting would
+    make a number a string.
+  - `menu-word-too-long`: *Enclose in quotes* ("Quoted strings are not limited"); the whole run
+    when the word is joined to `_`.
+  - `menu-inline-lua-last-character`: *Insert a space before the closing backtick* ("end every
+    inline block with a line break or a space"), so the engine drops the space instead of code.
+  - Each fix is preferred (`isPreferred`) and linked to its diagnostic; when the file has several
+    problems of the code, *Fix all `<code>` problems* fixes them together.
+  - `source.fixAll.ieLua` applies every fix of the file, also from `editor.codeActionsOnSave`
+    (`{ "source.fixAll.ieLua": "explicit" }`) and whether or not diagnostics were published
+    (`ieLua.validate.mode` `manual`). The kind is stable: settings refer to it.
+  - No fix for `lua-syntax`, `menu-unterminated-string` or `menu-unterminated-block`: where the
+    text should end, or how to repair the Lua, would be a guess.
+  - The current text is analyzed again for every request: a diagnostic from an older version of
+    the file (published on save, before later edits) gets no fix rather than an edit in the wrong
+    place. Every set of edits is checked by lexing the result: the remaining problems must be
+    exactly those no fix touches, or nothing is offered (and an error is logged).
+  - The fixes change the Lua the engine compiles, as intended: the character it dropped before
+    the backtick now runs, and a quoted property value is compiled whole (`enabled "My_Var"` is
+    `My_Var`, not `My`). The Lua is validated as usual afterwards; it may report an error the
+    dropped or split text hid.
+  - Titles are localized like the hover labels. Advertised only to clients that accept
+    `CodeAction` literals (`codeActionLiteralSupport`).
 - Error-tolerant Lua 5.2 parser and scope analysis (`src/server/syntax/`), checked against the
   official compiler by a differential test; it publishes no diagnostics of its own.
 - Localization of the manifest, UI strings and the language server's hover labels into all 14 VS

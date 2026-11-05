@@ -2,5 +2,9 @@
   "hover.kind.parameter": "parametr",
   "hover.kind.forVariable": "proměnná for",
   "hover.kind.global": "globální",
-  "hover.engineReplaced": "Herní engine nahrazuje {0} vlastní funkcí, takže popis v příručce Lua 5.2 neplatí. Viz {1}."
+  "hover.engineReplaced": "Herní engine nahrazuje {0} vlastní funkcí, takže popis v příručce Lua 5.2 neplatí. Viz {1}.",
+  "codeAction.quote": "Uzavřít do uvozovek",
+  "codeAction.insertSpace": "Vložit mezeru před uzavírací zpětný apostrof",
+  "codeAction.fixAllOfCode": "Opravit všechny problémy {0}",
+  "codeAction.fixAll": "Opravit všechny automaticky opravitelné problémy IE Lua"
 }

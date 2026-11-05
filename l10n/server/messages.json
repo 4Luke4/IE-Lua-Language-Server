@@ -2,5 +2,9 @@
   "hover.kind.parameter": "parameter",
   "hover.kind.forVariable": "for variable",
   "hover.kind.global": "global",
-  "hover.engineReplaced": "The game engine replaces {0} with its own function, so the description in the Lua 5.2 manual does not apply. See {1}."
+  "hover.engineReplaced": "The game engine replaces {0} with its own function, so the description in the Lua 5.2 manual does not apply. See {1}.",
+  "codeAction.quote": "Enclose in quotes",
+  "codeAction.insertSpace": "Insert a space before the closing backtick",
+  "codeAction.fixAllOfCode": "Fix all {0} problems",
+  "codeAction.fixAll": "Fix all IE Lua auto-fixable problems"
 }

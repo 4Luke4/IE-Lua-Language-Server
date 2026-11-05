@@ -15,6 +15,7 @@ import {
 } from 'vscode-languageserver/node';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { ParsedDocumentCache } from './documentCache.ts';
+import * as codeActions from './features/codeActions.ts';
 import * as completion from './features/completion.ts';
 import * as definition from './features/definition.ts';
 import * as diagnostics from './features/diagnostics.ts';
@@ -105,7 +106,12 @@ connection.onInitialize((params) => {
   });
   definition.register(connection, documents, { cache: parsed });
   references.register(connection, documents, { cache: parsed });
-  rename.register(connection, documents, { cache: parsed, documentChanges: workspace?.workspaceEdit?.documentChanges === true });
+  const documentChanges = workspace?.workspaceEdit?.documentChanges === true;
+  rename.register(connection, documents, { cache: parsed, documentChanges });
+  const codeActionLiterals = codeActions.supportsCodeActionLiterals(params.capabilities.textDocument?.codeAction?.codeActionLiteralSupport);
+  if (codeActionLiterals) {
+    codeActions.register(connection, documents, { messages, documentChanges });
+  }
   workspaceSymbols.register(connection, documents, { cache: parsed, index });
   semanticTokens.register(connection, documents, { cache: parsed });
   formatting.register(connection, documents, { cache: parsed });
@@ -145,6 +151,7 @@ connection.onInitialize((params) => {
       workspaceSymbolProvider: true,
       hoverProvider: true,
       completionProvider: { triggerCharacters: [...completion.TRIGGER_CHARACTERS], resolveProvider: true },
+      ...(codeActionLiterals ? { codeActionProvider: { codeActionKinds: [...codeActions.CODE_ACTION_KINDS] } } : {}),
       semanticTokensProvider: { legend: semanticTokens.LEGEND, full: { delta: true }, range: true },
       ...formatting.staticCapabilities(formattingRegistration),
       ...(workspaceFolderChanges ? { workspace: { workspaceFolders: { supported: true, changeNotifications: true } } } : {}),

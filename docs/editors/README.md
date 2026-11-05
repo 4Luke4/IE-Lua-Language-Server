@@ -72,6 +72,7 @@ node /path/to/server.js --stdio
 | Completion | `textDocument/completion`, `completionItem/resolve` | Triggered by `.` and `:`. Documentation is sent on resolve, in the editor's preferred `completionItem.documentationFormat`. See below. |
 | Semantic tokens | `textDocument/semanticTokens/full`, `/full/delta`, `/range` | Names only (keywords, strings and comments are left to the editor's highlighting). See below. |
 | Formatting | `textDocument/formatting`, `/rangeFormatting`, `/onTypeFormatting` | `.lua` files only. Keeps your line breaks; uses the editor's tab size and spaces/tabs option. See below. |
+| Quick fixes | `textDocument/codeAction` | `.menu` files only: kinds `quickfix` and `source.fixAll.ieLua`. Needs `codeActionLiteralSupport`. See below. |
 | Workspace symbols | `workspace/symbol` | Every `*.lua` and `*.menu` file under the workspace folders, plus open files. See below. |
 
 Workspace symbols need an editor that sends **workspace folders** when it starts the server;
@@ -117,6 +118,17 @@ turned on; see its documentation). When the editor supports dynamic registration
 offered for Lua documents only (language `lua`, or `*.lua` in any letter case), so `.menu` files
 have no formatter; other editors get no edits for `.menu` files.
 
-Symbols, folding, hover, completion, semantic tokens, formatting and navigation always reflect the current text, whatever `validate.mode` is.
+Quick fixes cover three `.menu` diagnostics, with the remedy IESDP gives:
+`menu-unquoted-underscore` and `menu-word-too-long` put the text in `"…"`, and
+`menu-inline-lua-last-character` inserts a space before the closing backtick. The action is
+offered for a diagnostic only while its problem is still at the same place in the current text.
+A fix changes the Lua the game compiles, as intended: the character it dropped before the
+backtick now runs, and a quoted Lua property value is compiled whole, so validation may then
+report an error the misread text hid.
+The `source.fixAll.ieLua` action applies every fix of the file, whether or not diagnostics were
+published; ask for that kind (or `source.fixAll`) to run it on save, if your editor can request
+code actions on save. Action titles follow the editor's `locale`, like hover.
+
+Symbols, folding, hover, completion, semantic tokens, formatting, quick fixes and navigation always reflect the current text, whatever `validate.mode` is.
 Navigation works on variables: table fields (`t.x`) and `goto` labels are not followed, and in a
 `.menu` file globals are shared by all its Lua, while locals stay in their own block or script.

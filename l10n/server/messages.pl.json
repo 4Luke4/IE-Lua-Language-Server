@@ -2,5 +2,9 @@
   "hover.kind.parameter": "parametr",
   "hover.kind.forVariable": "zmienna for",
   "hover.kind.global": "globalna",
-  "hover.engineReplaced": "Silnik gry zastępuje {0} własną funkcją, więc opis z podręcznika Lua 5.2 nie ma zastosowania. Zobacz {1}."
+  "hover.engineReplaced": "Silnik gry zastępuje {0} własną funkcją, więc opis z podręcznika Lua 5.2 nie ma zastosowania. Zobacz {1}.",
+  "codeAction.quote": "Ujmij w cudzysłów",
+  "codeAction.insertSpace": "Wstaw spację przed zamykającym grawisem",
+  "codeAction.fixAllOfCode": "Napraw wszystkie problemy {0}",
+  "codeAction.fixAll": "Napraw wszystkie automatycznie naprawialne problemy IE Lua"
 }

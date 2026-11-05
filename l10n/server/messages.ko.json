@@ -2,5 +2,9 @@
   "hover.kind.parameter": "매개 변수",
   "hover.kind.forVariable": "for 변수",
   "hover.kind.global": "전역",
-  "hover.engineReplaced": "게임 엔진이 {0}을(를) 자체 함수로 대체하므로 Lua 5.2 설명서의 설명은 적용되지 않습니다. {1}을(를) 참조하세요."
+  "hover.engineReplaced": "게임 엔진이 {0}을(를) 자체 함수로 대체하므로 Lua 5.2 설명서의 설명은 적용되지 않습니다. {1}을(를) 참조하세요.",
+  "codeAction.quote": "따옴표로 묶기",
+  "codeAction.insertSpace": "닫는 백틱 앞에 공백 삽입",
+  "codeAction.fixAllOfCode": "모든 {0} 문제 해결",
+  "codeAction.fixAll": "자동 수정 가능한 모든 IE Lua 문제 해결"
 }

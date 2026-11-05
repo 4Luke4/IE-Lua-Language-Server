@@ -2,5 +2,9 @@
   "hover.kind.parameter": "paramètre",
   "hover.kind.forVariable": "variable for",
   "hover.kind.global": "globale",
-  "hover.engineReplaced": "Le moteur du jeu remplace {0} par sa propre fonction : la description du manuel Lua 5.2 ne s'applique donc pas. Voir {1}."
+  "hover.engineReplaced": "Le moteur du jeu remplace {0} par sa propre fonction : la description du manuel Lua 5.2 ne s'applique donc pas. Voir {1}.",
+  "codeAction.quote": "Mettre entre guillemets",
+  "codeAction.insertSpace": "Insérer un espace avant l'accent grave fermant",
+  "codeAction.fixAllOfCode": "Corriger tous les problèmes {0}",
+  "codeAction.fixAll": "Corriger tous les problèmes IE Lua corrigibles automatiquement"
 }
