@@ -115,9 +115,13 @@ when the editor sends them. A file with a syntax error is not formatted (the rea
 server log). On-type formatting re-indents a line when you type the last character of `end`,
 `else`, `elseif`, `until`, `)`, `]` or `}` at its start, and formats the line you leave with
 Enter, if your editor sends on-type formatting requests (some send them only when an option is
-turned on; see its documentation). When the editor supports dynamic registration, formatting is
-offered for Lua documents only (language `lua`, or `*.lua` in any letter case), so `.menu` files
-have no formatter; other editors get no edits for `.menu` files.
+turned on; see its documentation). Formatting is offered for Lua documents (language `lua`, or
+`*.lua` in any letter case) and `.menu` documents (language `ie-menu`, or `*.menu` in any letter
+case). In a `.menu` file, each line is indented by the `{ … }` blocks open at its start and the
+embedded Lua is formatted one level deeper than the line it starts on (`` ` `` blocks outside any
+block stay at level 0); strings that are not Lua, the spacing between `.menu` words and every
+line break are kept. A Lua script with a syntax error is left as written while the rest of the
+file is formatted; a file with an unterminated string or `` ` `` block is not formatted.
 
 Quick fixes cover three `.menu` diagnostics, with the remedy IESDP gives:
 `menu-unquoted-underscore` and `menu-word-too-long` put the text in `"…"`, and

@@ -50,7 +50,7 @@ lua.catch((error: unknown) => {
 let configurationPull = false;
 let watchedFilesRegistration = false;
 let workspaceFolderChanges = false;
-/** Formatting requests registered in `initialized`, for .lua documents only. */
+/** Formatting requests registered in `initialized`, for Lua and .menu documents. */
 let formattingRegistration: formatting.FormattingRegistration = { document: false, range: false, onType: false };
 /** Workspace folder URIs, kept up to date from `workspace/didChangeWorkspaceFolders`. */
 let folders: string[] = [];

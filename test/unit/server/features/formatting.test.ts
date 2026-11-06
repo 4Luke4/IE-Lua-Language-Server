@@ -5,19 +5,26 @@ import {
   dynamicRegistration,
   formatterOptions,
   formattingEdits,
-  LUA_SELECTOR,
+  FORMAT_SELECTOR,
   staticCapabilities,
   type FormattingLog,
+  type Formatters,
 } from '../../../../src/server/features/formatting.ts';
 import { formatDocument } from '../../../../src/server/formatting/format.ts';
+import { formatMenuDocument } from '../../../../src/server/formatting/menuFormat.ts';
 
 const OPTIONS = { tabSize: 2, insertSpaces: true };
+
+const formatters = (options = OPTIONS): Formatters => ({
+  lua: (source, tree) => formatDocument(source, tree, options),
+  menu: (parsed) => formatMenuDocument(parsed, options),
+});
 
 function run(uri: string, languageId: string, text: string, refusalLevel?: 'debug' | 'info'): { edits: ReturnType<typeof formattingEdits>; logged: string[] } {
   const logged: string[] = [];
   const log: FormattingLog = (level, message) => logged.push(`${level}: ${message}`);
   const document = TextDocument.create(uri, languageId, 1, text);
-  const edits = formattingEdits(document, new ParsedDocumentCache(), (source, tree) => formatDocument(source, tree, OPTIONS), log, refusalLevel);
+  const edits = formattingEdits(document, new ParsedDocumentCache(), formatters(), log, refusalLevel);
   return { edits, logged };
 }
 
@@ -31,9 +38,22 @@ describe('server/features/formatting', () => {
     ]);
   });
 
-  it('does not format .menu documents, by language ID or by extension', () => {
-    assert.equal(run('file:///UI.MENU', 'ie-menu', '`x=1`').edits, null);
-    assert.equal(run('file:///UI.MENU', 'plaintext', '`x=1`').edits, null);
+  it('formats .menu documents, by language ID or by extension', () => {
+    const expected = [{ range: { start: { line: 1, character: 0 }, end: { line: 1, character: 0 } }, newText: '  ' }];
+    assert.deepEqual(run('file:///UI.MENU', 'ie-menu', 'menu {\nname "m"\n}').edits, expected);
+    assert.deepEqual(run('file:///UI.MENU', 'plaintext', 'menu {\nname "m"\n}').edits, expected);
+  });
+
+  it('answers null and logs why for .menu files with an unterminated string', () => {
+    const { edits, logged } = run('file:///UI.MENU', 'ie-menu', 'name "m');
+    assert.equal(edits, null);
+    assert.deepEqual(logged, ['info: Not formatting file:///UI.MENU: it has an unterminated string or Lua block.']);
+  });
+
+  it('formats the rest of a .menu file and logs the Lua chunks left as written', () => {
+    const { edits, logged } = run('file:///UI.MENU', 'ie-menu', 'menu {\nonOpen "if x then"\nname "m"\n}');
+    assert.equal(edits?.length, 2);
+    assert.deepEqual(logged, ['info: Formatting file:///UI.MENU: 1 Lua chunk(s) with a syntax error left as written.']);
   });
 
   it('answers null and logs why for syntax errors', () => {
@@ -48,7 +68,7 @@ describe('server/features/formatting', () => {
     const edits = formattingEdits(
       document,
       new ParsedDocumentCache(),
-      (source, tree) => formatDocument(source, tree, { tabSize: 0, insertSpaces: true }),
+      formatters({ tabSize: 0, insertSpaces: true }),
       (level, message) => logged.push(`${level}: ${message}`),
       'debug',
     );
@@ -84,12 +104,16 @@ describe('server/features/formatting', () => {
     assert.deepEqual(Object.keys(staticCapabilities(dynamic)), ['documentOnTypeFormattingProvider']);
   });
 
-  it('selects Lua documents by language ID and by extension in any letter case, for the served schemes', () => {
-    assert.deepEqual(LUA_SELECTOR, [
+  it('selects Lua and .menu documents by language ID and by extension in any letter case, for the served schemes', () => {
+    assert.deepEqual(FORMAT_SELECTOR, [
       { language: 'lua', scheme: 'file' },
       { scheme: 'file', pattern: '**/*.[lL][uU][aA]' },
+      { language: 'ie-menu', scheme: 'file' },
+      { scheme: 'file', pattern: '**/*.[mM][eE][nN][uU]' },
       { language: 'lua', scheme: 'untitled' },
       { scheme: 'untitled', pattern: '**/*.[lL][uU][aA]' },
+      { language: 'ie-menu', scheme: 'untitled' },
+      { scheme: 'untitled', pattern: '**/*.[mM][eE][nN][uU]' },
     ]);
   });
 });

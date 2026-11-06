@@ -13,6 +13,35 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
 
 ## [Unreleased]
 
+### Added
+
+- Formatting of `.menu` files (`textDocument/formatting`, `/rangeFormatting` and
+  `/onTypeFormatting`; `src/server/formatting/menuFormat.ts`), layout-preserving like Lua
+  formatting. The formatting selector (`FORMAT_SELECTOR`, formerly `LUA_SELECTOR`) adds the
+  `ie-menu` language and `**/*.[mM][eE][nN][uU]`.
+  - Only white space the engine's lexer skips changes (IESDP, MENU file format, Lexical
+    structure). Each line is indented by the `{ … }` blocks open at its start; a line that starts
+    with `}` is indented like the line that opened the block. Trailing white space is removed and
+    blank lines are emptied. The spacing within a line is kept, and the lines of a string that is
+    not Lua (`text "…"`) are never touched.
+  - Each Lua chunk is formatted by the Lua rules (`formatEmbedded`, new in
+    `src/server/formatting/format.ts`), its lines one level deeper than the line where it starts
+    (`action "`, or a `"` on its own line). `` ` `` blocks outside any `{ … }` block hold a file's
+    top-level Lua and stay at level 0. A line that starts with the closing backtick or quote is
+    indented like the line where the chunk starts. The white space before the first Lua item on
+    the opening line, and after the last one on the closing line, is kept.
+  - The character before a closing backtick, which the engine drops, stays white space or is
+    not touched. A chunk with a Lua syntax error (including Lua the engine sees cut short by
+    that dropped character) is left as written, the rest of the file is formatted, and the count
+    is logged.
+  - A file with an unterminated string or `` ` `` block is not formatted (logged). The result is
+    lexed and extracted again and must give the same menu tokens, Lua chunks, Lua tokens and
+    comments, problems and lines, or nothing is changed.
+  - Range formatting keeps the edits of the touched lines. On-type formatting uses the Lua
+    triggers: a line break formats the line it ended; the last character of a Lua closer, or a
+    `}` of the menu, that starts its line re-indents that line. `insertFinalNewline` and
+    `trimFinalNewlines` are honored for document formatting.
+
 ## [1.0.0] - 2026-11-05
 
 ### Added

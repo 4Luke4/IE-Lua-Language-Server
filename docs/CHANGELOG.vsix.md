@@ -8,6 +8,14 @@ versions with an **even** middle number (for example 1.**2**.0) are stable relea
 
 ## [Unreleased]
 
+### Added
+
+- **Format Document and Format Selection for `.menu` files.** Each line is indented by the
+  `{ … }` blocks around it, and the Lua inside is formatted like a Lua file, one level deeper
+  than the line it starts on. Line breaks, the spacing between `.menu` words and text the game
+  reads as a string stay exactly as written. A Lua script with a syntax error is left as it is,
+  and the rest of the file is still formatted. *Editor: Format On Type* works here too.
+
 ## [1.0.0] - 2026-11-05
 
 ### Added

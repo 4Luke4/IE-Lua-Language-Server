@@ -14,11 +14,10 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
 
 > [!NOTE]
 > This is an early version. It currently provides **syntax diagnostics**, **hover**,
-> **completion**, **semantic highlighting**, **formatting** (Lua files), **document symbols**,
+> **completion**, **semantic highlighting**, **formatting** (Lua and `.menu` files), **document symbols**,
 > **workspace symbols**, **folding**, **quick fixes** (`.menu` files), **LuaCATS doc comments**
 > in hover, completion and diagnostics, **go to definition** and **find references** across
-> the files of your workspace, and **rename** within a file; formatting of `.menu`
-> files and more are planned.
+> the files of your workspace, and **rename** within a file; more is planned.
 
 ## Features
 
@@ -62,12 +61,16 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
     "rules": { "*.global": { "bold": true } }
   }
   ```
-- **Format Document and Format Selection** for Lua files: indentation, spacing within a line and
+- **Format Document and Format Selection** for Lua and `.menu` files: indentation, spacing within a line and
   trailing white space are fixed, while your line breaks stay where they are and strings and
   comments are never changed (apart from trailing white space after a `--` comment). Tabs or spaces follow your editor settings (*Editor: Tab Size*,
   *Editor: Insert Spaces*). Turn on *Editor: Format On Type* to have `end`, `else` and closing
   brackets re-indented as you type them, or *Editor: Format On Save*. Files with a syntax error
-  are left unchanged. `.menu` files are not formatted yet.
+  are left unchanged. In `.menu` files, each line is indented by the `{ … }` blocks around it and
+  the Lua inside is formatted one level deeper than the line it starts on (the Lua of a
+  `` ` `` block outside any menu stays at the left margin, as in a Lua file); text the game reads
+  as a string, the spacing between `.menu` words and every line break stay exactly as written.
+  A Lua script with a syntax error is left as it is, and the rest of the file is still formatted.
 - **Go to Definition and Find All References** for variables. Locals follow Lua's scoping rules.
   Globals are followed across every Lua and `.menu` file of your workspace, even files you
   haven't opened, because the game runs all of its Lua in

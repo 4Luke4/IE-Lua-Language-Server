@@ -65,7 +65,8 @@ export type FormatResult =
 export const MIN_TAB_SIZE = 1;
 export const MAX_TAB_SIZE = 100;
 
-const validOptions = (options: FormattingOptions): boolean =>
+/** Whether the options are ones the formatter accepts (see `MIN_TAB_SIZE`). */
+export const validOptions = (options: FormattingOptions): boolean =>
   !options.insertSpaces || (Number.isInteger(options.tabSize) && options.tabSize >= MIN_TAB_SIZE && options.tabSize <= MAX_TAB_SIZE);
 
 /** Characters after which clients ask for on-type formatting. */
@@ -160,7 +161,7 @@ function tokenFacts(tokens: readonly Token[], tree: Ast.Chunk): TokenFacts {
 }
 
 /** Line start offsets as LSP counts lines (`\r\n`, `\r` and `\n` each end one). */
-function lineStarts(text: string): number[] {
+export function lineStarts(text: string): number[] {
   const starts = [0];
   for (let i = 0; i < text.length; i++) {
     const c = text[i];
@@ -175,7 +176,7 @@ function lineStarts(text: string): number[] {
 }
 
 /** Zero-based line of `offset`. */
-function lineAt(starts: readonly number[], offset: number): number {
+export function lineAt(starts: readonly number[], offset: number): number {
   let low = 0;
   let high = starts.length - 1;
   while (low < high) {
@@ -400,11 +401,12 @@ function allEdits(
 }
 
 /** The first line break of the text, or `\n` when it has none. */
-function endOfLine(text: string): string {
+export function endOfLine(text: string): string {
   return /\r\n|\r|\n/.exec(text)?.[0] ?? '\n';
 }
 
-function applyEdits(text: string, edits: readonly OffsetEdit[]): string {
+/** Applies disjoint edits given in document order. */
+export function applyEdits(text: string, edits: readonly OffsetEdit[]): string {
   let result = '';
   let position = 0;
   for (const edit of edits) {
@@ -525,21 +527,31 @@ export function formatOnType(text: string, tree: Ast.Chunk, options: FormattingO
     const blank = text.slice(lineStart, lineEnd).trim() === '';
     return formatSpan(text, tree, options, { from: starts[line - 1] ?? 0, to: lineEnd, keep: (edit) => !(blank && edit.start >= lineStart) });
   }
-  if (!ON_TYPE_MORE_TRIGGERS.includes(character)) return { ok: true, edits: [] };
+  const closer = typedCloser(text, tree, lineStart, offset, character);
+  if (closer === undefined) return { ok: true, edits: [] };
+  // Up to the end of the closer, which must not be an error itself (an `end` too many).
+  // A keyword or symbol has no edits inside, so only the indentation is kept.
+  return formatSpan(text, tree, options, { from: lineStart, to: closer });
+}
+
+/**
+ * When typing `character` just completed a closer (`end`, `else`, `elseif`, `until`,
+ * `)`, `]`, `}`) of `tree` that ends at `offset` and is the first token of the line
+ * starting at `lineStart`: the end offset of that closer. Otherwise `undefined`.
+ */
+export function typedCloser(text: string, tree: Ast.Chunk, lineStart: number, offset: number, character: string): number | undefined {
+  if (!ON_TYPE_MORE_TRIGGERS.includes(character)) return undefined;
   // Cheap test first: these characters are typed inside any word (`field`, `self`), and lexing
   // the document for each of them would cost a full pass. The lexer then confirms the closer
   // is a token, not part of a string, a comment or a longer name.
   const typed = text.slice(lineStart, offset).trim();
-  if (!CLOSERS.has(typed) || !typed.endsWith(character)) return { ok: true, edits: [] };
+  if (!CLOSERS.has(typed) || !typed.endsWith(character)) return undefined;
   const { tokens } = lex(text, tree.start, tree.end);
   const index = tokens.findIndex((token) => token.end === offset && token.type !== 'string');
   const token = tokens[index];
   const before = tokens[index - 1];
-  if (token === undefined || !CLOSERS.has(token.value) || !token.value.endsWith(character)) return { ok: true, edits: [] };
+  if (token === undefined || !CLOSERS.has(token.value) || !token.value.endsWith(character)) return undefined;
   // The closer must be the first token of its line, and no comment may come before it there.
   const firstOnLine = (before === undefined || before.end <= lineStart) && text.slice(lineStart, token.start).trim() === '';
-  if (!firstOnLine) return { ok: true, edits: [] };
-  // Up to the end of the closer, which must not be an error itself (an `end` too many).
-  // A keyword or symbol has no edits inside, so only the indentation is kept.
-  return formatSpan(text, tree, options, { from: lineStart, to: token.end });
+  return firstOnLine ? token.end : undefined;
 }
