@@ -419,11 +419,22 @@ export function applyEdits(text: string, edits: readonly OffsetEdit[]): string {
 /**
  * The safety check: the edited text lexes to the same tokens, comments and errors,
  * with as many line breaks before its last token or comment.
+ *
+ * Every edit lies within the chunk (`allEdits` changes only the white space between its
+ * items, and inserts a final newline at its end), so only the chunk's text is compared:
+ * for a .menu file with thousands of chunks, rebuilding the whole document for each one
+ * would cost the document's length every time. An edit outside the chunk fails the check.
  */
 function preservesTokens(text: string, edits: readonly OffsetEdit[], before: LexResult, tree: Ast.Chunk): boolean {
-  const formatted = applyEdits(text, edits);
-  const delta = formatted.length - text.length;
-  const after = lex(formatted, tree.start, tree.end + delta);
+  if (edits.some((edit) => edit.start < tree.start || edit.end > tree.end)) return false;
+  const original = text.slice(tree.start, tree.end);
+  const formatted = applyEdits(
+    original,
+    edits.map((edit) => ({ start: edit.start - tree.start, end: edit.end - tree.start, newText: edit.newText })),
+  );
+  // The lexer reads only `[from, to)` and has no rule for the start of the input, so the
+  // chunk's text alone lexes like the chunk in place, its offsets shifted by `tree.start`.
+  const after = lex(formatted);
   const sameTokens =
     before.tokens.length === after.tokens.length &&
     before.tokens.every((token, i) => {
@@ -441,10 +452,10 @@ function preservesTokens(text: string, edits: readonly OffsetEdit[], before: Lex
       return other !== undefined && other.long === comment.long && commentText(text, comment) === commentText(formatted, other);
     });
   // Line breaks after the last token or comment are the final newlines that the options may change.
-  const contentEnd = (result: LexResult): number =>
-    Math.max(result.tokens.at(-2)?.end ?? 0, result.comments.at(-1)?.end ?? 0);
+  const contentEnd = (result: LexResult, origin: number): number =>
+    Math.max(origin, result.tokens.at(-2)?.end ?? origin, result.comments.at(-1)?.end ?? origin) - origin;
   const sameLines =
-    lineStarts(text.slice(0, contentEnd(before))).length === lineStarts(formatted.slice(0, contentEnd(after))).length;
+    lineStarts(original.slice(0, contentEnd(before, tree.start))).length === lineStarts(formatted.slice(0, contentEnd(after, 0))).length;
   return sameTokens && sameComments && sameLines && after.errors.length === before.errors.length;
 }
 

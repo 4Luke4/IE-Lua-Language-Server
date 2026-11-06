@@ -76,9 +76,20 @@ function chunkAt(document: ParsedDocument, offset: number): number {
   return document.chunks.findIndex(({ tree }) => tree.start <= offset && offset <= tree.end);
 }
 
-/** Whether the document assigns the global `name` anywhere (`require = …`, `function require()`). */
+/** The globals each document assigns anywhere (`require = …`, `function require()`); dropped with the document. */
+const assignedGlobals = new WeakMap<ParsedDocument, ReadonlySet<string>>();
+
 function assignsGlobal(document: ParsedDocument, name: string): boolean {
-  return document.chunks.some(({ scopes }) => [...scopes.writes].some((identifier) => identifier.name === name && !scopes.resolved.has(identifier)));
+  let names = assignedGlobals.get(document);
+  if (!names) {
+    const found = new Set<string>();
+    for (const { scopes } of document.chunks) {
+      for (const identifier of scopes.writes) if (!scopes.resolved.has(identifier)) found.add(identifier.name);
+    }
+    names = found;
+    assignedGlobals.set(document, names);
+  }
+  return names.has(name);
 }
 
 /** Whether nothing assigns the local again after its declaration. */

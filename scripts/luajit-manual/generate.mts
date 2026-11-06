@@ -32,7 +32,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { fetchLuaTarball, readTarballMember, sha256 } from '../../third_party/lua52/tarball.mts';
+import { fetchLuaTarball, readTarballMember } from '../../third_party/lua52/tarball.mts';
 import {
   extractEntries,
   libraryNames,
@@ -297,4 +297,3 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   await main();
 }
 
-export { sha256 };

@@ -81,6 +81,24 @@ interface Layout {
   readonly chunks: readonly ChunkLayout[];
 }
 
+/** Index of the last item whose start (`startOf`) is before `offset`, in items sorted by start; -1 when none is. */
+function lastStartingBefore<T>(sorted: readonly T[], startOf: (item: T) => number, offset: number): number {
+  let low = 0;
+  let high = sorted.length - 1;
+  let found = -1;
+  while (low <= high) {
+    const middle = (low + high) >> 1;
+    const item = sorted[middle];
+    if (item !== undefined && startOf(item) < offset) {
+      found = middle;
+      low = middle + 1;
+    } else {
+      high = middle - 1;
+    }
+  }
+  return found;
+}
+
 /** Whether the file has an error that hides where its lines start. */
 function unterminated(lexed: MenuLexResult): boolean {
   return lexed.problems.some(
@@ -104,12 +122,17 @@ function layout(parsed: ParsedDocument, lexed: MenuLexResult, options: Formattin
   };
 
   // Spans whose inside is not menu white space: from the opening quote or backtick to the closing one.
+  // Strings and blocks never overlap (the lexer reads them one after the other), so sorted by
+  // start they are also sorted by end, and one binary search finds the span around an offset.
   const opaque: Span[] = [
     ...lexed.tokens.filter((token) => token.type === 'string' && token.quote !== undefined).map((token) => ({ start: token.start, end: token.end - 1 })),
     ...lexed.inline.map((block) => ({ start: block.start, end: block.close })),
-  ];
+  ].sort((a, b) => a.start - b.start);
   /** Whether `offset` lies after the opening delimiter of a string or `` `…` `` block, up to its closing one. */
-  const within = (offset: number): boolean => opaque.some((span) => span.start < offset && offset <= span.end);
+  const within = (offset: number): boolean => {
+    const span = opaque[lastStartingBefore(opaque, (span) => span.start, offset)];
+    return span !== undefined && offset <= span.end;
+  };
 
   // Depth of the `{ … }` blocks open at each line start, and the closers that lead each line.
   const braces = lexed.tokens.filter((token) => token.type === '{' || token.type === '}');
@@ -168,7 +191,9 @@ function layout(parsed: ParsedDocument, lexed: MenuLexResult, options: Formattin
     if (within(lineStart)) {
       // The line starts inside a string or a Lua block. Only the closing line of a formatted
       // chunk is the menu's: from its closing backtick or quote on.
-      const chunk = chunks.find((c) => c.region.start < lineStart && lineStart < c.region.end);
+      // Chunks are in document order and never overlap.
+      const candidate = chunks[lastStartingBefore(chunks, (c) => c.region.start, lineStart)];
+      const chunk = candidate && lineStart < candidate.region.end ? candidate : undefined;
       if (chunk?.formatted !== true || chunk.closer !== contentStart) continue;
       replace(lineStart, contentStart, unit.repeat(depthAtLine[lineAt(starts, chunk.region.start)] ?? 0));
     } else {
@@ -184,8 +209,9 @@ function layout(parsed: ParsedDocument, lexed: MenuLexResult, options: Formattin
 
   // A formatted `` `…` `` block whose dropped last character is a line break: the line before it ends
   // the Lua text, so `formatEmbedded` kept its trailing white space; it is trailing white space of a line.
-  for (const { chunk, tree } of parsed.chunks) {
-    if (chunk.origin !== 'block' || !(chunks.find((c) => c.region.start === chunk.region.start)?.formatted ?? false)) continue;
+  for (const [index, { chunk, tree }] of parsed.chunks.entries()) {
+    // `chunks` holds one layout per parsed chunk, in the same order.
+    if (chunk.origin !== 'block' || chunks[index]?.formatted !== true) continue;
     if (text[tree.end] !== '\n' && text[tree.end] !== '\r') continue;
     let trailing = tree.end;
     while (isHorizontal(text[trailing - 1])) trailing--;
