@@ -10,7 +10,7 @@
   "configuration.validate.mode.type": "入力中に、変更がない状態が `#ieLua.validate.debounce#` ミリ秒続いた後で検証します。",
   "configuration.validate.mode.saveAndType": "入力中およびファイルの保存時に検証します。",
   "configuration.validate.debounce.description": "`#ieLua.validate.mode#` が `type` または `saveAndType` の場合に、最後の変更から検証までの遅延時間 (ミリ秒)。",
-  "configuration.runtime.lua.description": "ゲームが実行する Lua。ホバー、入力候補、セマンティック強調表示の内容を決めます。EEex の試験的なコンポーネント *Use LuaJIT* がインストールされている場合は `luajit` を選択します。その場合、LuaJIT のライブラリ `bit`、`jit`、`ffi`、`string.buffer` と `table.new`、`table.clear` が説明され、LuaJIT にない `bit32` は説明されません。構文エラーは常に Lua 5.2 コンパイラーが報告します。",
+  "configuration.runtime.lua.description": "ゲームが実行する Lua。構文をチェックするコンパイラーと、ホバー、入力候補、セマンティック強調表示の内容を決めます。EEex の試験的なコンポーネント *Use LuaJIT* がインストールされている場合は `luajit` を選択します。その場合、LuaJIT のライブラリ `bit`、`jit`、`ffi`、`string.buffer` と `table.new`、`table.clear` が説明され、LuaJIT にない `bit32` は説明されません。構文エラーも、Lua 5.2 コンパイラーではなく LuaJIT 自身のパーサーが報告します。",
   "configuration.runtime.lua.lua52": "ゲーム自体の Lua 5.2。",
   "configuration.runtime.lua.luajit": "EEex のコンポーネント *Use LuaJIT* がインストールする LuaJIT。",
   "semanticTokenModifiers.global.description": "グローバル変数 (グローバル環境のフィールド)。ローカル変数とは異なります。"

@@ -58,10 +58,10 @@ node /path/to/server.js --stdio
 
   Outside VS Code there is no "Validate Current File" command, so prefer `type` or `saveAndType`.
 
-  | `runtime.lua` | Hover, completion and semantic tokens describe |
+  | `runtime.lua` | Syntax is checked by, and hover, completion and semantic tokens describe |
   | --- | --- |
-  | `lua52` (default) | the libraries of the game's own Lua 5.2 |
-  | `luajit` | the libraries of the LuaJIT that EEex's experimental *Use LuaJIT* component installs: everything but `bit32`, plus `bit`, `jit`, and `ffi`, `string.buffer`, `table.new` and `table.clear` through `require` |
+  | `lua52` (default) | the game's own Lua 5.2: its compiler, and its libraries |
+  | `luajit` | the LuaJIT that EEex's experimental *Use LuaJIT* component installs: its parser, and its libraries, everything but `bit32`, plus `bit`, `jit`, and `ffi`, `string.buffer`, `table.new` and `table.clear` through `require` |
 
   Syntax errors always come from the Lua 5.2 compiler. When the editor reports a settings change
   (`workspace/didChangeConfiguration`), the next request uses the new value, and an editor that
