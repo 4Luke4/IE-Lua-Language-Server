@@ -8,6 +8,8 @@ versions with an **even** middle number (for example 1.**2**.0) are stable relea
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-11-06
+
 ### Added
 
 - **Format Document and Format Selection for `.menu` files.** Each line is indented by the
@@ -101,5 +103,7 @@ versions with an **even** middle number (for example 1.**2**.0) are stable relea
 - **Works in other editors too**: setup guides for Sublime Text, Neovim, Emacs, JetBrains
   IDEs, Helix, Zed, Kate, Notepad++ and Geany are on the project page.
 
-[Unreleased]: https://github.com/4Luke4/IE-Lua-Language-Server/compare/v1.0.0...HEAD
+
+[Unreleased]: https://github.com/4Luke4/IE-Lua-Language-Server/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/4Luke4/IE-Lua-Language-Server/compare/v1.0.0...v1.2.0
 [1.0.0]: https://github.com/4Luke4/IE-Lua-Language-Server/releases/tag/v1.0.0
