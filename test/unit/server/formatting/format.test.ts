@@ -3,6 +3,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   formatDocument,
+  formatEmbedded,
   formatOnType,
   formatRange,
   type FormatResult,
@@ -343,6 +344,65 @@ describe('server/formatting/format', () => {
     it('refuses when the closer itself is an error', () => {
       const text = 'x()\n  end';
       assert.deepEqual(formatOnType(text, parseChunk(text), SPACES, text.length, 'd'), { ok: false, reason: 'syntax-error' });
+    });
+  });
+
+  describe('embedded chunks', () => {
+    /** Formats the text between the two `|` markers as an embedded chunk at `baseLevel`. */
+    function embedded(marked: string, baseLevel: number, options: FormattingOptions = SPACES): string {
+      const from = marked.indexOf('|');
+      const to = marked.indexOf('|', from + 1) - 1;
+      const text = marked.replace(/\|/g, '');
+      const tree = parseChunk(text, { from, to });
+      return apply(text, edits(formatEmbedded(text, tree, options, baseLevel)));
+    }
+
+    it('indents the lines of the chunk from the base level', () => {
+      assert.equal(
+        embedded('x = `|\nif a then\nb()\nend\n|`', 1),
+        'x = `\n  if a then\n    b()\n  end\n`',
+      );
+      assert.equal(
+        embedded('x = `|\nif a then\nb()\nend\n|`', 2, { tabSize: 4, insertSpaces: false }),
+        'x = `\n\t\tif a then\n\t\t\tb()\n\t\tend\n`',
+      );
+    });
+
+    it('formats at level 0 like a file, apart from the first and last lines', () => {
+      assert.equal(embedded('|\nif a then\nb()\nend|', 0), '\nif a then\n  b()\nend');
+    });
+
+    it('keeps the white space before the first item on the line where the chunk starts', () => {
+      assert.equal(embedded('`|   f( a )\ng()|`', 1), '`   f(a)\n  g()`');
+    });
+
+    it('keeps the white space after the last item on the line where the chunk ends', () => {
+      assert.equal(embedded('`|\nf()   |`', 1), '`\n  f()   `');
+      assert.equal(embedded('`|\nf()\n    |`', 1), '`\n  f()\n    `');
+    });
+
+    it('removes trailing white space on the other lines', () => {
+      assert.equal(embedded('`|   \nf()  \n  \ng()\n|`', 1), '`\n  f()\n\n  g()\n`');
+    });
+
+    it('applies the spacing rules within a line', () => {
+      assert.equal(embedded('"|x=a+b|"', 0), '"x = a + b"');
+    });
+
+    it('refuses chunks with an error', () => {
+      const text = '`\nif a then\n`';
+      assert.deepEqual(formatEmbedded(text, parseChunk(text, { from: 1, to: text.length - 1 }), SPACES, 1), {
+        ok: false,
+        reason: 'syntax-error',
+      });
+    });
+
+    it('refuses invalid options', () => {
+      const text = 'f()';
+      assert.deepEqual(formatEmbedded(text, parseChunk(text), { tabSize: 0, insertSpaces: true }, 1), {
+        ok: false,
+        reason: 'invalid-options',
+      });
     });
   });
 

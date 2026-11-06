@@ -259,10 +259,29 @@ interface Edits {
 }
 
 /**
- * The edits of the document up to `limit` (edits may extend past it), without the
- * safety check. Edits are line-local, disjoint and in order.
+ * A chunk embedded in a larger text (a .menu file) rather than a whole file:
+ * `baseLevel` is the indentation level of its outermost lines. The white space
+ * before its first item on the line where the chunk starts, and after its last
+ * item on the line where it ends, belongs to the embedding text and is not
+ * changed; the other lines are formatted as in a file, `baseLevel` deeper.
  */
-function allEdits(text: string, tree: Ast.Chunk, options: FormattingOptions, finalNewlines: boolean, limit = tree.end): Edits {
+interface Embedding {
+  readonly baseLevel: number;
+}
+
+/**
+ * The edits of the chunk up to `limit` (edits may extend past it), without the
+ * safety check. Edits are line-local, disjoint and in order. `finalNewlines`:
+ * apply `insertFinalNewline` and `trimFinalNewlines` (whole files only).
+ */
+function allEdits(
+  text: string,
+  tree: Ast.Chunk,
+  options: FormattingOptions,
+  finalNewlines: boolean,
+  limit = tree.end,
+  embedding?: Embedding,
+): Edits {
   const lexed = lex(text, tree.start, tree.end);
   const { tokens, comments } = lexed;
   const items: Item[] = [
@@ -277,18 +296,19 @@ function allEdits(text: string, tree: Ast.Chunk, options: FormattingOptions, fin
     if (text.slice(start, end) !== newText) edits.push({ start, end, newText });
   };
 
+  const baseLevel = embedding?.baseLevel ?? 0;
   const stack: Frame[] = [];
-  const innerLevel = (): number => stack.at(-1)?.inner ?? 0;
+  const innerLevel = (): number => stack.at(-1)?.inner ?? baseLevel;
   /** Closes the innermost construct when `token` is a closer; returns the level of the line that opened it. */
   const close = (token: Token | undefined): number | undefined => {
     if (token === undefined || token.type === 'string' || !CLOSERS.has(token.value)) return undefined;
     const frame = stack.pop();
     // No frame: a closer too many, only possible after a syntax error.
-    return frame === undefined ? 0 : frame.inner - 1;
+    return frame === undefined ? baseLevel : frame.inner - 1;
   };
   /** Indentation level of the current line, and that level without the continuation level. */
-  let level = 0;
-  let statementLevel = 0;
+  let level = baseLevel;
+  let statementLevel = baseLevel;
   /**
    * Opens a construct when `token` is an opener. `then` and `do` end the head of their
    * statement, so their block is indented from the statement even on a continuation line.
@@ -317,6 +337,8 @@ function allEdits(text: string, tree: Ast.Chunk, options: FormattingOptions, fin
     } else {
       // First item of a line: trailing white space and blank lines before it become empty.
       const runs = horizontalRuns(text, previous?.end ?? tree.start, item.start);
+      // An embedded chunk's first item on the line where the chunk starts: that line belongs to the embedding text.
+      const embeddedFirstLine = embedding !== undefined && previous === undefined && runs.length === 1;
       for (const run of runs.slice(0, -1)) replace(run.start, run.end, '');
       // Closers that lead the line give it the level of the line that opened the last of them.
       let j = i;
@@ -338,7 +360,7 @@ function allEdits(text: string, tree: Ast.Chunk, options: FormattingOptions, fin
       level = statementLevel + (leading === undefined && continuation ? 1 : 0);
       // `horizontalRuns` always returns at least one run.
       const indentation = runs.at(-1) as { start: number; end: number };
-      replace(indentation.start, indentation.end, unit.repeat(level));
+      if (!embeddedFirstLine) replace(indentation.start, indentation.end, unit.repeat(level));
       if (j === i) {
         open(token);
       } else {
@@ -359,7 +381,10 @@ function allEdits(text: string, tree: Ast.Chunk, options: FormattingOptions, fin
   // After the last item.
   const lastEnd = items.at(-1)?.end ?? tree.start;
   const runs = horizontalRuns(text, lastEnd, tree.end);
-  if (!finalNewlines || items.length === 0) {
+  if (embedding !== undefined) {
+    // The white space after the last line break starts the embedding text's line.
+    for (const run of runs.slice(0, -1)) replace(run.start, run.end, '');
+  } else if (!finalNewlines || items.length === 0) {
     for (const run of runs) replace(run.start, run.end, '');
   } else if (runs.length === 1) {
     // No line break after the last item.
@@ -433,6 +458,20 @@ export function formatDocument(text: string, tree: Ast.Chunk, options: Formattin
   if (!validOptions(options)) return { ok: false, reason: 'invalid-options' };
   if (tree.errors.length > 0) return { ok: false, reason: 'syntax-error' };
   const { edits, lexed } = allEdits(text, tree, options, true);
+  return checked(text, tree, edits, lexed);
+}
+
+/**
+ * Formats a chunk embedded in a larger text (the Lua of a .menu file), its lines
+ * indented `baseLevel` levels deeper than in a file. The line where the chunk
+ * starts keeps the white space before its first item, and the line where it ends
+ * the white space after its last item: both belong to the embedding text. Final
+ * newlines are not changed. Refused when the chunk has any lexical or syntax error.
+ */
+export function formatEmbedded(text: string, tree: Ast.Chunk, options: FormattingOptions, baseLevel: number): FormatResult {
+  if (!validOptions(options)) return { ok: false, reason: 'invalid-options' };
+  if (tree.errors.length > 0) return { ok: false, reason: 'syntax-error' };
+  const { edits, lexed } = allEdits(text, tree, options, false, tree.end, { baseLevel });
   return checked(text, tree, edits, lexed);
 }
 
