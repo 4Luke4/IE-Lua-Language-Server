@@ -1,6 +1,7 @@
 import type { Connection, Location, ResponseError, TextDocuments } from 'vscode-languageserver/node';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { definitions, sharedGlobalName, targetAt } from '../syntax/navigation.ts';
+import { openDocument } from './openDocument.ts';
 import { otherFileLocations, type CrossFileDeps } from './workspaceFiles.ts';
 
 export type DefinitionDeps = CrossFileDeps;
@@ -14,11 +15,12 @@ export type DefinitionDeps = CrossFileDeps;
 export function register(connection: Connection, documents: TextDocuments<TextDocument>, deps: DefinitionDeps): void {
   connection.onDefinition(async ({ textDocument, position }, token): Promise<Location[] | ResponseError | null> => {
     try {
-      const document = documents.get(textDocument.uri);
-      if (!document || token.isCancellationRequested) {
+      const open = await openDocument(documents, textDocument.uri, deps.settings, () => token.isCancellationRequested);
+      if (!open) {
         return null;
       }
-      const parsed = deps.cache.get(document);
+      const { document, runtime } = open;
+      const parsed = deps.cache.get(document, runtime);
       const hit = targetAt(parsed, document.offsetAt(position));
       if (!hit) {
         return null;

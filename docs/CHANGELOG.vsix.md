@@ -21,6 +21,10 @@ versions with an **even** middle number (for example 1.**2**.0) are stable relea
   not have, is then no longer offered. Syntax errors then come from LuaJIT's own parser, built
   into the extension as EEex installs it, so LuaJIT code such as `1LL`, `0x10ULL` or
   `"\u{20AC}"` is no longer reported as an error. Switching the setting checks open files again.
+- **LuaJIT literals no longer break editor features.** With *IE Lua › Runtime: Lua* set to
+  `luajit`, files using `1LL`, `0x10ULL`, `3i`, `0b101` or `"\u{20AC}"` can be formatted again,
+  and hover, completion, highlighting, the outline, folding, go to definition, find references
+  and rename read them correctly. Switching the setting re-reads open and workspace files.
 - **Documentation for method calls.** `name:upper()` now shows the description of `string.upper`
   when `name` is surely a string: a string literal, a local that keeps one, or a value annotated
   `---@type string`. Your own methods, called as `obj:greet()` or `self:greet()`, show how you

@@ -89,6 +89,27 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   - `third_party/luajit/differential.mts` (`npm run luajit-differential`, CI): builds a native
     x64 LuaJIT from the same tree and fails if any chunk of `test/fixtures/luajit-syntax/` or of
     the generated limit cases (call arguments, nesting, locals, upvalues) gets a different answer.
+- LuaJIT's lexical extensions in the server's own lexer (`src/server/syntax/lexer.ts`) when
+  `ieLua.runtime.lua` is `luajit`, so hover, completion, semantic tokens, folding, document and
+  workspace symbols, definition, references, rename and formatting work on files that use them
+  (formatting refused such files as having syntax errors). Ported from the pinned LuaJIT tree:
+  numerals are read as `lj_lex.c` `lex_number` reads them and checked as `lj_strscan_scan` does
+  with `STRSCAN_OPT_LL | STRSCAN_OPT_IMAG` (`isLuaJitNumber`: `LL`/`ULL`/`LLU` on integers that
+  fit in 64 bits, `i` on any number, `0b` with at most 64 binary digits, exponent and fraction
+  limits of 2^20); `\u{X…}` escapes follow `lex_string` (below U+110000, no surrogates). Lua 5.2
+  lexing is unchanged. Names stay ASCII in both modes (LuaJIT also accepts bytes from 0x80 in
+  names).
+  - `lex(source, from, to, runtime)`, `ParseOptions.runtime`, `Chunk.runtime`,
+    `ParsedDocument.runtime` and `parseDocument(text, kind, runtime)`; the formatter, rename and
+    completion lex again with the tree's runtime.
+  - `ParsedDocumentCache.get(document, runtime)` reuses a parse only for the same version and
+    runtime; features read the runtime per document first (`src/server/features/openDocument.ts`).
+    The workspace index parses files that are not open with their folder's runtime
+    (`WorkspaceIndexDeps.analysisOptions`) and re-indexes when it changes.
+  - `test/unit/server/syntax/luajitDifferential.test.ts` compares the parser with the LuaJIT
+    WebAssembly module on `test/fixtures/luajit-syntax/` (except goto/label semantics), every
+    numeral of up to four characters, 64-bit and exponent limits, `\u{…}` boundaries and token
+    mutations of LuaJIT seeds. The mutation helper moved to `test/unit/server/syntax/mutations.ts`.
 - Method syntax in hover, completion and semantic tokens (`src/server/hover/receiver.ts`, through
   `memberTarget` in `src/server/hover/resolve.ts`). A receiver is typed only when the code or a
   LuaCATS annotation proves it; anything else gets nothing:

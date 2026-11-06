@@ -283,7 +283,7 @@ function allEdits(
   limit = tree.end,
   embedding?: Embedding,
 ): Edits {
-  const lexed = lex(text, tree.start, tree.end);
+  const lexed = lex(text, tree.start, tree.end, tree.runtime);
   const { tokens, comments } = lexed;
   const items: Item[] = [
     ...tokens.filter((token) => token.type !== 'eof').map((token) => ({ start: token.start, end: token.end, token, comment: undefined })),
@@ -434,7 +434,7 @@ function preservesTokens(text: string, edits: readonly OffsetEdit[], before: Lex
   );
   // The lexer reads only `[from, to)` and has no rule for the start of the input, so the
   // chunk's text alone lexes like the chunk in place, its offsets shifted by `tree.start`.
-  const after = lex(formatted);
+  const after = lex(formatted, 0, formatted.length, tree.runtime);
   const sameTokens =
     before.tokens.length === after.tokens.length &&
     before.tokens.every((token, i) => {
@@ -557,7 +557,7 @@ export function typedCloser(text: string, tree: Ast.Chunk, lineStart: number, of
   // is a token, not part of a string, a comment or a longer name.
   const typed = text.slice(lineStart, offset).trim();
   if (!CLOSERS.has(typed) || !typed.endsWith(character)) return undefined;
-  const { tokens } = lex(text, tree.start, tree.end);
+  const { tokens } = lex(text, tree.start, tree.end, tree.runtime);
   const index = tokens.findIndex((token) => token.end === offset && token.type !== 'string');
   const token = tokens[index];
   const before = tokens[index - 1];

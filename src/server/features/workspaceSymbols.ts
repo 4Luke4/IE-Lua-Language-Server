@@ -1,5 +1,6 @@
 import type { Connection, Position, SymbolInformation, TextDocuments } from 'vscode-languageserver/node';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
+import type { Runtime } from '../../shared/settings.ts';
 import type { ParsedDocumentCache } from '../documentCache.ts';
 import type { ParsedDocument } from '../syntax/document.ts';
 import { documentSymbols } from '../syntax/symbols.ts';
@@ -7,11 +8,14 @@ import { matchesQuery } from '../syntax/workspaceSymbols.ts';
 import type { IndexedFile, WorkspaceIndex } from '../workspace/workspaceIndex.ts';
 import { untilCancelled } from './cancellation.ts';
 import { flatSymbols } from './documentSymbols.ts';
+import { openRuntimes, type RuntimeSettings } from './openDocument.ts';
 import type { IndexedFileFacts } from './workspaceFiles.ts';
 
 export interface WorkspaceSymbolsDeps {
   readonly cache: ParsedDocumentCache;
-  readonly index: WorkspaceIndex<IndexedFileFacts>;
+  /** `ieLua.runtime.lua` of each open document, which it is parsed for. */
+  readonly settings: RuntimeSettings;
+  readonly index: Pick<WorkspaceIndex<IndexedFileFacts, Runtime>, 'ready' | 'pathKey' | 'entries'>;
 }
 
 /** The flat outline of a parsed document, as `workspace/symbol` lists it. */
@@ -62,10 +66,12 @@ export function register(connection: Connection, documents: TextDocuments<TextDo
     try {
       // Files queued for indexing are part of the answer.
       await untilCancelled(deps.index.ready(), token);
+      // Read after indexing, so that a document opened meanwhile is included.
+      const runtimes = await openRuntimes(documents, deps.settings);
       if (token.isCancellationRequested) return null;
-      const open: SymbolSource[] = documents.all().map((document) => ({
+      const open: SymbolSource[] = runtimes.map(({ document, runtime }) => ({
         key: deps.index.pathKey(document.uri) ?? document.uri,
-        symbols: () => outlineSymbols(deps.cache.get(document), document),
+        symbols: () => outlineSymbols(deps.cache.get(document, runtime), document),
       }));
       return collectWorkspaceSymbols(open, deps.index.entries(), query, () => token.isCancellationRequested) ?? null;
     } catch (error) {

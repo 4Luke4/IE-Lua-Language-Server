@@ -6,6 +6,7 @@
 // the offset of the keyword. It is `undefined` when the keyword is missing; the
 // node then ends where parsing stopped.
 
+import type { Runtime } from '../../shared/settings.ts';
 import type { Comment, ParseError } from './lexer.ts';
 
 interface Node {
@@ -17,8 +18,14 @@ export interface Chunk extends Node {
   readonly kind: 'Chunk';
   readonly body: Block;
   readonly comments: readonly Comment[];
-  /** Lexical and syntax errors, in source order. Empty when the chunk is valid Lua 5.2 (see parser.ts for the checks that are not done). */
+  /**
+   * Lexical and syntax errors, in source order. Empty when the chunk is valid Lua 5.2,
+   * with LuaJIT's lexical extensions for `runtime: 'luajit'` (see parser.ts for the
+   * checks that are not done).
+   */
   readonly errors: readonly ParseError[];
+  /** The `ieLua.runtime.lua` whose lexical rules the chunk was read with (see lexer.ts); lex it again with the same. */
+  readonly runtime: Runtime;
   /**
    * Offset of the first token of every statement the parser began, in source order,
    * including statements abandoned after an error (which are missing from `body`).

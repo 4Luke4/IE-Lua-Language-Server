@@ -4,12 +4,14 @@
 // which look the globals up across files here.
 import { LSPErrorCodes, ResponseError, type CancellationToken, type Location, type SymbolInformation, type TextDocuments } from 'vscode-languageserver/node';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
+import type { Runtime } from '../../shared/settings.ts';
 import type { ParsedDocumentCache } from '../documentCache.ts';
 import { parseDocument, type ParsedDocument } from '../syntax/document.ts';
 import { fileGlobals, globalRanges, positionAt, usesGlobal, type FileGlobals } from '../syntax/fileGlobals.ts';
 import { documentKind } from '../validation/validateText.ts';
 import type { IndexedFile, WorkspaceIndex } from '../workspace/workspaceIndex.ts';
 import { untilCancelled } from './cancellation.ts';
+import { openRuntimes, type RuntimeSettings } from './openDocument.ts';
 import { outlineSymbols } from './workspaceSymbols.ts';
 
 export interface IndexedFileFacts {
@@ -18,9 +20,9 @@ export interface IndexedFileFacts {
   readonly globals: FileGlobals;
 }
 
-/** The facts of a file that is not open, for the workspace index. */
-export function analyzeFile(text: string, uri: string): IndexedFileFacts {
-  const parsed = parseDocument(text, documentKind(uri, ''));
+/** The facts of a file that is not open, for the workspace index, parsed for the `ieLua.runtime.lua` of its folder. */
+export function analyzeFile(text: string, uri: string, runtime: Runtime): IndexedFileFacts {
+  const parsed = parseDocument(text, documentKind(uri, ''), runtime);
   const globals = fileGlobals(parsed);
   return { symbols: outlineSymbols(parsed, { uri, positionAt: (offset) => positionAt(globals.lineStarts, offset) }), globals };
 }
@@ -75,7 +77,9 @@ const openGlobals = new WeakMap<ParsedDocument, FileGlobals>();
 
 export interface CrossFileDeps {
   readonly cache: ParsedDocumentCache;
-  readonly index: Pick<WorkspaceIndex<IndexedFileFacts>, 'ready' | 'pathKey' | 'entries'>;
+  /** `ieLua.runtime.lua` of each open document, which it is parsed for. */
+  readonly settings: RuntimeSettings;
+  readonly index: Pick<WorkspaceIndex<IndexedFileFacts, Runtime>, 'ready' | 'pathKey' | 'entries'>;
 }
 
 /**
@@ -94,15 +98,17 @@ export async function otherFileLocations(
 ): Promise<Location[] | ResponseError | null> {
   const { uri, version } = document;
   await untilCancelled(deps.index.ready(), token);
+  // Read after indexing, so that a document opened meanwhile is included.
+  const runtimes = await openRuntimes(documents, deps.settings);
   if (token.isCancellationRequested) return null;
   if (documents.get(uri)?.version !== version) {
     return new ResponseError(LSPErrorCodes.ContentModified, `${uri} changed while the workspace was being indexed.`);
   }
-  const open: GlobalSource[] = documents.all().map((other) => ({
+  const open: GlobalSource[] = runtimes.map(({ document: other, runtime }) => ({
     uri: other.uri,
     key: deps.index.pathKey(other.uri) ?? other.uri,
     globals: () => {
-      const parsed = deps.cache.get(other);
+      const parsed = deps.cache.get(other, runtime);
       let globals = openGlobals.get(parsed);
       if (!globals) {
         globals = fileGlobals(parsed);

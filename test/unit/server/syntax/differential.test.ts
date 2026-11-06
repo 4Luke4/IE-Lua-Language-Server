@@ -3,10 +3,10 @@
 // plus deterministic mutations of valid seeds. Goto/label semantics are excluded
 // by design (see src/server/syntax/parser.ts), so no input contains `goto` or `::`.
 import assert from 'node:assert/strict';
-import { lex } from '../../../../src/server/syntax/lexer.ts';
 import { parseChunk } from '../../../../src/server/syntax/parser.ts';
 import type { LuaChecker } from '../../../../src/server/validation/checker.ts';
 import { loadLua52 } from '../../../../src/server/validation/lua52.ts';
+import { mutations } from './mutations.ts';
 
 const CORPUS = [
   // Accepted
@@ -46,43 +46,6 @@ for k, v in pairs({ a = 1 }) do print(k, v) end`,
 string ]==] .. 'esc\\n\\x41\\65' .. 0x1Fp2 .. 3.5e-1
 t.a.b["c"] = g { y = 1 } "s" : m(true, false, nil)`,
 ];
-
-/** mulberry32: small deterministic PRNG, so every run checks the same inputs. */
-function random(seed: number): () => number {
-  let state = seed >>> 0;
-  return () => {
-    state = (state + 0x6d2b79f5) >>> 0;
-    let t = state;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-/** Deletes, duplicates or swaps tokens of `source`. */
-function mutations(source: string, count: number, seed: number): string[] {
-  const tokens = lex(source).tokens.slice(0, -1);
-  const next = random(seed);
-  const pick = (): number => Math.floor(next() * tokens.length);
-  const result: string[] = [];
-  for (let n = 0; n < count; n++) {
-    const i = pick();
-    const token = tokens[i];
-    const other = tokens[pick()];
-    if (!token || !other) continue;
-    const operation = n % 3;
-    if (operation === 0) {
-      result.push(source.slice(0, token.start) + source.slice(token.end));
-    } else if (operation === 1) {
-      result.push(source.slice(0, token.end) + ' ' + source.slice(token.start, token.end) + source.slice(token.end));
-    } else {
-      const [a, b] = token.start < other.start ? [token, other] : [other, token];
-      if (a.end > b.start) continue;
-      result.push(source.slice(0, a.start) + source.slice(b.start, b.end) + source.slice(a.end, b.start) + source.slice(a.start, a.end) + source.slice(b.end));
-    }
-  }
-  return result;
-}
 
 describe('server/syntax/parser agrees with the official Lua 5.2.4 compiler', () => {
   let lua: LuaChecker;

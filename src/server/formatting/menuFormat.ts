@@ -27,6 +27,7 @@
 // same Lua chunks with the same Lua tokens and comments, the same problems and the same
 // number of lines; otherwise no edit is returned.
 
+import type { Runtime } from '../../shared/settings.ts';
 import type { ParsedDocument } from '../syntax/document.ts';
 import { lex, type LexResult } from '../syntax/lexer.ts';
 import { extractMenuLua, type MenuExtraction } from '../validation/menuExtractor.ts';
@@ -248,14 +249,14 @@ function finalNewlineEdits(text: string, options: FormattingOptions, edits: Offs
 }
 
 /** The menu tokens, problems and Lua of a text, in a form two texts can be compared by. */
-function fingerprint(text: string, lexed: MenuLexResult, extraction: MenuExtraction): string[] {
+function fingerprint(text: string, lexed: MenuLexResult, extraction: MenuExtraction, runtime: Runtime): string[] {
   const luaRegions = new Set(extraction.chunks.map((chunk) => chunk.region.start));
   const tokens = lexed.tokens.map((token) =>
     // A Lua string is compared by its Lua tokens below.
     luaRegions.has(token.start) ? `${token.type}${token.quote ?? ''}:lua` : `${token.type}:${text.slice(token.start, token.end)}`,
   );
   const lua = extraction.chunks.map((chunk) => {
-    const lexedLua: LexResult = lex(text, chunk.offset, chunk.offset + chunk.text.length);
+    const lexedLua: LexResult = lex(text, chunk.offset, chunk.offset + chunk.text.length, runtime);
     return [
       `${chunk.kind}/${chunk.origin}/${chunk.forms.map((form) => `${form.prefix}|${form.suffix}`).join(',')}`,
       ...lexedLua.tokens.map((token) => `${token.type}:${token.value}`),
@@ -282,9 +283,9 @@ function checked(parsed: ParsedDocument, lexed: MenuLexResult, edits: readonly O
     if (previous !== undefined && edit !== undefined && edit.start < previous.end) return { ok: false, reason: 'unsafe' };
   }
   const formatted = applyEdits(parsed.text, edits);
-  const before = fingerprint(parsed.text, lexed, extractMenuLua(parsed.text));
+  const before = fingerprint(parsed.text, lexed, extractMenuLua(parsed.text), parsed.runtime);
   const afterLexed = lexMenu(formatted);
-  const after = fingerprint(formatted, afterLexed, extractMenuLua(formatted));
+  const after = fingerprint(formatted, afterLexed, extractMenuLua(formatted), parsed.runtime);
   const same = before.length === after.length && before.every((item, i) => item === after[i]);
   return same && contentLines(parsed.text) === contentLines(formatted) ? { ok: true, edits, unformatted } : { ok: false, reason: 'unsafe' };
 }

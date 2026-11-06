@@ -33,7 +33,7 @@ export function register(connection: Connection, documents: TextDocuments<TextDo
       if (!document || cancelled()) {
         return null;
       }
-      const hit = hoverTargetAt(deps.cache.get(document), document.offsetAt(position), library(runtime.lua));
+      const hit = hoverTargetAt(deps.cache.get(document, runtime.lua), document.offsetAt(position), library(runtime.lua));
       if (!hit) {
         return null;
       }

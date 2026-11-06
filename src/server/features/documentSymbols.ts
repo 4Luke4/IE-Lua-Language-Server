@@ -3,9 +3,11 @@ import { SymbolKind } from 'vscode-languageserver/node';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import type { ParsedDocumentCache } from '../documentCache.ts';
 import { documentSymbols, type OutlineKind, type OutlineSymbol } from '../syntax/symbols.ts';
+import { openDocument, type RuntimeSettings } from './openDocument.ts';
 
 export interface DocumentSymbolsDeps {
   readonly cache: ParsedDocumentCache;
+  readonly settings: RuntimeSettings;
   /** `textDocument.documentSymbol.hierarchicalDocumentSymbolSupport` of the client. */
   readonly hierarchical: boolean;
 }
@@ -66,14 +68,15 @@ export function flatSymbols(symbols: readonly OutlineSymbol[], options: Omit<Sym
  * Editor" (see src/server/syntax/symbols.ts for what is listed).
  */
 export function register(connection: Connection, documents: TextDocuments<TextDocument>, deps: DocumentSymbolsDeps): void {
-  connection.onDocumentSymbol(({ textDocument }, token): DocumentSymbol[] | SymbolInformation[] | null => {
+  connection.onDocumentSymbol(async ({ textDocument }, token): Promise<DocumentSymbol[] | SymbolInformation[] | null> => {
     try {
-      const document = documents.get(textDocument.uri);
-      if (!document || token.isCancellationRequested) {
+      const open = await openDocument(documents, textDocument.uri, deps.settings, () => token.isCancellationRequested);
+      if (!open) {
         return null;
       }
+      const { document, runtime } = open;
       // Synchronous from here on: a cancellation can only arrive after the response.
-      const symbols = documentSymbols(deps.cache.get(document), document.getText().length);
+      const symbols = documentSymbols(deps.cache.get(document, runtime), document.getText().length);
       return toLspSymbols(symbols, {
         hierarchical: deps.hierarchical,
         uri: document.uri,

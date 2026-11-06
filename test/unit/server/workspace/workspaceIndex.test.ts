@@ -46,15 +46,17 @@ class MemoryFileSystem implements WorkspaceFileSystem {
   }
 }
 
-function setup(fs: MemoryFileSystem, excludes: Record<string, unknown> = {}) {
+/** `options`: analysis options per folder; a file analyzed with options is indexed as `text@options`. */
+function setup(fs: MemoryFileSystem, excludes: Record<string, unknown> = {}, options: Record<string, string> = {}) {
   const log: string[] = [];
   let yields = 0;
-  const index = new WorkspaceIndex<string>({
+  const index = new WorkspaceIndex<string, string | undefined>({
     fs,
     path: posix,
     toPath: (uri) => decodeURIComponent(new URL(uri).pathname),
-    analyze: (text) => text,
+    analyze: (text, _uri, option) => (option === undefined ? text : `${text}@${option}`),
     filesExclude: (folder) => Promise.resolve(excludes[folder]),
+    analysisOptions: (folder) => Promise.resolve(options[folder]),
     yieldToEventLoop: () => {
       yields++;
       return Promise.resolve();
@@ -160,6 +162,23 @@ describe('server/workspace/workspaceIndex', () => {
     assert.deepEqual(indexed(), ['file:///w/a.lua=A']);
   });
 
+  it('analyzes files with the options of their folder, and again when they change', async () => {
+    const fs = new MemoryFileSystem().add('/w/a.lua', 'A').add('/v/b.lua', 'B');
+    const options: Record<string, string> = { 'file:///w': 'lua52', 'file:///v': 'luajit' };
+    const { index, indexed } = setup(fs, {}, options);
+    index.setFolders(['file:///w', 'file:///v']);
+    await index.ready();
+    assert.deepEqual(indexed(), ['file:///v/b.lua=B@luajit', 'file:///w/a.lua=A@lua52']);
+    index.settingsChanged();
+    index.fileChanged('file:///w/a.lua');
+    await index.ready();
+    assert.deepEqual(indexed(), ['file:///v/b.lua=B@luajit', 'file:///w/a.lua=A@lua52']);
+    options['file:///w'] = 'luajit';
+    index.settingsChanged();
+    await index.ready();
+    assert.deepEqual(indexed(), ['file:///v/b.lua=B@luajit', 'file:///w/a.lua=A@luajit']);
+  });
+
   it('handles Windows paths: separators, drive letters and URIs', async () => {
     const fs = new MemoryFileSystem('\\').add('c:\\Mods\\My Mod\\a.lua', 'A').add('c:\\Mods\\out\\b.lua', 'B');
     const log: string[] = [];
@@ -170,6 +189,7 @@ describe('server/workspace/workspaceIndex', () => {
       toPath: (uri) => decodeURIComponent(new URL(uri).pathname).replace(/^\/([A-Za-z]):/, '$1:').replaceAll('/', '\\'),
       analyze: (text) => text,
       filesExclude: () => Promise.resolve({ out: true }),
+      analysisOptions: () => Promise.resolve(undefined),
       yieldToEventLoop: () => Promise.resolve(),
       log: (message) => log.push(message),
     });
@@ -272,6 +292,7 @@ describe('server/workspace/workspaceIndex', () => {
       toPath: () => 'C:\\mods\\a.lua',
       analyze: (text) => text,
       filesExclude: () => Promise.resolve(undefined),
+      analysisOptions: () => Promise.resolve(undefined),
       yieldToEventLoop: () => Promise.resolve(),
       log: () => undefined,
     });

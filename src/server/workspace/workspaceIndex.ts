@@ -18,7 +18,7 @@ export interface WorkspaceFileSystem {
   readFile(path: string): Promise<Uint8Array>;
 }
 
-export interface WorkspaceIndexDeps<T> {
+export interface WorkspaceIndexDeps<T, O> {
   readonly fs: WorkspaceFileSystem;
   /** Native path functions (`node:path` in the server; `posix` in tests). */
   readonly path: {
@@ -30,10 +30,15 @@ export interface WorkspaceIndexDeps<T> {
   };
   /** `fileURLToPath` for `file:` URIs (injectable for tests of other platforms). */
   readonly toPath?: (uri: string) => string;
-  /** What the index keeps for one file, from its text. */
-  analyze(text: string, uri: string): T;
+  /** What the index keeps for one file, from its text and the analysis options of its folder. */
+  analyze(text: string, uri: string, options: O): T;
   /** The `files.exclude` value for a workspace folder (`undefined` when the client has none). */
   filesExclude(folderUri: string): Promise<unknown>;
+  /**
+   * The settings of a workspace folder that `analyze` depends on (`ieLua.runtime.lua` in
+   * the server). Compared as JSON: a change re-indexes the workspace.
+   */
+  analysisOptions(folderUri: string): Promise<O>;
   /** Lets other events run between files, so a large workspace never blocks the server. */
   yieldToEventLoop(): Promise<void>;
   log(message: string): void;
@@ -51,13 +56,15 @@ export function isIndexedFileName(name: string): boolean {
   return /\.(?:lua|menu)$/i.test(name);
 }
 
-interface Folder {
+interface Folder<O> {
   readonly uri: string;
   readonly path: string;
   readonly key: string;
   excluded: ExcludeFilter;
   /** The `files.exclude` value `excluded` was built from, as JSON. */
   excludeJson: string | undefined;
+  /** The analysis options of the folder's files and their JSON; `undefined` until read (see `optionsOf`). */
+  analysis: { readonly options: O; readonly json: string } | undefined;
 }
 
 const decoder = new TextDecoder('utf-8');
@@ -67,16 +74,16 @@ const decoder = new TextDecoder('utf-8');
  * resolves once the work queued so far is done. Never rejects: failures are
  * logged and the file is left out.
  */
-export class WorkspaceIndex<T> {
-  private readonly deps: WorkspaceIndexDeps<T>;
+export class WorkspaceIndex<T, O = undefined> {
+  private readonly deps: WorkspaceIndexDeps<T, O>;
   private readonly toPath: (uri: string) => string;
-  private folders: Folder[] = [];
+  private folders: Folder<O>[] = [];
   private readonly files = new Map<string, IndexedFile<T>>();
   /** Incremented by every full rescan; a scan of an older generation stops. */
   private generation = 0;
   private tail: Promise<void> = Promise.resolve();
 
-  constructor(deps: WorkspaceIndexDeps<T>) {
+  constructor(deps: WorkspaceIndexDeps<T, O>) {
     this.deps = deps;
     this.toPath = deps.toPath ?? ((uri) => fileURLToPath(uri));
   }
@@ -93,20 +100,20 @@ export class WorkspaceIndex<T> {
 
   /** Replaces the workspace folders and rescans them. Only `file:` folders are scanned. */
   setFolders(folderUris: readonly string[]): void {
-    const folders: Folder[] = [];
+    const folders: Folder<O>[] = [];
     for (const uri of folderUris) {
       const key = this.pathKey(uri);
       if (key === undefined) {
         this.deps.log(`Workspace folder ${uri} is not on the local file system; only its open documents are indexed.`);
         continue;
       }
-      folders.push({ uri: uri.replace(/\/+$/, ''), path: this.toPath(uri), key, excluded: () => false, excludeJson: undefined });
+      folders.push({ uri: uri.replace(/\/+$/, ''), path: this.toPath(uri), key, excluded: () => false, excludeJson: undefined, analysis: undefined });
     }
     this.folders = folders;
     this.rescan();
   }
 
-  /** Rescans every folder, re-reading `files.exclude` (call when it changes). */
+  /** Rescans every folder, re-reading `files.exclude` and the analysis options (call when they change). */
   rescan(): void {
     const generation = ++this.generation;
     this.enqueue(() => this.scan(generation));
@@ -115,11 +122,13 @@ export class WorkspaceIndex<T> {
   /** Walks every folder and indexes what it finds, unless a newer scan starts meanwhile. */
   private async scan(generation: number): Promise<void> {
     const started = Date.now();
-    const found: { folder: Folder; path: string }[] = [];
+    const found: { folder: Folder<O>; path: string }[] = [];
     for (const folder of this.folders) {
       const value = await this.deps.filesExclude(folder.uri);
       folder.excluded = filesExcludeFilter(value);
       folder.excludeJson = JSON.stringify(value ?? null);
+      folder.analysis = undefined;
+      await this.optionsOf(folder);
       await this.walk(folder, folder.path, found, generation);
       if (generation !== this.generation) return;
     }
@@ -133,14 +142,16 @@ export class WorkspaceIndex<T> {
   }
 
   /**
-   * Settings changed: re-reads `files.exclude` and rescans if it changed for any
-   * folder. Clients notify every settings change, so this avoids needless rescans.
+   * Settings changed: re-reads `files.exclude` and the analysis options, and rescans
+   * if either changed for any folder. Clients notify every settings change, so this
+   * avoids needless rescans.
    */
   settingsChanged(): void {
     this.enqueue(async () => {
       let changed = false;
       for (const folder of this.folders) {
         if (JSON.stringify((await this.deps.filesExclude(folder.uri)) ?? null) !== folder.excludeJson) changed = true;
+        if (JSON.stringify((await this.deps.analysisOptions(folder.uri)) ?? null) !== folder.analysis?.json) changed = true;
       }
       // Scan within this job, so that `ready()` callers waiting for it see the result.
       if (changed) await this.scan(++this.generation);
@@ -165,7 +176,7 @@ export class WorkspaceIndex<T> {
       }
       if (!(await this.isDirectory(path)) || (await this.isExcluded(folder, path))) return;
       const generation = this.generation;
-      const found: { folder: Folder; path: string }[] = [];
+      const found: { folder: Folder<O>; path: string }[] = [];
       await this.walk(folder, path, found, generation);
       for (const file of found) {
         await this.deps.yieldToEventLoop();
@@ -208,8 +219,8 @@ export class WorkspaceIndex<T> {
   }
 
   /** The innermost workspace folder containing `key`. */
-  private folderOf(key: string): Folder | undefined {
-    let best: Folder | undefined;
+  private folderOf(key: string): Folder<O> | undefined {
+    let best: Folder<O> | undefined;
     for (const folder of this.folders) {
       const prefix = folder.key.endsWith(this.deps.path.sep) ? folder.key : folder.key + this.deps.path.sep;
       if (key.startsWith(prefix) && (!best || folder.key.length > best.key.length)) best = folder;
@@ -217,7 +228,7 @@ export class WorkspaceIndex<T> {
     return best;
   }
 
-  private relative(folder: Folder, path: string): string {
+  private relative(folder: Folder<O>, path: string): string {
     return this.deps.path.relative(folder.path, path).split(this.deps.path.sep).join('/');
   }
 
@@ -231,7 +242,7 @@ export class WorkspaceIndex<T> {
   }
 
   /** Collects the files to index under `directory`, depth first, in listing order. */
-  private async walk(folder: Folder, directory: string, found: { folder: Folder; path: string }[], generation: number): Promise<void> {
+  private async walk(folder: Folder<O>, directory: string, found: { folder: Folder<O>; path: string }[], generation: number): Promise<void> {
     const entries = await this.listing(directory);
     if (!entries || generation !== this.generation) return;
     const names = new Set(entries.map((entry) => entry.name));
@@ -260,7 +271,7 @@ export class WorkspaceIndex<T> {
   }
 
   /** Whether `path` or one of its folders below the workspace folder is excluded. */
-  private async isExcluded(folder: Folder, path: string): Promise<boolean> {
+  private async isExcluded(folder: Folder<O>, path: string): Promise<boolean> {
     let current = path;
     while (current !== folder.path && current.length > folder.path.length) {
       const parent = this.deps.path.dirname(current);
@@ -271,8 +282,17 @@ export class WorkspaceIndex<T> {
     return false;
   }
 
+  /** The analysis options of `folder`, read once per scan (a file event can come before the scan reached the folder). */
+  private async optionsOf(folder: Folder<O>): Promise<O> {
+    if (!folder.analysis) {
+      const options = await this.deps.analysisOptions(folder.uri);
+      folder.analysis = { options, json: JSON.stringify(options ?? null) };
+    }
+    return folder.analysis.options;
+  }
+
   /** Reads and analyzes a file; `false` when it cannot be read. */
-  private async indexFile(folder: Folder, path: string): Promise<boolean> {
+  private async indexFile(folder: Folder<O>, path: string): Promise<boolean> {
     let bytes: Uint8Array;
     try {
       bytes = await this.deps.fs.readFile(path);
@@ -284,7 +304,7 @@ export class WorkspaceIndex<T> {
     const relative = this.relative(folder, path);
     const uri = `${folder.uri}/${relative.split('/').map(encodeURIComponent).join('/')}`;
     // UTF-8, with a byte order mark removed and invalid bytes replaced, as VS Code opens files by default.
-    const value = this.deps.analyze(decoder.decode(bytes), uri);
+    const value = this.deps.analyze(decoder.decode(bytes), uri, await this.optionsOf(folder));
     this.files.set(normalizeKey(path), { uri, key: normalizeKey(path), value });
     return true;
   }

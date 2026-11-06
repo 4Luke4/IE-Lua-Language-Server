@@ -147,7 +147,7 @@ export function completionSiteAt(document: ParsedDocument, text: string, offset:
 /** `completionSiteAt` for the chunk `parsed`, lexing from `from` (exported for tests: from the chunk start, the result must be the same). */
 export function siteFrom(parsed: ParsedChunk, chunkIndex: number, text: string, offset: number, from: number): CompletionSite | undefined {
   const { chunk } = parsed;
-  const { tokens, comments, errors } = lex(text, from, offset);
+  const { tokens, comments, errors } = lex(text, from, offset, parsed.tree.runtime);
   if (inComment(comments, errors, offset)) return undefined;
   tokens.pop(); // eof
 
