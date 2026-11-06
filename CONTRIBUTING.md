@@ -45,6 +45,7 @@ server (port 6009).
 | `third_party/lua52/` | Reproducible build of the official Lua 5.2.4 compiler to WebAssembly |
 | `data/eeex/` | Generated EEex documentation index (names and links) |
 | `data/lua52/` | Lua 5.2 library reference generated from the official manual (see below) |
+| `data/luajit/` | LuaJIT library reference generated from LuaJIT's documentation and the sources EEex builds (see below) |
 | `l10n/server/` | The language server's own messages, per locale |
 | `scripts/` | Repository tooling (TypeScript run directly by Node.js) |
 | `test/unit/`, `test/integration/` | Mocha unit tests; VS Code integration tests |
@@ -66,6 +67,7 @@ See [`CLAUDE.md`](CLAUDE.md) for the architecture rules.
 | `npm run notices` | Regenerate `THIRD_PARTY_NOTICES.md` (after `npm run package`) |
 | `npm run build:wasm` | Rebuild the Lua 5.2 WebAssembly module (needs Emscripten, see below) |
 | `npm run lua-manual` | Regenerate `data/lua52/manual.json` from the official Lua 5.2 manual (see below) |
+| `npm run luajit-manual` | Regenerate `data/luajit/manual.json` from the LuaJIT documentation (see below) |
 
 **Definition of done:** `check-types`, `lint` and `test:unit` pass. Run `npm test` too when you
 touch activation, commands, settings or the language client/server wiring.
@@ -144,6 +146,31 @@ npm run lua-manual -- --compare-online  # audit: compare with https://www.lua.or
 Only the libraries the game engine opens are included (see CLAUDE.md, section 7). The converter
 in `scripts/lua-manual/convert.mts` accepts exactly the HTML the manual uses and fails on anything
 else; its header lists the three places where Markdown cannot show the manual's formatting.
+
+## The LuaJIT manual data
+
+With `ieLua.runtime` set to `luajit` (EEex's experimental "Use LuaJIT" component), hovers and
+completion use `data/luajit/manual.json`, generated and committed like the Lua 5.2 data:
+
+```sh
+npm run luajit-manual             # regenerate
+npm run luajit-manual -- --check  # verify the committed file (CI does this)
+```
+
+`scripts/luajit-manual/generate.mts` explains the sources in its header. In short:
+
+- The LuaJIT is the one EEex installs. `LuaJIT/VERSION.TXT` of
+  [Bubb13/InfinityLoader](https://github.com/Bubb13/InfinityLoader) names the upstream commit,
+  and `LuaJIT/src/msvcbuild.bat` builds it with `LUAJIT_ENABLE_LUA52COMPAT`.
+- The text comes from the documentation pages of [LuaJIT](https://luajit.org/) at that commit,
+  and from [Lua BitOp](https://bitop.luajit.org/) for `bit.*`.
+- Which names exist comes from the build's own C sources (`lib_init.c` and `lib_*.c`), with
+  its feature flags.
+
+Every file is pinned by commit and SHA-256 and cached in `.cache/luajit`. To move to a newer
+InfinityLoader, update `INFINITY_LOADER_COMMIT`, `LUAJIT_COMMIT` and the hashes, then run the
+generator. It stops with a message that names the file and the line whenever the sources use
+something it does not model.
 
 ## Releases
 

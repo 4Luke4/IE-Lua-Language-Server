@@ -41,6 +41,21 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
     triggers: a line break formats the line it ended; the last character of a Lua closer, or a
     `}` of the menu, that starts its line re-indents that line. `insertFinalNewline` and
     `trimFinalNewlines` are honored for document formatting.
+- `data/luajit/manual.json` and its generator `scripts/luajit-manual/` (`npm run luajit-manual`,
+  `-- --check` in the new CI job `luajit`, run when the generator, the shared converter or either
+  data file changes; pinned sources cached by key). The data describes the LuaJIT that EEex's
+  "Use LuaJIT" component installs: `LuaJIT/VERSION.TXT` of Bubb13/InfinityLoader (pinned commit)
+  names the LuaJIT commit, and the text comes from that commit's documentation (`extensions.html`,
+  `ext_buffer.html`, `ext_jit.html`, `ext_ffi_api.html`) and from Lua BitOp 1.0.4 `doc/api.html`
+  for `bit.*`, word for word. What exists comes from the build's own sources: `lib_init.c`
+  (libraries opened as globals and preloaded for `require`) and the `lib_*.c` registrations,
+  with the feature flags of `msvcbuild.bat` (`LUAJIT_ENABLE_LUA52COMPAT`) as `lj_arch.h` derives
+  them. Every documented name must be registered, and every Lua 5.2 manual entry that the build
+  lacks is listed (only `bit32` and its functions). Every file is verified by SHA-256; anything
+  the generator does not model stops it with the file and line.
+- `scripts/lua-manual/convert.mts` accepts the LuaJIT documentation's HTML with
+  `{ luajit: true }` (`</p>`, `<tt>`, `<i>`, `<br>`, tables, links to other pages, the
+  external-link marker, colored code); the Lua 5.2 output is unchanged.
 
 ## [1.0.0] - 2026-11-05
 

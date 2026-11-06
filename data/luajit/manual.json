@@ -1,0 +1,801 @@
+{
+  "sources": {
+    "files": [
+      {
+        "repository": "Bubb13/InfinityLoader",
+        "commit": "817925caab3eb9cf600cfaf38853da8d30c28247",
+        "path": "LuaJIT/VERSION.TXT",
+        "sha256": "3f2ad964e3c2a032f1461f2c2676c4c428ec48e6ec270c26ca82c5e952fa0112"
+      },
+      {
+        "repository": "Bubb13/InfinityLoader",
+        "commit": "817925caab3eb9cf600cfaf38853da8d30c28247",
+        "path": "LuaJIT/src/msvcbuild.bat",
+        "sha256": "460b925e7eee88daa2303402f055fa4f9f17929c8152efdb0bff6bb4198bb5b1"
+      },
+      {
+        "repository": "Bubb13/InfinityLoader",
+        "commit": "817925caab3eb9cf600cfaf38853da8d30c28247",
+        "path": "LuaJIT/src/lj_arch.h",
+        "sha256": "454c53cae614cd352a25525a0bc140e7a3641c723ba10fb8fa9844551d6586aa"
+      },
+      {
+        "repository": "Bubb13/InfinityLoader",
+        "commit": "817925caab3eb9cf600cfaf38853da8d30c28247",
+        "path": "LuaJIT/src/lualib.h",
+        "sha256": "d22818eab4c2805990388cc7ac00bddc4e4712bf73bd9509489042526ba94645"
+      },
+      {
+        "repository": "Bubb13/InfinityLoader",
+        "commit": "817925caab3eb9cf600cfaf38853da8d30c28247",
+        "path": "LuaJIT/src/lib_init.c",
+        "sha256": "022838806752869fe8009a6e19678d7ce4a625c968725ea675f9bca87d13f20b"
+      },
+      {
+        "repository": "Bubb13/InfinityLoader",
+        "commit": "817925caab3eb9cf600cfaf38853da8d30c28247",
+        "path": "LuaJIT/src/lib_base.c",
+        "sha256": "93f1042fc42c2949ac6d780d913b4382f72c32c4272d6fc1aad5cac4daaaa331"
+      },
+      {
+        "repository": "Bubb13/InfinityLoader",
+        "commit": "817925caab3eb9cf600cfaf38853da8d30c28247",
+        "path": "LuaJIT/src/lib_string.c",
+        "sha256": "fd15bc97b1aac6bbaf253590a83719c0e642b1aafce021ff8a95c5682b218d60"
+      },
+      {
+        "repository": "Bubb13/InfinityLoader",
+        "commit": "817925caab3eb9cf600cfaf38853da8d30c28247",
+        "path": "LuaJIT/src/lib_table.c",
+        "sha256": "af83cc599da6ace66b5156f969bcb3f5e94c9ee4d3164a3a049bd0ed33c13bd4"
+      },
+      {
+        "repository": "Bubb13/InfinityLoader",
+        "commit": "817925caab3eb9cf600cfaf38853da8d30c28247",
+        "path": "LuaJIT/src/lib_math.c",
+        "sha256": "ebe4ee4c7aea7220c4b4f4b5e7bf58dde92eac5e4b2c1a15ff6bf12432584a01"
+      },
+      {
+        "repository": "Bubb13/InfinityLoader",
+        "commit": "817925caab3eb9cf600cfaf38853da8d30c28247",
+        "path": "LuaJIT/src/lib_debug.c",
+        "sha256": "14699b7f927fc42fe92d4d22ce2e9bddfb718c3d5bd514cf97db7a69b7fb9ae5"
+      },
+      {
+        "repository": "Bubb13/InfinityLoader",
+        "commit": "817925caab3eb9cf600cfaf38853da8d30c28247",
+        "path": "LuaJIT/src/lib_bit.c",
+        "sha256": "dcaab5792c57534e16ac8dd8e0e015dab44fecc639edfda89249410e848a66f4"
+      },
+      {
+        "repository": "Bubb13/InfinityLoader",
+        "commit": "817925caab3eb9cf600cfaf38853da8d30c28247",
+        "path": "LuaJIT/src/lib_jit.c",
+        "sha256": "a5eb37752161d05780363711539492838400a5c831364c1cf3923d3ab8fa3b10"
+      },
+      {
+        "repository": "Bubb13/InfinityLoader",
+        "commit": "817925caab3eb9cf600cfaf38853da8d30c28247",
+        "path": "LuaJIT/src/lib_ffi.c",
+        "sha256": "be13959ffb34772ed0f2fae36ca078670f6532cab19ec1ed9941cdda31352c8e"
+      },
+      {
+        "repository": "Bubb13/InfinityLoader",
+        "commit": "817925caab3eb9cf600cfaf38853da8d30c28247",
+        "path": "LuaJIT/src/lib_buffer.c",
+        "sha256": "2cdd6158b7008165e5b11a381cfeaf1dce6f1fb63afc23b199c44f44d728bf29"
+      },
+      {
+        "repository": "LuaJIT/LuaJIT",
+        "commit": "eec7a8016c3381b949b5d84583800d05897fa960",
+        "path": "doc/extensions.html",
+        "sha256": "bb3be173fb16895dd285edc1bb2d2084f8a22ecb3f2e2700cc6db1a28a6b9ff4"
+      },
+      {
+        "repository": "LuaJIT/LuaJIT",
+        "commit": "eec7a8016c3381b949b5d84583800d05897fa960",
+        "path": "doc/ext_buffer.html",
+        "sha256": "635c9f22e7c11391b470ddb6d7ce84441d74fa9dd199bed232ec57542bad9344"
+      },
+      {
+        "repository": "LuaJIT/LuaJIT",
+        "commit": "eec7a8016c3381b949b5d84583800d05897fa960",
+        "path": "doc/ext_jit.html",
+        "sha256": "092ae9a28d7ea7366a8e370f5cc08a92f7f0ac5a98ebab1a592f7e912ea67c2b"
+      },
+      {
+        "repository": "LuaJIT/LuaJIT",
+        "commit": "eec7a8016c3381b949b5d84583800d05897fa960",
+        "path": "doc/ext_ffi_api.html",
+        "sha256": "e31a7fdacdd65de6a726d967126ee576e9b531abc8ce7c59784ecc4f915fda57"
+      },
+      {
+        "repository": "LuaJIT/LuaJIT",
+        "commit": "eec7a8016c3381b949b5d84583800d05897fa960",
+        "path": "COPYRIGHT",
+        "sha256": "5b79fb4754728487cf43d55b213bb68369912484f2dd7ab68380435e994bce39"
+      }
+    ],
+    "bitop": {
+      "url": "https://bitop.luajit.org/download/LuaBitOp-1.0.4.tar.gz",
+      "sha256": "adc32785579fc62f7736881332f70f50fe168b2ae8d0ddb741ff018a76f48c80",
+      "member": "LuaBitOp-1.0.4/doc/api.html"
+    }
+  },
+  "copyright": [
+    "Copyright (C) 2005-2025 Mike Pall. All rights reserved.",
+    "Lua BitOp is Copyright (C) 2008-2026 Mike Pall."
+  ],
+  "pages": [
+    {
+      "id": "extensions",
+      "title": "LuaJIT: Extensions",
+      "url": "https://luajit.org/extensions.html"
+    },
+    {
+      "id": "ext_buffer",
+      "title": "LuaJIT: String Buffer Library",
+      "url": "https://luajit.org/ext_buffer.html"
+    },
+    {
+      "id": "ext_jit",
+      "title": "LuaJIT: jit.* Library",
+      "url": "https://luajit.org/ext_jit.html"
+    },
+    {
+      "id": "ext_ffi_api",
+      "title": "LuaJIT: ffi.* API Functions",
+      "url": "https://luajit.org/ext_ffi_api.html"
+    },
+    {
+      "id": "bitop_api",
+      "title": "BitOp: API Functions",
+      "url": "https://bitop.luajit.org/api.html"
+    }
+  ],
+  "globals": [
+    "_G",
+    "package",
+    "table",
+    "io",
+    "os",
+    "string",
+    "math",
+    "debug",
+    "bit",
+    "jit"
+  ],
+  "preload": [
+    "ffi",
+    "jit.profile",
+    "jit.util",
+    "string.buffer",
+    "table.clear",
+    "table.new"
+  ],
+  "lua52Unavailable": [
+    "bit32",
+    "bit32.arshift",
+    "bit32.band",
+    "bit32.bnot",
+    "bit32.bor",
+    "bit32.btest",
+    "bit32.bxor",
+    "bit32.extract",
+    "bit32.replace",
+    "bit32.lrotate",
+    "bit32.lshift",
+    "bit32.rrotate",
+    "bit32.rshift"
+  ],
+  "omitted": [
+    {
+      "name": "cb:free",
+      "reason": "a method of FFI callback objects: which variable holds a callback cannot be known"
+    },
+    {
+      "name": "cb:set",
+      "reason": "a method of FFI callback objects: which variable holds a callback cannot be known"
+    }
+  ],
+  "entries": [
+    {
+      "name": "bit",
+      "kind": "module",
+      "page": "extensions",
+      "anchor": "bit",
+      "heading": "bit",
+      "markdown": "LuaJIT supports all bitwise operations as defined by [» Lua BitOp](https://bitop.luajit.org/):\n\n```\nbit.tobit  bit.tohex  bit.bnot    bit.band bit.bor  bit.bxor\nbit.lshift bit.rshift bit.arshift bit.rol  bit.ror  bit.bswap\n```\n\nThis module is a LuaJIT built-in — you don't need to download or install Lua BitOp. The Lua BitOp site has full documentation for all [» Lua BitOp API functions](https://bitop.luajit.org/api.html). The FFI adds support for [64 bit bitwise operations](https://luajit.org/ext_ffi_semantics.html#cdata_arith), using the same API functions.\n\nPlease make sure to `require` the module before using any of its functions:\n\n```\nlocal bit = require(\"bit\")\n```\n\nAn already installed Lua BitOp module is ignored by LuaJIT. This way you can use bit operations from both Lua and LuaJIT on a shared installation.",
+      "plaintext": "LuaJIT supports all bitwise operations as defined by » Lua BitOp (https://bitop.luajit.org/):\n\nbit.tobit  bit.tohex  bit.bnot    bit.band bit.bor  bit.bxor\nbit.lshift bit.rshift bit.arshift bit.rol  bit.ror  bit.bswap\n\nThis module is a LuaJIT built-in — you don't need to download or install Lua BitOp. The Lua BitOp site has full documentation for all » Lua BitOp API functions (https://bitop.luajit.org/api.html). The FFI adds support for 64 bit bitwise operations (https://luajit.org/ext_ffi_semantics.html#cdata_arith), using the same API functions.\n\nPlease make sure to require the module before using any of its functions:\n\nlocal bit = require(\"bit\")\n\nAn already installed Lua BitOp module is ignored by LuaJIT. This way you can use bit operations from both Lua and LuaJIT on a shared installation."
+    },
+    {
+      "name": "ffi",
+      "kind": "module",
+      "page": "extensions",
+      "anchor": "ffi",
+      "heading": "ffi",
+      "markdown": "The [FFI library](https://luajit.org/ext_ffi.html) allows calling external C functions and the use of C data structures from pure Lua code.",
+      "plaintext": "The FFI library (https://luajit.org/ext_ffi.html) allows calling external C functions and the use of C data structures from pure Lua code.",
+      "require": "ffi"
+    },
+    {
+      "name": "jit",
+      "kind": "module",
+      "page": "extensions",
+      "anchor": "jit",
+      "heading": "jit",
+      "markdown": "The functions in this module [control the behavior of the JIT compiler engine](https://luajit.org/ext_jit.html).",
+      "plaintext": "The functions in this module control the behavior of the JIT compiler engine (https://luajit.org/ext_jit.html)."
+    },
+    {
+      "name": "string.buffer",
+      "kind": "module",
+      "page": "ext_buffer",
+      "anchor": "",
+      "heading": "string.buffer",
+      "markdown": "The string buffer library allows **high-performance manipulation of string-like data**.\n\nUnlike Lua strings, which are constants, string buffers are **mutable** sequences of 8-bit (binary-transparent) characters. Data can be stored, formatted and encoded into a string buffer and later converted, extracted or decoded.\n\nThe convenient string buffer API simplifies common string manipulation tasks, that would otherwise require creating many intermediate strings. String buffers improve performance by eliminating redundant memory copies, object creation, string interning and garbage collection overhead. In conjunction with the FFI library, they allow zero-copy operations.\n\nThe string buffer library also includes a high-performance [serializer](https://luajit.org/ext_buffer.html#serialize) for Lua objects.",
+      "plaintext": "The string buffer library allows high-performance manipulation of string-like data.\n\nUnlike Lua strings, which are constants, string buffers are mutable sequences of 8-bit (binary-transparent) characters. Data can be stored, formatted and encoded into a string buffer and later converted, extracted or decoded.\n\nThe convenient string buffer API simplifies common string manipulation tasks, that would otherwise require creating many intermediate strings. String buffers improve performance by eliminating redundant memory copies, object creation, string interning and garbage collection overhead. In conjunction with the FFI library, they allow zero-copy operations.\n\nThe string buffer library also includes a high-performance serializer (https://luajit.org/ext_buffer.html#serialize) for Lua objects.",
+      "require": "string.buffer"
+    },
+    {
+      "name": "table.new",
+      "kind": "function",
+      "page": "extensions",
+      "anchor": "table_new",
+      "heading": "table.new(narray, nhash)",
+      "markdown": "An extra library function `table.new()` can be made available via `require(\"table.new\")`. This creates a pre-sized table, just like the C API equivalent `lua_createtable()`. This is useful for big tables if the final table size is known and automatic table resizing is too expensive.",
+      "plaintext": "An extra library function table.new() can be made available via require(\"table.new\"). This creates a pre-sized table, just like the C API equivalent lua_createtable(). This is useful for big tables if the final table size is known and automatic table resizing is too expensive.",
+      "require": "table.new"
+    },
+    {
+      "name": "table.clear",
+      "kind": "function",
+      "page": "extensions",
+      "anchor": "table_clear",
+      "heading": "table.clear(tab)",
+      "markdown": "An extra library function `table.clear()` can be made available via `require(\"table.clear\")`. This clears all keys and values from a table, but preserves the allocated array/hash sizes. This is useful when a table, which is linked from multiple places, needs to be cleared and/or when recycling a table for use by the same context. This avoids managing backlinks, saves an allocation and the overhead of incremental array/hash part growth.\n\nPlease note, this function is meant for very specific situations. In most cases it's better to replace the (usually single) link with a new table and let the GC do its work.",
+      "plaintext": "An extra library function table.clear() can be made available via require(\"table.clear\"). This clears all keys and values from a table, but preserves the allocated array/hash sizes. This is useful when a table, which is linked from multiple places, needs to be cleared and/or when recycling a table for use by the same context. This avoids managing backlinks, saves an allocation and the overhead of incremental array/hash part growth.\n\nPlease note, this function is meant for very specific situations. In most cases it's better to replace the (usually single) link with a new table and let the GC do its work.",
+      "require": "table.clear"
+    },
+    {
+      "name": "string.buffer.new",
+      "kind": "function",
+      "page": "ext_buffer",
+      "anchor": "buffer_new",
+      "heading": "local buf = buffer.new([size [,options]])\nlocal buf = buffer.new([options])",
+      "markdown": "Creates a new buffer object.\n\nThe optional `size` argument ensures a minimum initial buffer size. This is strictly an optimization when the required buffer size is known beforehand. The buffer space will grow as needed, in any case.\n\nThe optional table `options` sets various [serialization options](https://luajit.org/ext_buffer.html#serialize_options).",
+      "plaintext": "Creates a new buffer object.\n\nThe optional size argument ensures a minimum initial buffer size. This is strictly an optimization when the required buffer size is known beforehand. The buffer space will grow as needed, in any case.\n\nThe optional table options sets various serialization options (https://luajit.org/ext_buffer.html#serialize_options).",
+      "require": "string.buffer"
+    },
+    {
+      "name": "string.buffer:reset",
+      "kind": "method",
+      "page": "ext_buffer",
+      "anchor": "buffer_reset",
+      "heading": "buf = buf:reset()",
+      "markdown": "Reset (empty) the buffer. The allocated buffer space is not freed and may be reused.",
+      "plaintext": "Reset (empty) the buffer. The allocated buffer space is not freed and may be reused.",
+      "require": "string.buffer"
+    },
+    {
+      "name": "string.buffer:free",
+      "kind": "method",
+      "page": "ext_buffer",
+      "anchor": "buffer_free",
+      "heading": "buf = buf:free()",
+      "markdown": "The buffer space of the buffer object is freed. The object itself remains intact, empty and may be reused.\n\nNote: you normally don't need to use this method. The garbage collector automatically frees the buffer space, when the buffer object is collected. Use this method, if you need to free the associated memory immediately.",
+      "plaintext": "The buffer space of the buffer object is freed. The object itself remains intact, empty and may be reused.\n\nNote: you normally don't need to use this method. The garbage collector automatically frees the buffer space, when the buffer object is collected. Use this method, if you need to free the associated memory immediately.",
+      "require": "string.buffer"
+    },
+    {
+      "name": "string.buffer:put",
+      "kind": "method",
+      "page": "ext_buffer",
+      "anchor": "buffer_put",
+      "heading": "buf = buf:put([str|num|obj] [,…])",
+      "markdown": "Appends a string `str`, a number `num` or any object `obj` with a `__tostring` metamethod to the buffer. Multiple arguments are appended in the given order.\n\nAppending a buffer to a buffer is possible and short-circuited internally. But it still involves a copy. Better combine the buffer writes to use a single buffer.",
+      "plaintext": "Appends a string str, a number num or any object obj with a __tostring metamethod to the buffer. Multiple arguments are appended in the given order.\n\nAppending a buffer to a buffer is possible and short-circuited internally. But it still involves a copy. Better combine the buffer writes to use a single buffer.",
+      "require": "string.buffer"
+    },
+    {
+      "name": "string.buffer:putf",
+      "kind": "method",
+      "page": "ext_buffer",
+      "anchor": "buffer_putf",
+      "heading": "buf = buf:putf(format, …)",
+      "markdown": "Appends the formatted arguments to the buffer. The `format` string supports the same options as `string.format()`.",
+      "plaintext": "Appends the formatted arguments to the buffer. The format string supports the same options as string.format().",
+      "require": "string.buffer"
+    },
+    {
+      "name": "string.buffer:putcdata",
+      "kind": "method",
+      "page": "ext_buffer",
+      "anchor": "buffer_putcdata",
+      "heading": "buf = buf:putcdata(cdata, len)",
+      "markdown": "Appends the given `len` number of bytes from the memory pointed to by the FFI `cdata` object to the buffer. The object needs to be convertible to a (constant) pointer.",
+      "plaintext": "Appends the given len number of bytes from the memory pointed to by the FFI cdata object to the buffer. The object needs to be convertible to a (constant) pointer.",
+      "require": "string.buffer"
+    },
+    {
+      "name": "string.buffer:set",
+      "kind": "method",
+      "page": "ext_buffer",
+      "anchor": "buffer_set",
+      "heading": "buf = buf:set(str)\nbuf = buf:set(cdata, len)",
+      "markdown": "This method allows zero-copy consumption of a string or an FFI cdata object as a buffer. It stores a reference to the passed string `str` or the FFI `cdata` object in the buffer. Any buffer space originally allocated is freed. This is *not* an append operation, unlike the `buf:put*()` methods.\n\nAfter calling this method, the buffer behaves as if `buf:free():put(str)` or `buf:free():put(cdata, len)` had been called. However, the data is only referenced and not copied, as long as the buffer is only consumed.\n\nIn case the buffer is written to later on, the referenced data is copied and the object reference is removed (copy-on-write semantics).\n\nThe stored reference is an anchor for the garbage collector and keeps the originally passed string or FFI cdata object alive.",
+      "plaintext": "This method allows zero-copy consumption of a string or an FFI cdata object as a buffer. It stores a reference to the passed string str or the FFI cdata object in the buffer. Any buffer space originally allocated is freed. This is not an append operation, unlike the buf:put*() methods.\n\nAfter calling this method, the buffer behaves as if buf:free():put(str) or buf:free():put(cdata, len) had been called. However, the data is only referenced and not copied, as long as the buffer is only consumed.\n\nIn case the buffer is written to later on, the referenced data is copied and the object reference is removed (copy-on-write semantics).\n\nThe stored reference is an anchor for the garbage collector and keeps the originally passed string or FFI cdata object alive.",
+      "require": "string.buffer"
+    },
+    {
+      "name": "string.buffer:reserve",
+      "kind": "method",
+      "page": "ext_buffer",
+      "anchor": "buffer_reserve",
+      "heading": "ptr, len = buf:reserve(size)\nbuf = buf:commit(used)",
+      "markdown": "The `reserve` method reserves at least `size` bytes of write space in the buffer. It returns an `uint8_t *` FFI cdata pointer `ptr` that points to this space.\n\nThe available length in bytes is returned in `len`. This is at least `size` bytes, but may be more to facilitate efficient buffer growth. You can either make use of the additional space or ignore `len` and only use `size` bytes.\n\nThe `commit` method appends the `used` bytes of the previously returned write space to the buffer data.\n\nThis pair of methods allows zero-copy use of C read-style APIs:\n\n```\nlocal MIN_SIZE = 65536\nrepeat\n  local ptr, len = buf:reserve(MIN_SIZE)\n  local n = C.read(fd, ptr, len)\n  if n == 0 then break end -- EOF.\n  if n < 0 then error(\"read error\") end\n  buf:commit(n)\nuntil false\n```\n\nThe reserved write space is *not* initialized. At least the `used` bytes **must** be written to before calling the `commit` method. There's no need to call the `commit` method, if nothing is added to the buffer (e.g. on error).",
+      "plaintext": "The reserve method reserves at least size bytes of write space in the buffer. It returns an uint8_t * FFI cdata pointer ptr that points to this space.\n\nThe available length in bytes is returned in len. This is at least size bytes, but may be more to facilitate efficient buffer growth. You can either make use of the additional space or ignore len and only use size bytes.\n\nThe commit method appends the used bytes of the previously returned write space to the buffer data.\n\nThis pair of methods allows zero-copy use of C read-style APIs:\n\nlocal MIN_SIZE = 65536\nrepeat\n  local ptr, len = buf:reserve(MIN_SIZE)\n  local n = C.read(fd, ptr, len)\n  if n == 0 then break end -- EOF.\n  if n < 0 then error(\"read error\") end\n  buf:commit(n)\nuntil false\n\nThe reserved write space is not initialized. At least the used bytes must be written to before calling the commit method. There's no need to call the commit method, if nothing is added to the buffer (e.g. on error).",
+      "require": "string.buffer"
+    },
+    {
+      "name": "string.buffer:commit",
+      "kind": "method",
+      "page": "ext_buffer",
+      "anchor": "buffer_reserve",
+      "heading": "ptr, len = buf:reserve(size)\nbuf = buf:commit(used)",
+      "markdown": "The `reserve` method reserves at least `size` bytes of write space in the buffer. It returns an `uint8_t *` FFI cdata pointer `ptr` that points to this space.\n\nThe available length in bytes is returned in `len`. This is at least `size` bytes, but may be more to facilitate efficient buffer growth. You can either make use of the additional space or ignore `len` and only use `size` bytes.\n\nThe `commit` method appends the `used` bytes of the previously returned write space to the buffer data.\n\nThis pair of methods allows zero-copy use of C read-style APIs:\n\n```\nlocal MIN_SIZE = 65536\nrepeat\n  local ptr, len = buf:reserve(MIN_SIZE)\n  local n = C.read(fd, ptr, len)\n  if n == 0 then break end -- EOF.\n  if n < 0 then error(\"read error\") end\n  buf:commit(n)\nuntil false\n```\n\nThe reserved write space is *not* initialized. At least the `used` bytes **must** be written to before calling the `commit` method. There's no need to call the `commit` method, if nothing is added to the buffer (e.g. on error).",
+      "plaintext": "The reserve method reserves at least size bytes of write space in the buffer. It returns an uint8_t * FFI cdata pointer ptr that points to this space.\n\nThe available length in bytes is returned in len. This is at least size bytes, but may be more to facilitate efficient buffer growth. You can either make use of the additional space or ignore len and only use size bytes.\n\nThe commit method appends the used bytes of the previously returned write space to the buffer data.\n\nThis pair of methods allows zero-copy use of C read-style APIs:\n\nlocal MIN_SIZE = 65536\nrepeat\n  local ptr, len = buf:reserve(MIN_SIZE)\n  local n = C.read(fd, ptr, len)\n  if n == 0 then break end -- EOF.\n  if n < 0 then error(\"read error\") end\n  buf:commit(n)\nuntil false\n\nThe reserved write space is not initialized. At least the used bytes must be written to before calling the commit method. There's no need to call the commit method, if nothing is added to the buffer (e.g. on error).",
+      "require": "string.buffer"
+    },
+    {
+      "name": "string.buffer:skip",
+      "kind": "method",
+      "page": "ext_buffer",
+      "anchor": "buffer_skip",
+      "heading": "buf = buf:skip(len)",
+      "markdown": "Skips (consumes) `len` bytes from the buffer up to the current length of the buffer data.",
+      "plaintext": "Skips (consumes) len bytes from the buffer up to the current length of the buffer data.",
+      "require": "string.buffer"
+    },
+    {
+      "name": "string.buffer:get",
+      "kind": "method",
+      "page": "ext_buffer",
+      "anchor": "buffer_get",
+      "heading": "str, … = buf:get([len|nil] [,…])",
+      "markdown": "Consumes the buffer data and returns one or more strings. If called without arguments, the whole buffer data is consumed. If called with a number, up to `len` bytes are consumed. A `nil` argument consumes the remaining buffer space (this only makes sense as the last argument). Multiple arguments consume the buffer data in the given order.\n\nNote: a zero length or no remaining buffer data returns an empty string and not `nil`.",
+      "plaintext": "Consumes the buffer data and returns one or more strings. If called without arguments, the whole buffer data is consumed. If called with a number, up to len bytes are consumed. A nil argument consumes the remaining buffer space (this only makes sense as the last argument). Multiple arguments consume the buffer data in the given order.\n\nNote: a zero length or no remaining buffer data returns an empty string and not nil.",
+      "require": "string.buffer"
+    },
+    {
+      "name": "string.buffer:tostring",
+      "kind": "method",
+      "page": "ext_buffer",
+      "anchor": "buffer_tostring",
+      "heading": "str = buf:tostring()\nstr = tostring(buf)",
+      "markdown": "Creates a string from the buffer data, but doesn't consume it. The buffer remains unchanged.\n\nBuffer objects also define a `__tostring` metamethod. This means buffers can be passed to the global `tostring()` function and many other functions that accept this in place of strings. The important internal uses in functions like `io.write()` are short-circuited to avoid the creation of an intermediate string object.",
+      "plaintext": "Creates a string from the buffer data, but doesn't consume it. The buffer remains unchanged.\n\nBuffer objects also define a __tostring metamethod. This means buffers can be passed to the global tostring() function and many other functions that accept this in place of strings. The important internal uses in functions like io.write() are short-circuited to avoid the creation of an intermediate string object.",
+      "require": "string.buffer"
+    },
+    {
+      "name": "string.buffer:ref",
+      "kind": "method",
+      "page": "ext_buffer",
+      "anchor": "buffer_ref",
+      "heading": "ptr, len = buf:ref()",
+      "markdown": "Returns an `uint8_t *` FFI cdata pointer `ptr` that points to the buffer data. The length of the buffer data in bytes is returned in `len`.\n\nThe returned pointer can be directly passed to C functions that expect a buffer and a length. You can also do bytewise reads (`local x = ptr[i]`) or writes (`ptr[i] = 0x40`) of the buffer data.\n\nIn conjunction with the `skip` method, this allows zero-copy use of C write-style APIs:\n\n```\nrepeat\n  local ptr, len = buf:ref()\n  if len == 0 then break end\n  local n = C.write(fd, ptr, len)\n  if n < 0 then error(\"write error\") end\n  buf:skip(n)\nuntil n >= len\n```\n\nUnlike Lua strings, buffer data is *not* implicitly zero-terminated. It's not safe to pass `ptr` to C functions that expect zero-terminated strings. If you're not using `len`, then you're doing something wrong.",
+      "plaintext": "Returns an uint8_t * FFI cdata pointer ptr that points to the buffer data. The length of the buffer data in bytes is returned in len.\n\nThe returned pointer can be directly passed to C functions that expect a buffer and a length. You can also do bytewise reads (local x = ptr[i]) or writes (ptr[i] = 0x40) of the buffer data.\n\nIn conjunction with the skip method, this allows zero-copy use of C write-style APIs:\n\nrepeat\n  local ptr, len = buf:ref()\n  if len == 0 then break end\n  local n = C.write(fd, ptr, len)\n  if n < 0 then error(\"write error\") end\n  buf:skip(n)\nuntil n >= len\n\nUnlike Lua strings, buffer data is not implicitly zero-terminated. It's not safe to pass ptr to C functions that expect zero-terminated strings. If you're not using len, then you're doing something wrong.",
+      "require": "string.buffer"
+    },
+    {
+      "name": "string.buffer.encode",
+      "kind": "function",
+      "page": "ext_buffer",
+      "anchor": "buffer_encode",
+      "heading": "str = buffer.encode(obj)\nbuf = buf:encode(obj)",
+      "markdown": "Serializes (encodes) the Lua object `obj`. The stand-alone function returns a string `str`. The buffer method appends the encoding to the buffer.\n\n`obj` can be any of the supported Lua types — it doesn't need to be a Lua table.\n\nThis function may throw an error when attempting to serialize unsupported object types, circular references or deeply nested tables.",
+      "plaintext": "Serializes (encodes) the Lua object obj. The stand-alone function returns a string str. The buffer method appends the encoding to the buffer.\n\nobj can be any of the supported Lua types — it doesn't need to be a Lua table.\n\nThis function may throw an error when attempting to serialize unsupported object types, circular references or deeply nested tables.",
+      "require": "string.buffer"
+    },
+    {
+      "name": "string.buffer:encode",
+      "kind": "method",
+      "page": "ext_buffer",
+      "anchor": "buffer_encode",
+      "heading": "str = buffer.encode(obj)\nbuf = buf:encode(obj)",
+      "markdown": "Serializes (encodes) the Lua object `obj`. The stand-alone function returns a string `str`. The buffer method appends the encoding to the buffer.\n\n`obj` can be any of the supported Lua types — it doesn't need to be a Lua table.\n\nThis function may throw an error when attempting to serialize unsupported object types, circular references or deeply nested tables.",
+      "plaintext": "Serializes (encodes) the Lua object obj. The stand-alone function returns a string str. The buffer method appends the encoding to the buffer.\n\nobj can be any of the supported Lua types — it doesn't need to be a Lua table.\n\nThis function may throw an error when attempting to serialize unsupported object types, circular references or deeply nested tables.",
+      "require": "string.buffer"
+    },
+    {
+      "name": "string.buffer.decode",
+      "kind": "function",
+      "page": "ext_buffer",
+      "anchor": "buffer_decode",
+      "heading": "obj = buffer.decode(str)\nobj = buf:decode()",
+      "markdown": "The stand-alone function deserializes (decodes) the string `str`, the buffer method deserializes one object from the buffer. Both return a Lua object `obj`.\n\nThe returned object may be any of the supported Lua types — even `nil`.\n\nThis function may throw an error when fed with malformed or incomplete encoded data. The stand-alone function throws when there's left-over data after decoding a single top-level object. The buffer method leaves any left-over data in the buffer.\n\nAttempting to deserialize an FFI type will throw an error, if the FFI library is not built-in or has not been loaded, yet.",
+      "plaintext": "The stand-alone function deserializes (decodes) the string str, the buffer method deserializes one object from the buffer. Both return a Lua object obj.\n\nThe returned object may be any of the supported Lua types — even nil.\n\nThis function may throw an error when fed with malformed or incomplete encoded data. The stand-alone function throws when there's left-over data after decoding a single top-level object. The buffer method leaves any left-over data in the buffer.\n\nAttempting to deserialize an FFI type will throw an error, if the FFI library is not built-in or has not been loaded, yet.",
+      "require": "string.buffer"
+    },
+    {
+      "name": "string.buffer:decode",
+      "kind": "method",
+      "page": "ext_buffer",
+      "anchor": "buffer_decode",
+      "heading": "obj = buffer.decode(str)\nobj = buf:decode()",
+      "markdown": "The stand-alone function deserializes (decodes) the string `str`, the buffer method deserializes one object from the buffer. Both return a Lua object `obj`.\n\nThe returned object may be any of the supported Lua types — even `nil`.\n\nThis function may throw an error when fed with malformed or incomplete encoded data. The stand-alone function throws when there's left-over data after decoding a single top-level object. The buffer method leaves any left-over data in the buffer.\n\nAttempting to deserialize an FFI type will throw an error, if the FFI library is not built-in or has not been loaded, yet.",
+      "plaintext": "The stand-alone function deserializes (decodes) the string str, the buffer method deserializes one object from the buffer. Both return a Lua object obj.\n\nThe returned object may be any of the supported Lua types — even nil.\n\nThis function may throw an error when fed with malformed or incomplete encoded data. The stand-alone function throws when there's left-over data after decoding a single top-level object. The buffer method leaves any left-over data in the buffer.\n\nAttempting to deserialize an FFI type will throw an error, if the FFI library is not built-in or has not been loaded, yet.",
+      "require": "string.buffer"
+    },
+    {
+      "name": "jit.on",
+      "kind": "function",
+      "page": "ext_jit",
+      "anchor": "jit_onoff",
+      "heading": "jit.on()\njit.off()\njit.on(func|true [,true|false])\njit.off(func|true [,true|false])\njit.flush(func|true [,true|false])",
+      "markdown": "Turns the whole JIT compiler on (default) or off.\n\nThese functions are typically used with the command line options `-j on` or `-j off`.\n\n`jit.on` enables JIT compilation for a Lua function (this is the default).\n\n`jit.off` disables JIT compilation for a Lua function and flushes any already compiled code from the code cache.\n\n`jit.flush` flushes the code, but doesn't affect the enable/disable status.\n\nThe current function, i.e. the Lua function calling this library function, can also be specified by passing `true` as the first argument.\n\nIf the second argument is `true`, JIT compilation is also enabled, disabled or flushed recursively for all sub-functions of a function. With `false` only the sub-functions are affected.\n\nThe `jit.on` and `jit.off` functions only set a flag which is checked when the function is about to be compiled. They do not trigger immediate compilation.\n\nTypical usage is `jit.off(true, true)` in the main chunk of a module to turn off JIT compilation for the whole module for debugging purposes.",
+      "plaintext": "Turns the whole JIT compiler on (default) or off.\n\nThese functions are typically used with the command line options -j on or -j off.\n\njit.on enables JIT compilation for a Lua function (this is the default).\n\njit.off disables JIT compilation for a Lua function and flushes any already compiled code from the code cache.\n\njit.flush flushes the code, but doesn't affect the enable/disable status.\n\nThe current function, i.e. the Lua function calling this library function, can also be specified by passing true as the first argument.\n\nIf the second argument is true, JIT compilation is also enabled, disabled or flushed recursively for all sub-functions of a function. With false only the sub-functions are affected.\n\nThe jit.on and jit.off functions only set a flag which is checked when the function is about to be compiled. They do not trigger immediate compilation.\n\nTypical usage is jit.off(true, true) in the main chunk of a module to turn off JIT compilation for the whole module for debugging purposes."
+    },
+    {
+      "name": "jit.off",
+      "kind": "function",
+      "page": "ext_jit",
+      "anchor": "jit_onoff",
+      "heading": "jit.on()\njit.off()\njit.on(func|true [,true|false])\njit.off(func|true [,true|false])\njit.flush(func|true [,true|false])",
+      "markdown": "Turns the whole JIT compiler on (default) or off.\n\nThese functions are typically used with the command line options `-j on` or `-j off`.\n\n`jit.on` enables JIT compilation for a Lua function (this is the default).\n\n`jit.off` disables JIT compilation for a Lua function and flushes any already compiled code from the code cache.\n\n`jit.flush` flushes the code, but doesn't affect the enable/disable status.\n\nThe current function, i.e. the Lua function calling this library function, can also be specified by passing `true` as the first argument.\n\nIf the second argument is `true`, JIT compilation is also enabled, disabled or flushed recursively for all sub-functions of a function. With `false` only the sub-functions are affected.\n\nThe `jit.on` and `jit.off` functions only set a flag which is checked when the function is about to be compiled. They do not trigger immediate compilation.\n\nTypical usage is `jit.off(true, true)` in the main chunk of a module to turn off JIT compilation for the whole module for debugging purposes.",
+      "plaintext": "Turns the whole JIT compiler on (default) or off.\n\nThese functions are typically used with the command line options -j on or -j off.\n\njit.on enables JIT compilation for a Lua function (this is the default).\n\njit.off disables JIT compilation for a Lua function and flushes any already compiled code from the code cache.\n\njit.flush flushes the code, but doesn't affect the enable/disable status.\n\nThe current function, i.e. the Lua function calling this library function, can also be specified by passing true as the first argument.\n\nIf the second argument is true, JIT compilation is also enabled, disabled or flushed recursively for all sub-functions of a function. With false only the sub-functions are affected.\n\nThe jit.on and jit.off functions only set a flag which is checked when the function is about to be compiled. They do not trigger immediate compilation.\n\nTypical usage is jit.off(true, true) in the main chunk of a module to turn off JIT compilation for the whole module for debugging purposes."
+    },
+    {
+      "name": "jit.flush",
+      "kind": "function",
+      "page": "ext_jit",
+      "anchor": "jit_flush",
+      "heading": "jit.flush()\njit.on(func|true [,true|false])\njit.off(func|true [,true|false])\njit.flush(func|true [,true|false])\njit.flush(tr)",
+      "markdown": "Flushes the whole cache of compiled code.\n\n`jit.on` enables JIT compilation for a Lua function (this is the default).\n\n`jit.off` disables JIT compilation for a Lua function and flushes any already compiled code from the code cache.\n\n`jit.flush` flushes the code, but doesn't affect the enable/disable status.\n\nThe current function, i.e. the Lua function calling this library function, can also be specified by passing `true` as the first argument.\n\nIf the second argument is `true`, JIT compilation is also enabled, disabled or flushed recursively for all sub-functions of a function. With `false` only the sub-functions are affected.\n\nThe `jit.on` and `jit.off` functions only set a flag which is checked when the function is about to be compiled. They do not trigger immediate compilation.\n\nTypical usage is `jit.off(true, true)` in the main chunk of a module to turn off JIT compilation for the whole module for debugging purposes.\n\nFlushes the root trace, specified by its number, and all of its side traces from the cache. The code for the trace will be retained as long as there are any other traces which link to it.",
+      "plaintext": "Flushes the whole cache of compiled code.\n\njit.on enables JIT compilation for a Lua function (this is the default).\n\njit.off disables JIT compilation for a Lua function and flushes any already compiled code from the code cache.\n\njit.flush flushes the code, but doesn't affect the enable/disable status.\n\nThe current function, i.e. the Lua function calling this library function, can also be specified by passing true as the first argument.\n\nIf the second argument is true, JIT compilation is also enabled, disabled or flushed recursively for all sub-functions of a function. With false only the sub-functions are affected.\n\nThe jit.on and jit.off functions only set a flag which is checked when the function is about to be compiled. They do not trigger immediate compilation.\n\nTypical usage is jit.off(true, true) in the main chunk of a module to turn off JIT compilation for the whole module for debugging purposes.\n\nFlushes the root trace, specified by its number, and all of its side traces from the cache. The code for the trace will be retained as long as there are any other traces which link to it."
+    },
+    {
+      "name": "jit.status",
+      "kind": "function",
+      "page": "ext_jit",
+      "anchor": "jit_status",
+      "heading": "status, ... = jit.status()",
+      "markdown": "Returns the current status of the JIT compiler. The first result is either `true` or `false` if the JIT compiler is turned on or off. The remaining results are strings for CPU-specific features and enabled optimizations.",
+      "plaintext": "Returns the current status of the JIT compiler. The first result is either true or false if the JIT compiler is turned on or off. The remaining results are strings for CPU-specific features and enabled optimizations."
+    },
+    {
+      "name": "jit.version",
+      "kind": "value",
+      "page": "ext_jit",
+      "anchor": "jit_version",
+      "heading": "jit.version",
+      "markdown": "Contains the LuaJIT version string.",
+      "plaintext": "Contains the LuaJIT version string."
+    },
+    {
+      "name": "jit.version_num",
+      "kind": "value",
+      "page": "ext_jit",
+      "anchor": "jit_version_num",
+      "heading": "jit.version_num",
+      "markdown": "Contains the version number of the LuaJIT core. Version xx.yy.zz is represented by the decimal number xxyyzz.\\\n**DEPRECATED after the switch to [» rolling releases](https://luajit.org/status.html#release). zz is frozen at 99.**",
+      "plaintext": "Contains the version number of the LuaJIT core. Version xx.yy.zz is represented by the decimal number xxyyzz.\nDEPRECATED after the switch to » rolling releases (https://luajit.org/status.html#release). zz is frozen at 99."
+    },
+    {
+      "name": "jit.os",
+      "kind": "value",
+      "page": "ext_jit",
+      "anchor": "jit_os",
+      "heading": "jit.os",
+      "markdown": "Contains the target OS name: \"Windows\", \"Linux\", \"OSX\", \"BSD\", \"POSIX\" or \"Other\".",
+      "plaintext": "Contains the target OS name: \"Windows\", \"Linux\", \"OSX\", \"BSD\", \"POSIX\" or \"Other\"."
+    },
+    {
+      "name": "jit.arch",
+      "kind": "value",
+      "page": "ext_jit",
+      "anchor": "jit_arch",
+      "heading": "jit.arch",
+      "markdown": "Contains the target architecture name: \"x86\", \"x64\", \"arm\", \"arm64\", \"arm64be\", \"ppc\", \"mips\", \"mipsel\", \"mips64\", \"mips64el\", \"mips64r6\", \"mips64r6el\".",
+      "plaintext": "Contains the target architecture name: \"x86\", \"x64\", \"arm\", \"arm64\", \"arm64be\", \"ppc\", \"mips\", \"mipsel\", \"mips64\", \"mips64el\", \"mips64r6\", \"mips64r6el\"."
+    },
+    {
+      "name": "ffi.cdef",
+      "kind": "function",
+      "page": "ext_ffi_api",
+      "anchor": "ffi_cdef",
+      "heading": "ffi.cdef(def)",
+      "markdown": "Adds multiple C declarations for types or external symbols (named variables or functions). `def` must be a Lua string. It's recommended to use the syntactic sugar for string arguments as follows:\n\n```\nffi.cdef[[\ntypedef struct foo { int a, b; } foo_t;  // Declare a struct and typedef.\nint dofoo(foo_t *f, int n);  /* Declare an external C function. */\n]]\n```\n\nThe contents of the string (the part in green above) must be a sequence of [C declarations](https://luajit.org/ext_ffi_semantics.html#clang), separated by semicolons. The trailing semicolon for a single declaration may be omitted.\n\nPlease note, that external symbols are only *declared*, but they are *not bound* to any specific address, yet. Binding is achieved with C library namespaces (see below).\n\nC declarations are not passed through a C pre-processor, yet. No pre-processor tokens are allowed, except for `#pragma pack`. Replace `#define` in existing C header files with `enum`, `static const` or `typedef` and/or pass the files through an external C pre-processor (once). Be careful not to include unneeded or redundant declarations from unrelated header files.",
+      "plaintext": "Adds multiple C declarations for types or external symbols (named variables or functions). def must be a Lua string. It's recommended to use the syntactic sugar for string arguments as follows:\n\nffi.cdef[[\ntypedef struct foo { int a, b; } foo_t;  // Declare a struct and typedef.\nint dofoo(foo_t *f, int n);  /* Declare an external C function. */\n]]\n\nThe contents of the string (the part in green above) must be a sequence of C declarations (https://luajit.org/ext_ffi_semantics.html#clang), separated by semicolons. The trailing semicolon for a single declaration may be omitted.\n\nPlease note, that external symbols are only declared, but they are not bound to any specific address, yet. Binding is achieved with C library namespaces (see below).\n\nC declarations are not passed through a C pre-processor, yet. No pre-processor tokens are allowed, except for #pragma pack. Replace #define in existing C header files with enum, static const or typedef and/or pass the files through an external C pre-processor (once). Be careful not to include unneeded or redundant declarations from unrelated header files.",
+      "require": "ffi"
+    },
+    {
+      "name": "ffi.C",
+      "kind": "value",
+      "page": "ext_ffi_api",
+      "anchor": "ffi_C",
+      "heading": "ffi.C",
+      "markdown": "This is the default C library namespace — note the uppercase `'C'`. It binds to the default set of symbols or libraries on the target system. These are more or less the same as a C compiler would offer by default, without specifying extra link libraries.\n\nOn POSIX systems, this binds to symbols in the default or global namespace. This includes all exported symbols from the executable and any libraries loaded into the global namespace. This includes at least `libc`, `libm`, `libdl` (on Linux), `libgcc` (if compiled with GCC), as well as any exported symbols from the Lua/C API provided by LuaJIT itself.\n\nOn Windows systems, this binds to symbols exported from the `*.exe`, the `lua51.dll` (i.e. the Lua/C API provided by LuaJIT itself), the C runtime library LuaJIT was linked with (`msvcrt*.dll`), `kernel32.dll`, `user32.dll` and `gdi32.dll`.",
+      "plaintext": "This is the default C library namespace — note the uppercase 'C'. It binds to the default set of symbols or libraries on the target system. These are more or less the same as a C compiler would offer by default, without specifying extra link libraries.\n\nOn POSIX systems, this binds to symbols in the default or global namespace. This includes all exported symbols from the executable and any libraries loaded into the global namespace. This includes at least libc, libm, libdl (on Linux), libgcc (if compiled with GCC), as well as any exported symbols from the Lua/C API provided by LuaJIT itself.\n\nOn Windows systems, this binds to symbols exported from the *.exe, the lua51.dll (i.e. the Lua/C API provided by LuaJIT itself), the C runtime library LuaJIT was linked with (msvcrt*.dll), kernel32.dll, user32.dll and gdi32.dll.",
+      "require": "ffi"
+    },
+    {
+      "name": "ffi.load",
+      "kind": "function",
+      "page": "ext_ffi_api",
+      "anchor": "ffi_load",
+      "heading": "clib = ffi.load(name [,global])",
+      "markdown": "This loads the dynamic library given by `name` and returns a new C library namespace which binds to its symbols. On POSIX systems, if `global` is `true`, the library symbols are loaded into the global namespace, too.\n\nIf `name` is a path, the library is loaded from this path. Otherwise `name` is canonicalized in a system-dependent way and searched in the default search path for dynamic libraries:\n\nOn POSIX systems, if the name contains no dot, the extension `.so` is appended. Also, the `lib` prefix is prepended if necessary. So `ffi.load(\"z\")` looks for `\"libz.so\"` in the default shared library search path.\n\nOn Windows systems, if the name contains no dot, the extension `.dll` is appended. So `ffi.load(\"ws2_32\")` looks for `\"ws2_32.dll\"` in the default DLL search path.",
+      "plaintext": "This loads the dynamic library given by name and returns a new C library namespace which binds to its symbols. On POSIX systems, if global is true, the library symbols are loaded into the global namespace, too.\n\nIf name is a path, the library is loaded from this path. Otherwise name is canonicalized in a system-dependent way and searched in the default search path for dynamic libraries:\n\nOn POSIX systems, if the name contains no dot, the extension .so is appended. Also, the lib prefix is prepended if necessary. So ffi.load(\"z\") looks for \"libz.so\" in the default shared library search path.\n\nOn Windows systems, if the name contains no dot, the extension .dll is appended. So ffi.load(\"ws2_32\") looks for \"ws2_32.dll\" in the default DLL search path.",
+      "require": "ffi"
+    },
+    {
+      "name": "ffi.new",
+      "kind": "function",
+      "page": "ext_ffi_api",
+      "anchor": "ffi_new",
+      "heading": "cdata = ffi.new(ct [,nelem] [,init...])\ncdata = ctype([nelem,] [init...])",
+      "markdown": "Creates a cdata object for the given `ct`. VLA/VLS types require the `nelem` argument. The second syntax uses a ctype as a constructor and is otherwise fully equivalent.\n\nThe cdata object is initialized according to the [rules for initializers](https://luajit.org/ext_ffi_semantics.html#init), using the optional `init` arguments. Excess initializers cause an error.\n\nPerformance notice: if you want to create many objects of one kind, parse the cdecl only once and get its ctype with `ffi.typeof()`. Then use the ctype as a constructor repeatedly.\n\nPlease note, that an anonymous `struct` declaration implicitly creates a new and distinguished ctype every time you use it for `ffi.new()`. This is probably **not** what you want, especially if you create more than one cdata object. Different anonymous `structs` are not considered assignment-compatible by the C standard, even though they may have the same fields\\! Also, they are considered different types by the JIT-compiler, which may cause an excessive number of traces. It's strongly suggested to either declare a named `struct` or `typedef` with `ffi.cdef()` or to create a single ctype object for an anonymous `struct` with `ffi.typeof()`.",
+      "plaintext": "Creates a cdata object for the given ct. VLA/VLS types require the nelem argument. The second syntax uses a ctype as a constructor and is otherwise fully equivalent.\n\nThe cdata object is initialized according to the rules for initializers (https://luajit.org/ext_ffi_semantics.html#init), using the optional init arguments. Excess initializers cause an error.\n\nPerformance notice: if you want to create many objects of one kind, parse the cdecl only once and get its ctype with ffi.typeof(). Then use the ctype as a constructor repeatedly.\n\nPlease note, that an anonymous struct declaration implicitly creates a new and distinguished ctype every time you use it for ffi.new(). This is probably not what you want, especially if you create more than one cdata object. Different anonymous structs are not considered assignment-compatible by the C standard, even though they may have the same fields! Also, they are considered different types by the JIT-compiler, which may cause an excessive number of traces. It's strongly suggested to either declare a named struct or typedef with ffi.cdef() or to create a single ctype object for an anonymous struct with ffi.typeof().",
+      "require": "ffi"
+    },
+    {
+      "name": "ffi.typeof",
+      "kind": "function",
+      "page": "ext_ffi_api",
+      "anchor": "ffi_typeof",
+      "heading": "ctype = ffi.typeof(ct)",
+      "markdown": "Creates a ctype object for the given `ct`.\n\nThis function is especially useful to parse a cdecl only once and then use the resulting ctype object as a [constructor](https://luajit.org/ext_ffi_api.html#ffi_new).",
+      "plaintext": "Creates a ctype object for the given ct.\n\nThis function is especially useful to parse a cdecl only once and then use the resulting ctype object as a constructor (https://luajit.org/ext_ffi_api.html#ffi_new).",
+      "require": "ffi"
+    },
+    {
+      "name": "ffi.cast",
+      "kind": "function",
+      "page": "ext_ffi_api",
+      "anchor": "ffi_cast",
+      "heading": "cdata = ffi.cast(ct, init)",
+      "markdown": "Creates a scalar cdata object for the given `ct`. The cdata object is initialized with `init` using the \"cast\" variant of the [C type conversion rules](https://luajit.org/ext_ffi_semantics.html#convert).\n\nThis functions is mainly useful to override the pointer compatibility checks or to convert pointers to addresses or vice versa.",
+      "plaintext": "Creates a scalar cdata object for the given ct. The cdata object is initialized with init using the \"cast\" variant of the C type conversion rules (https://luajit.org/ext_ffi_semantics.html#convert).\n\nThis functions is mainly useful to override the pointer compatibility checks or to convert pointers to addresses or vice versa.",
+      "require": "ffi"
+    },
+    {
+      "name": "ffi.metatype",
+      "kind": "function",
+      "page": "ext_ffi_api",
+      "anchor": "ffi_metatype",
+      "heading": "ctype = ffi.metatype(ct, metatable)",
+      "markdown": "Creates a ctype object for the given `ct` and associates it with a metatable. Only `struct`/`union` types, complex numbers and vectors are allowed. Other types may be wrapped in a `struct`, if needed.\n\nThe association with a metatable is permanent and cannot be changed afterwards. Neither the contents of the `metatable` nor the contents of an `__index` table (if any) may be modified afterwards. The associated metatable automatically applies to all uses of this type, no matter how the objects are created or where they originate from. Note that predefined operations on types have precedence (e.g. declared field names cannot be overridden).\n\nAll standard Lua metamethods are implemented. These are called directly, without shortcuts, and on any mix of types. For binary operations, the left operand is checked first for a valid ctype metamethod. The `__gc` metamethod only applies to `struct`/`union` types and performs an implicit [`ffi.gc()`](https://luajit.org/ext_ffi_api.html#ffi_gc) call during creation of an instance.",
+      "plaintext": "Creates a ctype object for the given ct and associates it with a metatable. Only struct/union types, complex numbers and vectors are allowed. Other types may be wrapped in a struct, if needed.\n\nThe association with a metatable is permanent and cannot be changed afterwards. Neither the contents of the metatable nor the contents of an __index table (if any) may be modified afterwards. The associated metatable automatically applies to all uses of this type, no matter how the objects are created or where they originate from. Note that predefined operations on types have precedence (e.g. declared field names cannot be overridden).\n\nAll standard Lua metamethods are implemented. These are called directly, without shortcuts, and on any mix of types. For binary operations, the left operand is checked first for a valid ctype metamethod. The __gc metamethod only applies to struct/union types and performs an implicit ffi.gc() (https://luajit.org/ext_ffi_api.html#ffi_gc) call during creation of an instance.",
+      "require": "ffi"
+    },
+    {
+      "name": "ffi.gc",
+      "kind": "function",
+      "page": "ext_ffi_api",
+      "anchor": "ffi_gc",
+      "heading": "cdata = ffi.gc(cdata, finalizer)",
+      "markdown": "Associates a finalizer with a pointer or aggregate cdata object. The cdata object is returned unchanged.\n\nThis function allows safe integration of unmanaged resources into the automatic memory management of the LuaJIT garbage collector. Typical usage:\n\n```\nlocal p = ffi.gc(ffi.C.malloc(n), ffi.C.free)\n...\np = nil -- Last reference to p is gone.\n-- GC will eventually run finalizer: ffi.C.free(p)\n```\n\nA cdata finalizer works like the `__gc` metamethod for userdata objects: when the last reference to a cdata object is gone, the associated finalizer is called with the cdata object as an argument. The finalizer can be a Lua function or a cdata function or cdata function pointer. An existing finalizer can be removed by setting a `nil` finalizer, e.g. right before explicitly deleting a resource:\n\n```\nffi.C.free(ffi.gc(p, nil)) -- Manually free the memory.\n```",
+      "plaintext": "Associates a finalizer with a pointer or aggregate cdata object. The cdata object is returned unchanged.\n\nThis function allows safe integration of unmanaged resources into the automatic memory management of the LuaJIT garbage collector. Typical usage:\n\nlocal p = ffi.gc(ffi.C.malloc(n), ffi.C.free)\n...\np = nil -- Last reference to p is gone.\n-- GC will eventually run finalizer: ffi.C.free(p)\n\nA cdata finalizer works like the __gc metamethod for userdata objects: when the last reference to a cdata object is gone, the associated finalizer is called with the cdata object as an argument. The finalizer can be a Lua function or a cdata function or cdata function pointer. An existing finalizer can be removed by setting a nil finalizer, e.g. right before explicitly deleting a resource:\n\nffi.C.free(ffi.gc(p, nil)) -- Manually free the memory.",
+      "require": "ffi"
+    },
+    {
+      "name": "ffi.sizeof",
+      "kind": "function",
+      "page": "ext_ffi_api",
+      "anchor": "ffi_sizeof",
+      "heading": "size = ffi.sizeof(ct [,nelem])",
+      "markdown": "Returns the size of `ct` in bytes. Returns `nil` if the size is not known (e.g. for `\"void\"` or function types). Requires `nelem` for VLA/VLS types, except for cdata objects.",
+      "plaintext": "Returns the size of ct in bytes. Returns nil if the size is not known (e.g. for \"void\" or function types). Requires nelem for VLA/VLS types, except for cdata objects.",
+      "require": "ffi"
+    },
+    {
+      "name": "ffi.alignof",
+      "kind": "function",
+      "page": "ext_ffi_api",
+      "anchor": "ffi_alignof",
+      "heading": "align = ffi.alignof(ct)",
+      "markdown": "Returns the minimum required alignment for `ct` in bytes.",
+      "plaintext": "Returns the minimum required alignment for ct in bytes.",
+      "require": "ffi"
+    },
+    {
+      "name": "ffi.offsetof",
+      "kind": "function",
+      "page": "ext_ffi_api",
+      "anchor": "ffi_offsetof",
+      "heading": "ofs [,bpos,bsize] = ffi.offsetof(ct, field)",
+      "markdown": "Returns the offset (in bytes) of `field` relative to the start of `ct`, which must be a `struct`. Additionally returns the position and the field size (in bits) for bit fields.",
+      "plaintext": "Returns the offset (in bytes) of field relative to the start of ct, which must be a struct. Additionally returns the position and the field size (in bits) for bit fields.",
+      "require": "ffi"
+    },
+    {
+      "name": "ffi.istype",
+      "kind": "function",
+      "page": "ext_ffi_api",
+      "anchor": "ffi_istype",
+      "heading": "status = ffi.istype(ct, obj)",
+      "markdown": "Returns `true` if `obj` has the C type given by `ct`. Returns `false` otherwise.\n\nC type qualifiers (`const` etc.) are ignored. Pointers are checked with the standard pointer compatibility rules, but without any special treatment for `void *`. If `ct` specifies a `struct`/`union`, then a pointer to this type is accepted, too. Otherwise the types must match exactly.\n\nNote: this function accepts all kinds of Lua objects for the `obj` argument, but always returns `false` for non-cdata objects.",
+      "plaintext": "Returns true if obj has the C type given by ct. Returns false otherwise.\n\nC type qualifiers (const etc.) are ignored. Pointers are checked with the standard pointer compatibility rules, but without any special treatment for void *. If ct specifies a struct/union, then a pointer to this type is accepted, too. Otherwise the types must match exactly.\n\nNote: this function accepts all kinds of Lua objects for the obj argument, but always returns false for non-cdata objects.",
+      "require": "ffi"
+    },
+    {
+      "name": "ffi.errno",
+      "kind": "function",
+      "page": "ext_ffi_api",
+      "anchor": "ffi_errno",
+      "heading": "err = ffi.errno([newerr])",
+      "markdown": "Returns the error number set by the last C function call which indicated an error condition. If the optional `newerr` argument is present, the error number is set to the new value and the previous value is returned.\n\nThis function offers a portable and OS-independent way to get and set the error number. Note that only *some* C functions set the error number. And it's only significant if the function actually indicated an error condition (e.g. with a return value of `-1` or `NULL`). Otherwise, it may or may not contain any previously set value.\n\nYou're advised to call this function only when needed and as close as possible after the return of the related C function. The `errno` value is preserved across hooks, memory allocations, invocations of the JIT compiler and other internal VM activity. The same applies to the value returned by `GetLastError()` on Windows, but you need to declare and call it yourself.",
+      "plaintext": "Returns the error number set by the last C function call which indicated an error condition. If the optional newerr argument is present, the error number is set to the new value and the previous value is returned.\n\nThis function offers a portable and OS-independent way to get and set the error number. Note that only some C functions set the error number. And it's only significant if the function actually indicated an error condition (e.g. with a return value of -1 or NULL). Otherwise, it may or may not contain any previously set value.\n\nYou're advised to call this function only when needed and as close as possible after the return of the related C function. The errno value is preserved across hooks, memory allocations, invocations of the JIT compiler and other internal VM activity. The same applies to the value returned by GetLastError() on Windows, but you need to declare and call it yourself.",
+      "require": "ffi"
+    },
+    {
+      "name": "ffi.string",
+      "kind": "function",
+      "page": "ext_ffi_api",
+      "anchor": "ffi_string",
+      "heading": "str = ffi.string(ptr [,len])",
+      "markdown": "Creates an interned Lua string from the data pointed to by `ptr`.\n\nIf the optional argument `len` is missing, `ptr` is converted to a `\"char *\"` and the data is assumed to be zero-terminated. The length of the string is computed with `strlen()`.\n\nOtherwise `ptr` is converted to a `\"void *\"` and `len` gives the length of the data. The data may contain embedded zeros and need not be byte-oriented (though this may cause endianess issues).\n\nThis function is mainly useful to convert (temporary) `\"const char *\"` pointers returned by C functions to Lua strings and store them or pass them to other functions expecting a Lua string. The Lua string is an (interned) copy of the data and bears no relation to the original data area anymore. Lua strings are 8 bit clean and may be used to hold arbitrary, non-character data.\n\nPerformance notice: it's faster to pass the length of the string, if it's known. E.g. when the length is returned by a C call like `sprintf()`.",
+      "plaintext": "Creates an interned Lua string from the data pointed to by ptr.\n\nIf the optional argument len is missing, ptr is converted to a \"char *\" and the data is assumed to be zero-terminated. The length of the string is computed with strlen().\n\nOtherwise ptr is converted to a \"void *\" and len gives the length of the data. The data may contain embedded zeros and need not be byte-oriented (though this may cause endianess issues).\n\nThis function is mainly useful to convert (temporary) \"const char *\" pointers returned by C functions to Lua strings and store them or pass them to other functions expecting a Lua string. The Lua string is an (interned) copy of the data and bears no relation to the original data area anymore. Lua strings are 8 bit clean and may be used to hold arbitrary, non-character data.\n\nPerformance notice: it's faster to pass the length of the string, if it's known. E.g. when the length is returned by a C call like sprintf().",
+      "require": "ffi"
+    },
+    {
+      "name": "ffi.copy",
+      "kind": "function",
+      "page": "ext_ffi_api",
+      "anchor": "ffi_copy",
+      "heading": "ffi.copy(dst, src, len)\nffi.copy(dst, str)",
+      "markdown": "Copies the data pointed to by `src` to `dst`. `dst` is converted to a `\"void *\"` and `src` is converted to a `\"const void *\"`.\n\nIn the first syntax, `len` gives the number of bytes to copy. Caveat: if `src` is a Lua string, then `len` must not exceed `#src+1`.\n\nIn the second syntax, the source of the copy must be a Lua string. All bytes of the string *plus a zero-terminator* are copied to `dst` (i.e. `#src+1` bytes).\n\nPerformance notice: `ffi.copy()` may be used as a faster (inlinable) replacement for the C library functions `memcpy()`, `strcpy()` and `strncpy()`.",
+      "plaintext": "Copies the data pointed to by src to dst. dst is converted to a \"void *\" and src is converted to a \"const void *\".\n\nIn the first syntax, len gives the number of bytes to copy. Caveat: if src is a Lua string, then len must not exceed #src+1.\n\nIn the second syntax, the source of the copy must be a Lua string. All bytes of the string plus a zero-terminator are copied to dst (i.e. #src+1 bytes).\n\nPerformance notice: ffi.copy() may be used as a faster (inlinable) replacement for the C library functions memcpy(), strcpy() and strncpy().",
+      "require": "ffi"
+    },
+    {
+      "name": "ffi.fill",
+      "kind": "function",
+      "page": "ext_ffi_api",
+      "anchor": "ffi_fill",
+      "heading": "ffi.fill(dst, len [,c])",
+      "markdown": "Fills the data pointed to by `dst` with `len` constant bytes, given by `c`. If `c` is omitted, the data is zero-filled.\n\nPerformance notice: `ffi.fill()` may be used as a faster (inlinable) replacement for the C library function `memset(dst, c, len)`. Please note the different order of arguments\\!",
+      "plaintext": "Fills the data pointed to by dst with len constant bytes, given by c. If c is omitted, the data is zero-filled.\n\nPerformance notice: ffi.fill() may be used as a faster (inlinable) replacement for the C library function memset(dst, c, len). Please note the different order of arguments!",
+      "require": "ffi"
+    },
+    {
+      "name": "ffi.abi",
+      "kind": "function",
+      "page": "ext_ffi_api",
+      "anchor": "ffi_abi",
+      "heading": "status = ffi.abi(param)",
+      "markdown": "Returns `true` if `param` (a Lua string) applies for the target ABI (Application Binary Interface). Returns `false` otherwise. The following parameters are currently defined:\n\n| Parameter | Description |\n| --- | --- |\n| 32bit | 32 bit architecture |\n| 64bit | 64 bit architecture |\n| le | Little-endian architecture |\n| be | Big-endian architecture |\n| fpu | Target has a hardware FPU |\n| softfp | softfp calling conventions |\n| hardfp | hardfp calling conventions |\n| eabi | EABI variant of the standard ABI |\n| win | Windows variant of the standard ABI |\n| pauth | Pointer authentication ABI |\n| uwp | Universal Windows Platform |\n| gc64 | 64 bit GC references |",
+      "plaintext": "Returns true if param (a Lua string) applies for the target ABI (Application Binary Interface). Returns false otherwise. The following parameters are currently defined:\n\nParameter\tDescription\n32bit\t32 bit architecture\n64bit\t64 bit architecture\nle\tLittle-endian architecture\nbe\tBig-endian architecture\nfpu\tTarget has a hardware FPU\nsoftfp\tsoftfp calling conventions\nhardfp\thardfp calling conventions\neabi\tEABI variant of the standard ABI\nwin\tWindows variant of the standard ABI\npauth\tPointer authentication ABI\nuwp\tUniversal Windows Platform\ngc64\t64 bit GC references",
+      "require": "ffi"
+    },
+    {
+      "name": "ffi.os",
+      "kind": "value",
+      "page": "ext_ffi_api",
+      "anchor": "ffi_os",
+      "heading": "ffi.os",
+      "markdown": "Contains the target OS name. Same contents as [`jit.os`](https://luajit.org/ext_jit.html#jit_os).",
+      "plaintext": "Contains the target OS name. Same contents as jit.os (https://luajit.org/ext_jit.html#jit_os).",
+      "require": "ffi"
+    },
+    {
+      "name": "ffi.arch",
+      "kind": "value",
+      "page": "ext_ffi_api",
+      "anchor": "ffi_arch",
+      "heading": "ffi.arch",
+      "markdown": "Contains the target architecture name. Same contents as [`jit.arch`](https://luajit.org/ext_jit.html#jit_arch).",
+      "plaintext": "Contains the target architecture name. Same contents as jit.arch (https://luajit.org/ext_jit.html#jit_arch).",
+      "require": "ffi"
+    },
+    {
+      "name": "bit.tobit",
+      "kind": "function",
+      "page": "bitop_api",
+      "anchor": "tobit",
+      "heading": "y = bit.tobit(x)",
+      "markdown": "Normalizes a number to the numeric range for bit operations and returns it. This function is usually not needed since all bit operations already normalize all of their input arguments. Check the [operational semantics](https://bitop.luajit.org/semantics.html) for details.\n\n```\nprint(0xffffffff)                --> 4294967295 (*)\nprint(bit.tobit(0xffffffff))     --> -1\nprintx(bit.tobit(0xffffffff))    --> 0xffffffff\nprint(bit.tobit(0xffffffff + 1)) --> 0\nprint(bit.tobit(2^40 + 1234))    --> 1234\n```\n\n(\\*) See the treatment of [hex literals](https://bitop.luajit.org/semantics.html#hexlit) for an explanation why the printed numbers in the first two lines differ (if your Lua installation uses a `double` number type).",
+      "plaintext": "Normalizes a number to the numeric range for bit operations and returns it. This function is usually not needed since all bit operations already normalize all of their input arguments. Check the operational semantics (https://bitop.luajit.org/semantics.html) for details.\n\nprint(0xffffffff)                --> 4294967295 (*)\nprint(bit.tobit(0xffffffff))     --> -1\nprintx(bit.tobit(0xffffffff))    --> 0xffffffff\nprint(bit.tobit(0xffffffff + 1)) --> 0\nprint(bit.tobit(2^40 + 1234))    --> 1234\n\n(*) See the treatment of hex literals (https://bitop.luajit.org/semantics.html#hexlit) for an explanation why the printed numbers in the first two lines differ (if your Lua installation uses a double number type)."
+    },
+    {
+      "name": "bit.tohex",
+      "kind": "function",
+      "page": "bitop_api",
+      "anchor": "tohex",
+      "heading": "y = bit.tohex(x [,n])",
+      "markdown": "Converts its first argument to a hex string. The number of hex digits is given by the absolute value of the optional second argument. Positive numbers between 1 and 8 generate lowercase hex digits. Negative numbers generate uppercase hex digits. Only the least-significant 4\\*\\|n\\| bits are used. The default is to generate 8 lowercase hex digits.\n\n```\nprint(bit.tohex(1))              --> 00000001\nprint(bit.tohex(-1))             --> ffffffff\nprint(bit.tohex(0xffffffff))     --> ffffffff\nprint(bit.tohex(-1, -8))         --> FFFFFFFF\nprint(bit.tohex(0x21, 4))        --> 0021\nprint(bit.tohex(0x87654321, 4))  --> 4321\n```",
+      "plaintext": "Converts its first argument to a hex string. The number of hex digits is given by the absolute value of the optional second argument. Positive numbers between 1 and 8 generate lowercase hex digits. Negative numbers generate uppercase hex digits. Only the least-significant 4*|n| bits are used. The default is to generate 8 lowercase hex digits.\n\nprint(bit.tohex(1))              --> 00000001\nprint(bit.tohex(-1))             --> ffffffff\nprint(bit.tohex(0xffffffff))     --> ffffffff\nprint(bit.tohex(-1, -8))         --> FFFFFFFF\nprint(bit.tohex(0x21, 4))        --> 0021\nprint(bit.tohex(0x87654321, 4))  --> 4321"
+    },
+    {
+      "name": "bit.bnot",
+      "kind": "function",
+      "page": "bitop_api",
+      "anchor": "bnot",
+      "heading": "y = bit.bnot(x)",
+      "markdown": "Returns the bitwise **not** of its argument.\n\n```\nprint(bit.bnot(0))            --> -1\nprintx(bit.bnot(0))           --> 0xffffffff\nprint(bit.bnot(-1))           --> 0\nprint(bit.bnot(0xffffffff))   --> 0\nprintx(bit.bnot(0x12345678))  --> 0xedcba987\n```",
+      "plaintext": "Returns the bitwise not of its argument.\n\nprint(bit.bnot(0))            --> -1\nprintx(bit.bnot(0))           --> 0xffffffff\nprint(bit.bnot(-1))           --> 0\nprint(bit.bnot(0xffffffff))   --> 0\nprintx(bit.bnot(0x12345678))  --> 0xedcba987"
+    },
+    {
+      "name": "bit.bor",
+      "kind": "function",
+      "page": "bitop_api",
+      "anchor": "bor",
+      "heading": "y = bit.bor(x1 [,x2...])\ny = bit.band(x1 [,x2...])\ny = bit.bxor(x1 [,x2...])",
+      "markdown": "Returns either the bitwise **or**, bitwise **and**, or bitwise **xor** of all of its arguments. Note that more than two arguments are allowed.\n\n```\nprint(bit.bor(1, 2, 4, 8))                --> 15\nprintx(bit.band(0x12345678, 0xff))        --> 0x00000078\nprintx(bit.bxor(0xa5a5f0f0, 0xaa55ff00))  --> 0x0ff00ff0\n```",
+      "plaintext": "Returns either the bitwise or, bitwise and, or bitwise xor of all of its arguments. Note that more than two arguments are allowed.\n\nprint(bit.bor(1, 2, 4, 8))                --> 15\nprintx(bit.band(0x12345678, 0xff))        --> 0x00000078\nprintx(bit.bxor(0xa5a5f0f0, 0xaa55ff00))  --> 0x0ff00ff0"
+    },
+    {
+      "name": "bit.band",
+      "kind": "function",
+      "page": "bitop_api",
+      "anchor": "bor",
+      "heading": "y = bit.bor(x1 [,x2...])\ny = bit.band(x1 [,x2...])\ny = bit.bxor(x1 [,x2...])",
+      "markdown": "Returns either the bitwise **or**, bitwise **and**, or bitwise **xor** of all of its arguments. Note that more than two arguments are allowed.\n\n```\nprint(bit.bor(1, 2, 4, 8))                --> 15\nprintx(bit.band(0x12345678, 0xff))        --> 0x00000078\nprintx(bit.bxor(0xa5a5f0f0, 0xaa55ff00))  --> 0x0ff00ff0\n```",
+      "plaintext": "Returns either the bitwise or, bitwise and, or bitwise xor of all of its arguments. Note that more than two arguments are allowed.\n\nprint(bit.bor(1, 2, 4, 8))                --> 15\nprintx(bit.band(0x12345678, 0xff))        --> 0x00000078\nprintx(bit.bxor(0xa5a5f0f0, 0xaa55ff00))  --> 0x0ff00ff0"
+    },
+    {
+      "name": "bit.bxor",
+      "kind": "function",
+      "page": "bitop_api",
+      "anchor": "bor",
+      "heading": "y = bit.bor(x1 [,x2...])\ny = bit.band(x1 [,x2...])\ny = bit.bxor(x1 [,x2...])",
+      "markdown": "Returns either the bitwise **or**, bitwise **and**, or bitwise **xor** of all of its arguments. Note that more than two arguments are allowed.\n\n```\nprint(bit.bor(1, 2, 4, 8))                --> 15\nprintx(bit.band(0x12345678, 0xff))        --> 0x00000078\nprintx(bit.bxor(0xa5a5f0f0, 0xaa55ff00))  --> 0x0ff00ff0\n```",
+      "plaintext": "Returns either the bitwise or, bitwise and, or bitwise xor of all of its arguments. Note that more than two arguments are allowed.\n\nprint(bit.bor(1, 2, 4, 8))                --> 15\nprintx(bit.band(0x12345678, 0xff))        --> 0x00000078\nprintx(bit.bxor(0xa5a5f0f0, 0xaa55ff00))  --> 0x0ff00ff0"
+    },
+    {
+      "name": "bit.lshift",
+      "kind": "function",
+      "page": "bitop_api",
+      "anchor": "lshift",
+      "heading": "y = bit.lshift(x, n)\ny = bit.rshift(x, n)\ny = bit.arshift(x, n)",
+      "markdown": "Returns either the bitwise **logical left-shift**, bitwise **logical right-shift**, or bitwise **arithmetic right-shift** of its first argument by the number of bits given by the second argument.\n\nLogical shifts treat the first argument as an unsigned number and shift in 0-bits. Arithmetic right-shift treats the most-significant bit as a sign bit and replicates it.\\\nOnly the lower 5 bits of the shift count are used (reduces to the range \\[0..31\\]).\n\n```\nprint(bit.lshift(1, 0))              --> 1\nprint(bit.lshift(1, 8))              --> 256\nprint(bit.lshift(1, 40))             --> 256\nprint(bit.rshift(256, 8))            --> 1\nprint(bit.rshift(-256, 8))           --> 16777215\nprint(bit.arshift(256, 8))           --> 1\nprint(bit.arshift(-256, 8))          --> -1\nprintx(bit.lshift(0x87654321, 12))   --> 0x54321000\nprintx(bit.rshift(0x87654321, 12))   --> 0x00087654\nprintx(bit.arshift(0x87654321, 12))  --> 0xfff87654\n```",
+      "plaintext": "Returns either the bitwise logical left-shift, bitwise logical right-shift, or bitwise arithmetic right-shift of its first argument by the number of bits given by the second argument.\n\nLogical shifts treat the first argument as an unsigned number and shift in 0-bits. Arithmetic right-shift treats the most-significant bit as a sign bit and replicates it.\nOnly the lower 5 bits of the shift count are used (reduces to the range [0..31]).\n\nprint(bit.lshift(1, 0))              --> 1\nprint(bit.lshift(1, 8))              --> 256\nprint(bit.lshift(1, 40))             --> 256\nprint(bit.rshift(256, 8))            --> 1\nprint(bit.rshift(-256, 8))           --> 16777215\nprint(bit.arshift(256, 8))           --> 1\nprint(bit.arshift(-256, 8))          --> -1\nprintx(bit.lshift(0x87654321, 12))   --> 0x54321000\nprintx(bit.rshift(0x87654321, 12))   --> 0x00087654\nprintx(bit.arshift(0x87654321, 12))  --> 0xfff87654"
+    },
+    {
+      "name": "bit.rshift",
+      "kind": "function",
+      "page": "bitop_api",
+      "anchor": "lshift",
+      "heading": "y = bit.lshift(x, n)\ny = bit.rshift(x, n)\ny = bit.arshift(x, n)",
+      "markdown": "Returns either the bitwise **logical left-shift**, bitwise **logical right-shift**, or bitwise **arithmetic right-shift** of its first argument by the number of bits given by the second argument.\n\nLogical shifts treat the first argument as an unsigned number and shift in 0-bits. Arithmetic right-shift treats the most-significant bit as a sign bit and replicates it.\\\nOnly the lower 5 bits of the shift count are used (reduces to the range \\[0..31\\]).\n\n```\nprint(bit.lshift(1, 0))              --> 1\nprint(bit.lshift(1, 8))              --> 256\nprint(bit.lshift(1, 40))             --> 256\nprint(bit.rshift(256, 8))            --> 1\nprint(bit.rshift(-256, 8))           --> 16777215\nprint(bit.arshift(256, 8))           --> 1\nprint(bit.arshift(-256, 8))          --> -1\nprintx(bit.lshift(0x87654321, 12))   --> 0x54321000\nprintx(bit.rshift(0x87654321, 12))   --> 0x00087654\nprintx(bit.arshift(0x87654321, 12))  --> 0xfff87654\n```",
+      "plaintext": "Returns either the bitwise logical left-shift, bitwise logical right-shift, or bitwise arithmetic right-shift of its first argument by the number of bits given by the second argument.\n\nLogical shifts treat the first argument as an unsigned number and shift in 0-bits. Arithmetic right-shift treats the most-significant bit as a sign bit and replicates it.\nOnly the lower 5 bits of the shift count are used (reduces to the range [0..31]).\n\nprint(bit.lshift(1, 0))              --> 1\nprint(bit.lshift(1, 8))              --> 256\nprint(bit.lshift(1, 40))             --> 256\nprint(bit.rshift(256, 8))            --> 1\nprint(bit.rshift(-256, 8))           --> 16777215\nprint(bit.arshift(256, 8))           --> 1\nprint(bit.arshift(-256, 8))          --> -1\nprintx(bit.lshift(0x87654321, 12))   --> 0x54321000\nprintx(bit.rshift(0x87654321, 12))   --> 0x00087654\nprintx(bit.arshift(0x87654321, 12))  --> 0xfff87654"
+    },
+    {
+      "name": "bit.arshift",
+      "kind": "function",
+      "page": "bitop_api",
+      "anchor": "lshift",
+      "heading": "y = bit.lshift(x, n)\ny = bit.rshift(x, n)\ny = bit.arshift(x, n)",
+      "markdown": "Returns either the bitwise **logical left-shift**, bitwise **logical right-shift**, or bitwise **arithmetic right-shift** of its first argument by the number of bits given by the second argument.\n\nLogical shifts treat the first argument as an unsigned number and shift in 0-bits. Arithmetic right-shift treats the most-significant bit as a sign bit and replicates it.\\\nOnly the lower 5 bits of the shift count are used (reduces to the range \\[0..31\\]).\n\n```\nprint(bit.lshift(1, 0))              --> 1\nprint(bit.lshift(1, 8))              --> 256\nprint(bit.lshift(1, 40))             --> 256\nprint(bit.rshift(256, 8))            --> 1\nprint(bit.rshift(-256, 8))           --> 16777215\nprint(bit.arshift(256, 8))           --> 1\nprint(bit.arshift(-256, 8))          --> -1\nprintx(bit.lshift(0x87654321, 12))   --> 0x54321000\nprintx(bit.rshift(0x87654321, 12))   --> 0x00087654\nprintx(bit.arshift(0x87654321, 12))  --> 0xfff87654\n```",
+      "plaintext": "Returns either the bitwise logical left-shift, bitwise logical right-shift, or bitwise arithmetic right-shift of its first argument by the number of bits given by the second argument.\n\nLogical shifts treat the first argument as an unsigned number and shift in 0-bits. Arithmetic right-shift treats the most-significant bit as a sign bit and replicates it.\nOnly the lower 5 bits of the shift count are used (reduces to the range [0..31]).\n\nprint(bit.lshift(1, 0))              --> 1\nprint(bit.lshift(1, 8))              --> 256\nprint(bit.lshift(1, 40))             --> 256\nprint(bit.rshift(256, 8))            --> 1\nprint(bit.rshift(-256, 8))           --> 16777215\nprint(bit.arshift(256, 8))           --> 1\nprint(bit.arshift(-256, 8))          --> -1\nprintx(bit.lshift(0x87654321, 12))   --> 0x54321000\nprintx(bit.rshift(0x87654321, 12))   --> 0x00087654\nprintx(bit.arshift(0x87654321, 12))  --> 0xfff87654"
+    },
+    {
+      "name": "bit.rol",
+      "kind": "function",
+      "page": "bitop_api",
+      "anchor": "rol",
+      "heading": "y = bit.rol(x, n)\ny = bit.ror(x, n)",
+      "markdown": "Returns either the bitwise **left rotation**, or bitwise **right rotation** of its first argument by the number of bits given by the second argument. Bits shifted out on one side are shifted back in on the other side.\\\nOnly the lower 5 bits of the rotate count are used (reduces to the range \\[0..31\\]).\n\n```\nprintx(bit.rol(0x12345678, 12))   --> 0x45678123\nprintx(bit.ror(0x12345678, 12))   --> 0x67812345\n```",
+      "plaintext": "Returns either the bitwise left rotation, or bitwise right rotation of its first argument by the number of bits given by the second argument. Bits shifted out on one side are shifted back in on the other side.\nOnly the lower 5 bits of the rotate count are used (reduces to the range [0..31]).\n\nprintx(bit.rol(0x12345678, 12))   --> 0x45678123\nprintx(bit.ror(0x12345678, 12))   --> 0x67812345"
+    },
+    {
+      "name": "bit.ror",
+      "kind": "function",
+      "page": "bitop_api",
+      "anchor": "rol",
+      "heading": "y = bit.rol(x, n)\ny = bit.ror(x, n)",
+      "markdown": "Returns either the bitwise **left rotation**, or bitwise **right rotation** of its first argument by the number of bits given by the second argument. Bits shifted out on one side are shifted back in on the other side.\\\nOnly the lower 5 bits of the rotate count are used (reduces to the range \\[0..31\\]).\n\n```\nprintx(bit.rol(0x12345678, 12))   --> 0x45678123\nprintx(bit.ror(0x12345678, 12))   --> 0x67812345\n```",
+      "plaintext": "Returns either the bitwise left rotation, or bitwise right rotation of its first argument by the number of bits given by the second argument. Bits shifted out on one side are shifted back in on the other side.\nOnly the lower 5 bits of the rotate count are used (reduces to the range [0..31]).\n\nprintx(bit.rol(0x12345678, 12))   --> 0x45678123\nprintx(bit.ror(0x12345678, 12))   --> 0x67812345"
+    },
+    {
+      "name": "bit.bswap",
+      "kind": "function",
+      "page": "bitop_api",
+      "anchor": "bswap",
+      "heading": "y = bit.bswap(x)",
+      "markdown": "Swaps the bytes of its argument and returns it. This can be used to convert little-endian 32 bit numbers to big-endian 32 bit numbers or vice versa.\n\n```\nprintx(bit.bswap(0x12345678)) --> 0x78563412\nprintx(bit.bswap(0x78563412)) --> 0x12345678\n```",
+      "plaintext": "Swaps the bytes of its argument and returns it. This can be used to convert little-endian 32 bit numbers to big-endian 32 bit numbers or vice versa.\n\nprintx(bit.bswap(0x12345678)) --> 0x78563412\nprintx(bit.bswap(0x78563412)) --> 0x12345678"
+    }
+  ]
+}
