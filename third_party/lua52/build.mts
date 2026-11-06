@@ -3,7 +3,7 @@
 //   npm run build:wasm             rebuild third_party/lua52/dist/*
 //   npm run build:wasm -- --check  rebuild into a temp dir; fail if it differs from dist/
 //
-// Requires Emscripten (see EMSCRIPTEN_VERSION) on PATH, e.g. via
+// Requires Emscripten (EMSCRIPTEN_VERSION in ../emscripten.mts) on PATH, e.g. via
 // `source .cache/emsdk/emsdk_env.sh`. Inputs are pinned and verified:
 // the tarball by its SHA-256 published on https://www.lua.org/ftp/ (tarball.mts),
 // and the compiler by its exact version string.
@@ -12,10 +12,8 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from 'node:os';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { EMSCRIPTEN_VERSION, isPinnedEmcc } from '../emscripten.mts';
 import { fetchLuaTarball, LUA_VERSION, sha256 } from './tarball.mts';
-
-// https://github.com/emscripten-core/emsdk tag; keep in sync with .github/workflows/ci.yml.
-const EMSCRIPTEN_VERSION = '6.0.13';
 
 // Exactly the CORE_O objects plus lauxlib.o from lua-5.2.4/src/Makefile.
 // The standard libraries are deliberately left out: nothing is ever executed.
@@ -53,8 +51,7 @@ function run(command: string, args: string[], cwd: string): string {
 
 function checkCompiler(): void {
   const version = run('emcc', ['--version'], root).split('\n')[0] ?? '';
-  // First line looks like: "emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 6.0.13 (<hash>)"
-  if (!new RegExp(`\\) ${EMSCRIPTEN_VERSION.replaceAll('.', '\\.')} \\(`).test(version)) {
+  if (!isPinnedEmcc(version)) {
     fail(`Emscripten ${EMSCRIPTEN_VERSION} is required, found: "${version}". See CONTRIBUTING.md › Building the Lua 5.2 WASM module.`);
   }
 }

@@ -144,6 +144,7 @@
     "test": "vscode-test",
     "check-l10n": "node scripts/check-l10n.mts",
     "build:wasm": "node third_party/lua52/build.mts",
+    "build:wasm:luajit": "node third_party/luajit/build.mts",
     "lua-manual": "node scripts/lua-manual/generate.mts",
     "luajit-manual": "node scripts/luajit-manual/generate.mts",
     "notices": "node scripts/third-party-notices.mts"

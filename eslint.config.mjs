@@ -14,7 +14,7 @@ const noVscodeImport = {
 
 export default tseslint.config(
   {
-    ignores: ['dist/**', 'out/**', 'node_modules/**', '.cache/**', '.vscode-test/**', 'third_party/lua52/dist/**'],
+    ignores: ['dist/**', 'out/**', 'node_modules/**', '.cache/**', '.vscode-test/**', 'third_party/lua52/dist/**', 'third_party/luajit/dist/**'],
   },
   eslint.configs.recommended,
   {
