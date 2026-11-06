@@ -10,7 +10,7 @@
   "configuration.validate.mode.type": "Yazarken, `#ieLua.validate.debounce#` milisaniye boyunca değişiklik olmadığında doğrula.",
   "configuration.validate.mode.saveAndType": "Yazarken ve dosya kaydedildiğinde doğrula.",
   "configuration.validate.debounce.description": "`#ieLua.validate.mode#` ayarı `type` veya `saveAndType` olduğunda, son değişiklikten doğrulamaya kadar geçen milisaniye cinsinden gecikme.",
-  "configuration.runtime.lua.description": "Oyunun çalıştırdığı Lua; üzerine gelme, tamamlama ve anlamsal vurgulamanın neyi açıklayacağını belirler. EEex'in deneysel *Use LuaJIT* bileşeni yüklüyse `luajit` seçeneğini belirleyin: bu durumda LuaJIT kitaplıkları `bit`, `jit`, `ffi` ve `string.buffer` ile `table.new` ve `table.clear` belgelenir, LuaJIT'te olmayan `bit32` belgelenmez. Söz dizimi hatalarını her zaman Lua 5.2 derleyicisi bildirir.",
+  "configuration.runtime.lua.description": "Oyunun çalıştırdığı Lua; söz dizimini hangi derleyicinin denetleyeceğini ve üzerine gelme, tamamlama ve anlamsal vurgulamanın neyi açıklayacağını belirler. EEex'in deneysel *Use LuaJIT* bileşeni yüklüyse `luajit` seçeneğini belirleyin: bu durumda LuaJIT kitaplıkları `bit`, `jit`, `ffi` ve `string.buffer` ile `table.new` ve `table.clear` belgelenir, LuaJIT'te olmayan `bit32` belgelenmez. Söz dizimi hatalarını bu durumda Lua 5.2 derleyicisi yerine LuaJIT'in kendi ayrıştırıcısı bildirir.",
   "configuration.runtime.lua.lua52": "Oyunun kendi Lua 5.2'si.",
   "configuration.runtime.lua.luajit": "EEex'in *Use LuaJIT* bileşeninin yüklediği LuaJIT.",
   "semanticTokenModifiers.global.description": "Yerel değişkenin aksine, genel bir değişken (genel ortamın bir alanı)."

@@ -2,7 +2,7 @@ import { luaLineRanges } from './luaLines.ts';
 import { parseLuaError } from './luaError.ts';
 import { extractMenuLua } from './menuExtractor.ts';
 import { CHUNK_FORM, DiagnosticCode, type CompiledForm, type LuaChunk, type Problem } from './types.ts';
-import type { Lua52Checker } from './lua52.ts';
+import type { LuaChecker } from './checker.ts';
 
 export type DocumentKind = 'lua' | 'menu';
 
@@ -23,7 +23,7 @@ export function documentKind(uri: string, languageId: string): DocumentKind {
  * Validates a whole document. Menu documents are split into their Lua chunks
  * first; Lua documents are validated as one chunk.
  */
-export function validateText(text: string, kind: DocumentKind, lua: Lua52Checker): Problem[] {
+export function validateText(text: string, kind: DocumentKind, lua: LuaChecker): Problem[] {
   if (kind === 'lua') {
     return validateChunk({ kind: 'statements', origin: 'file', offset: 0, region: { start: 0, end: text.length }, text, forms: [CHUNK_FORM] }, lua);
   }
@@ -35,7 +35,7 @@ export function validateText(text: string, kind: DocumentKind, lua: Lua52Checker
  * Compiles the chunk in each of its forms, as the engine does, and reports the
  * first form that fails: one problem per chunk at most.
  */
-export function validateChunk(chunk: LuaChunk, lua: Lua52Checker): Problem[] {
+export function validateChunk(chunk: LuaChunk, lua: LuaChecker): Problem[] {
   for (const form of chunk.forms) {
     const found = validateForm(chunk, form, lua);
     if (found) return [found];
@@ -43,7 +43,7 @@ export function validateChunk(chunk: LuaChunk, lua: Lua52Checker): Problem[] {
   return [];
 }
 
-function validateForm(chunk: LuaChunk, form: CompiledForm, lua: Lua52Checker): Problem | undefined {
+function validateForm(chunk: LuaChunk, form: CompiledForm, lua: LuaChecker): Problem | undefined {
   const source = form.prefix + chunk.text + form.suffix;
   const raw = lua.check(source);
   if (raw === undefined) {
@@ -53,7 +53,7 @@ function validateForm(chunk: LuaChunk, form: CompiledForm, lua: Lua52Checker): P
   const textStart = form.prefix.length;
   const textEnd = textStart + chunk.text.length;
   const toChunk = (offset: number): number => Math.min(Math.max(offset, textStart), textEnd) - textStart;
-  const error = parseLuaError(raw);
+  const error = parseLuaError(raw, lua.dialect);
   if (!error) {
     // Unexpected message shape: report it verbatim on the first line of the chunk.
     const first = luaLineRanges(chunk.text)[0] ?? { start: 0, end: 0 };

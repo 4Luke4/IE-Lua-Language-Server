@@ -25,5 +25,5 @@
     "resolveJsonModule": true,
     "types": ["node", "mocha", "vscode"]
   },
-  "include": ["src", "test", "scripts", "third_party/lua52/*.mts", "third_party/lua52/dist/*.d.ts"]
+  "include": ["src", "test", "scripts", "third_party/*.mts", "third_party/lua52/*.mts", "third_party/lua52/dist/*.d.ts", "third_party/luajit/*.mts", "third_party/luajit/dist/*.d.ts"]
 }

@@ -5,7 +5,8 @@
 import assert from 'node:assert/strict';
 import { lex } from '../../../../src/server/syntax/lexer.ts';
 import { parseChunk } from '../../../../src/server/syntax/parser.ts';
-import { loadLua52, type Lua52Checker } from '../../../../src/server/validation/lua52.ts';
+import type { LuaChecker } from '../../../../src/server/validation/checker.ts';
+import { loadLua52 } from '../../../../src/server/validation/lua52.ts';
 
 const CORPUS = [
   // Accepted
@@ -84,7 +85,7 @@ function mutations(source: string, count: number, seed: number): string[] {
 }
 
 describe('server/syntax/parser agrees with the official Lua 5.2.4 compiler', () => {
-  let lua: Lua52Checker;
+  let lua: LuaChecker;
   before(async () => {
     lua = await loadLua52();
   });

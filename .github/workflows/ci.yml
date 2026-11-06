@@ -4,7 +4,8 @@
 # - One Linux runner per job; jobs that only matter for some paths are skipped
 #   by the `changes` job (workflow-level `paths:` filters are not used because a
 #   skipped workflow never reports, which blocks required status checks).
-# - npm, VS Code test builds, emsdk and the Lua source tarball are cached.
+# - npm, VS Code test builds, emsdk, the Lua source tarball and the pinned LuaJIT
+#   sources are cached.
 # - Superseded pull request runs are cancelled.
 # Failures are reported as file/line annotations (setup-node's tsc and ESLint
 # problem matchers, and `::error` lines from scripts/).
@@ -35,6 +36,7 @@ jobs:
       wasm: ${{ steps.diff.outputs.wasm }}
       manual: ${{ steps.diff.outputs.manual }}
       luajit: ${{ steps.diff.outputs.luajit }}
+      luajit_wasm: ${{ steps.diff.outputs.luajit_wasm }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -53,6 +55,7 @@ jobs:
             echo "wasm=true" >> "$GITHUB_OUTPUT"
             echo "manual=true" >> "$GITHUB_OUTPUT"
             echo "luajit=true" >> "$GITHUB_OUTPUT"
+            echo "luajit_wasm=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           changed="$(git diff --name-only "$BASE" HEAD)"
@@ -63,7 +66,7 @@ jobs:
           else
             echo "code=false" >> "$GITHUB_OUTPUT"
           fi
-          if printf '%s\n' "$changed" | grep -qE '^(third_party/lua52/|\.github/workflows/ci\.yml$)'; then
+          if printf '%s\n' "$changed" | grep -qE '^(third_party/lua52/|third_party/emscripten\.mts$|\.github/workflows/ci\.yml$)'; then
             echo "wasm=true" >> "$GITHUB_OUTPUT"
           else
             echo "wasm=false" >> "$GITHUB_OUTPUT"
@@ -78,6 +81,13 @@ jobs:
             echo "luajit=true" >> "$GITHUB_OUTPUT"
           else
             echo "luajit=false" >> "$GITHUB_OUTPUT"
+          fi
+          # The LuaJIT WASM build reads its commit pin from the manual generator, and the
+          # differential reads the corpus in test/fixtures/luajit-syntax/.
+          if printf '%s\n' "$changed" | grep -qE '^(third_party/luajit/|third_party/emscripten\.mts$|third_party/lua52/tarball\.mts$|scripts/luajit-manual/generate\.mts$|test/fixtures/luajit-syntax/|\.github/workflows/ci\.yml$)'; then
+            echo "luajit_wasm=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "luajit_wasm=false" >> "$GITHUB_OUTPUT"
           fi
 
   checks:
@@ -200,9 +210,9 @@ jobs:
       - id: emsdk
         name: Read pinned Emscripten version
         run: |
-          version="$(sed -nE "s/^const EMSCRIPTEN_VERSION = '([0-9.]+)';.*/\1/p" third_party/lua52/build.mts)"
+          version="$(sed -nE "s/^export const EMSCRIPTEN_VERSION = '([0-9.]+)';.*/\1/p" third_party/emscripten.mts)"
           if [ -z "$version" ]; then
-            echo "::error file=third_party/lua52/build.mts,title=WASM::EMSCRIPTEN_VERSION not found"
+            echo "::error file=third_party/emscripten.mts,title=WASM::EMSCRIPTEN_VERSION not found"
             exit 1
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
@@ -230,6 +240,57 @@ jobs:
         run: |
           source .cache/emsdk/emsdk_env.sh
           npm run build:wasm -- --check
+
+  luajit-wasm:
+    name: LuaJIT WASM is reproducible and parses like native LuaJIT
+    needs: changes
+    if: needs.changes.outputs.luajit_wasm == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # No `npm ci`: the build and the differential use only Node built-ins, git, make and cc.
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - id: emsdk
+        name: Read pinned Emscripten version
+        run: |
+          version="$(sed -nE "s/^export const EMSCRIPTEN_VERSION = '([0-9.]+)';.*/\1/p" third_party/emscripten.mts)"
+          if [ -z "$version" ]; then
+            echo "::error file=third_party/emscripten.mts,title=WASM::EMSCRIPTEN_VERSION not found"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      # Same key as the `wasm` job: one emsdk download per version.
+      - name: Cache emsdk
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .cache/emsdk
+          key: emsdk-${{ runner.os }}-${{ steps.emsdk.outputs.version }}
+      # The objects of the pinned commit never change; the key changes when the pin does.
+      - name: Cache the pinned LuaJIT sources
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .cache/luajit-src
+          key: luajit-git-${{ hashFiles('third_party/luajit/source.mts', 'scripts/luajit-manual/generate.mts') }}
+      - name: Install emsdk ${{ steps.emsdk.outputs.version }}
+        env:
+          VERSION: ${{ steps.emsdk.outputs.version }}
+        run: |
+          if [ ! -x .cache/emsdk/emsdk ]; then
+            git clone --depth 1 --branch "$VERSION" https://github.com/emscripten-core/emsdk.git .cache/emsdk
+          fi
+          .cache/emsdk/emsdk install "$VERSION"
+          .cache/emsdk/emsdk activate "$VERSION"
+      - name: Rebuild and compare
+        run: |
+          source .cache/emsdk/emsdk_env.sh
+          npm run build:wasm:luajit -- --check
+      - name: Compare with a native x64 LuaJIT
+        run: npm run luajit-differential
 
   manual:
     name: Lua 5.2 manual data is current

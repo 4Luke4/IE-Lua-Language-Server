@@ -66,6 +66,8 @@ See [`CLAUDE.md`](CLAUDE.md) for the architecture rules.
 | `npm run package` | Production bundle |
 | `npm run notices` | Regenerate `THIRD_PARTY_NOTICES.md` (after `npm run package`) |
 | `npm run build:wasm` | Rebuild the Lua 5.2 WebAssembly module (needs Emscripten, see below) |
+| `npm run build:wasm:luajit` | Rebuild the LuaJIT WebAssembly module (needs Emscripten and git, see below) |
+| `npm run luajit-differential` | Compare the LuaJIT module with a native x64 LuaJIT (needs git, make and a C compiler) |
 | `npm run lua-manual` | Regenerate `data/lua52/manual.json` from the official Lua 5.2 manual (see below) |
 | `npm run luajit-manual` | Regenerate `data/luajit/manual.json` from the LuaJIT documentation (see below) |
 
@@ -127,8 +129,41 @@ npm run build:wasm            # rebuild
 npm run build:wasm -- --check # verify the committed files are reproducible
 ```
 
-The Emscripten version is pinned in `third_party/lua52/build.mts` (`EMSCRIPTEN_VERSION`); CI reads
-it from there. The Lua tarball is verified against the SHA-256 published on <https://www.lua.org/ftp/>.
+The Emscripten version is pinned in `third_party/emscripten.mts` (`EMSCRIPTEN_VERSION`), for both
+WebAssembly modules; CI reads it from there. The Lua tarball is verified against the SHA-256 published on <https://www.lua.org/ftp/>.
+
+## The LuaJIT WebAssembly module
+
+With `ieLua.runtime.lua` set to `luajit`, syntax is checked by LuaJIT's own lexer and parser from
+`third_party/luajit/dist/`, generated and committed like the Lua 5.2 module. With the same
+Emscripten as above:
+
+```sh
+npm run build:wasm:luajit             # rebuild
+npm run build:wasm:luajit -- --check  # verify the committed files are reproducible (CI does this)
+npm run luajit-differential           # compare with a native x64 LuaJIT (CI does this)
+```
+
+- **Sources** (`third_party/luajit/source.mts`): the `LuaJIT/` directory of
+  [Bubb13/InfinityLoader](https://github.com/Bubb13/InfinityLoader) at `INFINITY_LOADER_COMMIT`
+  (from `scripts/luajit-manual/generate.mts`, so the manual data and the parser describe one
+  build), fetched with git into `.cache/luajit-src` and verified by the tree hash `LUAJIT_TREE`.
+- **Build** (`third_party/luajit/build.mts`, explained in its header): LuaJIT's own steps
+  (`src/Makefile`, `src/msvcbuild.bat`); minilua, DynASM and buildvm are compiled by emcc and run
+  by Node. Every `lj_*.c` and `lib_*.c` is compiled unchanged, with `msvcbuild.bat`'s defines.
+- **`validate.c`** replaces only the interpreter, which buildvm generates as machine code and
+  cannot generate for WebAssembly: protected calls and error unwinding are written in C after
+  `vm_x86.dasc`; whatever would run Lua code stops the module with a message. Its header lists
+  every symbol and why. It loads with mode `"tX"` so that the parser lays out frames in two slots,
+  like EEex's x64 build (the register limits depend on it).
+- **Differential** (`third_party/luajit/differential.mts`): builds a native LuaJIT from the same
+  tree and loads every chunk of `test/fixtures/luajit-syntax/`, plus generated cases at each
+  limit, with both; any different answer fails. Add a fixture there when you find a construct
+  worth pinning down.
+
+To move to a newer InfinityLoader, update the commit as described for the LuaJIT manual data
+below, then `LUAJIT_TREE` (`git rev-parse <commit>:LuaJIT`), and rebuild. The build stops with a
+message whenever `msvcbuild.bat` or `lj_arch.h` use something it does not carry over.
 
 ## The Lua 5.2 manual data
 

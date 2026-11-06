@@ -49,6 +49,25 @@ suite('IE Lua Language Server', () => {
     assert.deepEqual(result, { validated: true, diagnosticCount: 0 });
   });
 
+  test('checks syntax with the compiler of ieLua.runtime.lua, and again when it changes', async () => {
+    const uri = fixtureUri('luajit-syntax.lua');
+    await vscode.window.showTextDocument(await vscode.workspace.openTextDocument(uri));
+    const result = await vscode.commands.executeCommand('ieLua.validateDocument', uri);
+    assert.deepEqual(result, { validated: true, diagnosticCount: 1 });
+    const [lua52] = await waitForDiagnostics(uri, hasError);
+    // Lua 5.2 ends the number at `L`: `LL` starts a new statement.
+    assert.equal(lua52?.message, "syntax error near '+'");
+    assert.equal(lua52.range.start.line, 1);
+    const restore = await withSetting('runtime.lua', 'luajit');
+    try {
+      // Published diagnostics are checked again by LuaJIT without another request.
+      await waitForDiagnostics(uri, (diagnostics) => diagnostics.length === 0);
+    } finally {
+      await restore();
+    }
+    await waitForDiagnostics(uri, hasError);
+  });
+
   test('validateDocument validates Lua embedded in .menu files', async () => {
     const uri = fixtureUri('BROKEN.MENU');
     await vscode.window.showTextDocument(await vscode.workspace.openTextDocument(uri));

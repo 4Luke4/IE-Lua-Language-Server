@@ -63,8 +63,32 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   cancellation); completion items carry the runtime in `data`, so `completionItem/resolve` uses
   the same library (items without it resolve with Lua 5.2); semantic tokens are cached per
   document and runtime, and a settings change sends `workspace/semanticTokens/refresh` when the
-  client supports it. Syntax validation is unchanged (Lua 5.2 compiler). The LuaJIT and Lua BitOp
-  licenses, recorded verbatim in the data, are added to `THIRD_PARTY_NOTICES.md`.
+  client supports it. Syntax validation follows the setting too (next entry). The LuaJIT and Lua
+  BitOp licenses, recorded verbatim in the data, are added to `THIRD_PARTY_NOTICES.md`.
+- Syntax diagnostics by LuaJIT's own lexer and parser when `ieLua.runtime.lua` is `luajit`
+  (`src/server/validation/luajit.ts`), in `.lua` files and in every compiled form of `.menu`
+  Lua, so `1LL`, `0x10ULL`, `3i`, `0b101` and `"\u{20AC}"` are no longer errors there. The
+  checker is chosen per document; LuaJIT is loaded on first use. When the setting changes, open
+  documents whose diagnostics came from the other compiler are checked again, in every validate
+  mode. Messages are LuaJIT's own (`near '<eof>'` maps to the end of the chunk:
+  `parseLuaError(raw, dialect)` in `luaError.ts`). Production `dist/server/server.js` grows from
+  810,957 to 1,058,231 bytes.
+  - `third_party/luajit/` (`npm run build:wasm:luajit`, `-- --check` in the new CI job
+    `luajit-wasm`): the `LuaJIT/` directory of Bubb13/InfinityLoader at the commit the LuaJIT
+    manual data uses, fetched with git and verified by its tree hash (`source.mts`), is built to
+    WebAssembly following LuaJIT's `src/Makefile` and `msvcbuild.bat` (host tools compiled by
+    emcc and run by Node). Every `lj_*.c` and `lib_*.c` is compiled unchanged, with
+    `msvcbuild.bat`'s `LUAJIT_ENABLE_LUA52COMPAT` and the target options `LUAJIT_TARGET=x86`,
+    `LUAJIT_DISABLE_JIT` and `LUAJIT_SECURITY_PRNG=0`; byte-for-byte reproducible.
+  - `validate.c` replaces the interpreter that buildvm generates as machine code (no WebAssembly
+    target): `lj_vm_cpcall` and `lj_vm_unwind_c` with `setjmp`/`longjmp`, through `lj_frame.h`'s
+    `cframe_*` macros; `lj_vm_floor` with `floor()`; the entry points that would run Lua code or
+    FFI calls stop the module with a message. It loads with mode `"tX"`, which lays out frames in
+    two slots as EEex's x64 GC64 build does, and opens the FFI library once so that no finalizer
+    ever needs the interpreter.
+  - `third_party/luajit/differential.mts` (`npm run luajit-differential`, CI): builds a native
+    x64 LuaJIT from the same tree and fails if any chunk of `test/fixtures/luajit-syntax/` or of
+    the generated limit cases (call arguments, nesting, locals, upvalues) gets a different answer.
 - Method syntax in hover, completion and semantic tokens (`src/server/hover/receiver.ts`, through
   `memberTarget` in `src/server/hover/resolve.ts`). A receiver is typed only when the code or a
   LuaCATS annotation proves it; anything else gets nothing:
@@ -99,6 +123,10 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
 
 ### Changed
 
+- The Emscripten version is pinned once, in `third_party/emscripten.mts`, for both WebAssembly
+  builds; CI reads it from there (was `third_party/lua52/build.mts`).
+- `LuaChecker` (`src/server/validation/checker.ts`) replaces `Lua52Checker`; diagnostics take
+  `checker(runtime)` instead of a single Lua 5.2 checker.
 - New extension icon, `images/icon.png`: a d20 (a regular icosahedron) in the previous navy and
   gold palette, with a glowing "20" on the face toward the viewer. It is rendered by the rewritten
   `scripts/assets/icon.py` (Cycles on the GPU, seeded, 512 → 128 px) using Blender's bundled Inter

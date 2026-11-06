@@ -10,7 +10,7 @@
   "configuration.validate.mode.type": "在键入时验证，在 `#ieLua.validate.debounce#` 毫秒内无更改后进行。",
   "configuration.validate.mode.saveAndType": "在键入时和保存文件时验证。",
   "configuration.validate.debounce.description": "当 `#ieLua.validate.mode#` 为 `type` 或 `saveAndType` 时，最后一次更改后到开始验证前的延迟时间(毫秒)。",
-  "configuration.runtime.lua.description": "游戏运行的 Lua，决定悬停、补全和语义突出显示所描述的内容。安装了 EEex 的实验性组件 *Use LuaJIT* 时，请选择 `luajit`：此时会说明 LuaJIT 库 `bit`、`jit`、`ffi` 和 `string.buffer` 以及 `table.new` 和 `table.clear`，而不说明 LuaJIT 中没有的 `bit32`。语法错误始终由 Lua 5.2 编译器报告。",
+  "configuration.runtime.lua.description": "游戏运行的 Lua，决定由哪个编译器检查语法，以及悬停、补全和语义突出显示所描述的内容。安装了 EEex 的实验性组件 *Use LuaJIT* 时，请选择 `luajit`：此时会说明 LuaJIT 库 `bit`、`jit`、`ffi` 和 `string.buffer` 以及 `table.new` 和 `table.clear`，而不说明 LuaJIT 中没有的 `bit32`。此时语法错误也改由 LuaJIT 自身的解析器而非 Lua 5.2 编译器报告。",
   "configuration.runtime.lua.lua52": "游戏自身的 Lua 5.2。",
   "configuration.runtime.lua.luajit": "由 EEex 的 *Use LuaJIT* 组件安装的 LuaJIT。",
   "semanticTokenModifiers.global.description": "全局变量（全局环境中的字段），与局部变量相对。"

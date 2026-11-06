@@ -12,7 +12,8 @@ import {
 } from '../../../../src/server/formatting/format.ts';
 import { lex } from '../../../../src/server/syntax/lexer.ts';
 import { parseChunk } from '../../../../src/server/syntax/parser.ts';
-import { loadLua52, type Lua52Checker } from '../../../../src/server/validation/lua52.ts';
+import type { LuaChecker } from '../../../../src/server/validation/checker.ts';
+import { loadLua52 } from '../../../../src/server/validation/lua52.ts';
 
 const SPACES: FormattingOptions = { tabSize: 2, insertSpaces: true };
 
@@ -407,7 +408,7 @@ describe('server/formatting/format', () => {
   });
 
   describe('properties', () => {
-    let lua: Lua52Checker;
+    let lua: LuaChecker;
     before(async () => {
       lua = await loadLua52();
     });

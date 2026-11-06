@@ -18,7 +18,9 @@ versions with an **even** middle number (for example 1.**2**.0) are stable relea
 - **LuaJIT support for EEex's *Use LuaJIT* component.** Set *IE Lua › Runtime: Lua* to `luajit`
   and hover and completion describe LuaJIT's libraries, quoted from the LuaJIT documentation:
   `bit`, `jit`, `ffi`, `string.buffer`, `table.new` and `table.clear`. `bit32`, which LuaJIT does
-  not have, is then no longer offered. Syntax is still checked by the Lua 5.2 compiler.
+  not have, is then no longer offered. Syntax errors then come from LuaJIT's own parser, built
+  into the extension as EEex installs it, so LuaJIT code such as `1LL`, `0x10ULL` or
+  `"\u{20AC}"` is no longer reported as an error. Switching the setting checks open files again.
 - **Documentation for method calls.** `name:upper()` now shows the description of `string.upper`
   when `name` is surely a string: a string literal, a local that keeps one, or a value annotated
   `---@type string`. Your own methods, called as `obj:greet()` or `self:greet()`, show how you

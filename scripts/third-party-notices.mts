@@ -6,7 +6,8 @@
 // Sources: dist/{client/extension,server/server}.meta.json (esbuild metafiles).
 // Every npm package with at least one bundled file is listed with the license
 // text it ships. Code under third_party/ is listed with the texts kept in
-// third_party/<name>/licenses/, and so is the Lua 5.2 manual text that
+// third_party/<name>/licenses/ (LuaJIT: the COPYRIGHT file of the compiled tree,
+// third_party/luajit/dist/COPYRIGHT), and so is the Lua 5.2 manual text that
 // data/lua52/manual.json quotes, and the LuaJIT and Lua BitOp text that
 // data/luajit/manual.json quotes (with the licenses it records), when bundled.
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -75,6 +76,7 @@ const packages = [...packageDirs]
 const fence = (text: string): string => `\`\`\`text\n${text}\n\`\`\``;
 const usesLua52 = [...inputs].some((input) => input.startsWith('third_party/lua52/dist/'));
 const lua52License = (name: string): string => readFileSync(join(root, 'third_party', 'lua52', 'licenses', name), 'utf8').trim();
+const usesLuaJitCode = [...inputs].some((input) => input.startsWith('third_party/luajit/dist/'));
 const manualData = 'data/lua52/manual.json';
 const usesManual = inputs.has(manualData);
 const luajitData = 'data/luajit/manual.json';
@@ -101,10 +103,29 @@ if (usesLua52) {
     '[`third_party/lua52/build.mts`](third_party/lua52/build.mts) and used only to check syntax.',
     '',
     fence(lua52License('lua.txt')),
+  );
+}
+
+if (usesLuaJitCode) {
+  sections.push(
     '',
-    '### Emscripten runtime',
+    '## LuaJIT (compiled to WebAssembly)',
     '',
-    'The WebAssembly module includes JavaScript glue code and runtime libraries from Emscripten.',
+    "LuaJIT's lexer and parser, from the LuaJIT that EEex's *Use LuaJIT* component installs, are",
+    'built to WebAssembly by [`third_party/luajit/build.mts`](third_party/luajit/build.mts) and used',
+    "only to check syntax. LuaJIT's COPYRIGHT file:",
+    '',
+    fence(readFileSync(join(root, 'third_party', 'luajit', 'dist', 'COPYRIGHT'), 'utf8').trim()),
+  );
+}
+
+if (usesLua52 || usesLuaJitCode) {
+  // The Emscripten runtime, the same for each module; the license files are kept in lua52/licenses/.
+  sections.push(
+    '',
+    '## Emscripten runtime',
+    '',
+    'The WebAssembly modules include JavaScript glue code and runtime libraries from Emscripten.',
     '',
     fence(lua52License('emscripten.txt')),
     '',
@@ -166,7 +187,7 @@ for (const pkg of packages) {
 }
 
 const content = `${sections.join('\n').trimEnd()}\n`;
-const summary = `${packages.length} npm packages${usesLua52 ? ' + Lua 5.2.4' : ''}${usesManual ? ' + Lua 5.2 manual' : ''}${usesLuaJit ? ' + LuaJIT docs' : ''}`;
+const summary = `${packages.length} npm packages${usesLua52 ? ' + Lua 5.2.4' : ''}${usesLuaJitCode ? ' + LuaJIT' : ''}${usesManual ? ' + Lua 5.2 manual' : ''}${usesLuaJit ? ' + LuaJIT docs' : ''}`;
 if (process.argv.includes('--check')) {
   const current = existsSync(output) ? readFileSync(output, 'utf8') : '';
   if (current !== content) {

@@ -10,7 +10,7 @@
   "configuration.validate.mode.type": "입력하는 동안 `#ieLua.validate.debounce#`밀리초 동안 변경이 없으면 유효성을 검사합니다.",
   "configuration.validate.mode.saveAndType": "입력하는 동안과 파일을 저장할 때 유효성을 검사합니다.",
   "configuration.validate.debounce.description": "`#ieLua.validate.mode#`이(가) `type` 또는 `saveAndType`인 경우 마지막 변경 후 유효성 검사까지의 지연 시간(밀리초)입니다.",
-  "configuration.runtime.lua.description": "게임이 실행하는 Lua로, 가리키기, 완성 및 의미 체계 강조 표시에서 설명하는 내용을 결정합니다. EEex의 실험적 구성 요소 *Use LuaJIT*가 설치된 경우 `luajit`를 선택하세요. 그러면 LuaJIT 라이브러리 `bit`, `jit`, `ffi`, `string.buffer`와 `table.new`, `table.clear`가 설명되고, LuaJIT에 없는 `bit32`는 설명되지 않습니다. 구문 오류는 항상 Lua 5.2 컴파일러가 보고합니다.",
+  "configuration.runtime.lua.description": "게임이 실행하는 Lua로, 구문을 검사하는 컴파일러와 가리키기, 완성 및 의미 체계 강조 표시에서 설명하는 내용을 결정합니다. EEex의 실험적 구성 요소 *Use LuaJIT*가 설치된 경우 `luajit`를 선택하세요. 그러면 LuaJIT 라이브러리 `bit`, `jit`, `ffi`, `string.buffer`와 `table.new`, `table.clear`가 설명되고, LuaJIT에 없는 `bit32`는 설명되지 않습니다. 구문 오류도 Lua 5.2 컴파일러 대신 LuaJIT 자체 파서가 보고합니다.",
   "configuration.runtime.lua.lua52": "게임 자체의 Lua 5.2입니다.",
   "configuration.runtime.lua.luajit": "EEex의 *Use LuaJIT* 구성 요소가 설치하는 LuaJIT입니다.",
   "semanticTokenModifiers.global.description": "전역 변수(전역 환경의 필드)로, 로컬 변수와 구별됩니다."

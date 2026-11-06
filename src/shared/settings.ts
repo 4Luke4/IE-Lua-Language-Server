@@ -25,7 +25,7 @@ export interface IeLuaSettings {
     readonly debounce: number;
   };
   readonly runtime: {
-    /** Which libraries hover, completion and semantic tokens describe. */
+    /** Which compiler checks syntax, and which libraries hover, completion and semantic tokens describe. */
     readonly lua: Runtime;
   };
 }

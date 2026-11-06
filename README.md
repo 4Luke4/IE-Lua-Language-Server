@@ -22,7 +22,9 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
 ## Features
 
 - **Syntax errors from the official Lua 5.2 compiler.** The real Lua 5.2.4 front end, built to
-  WebAssembly, checks your code — nothing to install, and no code is ever run.
+  WebAssembly, checks your code — nothing to install, and no code is ever run. With the `luajit`
+  runtime, LuaJIT's own parser, as EEex installs it, checks it instead, so `1LL` or
+  `"\u{20AC}"` are fine there.
 - **`.menu` files understood as the game reads them.** All the Lua the game compiles is checked,
   in the exact form it compiles it: `` `…` `` blocks, `onOpen`/`onClose`/`action…` scripts, and
   `enabled`, `table`, `lua "…"` and other expressions, in `"…"` or `'…'`, plus the Lua the game
@@ -134,7 +136,7 @@ GitHub; GitHub does not say who downloads, so maintainers' own downloads are inc
 | --- | --- | --- |
 | `ieLua.validate.mode` | `save` | When files are checked: `manual` (only with the command below), `save`, `type` (while typing), or `saveAndType`. |
 | `ieLua.validate.debounce` | `300` | Milliseconds to wait after the last change before checking, in `type` and `saveAndType` modes. |
-| `ieLua.runtime.lua` | `lua52` | The Lua the game runs: `lua52` (the game's own), or `luajit` if you installed EEex's experimental *Use LuaJIT* component. With `luajit`, hover and completion describe LuaJIT's libraries (`bit`, `jit`, `ffi`, `string.buffer`, `table.new`, `table.clear`) and no longer `bit32`, which LuaJIT does not have. Syntax is still checked by the Lua 5.2 compiler. |
+| `ieLua.runtime.lua` | `lua52` | The Lua the game runs: `lua52` (the game's own), or `luajit` if you installed EEex's experimental *Use LuaJIT* component. With `luajit`, hover and completion describe LuaJIT's libraries (`bit`, `jit`, `ffi`, `string.buffer`, `table.new`, `table.clear`) and no longer `bit32`, which LuaJIT does not have, and syntax is checked by LuaJIT's own parser instead of the Lua 5.2 compiler. |
 
 All settings can be set per workspace folder.
 

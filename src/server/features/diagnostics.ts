@@ -8,11 +8,13 @@ import type { ParsedDocumentCache } from '../documentCache.ts';
 import type { Messages } from '../l10n.ts';
 import type { SettingsStore } from '../settingsStore.ts';
 import { Debouncer, type Timers } from '../validation/debouncer.ts';
-import type { Lua52Checker } from '../validation/lua52.ts';
+import type { Runtime } from '../../shared/settings.ts';
+import type { LuaChecker } from '../validation/checker.ts';
 import { documentKind, validateText } from '../validation/validateText.ts';
 
 export interface DiagnosticsDeps {
-  readonly lua: Promise<Lua52Checker>;
+  /** The syntax checker for `ieLua.runtime.lua`. */
+  readonly checker: (runtime: Runtime) => Promise<LuaChecker>;
   /** Parse results, for the doc-comment checks. */
   readonly cache: ParsedDocumentCache;
   /** Messages in the client's locale (doc-comment problems). */
@@ -31,6 +33,11 @@ export interface DiagnosticsDeps {
  * | `save`        |                          | ✓       | ✓                        |
  * | `type`        | ✓                        |         | ✓                        |
  * | `saveAndType` | ✓                        | ✓       | ✓                        |
+ *
+ * Syntax is checked by the compiler of `ieLua.runtime.lua`, read per document. When
+ * that setting changes, open documents whose diagnostics came from the other compiler
+ * are checked again in every mode: they were already requested, and leaving errors
+ * from a compiler the user switched away from would be wrong.
  */
 export interface DiagnosticsFeature {
   /** Handles `workspace/didChangeConfiguration` (the server owns the single handler). */
@@ -39,11 +46,12 @@ export interface DiagnosticsFeature {
 
 export function register(connection: Connection, documents: TextDocuments<TextDocument>, deps: DiagnosticsDeps): DiagnosticsFeature {
   const debouncer = new Debouncer<string>(deps.timers);
-  /** Document version whose diagnostics were last published, per URI. */
-  const published = new Map<string, number>();
+  /** Document version and runtime whose diagnostics were last published, per URI. */
+  const published = new Map<string, { readonly version: number; readonly runtime: Runtime }>();
 
   const publish = async (uri: string, token?: CancellationToken): Promise<ValidateDocumentResult> => {
-    const lua = await deps.lua;
+    const { runtime } = await deps.settings.get(uri);
+    const lua = await deps.checker(runtime.lua);
     const document = documents.get(uri);
     if (!document || token?.isCancellationRequested) {
       return { validated: false, diagnosticCount: 0 };
@@ -60,7 +68,7 @@ export function register(connection: Connection, documents: TextDocuments<TextDo
     if (documents.get(uri) !== document) {
       return { validated: false, diagnosticCount: 0 };
     }
-    published.set(uri, document.version);
+    published.set(uri, { version: document.version, runtime: runtime.lua });
     await connection.sendDiagnostics({ uri, version: document.version, diagnostics });
     return { validated: true, diagnosticCount: diagnostics.length };
   };
@@ -88,7 +96,7 @@ export function register(connection: Connection, documents: TextDocuments<TextDo
     deps.settings
       .get(uri)
       .then(async ({ validate }) => {
-        if (validatesOnSave(validate.mode) && published.get(uri) !== document.version) {
+        if (validatesOnSave(validate.mode) && published.get(uri)?.version !== document.version) {
           debouncer.cancel(uri);
           await publish(uri);
         }
@@ -121,8 +129,14 @@ export function register(connection: Connection, documents: TextDocuments<TextDo
       const { uri } = document;
       deps.settings
         .get(uri)
-        .then(({ validate }) => {
-          if (validatesOnType(validate.mode) && published.get(uri) !== document.version) {
+        .then(({ validate, runtime }) => {
+          const last = published.get(uri);
+          if (last !== undefined && last.runtime !== runtime.lua) {
+            debouncer.cancel(uri);
+            publish(uri).catch(report(uri));
+            return;
+          }
+          if (validatesOnType(validate.mode) && last?.version !== document.version) {
             debouncer.schedule(uri, validate.debounce, () => {
               publish(uri).catch(report(uri));
             });
