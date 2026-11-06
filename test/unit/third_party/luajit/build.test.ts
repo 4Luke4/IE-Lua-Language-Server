@@ -23,14 +23,28 @@ const X86: ReadonlyMap<string, string> = new Map([
   ['LJ_UNWIND_EXT', '0'],
 ]);
 
-/** Runs `call` on the imported `module` in a child process: the build reports failures by exiting. */
-function exitsWith(module: string, call: string): { status: number | null; stderr: string } {
-  const script = `import(${JSON.stringify(module)}).then((m) => { ${call} })`;
-  const result = spawnSync(process.execPath, ['--input-type=module', '-e', script], { encoding: 'utf8' });
+const BUILD = new URL('../../../../third_party/luajit/build.mts', import.meta.url).href;
+
+/**
+ * The child process of `exitsWith`. A fixed script: the module, the function and its
+ * argument arrive as data in argv (JSON), never as code.
+ */
+const CHILD = `
+const [module, name, json] = process.argv.slice(1);
+const build = await import(module);
+const argument = JSON.parse(json);
+if (name === 'msvcDefines') build.msvcDefines(argument);
+else if (name === 'makefileTarget') build.makefileTarget(new Map(argument));
+else throw new Error('unknown function ' + name);
+`;
+
+/** Calls a build.mts helper in a child process: the build reports failures by exiting. */
+function exitsWith(
+  ...[name, argument]: ['msvcDefines', string] | ['makefileTarget', [string, string][]]
+): { status: number | null; stderr: string } {
+  const result = spawnSync(process.execPath, ['--input-type=module', '-e', CHILD, '--', BUILD, name, JSON.stringify(argument)], { encoding: 'utf8' });
   return { status: result.status, stderr: result.stderr };
 }
-
-const BUILD = new URL('../../../../third_party/luajit/build.mts', import.meta.url).href;
 
 describe('third_party/luajit/build', () => {
   describe('msvcDefines', () => {
@@ -39,13 +53,13 @@ describe('third_party/luajit/build', () => {
     });
 
     it('stops on a define it does not know how to carry over', () => {
-      const { status, stderr } = exitsWith(BUILD, 'm.msvcDefines("@set LJCOMPILE=cl /DLUA_USE_ASSERT")');
+      const { status, stderr } = exitsWith('msvcDefines', '@set LJCOMPILE=cl /DLUA_USE_ASSERT');
       assert.equal(status, 1);
       assert.match(stderr, /::error title=LuaJIT WASM build::src\/msvcbuild\.bat compiles with \/DLUA_USE_ASSERT, which this build does not know how to carry over\./);
     });
 
     it('stops when there is no LJCOMPILE line', () => {
-      const { status, stderr } = exitsWith(BUILD, 'm.msvcDefines("@rem nothing")');
+      const { status, stderr } = exitsWith('msvcDefines', '@rem nothing');
       assert.equal(status, 1);
       assert.match(stderr, /no "@set LJCOMPILE=cl …" line/);
     });
@@ -68,13 +82,13 @@ describe('third_party/luajit/build', () => {
     });
 
     it('stops when lj_arch.h selects external unwinding, which validate.c does not implement', () => {
-      const { status, stderr } = exitsWith(BUILD, `m.makefileTarget(new Map(${JSON.stringify([...X86, ['LJ_UNWIND_EXT', '1']])}))`);
+      const { status, stderr } = exitsWith('makefileTarget', [...X86, ['LJ_UNWIND_EXT', '1']]);
       assert.equal(status, 1);
       assert.match(stderr, /selected external unwinding/);
     });
 
     it('stops when lj_arch.h selects another target', () => {
-      const { status, stderr } = exitsWith(BUILD, `m.makefileTarget(new Map(${JSON.stringify([...X86, ['LJ_TARGET_X64', '1']])}))`);
+      const { status, stderr } = exitsWith('makefileTarget', [...X86, ['LJ_TARGET_X64', '1']]);
       assert.equal(status, 1);
       assert.match(stderr, /did not select the x86 target/);
     });
