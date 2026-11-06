@@ -9,6 +9,7 @@ import {
   openedLibraries,
   pageInfo,
   registeredNames,
+  textOf,
   type Registrations,
 } from '../../../../scripts/luajit-manual/extract.mts';
 import type { LuaJitData } from '../../../../scripts/luajit-manual/generate.mts';
@@ -154,6 +155,14 @@ describe('scripts/luajit-manual/extract', () => {
     it('refuses a documented name that the sources do not register', () => {
       const pages = [page('p', '<h3 id="x"><tt>jit.missing()</tt></h3><p>x</p>')];
       assert.throws(() => extractEntries(pages, [], new Set(), registrations), /jit\.missing is documented but not registered/);
+    });
+
+    it('reads heading text by parsing its tags, refusing any other markup', () => {
+      assert.equal(textOf('<tt>jit.on()<br>\njit.off(&nbsp;)</tt>', 'h'), 'jit.on()\njit.off(\u00a0)');
+      assert.equal(textOf('<a href="https://luajit.org"><span>Lua<span id="logo">JIT</span></span></a>', 'h'), 'LuaJIT');
+      for (const html of ['<script>x</script>', '<scr<script>ipt>', 'a < b', 'a > b', '<img src=x>']) {
+        assert.throws(() => textOf(html, 'h'), LuaJitFormatError, html);
+      }
     });
 
     it('titles a page with the site name and its heading', () => {

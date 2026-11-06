@@ -256,12 +256,36 @@ export interface LuaJitEntry {
   readonly returns?: string;
 }
 
-const textOf = (html: string): string =>
-  decodeEntities(html.replace(/<br\s*\/?>/g, '\n').replace(/<[^>]+>/g, ''), { luajit: true })
+/** The inline elements headings and the site name use (`<tt>`, `<em>`, `<br>`, the logo's `<a>` and `<span>`s). */
+const TEXT_TAGS: ReadonlySet<string> = new Set(['a', 'b', 'br', 'em', 'i', 'span', 'tt']);
+
+/**
+ * The text of a heading's HTML, one line per `<br>`. Tags are parsed, not stripped by a
+ * pattern: each must be a complete tag of `TEXT_TAGS`, and anything else (another element,
+ * a `<` that starts no tag) stops the generator, so no markup can reach the data.
+ */
+export function textOf(html: string, where: string): string {
+  let text = '';
+  let position = 0;
+  for (let open = html.indexOf('<'); open >= 0; open = html.indexOf('<', position)) {
+    text += html.slice(position, open);
+    const close = html.indexOf('>', open);
+    const tag = close < 0 ? undefined : /^<\/?([A-Za-z]+)(?:\s[^<>]*)?\/?>$/.exec(html.slice(open, close + 1));
+    const name = tag?.[1]?.toLowerCase();
+    if (name === undefined || !TEXT_TAGS.has(name)) {
+      throw new LuaJitFormatError(`${where}: unsupported markup ${JSON.stringify(html.slice(open, close < 0 ? open + 20 : close + 1))}.`);
+    }
+    if (name === 'br') text += '\n';
+    position = close + 1;
+  }
+  text += html.slice(position);
+  if (text.includes('>')) throw new LuaJitFormatError(`${where}: unparsed markup in ${JSON.stringify(text.trim().slice(0, 60))}.`);
+  return decodeEntities(text, { luajit: true })
     .split('\n')
     .map((line) => line.replace(/[ \t\r]+/g, ' ').trim())
     .filter((line) => line !== '')
     .join('\n');
+}
 
 /** The page's main content: between `<div id="main">` and the footer. */
 export function mainContent(page: Page): string {
@@ -278,7 +302,10 @@ export function pageInfo(page: Page): PageInfo {
   const site = /<div id="site">([\s\S]*?)<\/div>/.exec(page.html)?.[1];
   const heading = /<h1>([\s\S]*?)<\/h1>/.exec(page.html)?.[1];
   if (site === undefined || heading === undefined) throw new LuaJitFormatError(`${page.id}: no site name or <h1>.`);
-  return { id: page.id, title: `${textOf(site)}: ${textOf(heading)}`, url: page.url };
+  const title = `${textOf(site, `${page.id} site name`)}: ${textOf(heading, `${page.id} <h1>`)}`;
+  // The title becomes the text of Markdown links in hovers (`[title](url)`).
+  if (/[[\]()<>\\`\n]/.test(title)) throw new LuaJitFormatError(`${page.id}: the title ${JSON.stringify(title)} has characters Markdown link text cannot hold.`);
+  return { id: page.id, title, url: page.url };
 }
 
 interface Section {
@@ -367,7 +394,7 @@ export function extractEntries(
       // The code of the heading: its `<tt>` elements, one form per line. The rest is prose
       // (extensions.html: `<tt>table.new(narray, nhash)</tt> allocates a pre-sized table`)
       // or the `FFI` labels of ext_buffer.html.
-      const headingText = [...section.headingHtml.matchAll(/<tt>([\s\S]*?)<\/tt>/g)].map(([, code = '']) => textOf(code)).join('\n');
+      const headingText = [...section.headingHtml.matchAll(/<tt>([\s\S]*?)<\/tt>/g)].map(([, code = '']) => textOf(code, `${page.id} #${section.id ?? ''}`)).join('\n');
       const lines = headingText.split('\n');
       const names = new Map<string, boolean>();
       const returnsBuffer = new Set<string>();
