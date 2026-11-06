@@ -46,7 +46,7 @@ node /path/to/server.js --stdio
   (`workspace/configuration`) or as *initialization options*; each guide shows which.
 
   ```json
-  { "ieLua": { "validate": { "mode": "saveAndType", "debounce": 300 } } }
+  { "ieLua": { "validate": { "mode": "saveAndType", "debounce": 300 }, "runtime": { "lua": "lua52" } } }
   ```
 
   | `validate.mode` | Diagnostics are updated |
@@ -57,6 +57,15 @@ node /path/to/server.js --stdio
   | `saveAndType` | both |
 
   Outside VS Code there is no "Validate Current File" command, so prefer `type` or `saveAndType`.
+
+  | `runtime.lua` | Hover, completion and semantic tokens describe |
+  | --- | --- |
+  | `lua52` (default) | the libraries of the game's own Lua 5.2 |
+  | `luajit` | the libraries of the LuaJIT that EEex's experimental *Use LuaJIT* component installs: everything but `bit32`, plus `bit`, `jit`, and `ffi`, `string.buffer`, `table.new` and `table.clear` through `require` |
+
+  Syntax errors always come from the Lua 5.2 compiler. When the editor reports a settings change
+  (`workspace/didChangeConfiguration`), the next request uses the new value, and an editor that
+  supports `workspace/semanticTokens/refresh` is asked to re-color the open files.
 
 ## 4. What you get
 

@@ -1,11 +1,12 @@
 import assert from 'node:assert/strict';
+import { LUA52, LUAJIT, type Library } from '../../../../src/server/hover/knowledge.ts';
 import { classifyNames, TOKEN_MODIFIERS, TOKEN_TYPES } from '../../../../src/server/semanticTokens/classify.ts';
 import { parseDocument } from '../../../../src/server/syntax/document.ts';
 import { lex } from '../../../../src/server/syntax/lexer.ts';
 
 /** `name type modifier,modifier` for every classified name of `text`, in order. */
-function tokens(text: string, kind: 'lua' | 'menu' = 'lua'): string[] {
-  return classifyNames(parseDocument(text, kind)).map((token) => `${text.slice(token.start, token.end)} ${token.type} ${[...token.modifiers].sort().join(',')}`.trimEnd());
+function tokens(text: string, kind: 'lua' | 'menu' = 'lua', library: Library = LUA52): string[] {
+  return classifyNames(parseDocument(text, kind), library).map((token) => `${text.slice(token.start, token.end)} ${token.type} ${[...token.modifiers].sort().join(',')}`.trimEnd());
 }
 
 /** The classification of the `occurrence`-th name `name` in `text`. */
@@ -171,5 +172,13 @@ describe('server/semanticTokens/classify', () => {
   it('classifies a document version once', () => {
     const document = parseDocument('local x = 1', 'lua');
     assert.equal(classifyNames(document), classifyNames(document));
+  });
+
+  it('classifies library names by the runtime, caching each runtime separately', () => {
+    assert.deepEqual(tokens('bit.band(1)', 'lua', LUAJIT), ['bit namespace defaultLibrary,global', 'band function defaultLibrary']);
+    assert.deepEqual(tokens('bit.band(1)'), ['bit variable global', 'band property']);
+    const document = parseDocument('bit32.bnot(1)', 'lua');
+    assert.notEqual(classifyNames(document, LUA52), classifyNames(document, LUAJIT));
+    assert.equal(classifyNames(document, LUAJIT), classifyNames(document, LUAJIT));
   });
 });

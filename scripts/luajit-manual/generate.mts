@@ -59,7 +59,7 @@ export const LUAJIT = 'LuaJIT/LuaJIT';
 export const LUAJIT_COMMIT = 'eec7a8016c3381b949b5d84583800d05897fa960';
 export const BITOP_URL = 'https://bitop.luajit.org/download/LuaBitOp-1.0.4.tar.gz';
 export const BITOP_SHA256 = 'adc32785579fc62f7736881332f70f50fe168b2ae8d0ddb741ff018a76f48c80';
-const BITOP_MEMBERS = { api: 'LuaBitOp-1.0.4/doc/api.html', readme: 'LuaBitOp-1.0.4/README' } as const;
+const BITOP_MEMBERS = { api: 'LuaBitOp-1.0.4/doc/api.html', source: 'LuaBitOp-1.0.4/bit.c' } as const;
 
 interface SourceFile {
   readonly repository: string;
@@ -117,8 +117,12 @@ export interface LuaJitData {
     readonly files: readonly SourceFile[];
     readonly bitop: { readonly url: string; readonly sha256: string; readonly member: string };
   };
-  /** The copyright lines of LuaJIT (COPYRIGHT) and Lua BitOp (README). */
-  readonly copyright: readonly string[];
+  /**
+   * The licenses of the quoted text, verbatim: LuaJIT's (the first section of COPYRIGHT, which
+   * covers "this software and associated documentation files") and Lua BitOp's (the header of
+   * bit.c; its README: "Lua BitOp is free software, released under the MIT license").
+   */
+  readonly licenses: readonly { readonly name: string; readonly text: string }[];
   readonly pages: readonly PageInfo[];
   /** Libraries `luaL_openlibs` opens as globals, and modules `require` loads without a file. */
   readonly globals: readonly string[];
@@ -231,19 +235,27 @@ async function generate(): Promise<string> {
   pages.push({ id: 'bitop_api', url: BITOP_PAGE, html: readTarballMember(tarball, BITOP_MEMBERS.api).toString('utf8') });
 
   const { entries, omitted } = extractEntries(pages, MODULES, lua52Names, registrations);
-  const copyrightLine = (text: string, what: string): string => {
-    const line = /^.*Copyright \(C\).*$/m.exec(text)?.[0]?.trim();
-    if (line === undefined) throw new LuaJitFormatError(`${what}: no copyright line.`);
-    return line;
+  /** The first section of COPYRIGHT, between its first two rules of `=`. */
+  const luajitLicense = (text: string): string => {
+    const sections = text.split(/^=+$/m);
+    const first = sections[1]?.trim();
+    if (first === undefined || !first.includes('Permission is hereby granted')) throw new LuaJitFormatError(`${SOURCES.copyright.path}: no license section.`);
+    return first;
+  };
+  /** The header comment of bit.c, without its `** ` prefixes. */
+  const bitopLicense = (source: string): string => {
+    const comment = /^\/\*\n([\s\S]*?)\n\*\//.exec(source)?.[1];
+    if (comment === undefined || !comment.includes('Permission is hereby granted')) throw new LuaJitFormatError(`${BITOP_MEMBERS.source}: no license header.`);
+    return comment.split('\n').map((line) => line.replace(/^\*\* ?/, '')).join('\n').trim();
   };
   const data: LuaJitData = {
     sources: {
       files: [SOURCES.version, SOURCES.build, SOURCES.arch, SOURCES.lualib, SOURCES.libInit, ...SOURCES.libraries, ...SOURCES.pages, SOURCES.copyright],
       bitop: { url: BITOP_URL, sha256: BITOP_SHA256, member: BITOP_MEMBERS.api },
     },
-    copyright: [
-      copyrightLine(await read(SOURCES.copyright), SOURCES.copyright.path),
-      copyrightLine(readTarballMember(tarball, BITOP_MEMBERS.readme).toString('utf8'), BITOP_MEMBERS.readme),
+    licenses: [
+      { name: 'LuaJIT', text: luajitLicense(await read(SOURCES.copyright)) },
+      { name: 'Lua BitOp', text: bitopLicense(readTarballMember(tarball, BITOP_MEMBERS.source).toString('utf8')) },
     ],
     pages: pages.map(pageInfo),
     globals: opened.load,

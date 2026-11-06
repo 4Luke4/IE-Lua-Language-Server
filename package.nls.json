@@ -10,5 +10,8 @@
   "configuration.validate.mode.type": "Validate while typing, after `#ieLua.validate.debounce#` milliseconds without changes.",
   "configuration.validate.mode.saveAndType": "Validate while typing and when a file is saved.",
   "configuration.validate.debounce.description": "Delay in milliseconds after the last change before validating, when `#ieLua.validate.mode#` is `type` or `saveAndType`.",
+  "configuration.runtime.lua.description": "The Lua the game runs, which decides what hover, completion and semantic highlighting describe. Choose `luajit` when EEex's experimental *Use LuaJIT* component is installed: the LuaJIT libraries `bit`, `jit`, `ffi` and `string.buffer`, and `table.new` and `table.clear`, are then documented, and `bit32`, which LuaJIT lacks, is not. Syntax errors are always reported by the Lua 5.2 compiler.",
+  "configuration.runtime.lua.lua52": "The game's own Lua 5.2.",
+  "configuration.runtime.lua.luajit": "LuaJIT, installed by EEex's *Use LuaJIT* component.",
   "semanticTokenModifiers.global.description": "A global variable (a field of the global environment), as opposed to a local."
 }

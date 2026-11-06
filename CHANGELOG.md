@@ -53,6 +53,18 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   them. Every documented name must be registered, and every Lua 5.2 manual entry that the build
   lacks is listed (only `bit32` and its functions). Every file is verified by SHA-256; anything
   the generator does not model stops it with the file and line.
+- Setting `ieLua.runtime.lua` (`lua52` (default) | `luajit`, `resource` scope, localized in every
+  manifest locale), read per document through the server's one `SettingsStore`, now shared by
+  diagnostics, hover, completion and semantic tokens. With `luajit`, the libraries described
+  (`Library` in `src/server/hover/knowledge.ts`) are the Lua 5.2 manual's minus the entries
+  `data/luajit/manual.json` lists as unavailable (`bit32`), plus the LuaJIT globals `bit` and `jit`;
+  `ffi`, `string.buffer`, `table.new` and `table.clear` are known as `require` targets. Hover and
+  completion handlers read the setting before answering (then re-check the document and the
+  cancellation); completion items carry the runtime in `data`, so `completionItem/resolve` uses
+  the same library (items without it resolve with Lua 5.2); semantic tokens are cached per
+  document and runtime, and a settings change sends `workspace/semanticTokens/refresh` when the
+  client supports it. Syntax validation is unchanged (Lua 5.2 compiler). The LuaJIT and Lua BitOp
+  licenses, recorded verbatim in the data, are added to `THIRD_PARTY_NOTICES.md`.
 - `scripts/lua-manual/convert.mts` accepts the LuaJIT documentation's HTML with
   `{ luajit: true }` (`</p>`, `<tt>`, `<i>`, `<br>`, tables, links to other pages, the
   external-link marker, colored code); the Lua 5.2 output is unchanged.

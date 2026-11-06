@@ -10,5 +10,8 @@
   "configuration.validate.mode.type": "Выполнять проверку во время ввода, если изменений не было в течение `#ieLua.validate.debounce#` мс.",
   "configuration.validate.mode.saveAndType": "Выполнять проверку во время ввода и при сохранении файла.",
   "configuration.validate.debounce.description": "Задержка в миллисекундах после последнего изменения перед проверкой, если для `#ieLua.validate.mode#` задано значение `type` или `saveAndType`.",
+  "configuration.runtime.lua.description": "Lua, который выполняет игра; определяет, что описывают всплывающие подсказки, автозавершение и семантическое выделение. Выберите `luajit`, если установлен экспериментальный компонент EEex *Use LuaJIT*: тогда описываются библиотеки LuaJIT `bit`, `jit`, `ffi` и `string.buffer`, а также `table.new` и `table.clear`, а `bit32`, которого нет в LuaJIT, не описывается. Синтаксические ошибки всегда сообщает компилятор Lua 5.2.",
+  "configuration.runtime.lua.lua52": "Собственный Lua 5.2 игры.",
+  "configuration.runtime.lua.luajit": "LuaJIT, устанавливаемый компонентом EEex *Use LuaJIT*.",
   "semanticTokenModifiers.global.description": "Глобальная переменная (поле глобального окружения), в отличие от локальной."
 }

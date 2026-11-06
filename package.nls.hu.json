@@ -10,5 +10,8 @@
   "configuration.validate.mode.type": "Ellenőrzés gépelés közben, ha `#ieLua.validate.debounce#` ezredmásodpercig nem történt módosítás.",
   "configuration.validate.mode.saveAndType": "Ellenőrzés gépelés közben és fájl mentésekor.",
   "configuration.validate.debounce.description": "Késleltetés ezredmásodpercben az utolsó módosítás és az ellenőrzés között, ha az `#ieLua.validate.mode#` értéke `type` vagy `saveAndType`.",
+  "configuration.runtime.lua.description": "A játék által futtatott Lua, amely meghatározza, mit ír le a rámutatás, a kiegészítés és a szemantikus kiemelés. Válassza a `luajit` értéket, ha az EEex kísérleti *Use LuaJIT* összetevője telepítve van: ekkor a LuaJIT `bit`, `jit`, `ffi` és `string.buffer` könyvtára, valamint a `table.new` és a `table.clear` dokumentálva van, a LuaJIT-ből hiányzó `bit32` pedig nem. A szintaktikai hibákat mindig a Lua 5.2 fordító jelzi.",
+  "configuration.runtime.lua.lua52": "A játék saját Lua 5.2-je.",
+  "configuration.runtime.lua.luajit": "LuaJIT, amelyet az EEex *Use LuaJIT* összetevője telepít.",
   "semanticTokenModifiers.global.description": "Globális változó (a globális környezet egy mezője), szemben a helyi változóval."
 }

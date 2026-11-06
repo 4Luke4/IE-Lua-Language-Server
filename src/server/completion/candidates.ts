@@ -6,7 +6,7 @@
 //
 // - Variables: the locals visible at the cursor (the innermost of each name),
 //   then the globals the document assigns (in any Lua chunk of a .menu file),
-//   then the Lua 5.2 library globals the engine opens, then the EEex and game
+//   then the library globals of the runtime (hover/knowledge.ts `Library`), then the EEex and game
 //   functions, then keywords. A name is offered once, from the first of these
 //   that has it: a local hides a global, and a global the document assigns is
 //   the document's, not the library's. While a local `_ENV` is visible, other
@@ -23,20 +23,22 @@
 // - `("…"):`: the string library (strings have it as their `__index`, manual
 //   §6.4), except members the document defines.
 //
-// The manual data covers only the libraries the engine opens, so `io`, `os`,
-// `require` and `coroutine` are never offered.
+// The library data covers only the libraries the engine opens (with LuaJIT, the
+// documented ones), so `io`, `os`, `require` and `coroutine` are never offered.
 
 import { docCommentFor, parameterDoc } from '../docComments/attach.ts';
 import type { HoverTarget } from '../hover/resolve.ts';
 import {
   allExternalEntries,
-  allManualEntries,
   engineReplacement,
   externalEntry,
-  manualEntry,
+  library as libraryOf,
+  LUA52,
   type ExternalEntry,
+  type Library,
   type ManualEntry,
 } from '../hover/knowledge.ts';
+import { RUNTIMES, type Runtime } from '../../shared/settings.ts';
 import type * as Ast from '../syntax/ast.ts';
 import type { CompletionSite } from '../syntax/completionContext.ts';
 import type { ParsedDocument } from '../syntax/document.ts';
@@ -65,6 +67,8 @@ export type CandidateGroup = (typeof CandidateGroup)[keyof typeof CandidateGroup
 export interface DocumentationSource {
   readonly source: 'manual' | 'engineReplaced' | 'external';
   readonly name: string;
+  /** The runtime whose library documents a `manual` or `engineReplaced` name. */
+  readonly runtime?: Runtime;
 }
 
 export interface Candidate {
@@ -113,10 +117,19 @@ function libraryKind(entry: ManualEntry, member: boolean): CandidateKind {
 /** The last part of a documented name: `format` for `string.format`, `AddGold` for `C:AddGold`. */
 const lastName = (name: string): string => name.slice(Math.max(name.lastIndexOf('.'), name.lastIndexOf(':')) + 1);
 
-// The library and EEex-Docs names that are globals, built once.
-const LIBRARY_GLOBALS: readonly Candidate[] = allManualEntries()
-  .filter((entry) => !entry.name.includes('.'))
-  .map((entry) => ({ label: entry.name, kind: libraryKind(entry, false), group: CandidateGroup.Library, target: libraryTarget(entry) }));
+// The library names that are globals, built once per runtime, and the EEex-Docs ones.
+const libraryGlobalLists = new Map<Library, readonly Candidate[]>();
+function libraryGlobals(library: Library): readonly Candidate[] {
+  let list = libraryGlobalLists.get(library);
+  if (!list) {
+    list = library
+      .globals()
+      .filter((entry) => !entry.name.includes('.'))
+      .map((entry) => ({ label: entry.name, kind: libraryKind(entry, false), group: CandidateGroup.Library, target: libraryTarget(entry) }));
+    libraryGlobalLists.set(library, list);
+  }
+  return list;
+}
 const EXTERNAL_GLOBALS: readonly Candidate[] = allExternalEntries()
   .filter((entry) => !/[.:]/.test(entry.name))
   .map((entry) => ({ label: entry.name, kind: 'function', group: CandidateGroup.External, target: { kind: 'external', entry } }));
@@ -159,9 +172,9 @@ function addFirst(into: Map<string, Candidate>, candidates: Iterable<Candidate>)
 }
 
 /** The globals, in the order of the variables rule. */
-function globalCandidates(document: ParsedDocument, into: Map<string, Candidate>): void {
+function globalCandidates(document: ParsedDocument, into: Map<string, Candidate>, library: Library): void {
   addFirst(into, documentGlobals(document));
-  addFirst(into, LIBRARY_GLOBALS);
+  addFirst(into, libraryGlobals(library));
   addFirst(into, EXTERNAL_GLOBALS);
 }
 
@@ -179,12 +192,13 @@ function documentFields(document: ParsedDocument, table: string, kind: Candidate
     .map((dotted) => ({ label: dotted.slice(prefix.length), kind, group: CandidateGroup.Document, target: undefined }));
 }
 
-/** The manual's members of `module` (`string.format`), except those the document defines. */
-function libraryMembers(document: ParsedDocument, module: string): Candidate[] {
+/** The library's members of the global `module` (`string.format`), except those the document defines. */
+function libraryMembers(document: ParsedDocument, module: string, library: Library): Candidate[] {
   const prefix = `${module}.`;
   const defined = fieldWrites(document);
-  return allManualEntries()
-    .filter((entry) => entry.name.startsWith(prefix) && !defined.has(entry.name))
+  return library
+    .globals()
+    .filter((entry) => entry.name.startsWith(prefix) && !entry.name.slice(prefix.length).includes('.') && !defined.has(entry.name))
     .map((entry) => ({ label: lastName(entry.name), kind: libraryKind(entry, true), group: CandidateGroup.Library, target: libraryTarget(entry) }));
 }
 
@@ -203,20 +217,27 @@ function hasVisibleLocal(document: ParsedDocument, chunkIndex: number, offset: n
 }
 
 /** The candidates at a completion site, in group order, each label once. */
-export function completionCandidates(document: ParsedDocument, site: CompletionSite): Candidate[] {
+export function completionCandidates(document: ParsedDocument, site: CompletionSite, library: Library = LUA52): Candidate[] {
   const { context, chunkIndex, start } = site;
   const found = new Map<string, Candidate>();
   if (context.kind === 'variable') {
     const scopes = document.chunks[chunkIndex]?.scopes;
     const locals = scopes ? visibleAt(scopes, start) : [];
     addFirst(found, locals.map((declaration) => localCandidate(document, declaration)));
-    if (!locals.some((declaration) => declaration.name === '_ENV')) globalCandidates(document, found);
+    if (!locals.some((declaration) => declaration.name === '_ENV')) globalCandidates(document, found, library);
     addFirst(found, keywordCandidates(site.expression));
     return [...found.values()];
   }
   if (context.kind === 'stringMethod') {
     addFirst(found, documentFields(document, 'string', 'method'));
-    addFirst(found, libraryMembers(document, 'string').map((candidate) => ({ ...candidate, kind: candidate.kind === 'function' ? 'method' : candidate.kind })));
+    const defined = fieldWrites(document);
+    addFirst(
+      found,
+      library
+        .methods('string')
+        .filter((entry) => !defined.has(entry.name))
+        .map((entry) => ({ label: lastName(entry.name), kind: 'method', group: CandidateGroup.Library, target: libraryTarget(entry) })),
+    );
     return [...found.values()];
   }
   const [head = ''] = context.path;
@@ -224,25 +245,25 @@ export function completionCandidates(document: ParsedDocument, site: CompletionS
   const names = withoutG(context.path);
   const dotted = names.join('.');
   if (context.operator === '.' && dotted === '_G') {
-    globalCandidates(document, found);
+    globalCandidates(document, found, library);
     return [...found.values()];
   }
   if (names.length === 1) {
     addFirst(found, documentFields(document, dotted, context.operator === ':' ? 'method' : 'field'));
     // A module table the document assigns itself is not the library's.
-    if (context.operator === '.' && !definitions(document, { kind: 'global', name: dotted }).length) addFirst(found, libraryMembers(document, dotted));
+    if (context.operator === '.' && !definitions(document, { kind: 'global', name: dotted }).length) addFirst(found, libraryMembers(document, dotted, library));
   }
   addFirst(found, externalMembers(dotted, context.operator));
   return [...found.values()];
 }
 
 /** The documentation source of a candidate's target, if it has documentation to resolve. */
-export function documentationSource(target: HoverTarget | undefined): DocumentationSource | undefined {
+export function documentationSource(target: HoverTarget | undefined, library: Library = LUA52): DocumentationSource | undefined {
   switch (target?.kind) {
     case 'library':
-      return { source: 'manual', name: target.entry.name };
+      return { source: 'manual', name: target.entry.name, runtime: library.runtime };
     case 'engineReplaced':
-      return { source: 'engineReplaced', name: target.replacement.name };
+      return { source: 'engineReplaced', name: target.replacement.name, runtime: library.runtime };
     case 'external':
       return { source: 'external', name: target.entry.name };
     case 'global':
@@ -255,16 +276,18 @@ export function documentationSource(target: HoverTarget | undefined): Documentat
 /** The hover target whose documentation `value` (from a completion item's `data`) refers to; `undefined` for anything else. */
 export function documentationTarget(value: unknown): HoverTarget | undefined {
   if (typeof value !== 'object' || value === null) return undefined;
-  const { source, name } = value as Partial<Record<keyof DocumentationSource, unknown>>;
+  const { source, name, runtime } = value as Partial<Record<keyof DocumentationSource, unknown>>;
   if (typeof name !== 'string') return undefined;
+  // Items from before the runtime was recorded, or from another client: Lua 5.2.
+  const library = libraryOf((RUNTIMES as readonly unknown[]).includes(runtime) ? (runtime as Runtime) : 'lua52');
   switch (source) {
     case 'manual': {
-      const entry = manualEntry(name);
+      const entry = library.entry(name);
       return entry && { kind: 'library', entry };
     }
     case 'engineReplaced': {
       const replacement = engineReplacement(name);
-      return replacement && { kind: 'engineReplaced', replacement, entry: manualEntry(name) };
+      return replacement && { kind: 'engineReplaced', replacement, entry: library.global(name) };
     }
     case 'external': {
       const entry = externalEntry(name);

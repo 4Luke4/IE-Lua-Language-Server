@@ -1,17 +1,18 @@
 import assert from 'node:assert/strict';
 import { completionCandidates, documentationSource, documentationTarget, type Candidate } from '../../../../src/server/completion/candidates.ts';
+import { LUA52, LUAJIT, type Library } from '../../../../src/server/hover/knowledge.ts';
 import { completionSiteAt } from '../../../../src/server/syntax/completionContext.ts';
 import { parseDocument } from '../../../../src/server/syntax/document.ts';
 
 /** The candidates where `|` is in `marked` (the marker is removed first). */
-function candidates(marked: string, kind: 'lua' | 'menu' = 'lua'): Candidate[] {
+function candidates(marked: string, kind: 'lua' | 'menu' = 'lua', library: Library = LUA52): Candidate[] {
   const offset = marked.indexOf('|');
   assert.ok(offset >= 0 && marked.indexOf('|', offset + 1) < 0, 'exactly one marker');
   const text = marked.slice(0, offset) + marked.slice(offset + 1);
   const document = parseDocument(text, kind);
   const site = completionSiteAt(document, text, offset);
   assert.ok(site, 'no completion site');
-  return completionCandidates(document, site);
+  return completionCandidates(document, site, library);
 }
 
 const labels = (marked: string, kind: 'lua' | 'menu' = 'lua'): string[] => candidates(marked, kind).map((candidate) => candidate.label);
@@ -164,9 +165,9 @@ describe('server/completion/candidates', () => {
         return found;
       };
       for (const [marked, label, expected] of [
-        ['|', 'pairs', { source: 'manual', name: 'pairs' }],
-        ['string.|', 'format', { source: 'manual', name: 'string.format' }],
-        ['|', 'print', { source: 'engineReplaced', name: 'print' }],
+        ['|', 'pairs', { source: 'manual', name: 'pairs', runtime: 'lua52' }],
+        ['string.|', 'format', { source: 'manual', name: 'string.format', runtime: 'lua52' }],
+        ['|', 'print', { source: 'engineReplaced', name: 'print', runtime: 'lua52' }],
         ['C:|', 'AddGold', { source: 'external', name: 'C:AddGold' }],
         ['Infinity_DisplayString = f |', 'Infinity_DisplayString', { source: 'external', name: 'Infinity_DisplayString' }],
       ] as const) {
@@ -182,6 +183,28 @@ describe('server/completion/candidates', () => {
       for (const value of [undefined, null, 1, 'pairs', {}, { source: 'manual' }, { source: 'manual', name: 'io.open' }, { source: 'file', name: 'pairs' }, { source: 'external', name: 'pairs' }]) {
         assert.equal(documentationTarget(value), undefined, JSON.stringify(value));
       }
+    });
+  });
+
+  describe('runtimes', () => {
+    const luajit = (marked: string): string[] => candidates(marked, 'lua', LUAJIT).map((c) => c.label);
+
+    it('offers the LuaJIT globals and their members with LuaJIT, and bit32 only with Lua 5.2', () => {
+      assert.ok(luajit('|').includes('bit') && luajit('|').includes('jit'));
+      assert.ok(!luajit('|').includes('bit32') && !luajit('|').includes('ffi'));
+      assert.ok(labels('|').includes('bit32') && !labels('|').includes('bit'));
+      assert.deepEqual(luajit('bit.|').slice(0, 3), ['tobit', 'tohex', 'bnot']);
+      assert.ok(!luajit('table.|').includes('new'), 'table.new is reached through require("table.new")');
+    });
+
+    it('records the runtime in the documentation source, and finds the entry in that runtime', () => {
+      const band = candidates('bit.|', 'lua', LUAJIT).find((c) => c.label === 'band');
+      assert.ok(band);
+      const source = documentationSource(band.target, LUAJIT);
+      assert.deepEqual(source, { source: 'manual', name: 'bit.band', runtime: 'luajit' });
+      assert.equal(documentationTarget(source)?.kind, 'library');
+      assert.equal(documentationTarget({ source: 'manual', name: 'bit.band' }), undefined, 'without a runtime: Lua 5.2');
+      assert.equal(documentationTarget({ source: 'manual', name: 'bit.band', runtime: 'lua51' }), undefined);
     });
   });
 });

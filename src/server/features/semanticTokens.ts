@@ -2,10 +2,23 @@ import type { Connection, Range, SemanticTokens, SemanticTokensDelta, SemanticTo
 import { SemanticTokensBuilder } from 'vscode-languageserver/node';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import type { ParsedDocumentCache } from '../documentCache.ts';
+import { library, type Library } from '../hover/knowledge.ts';
+import type { SettingsStore } from '../settingsStore.ts';
 import { classifyNames, TOKEN_MODIFIERS, TOKEN_TYPES, type NameToken, type TokenModifier, type TokenType } from '../semanticTokens/classify.ts';
 
 export interface SemanticTokensDeps {
   readonly cache: ParsedDocumentCache;
+  /** `ieLua.runtime.lua` decides which names are library names. */
+  readonly settings: SettingsStore;
+}
+
+/** What `register` returns: the server calls it when settings change. */
+export interface SemanticTokensFeature {
+  /**
+   * Settings changed: the runtime may have changed what every name is, so a client that
+   * supports it (`workspace.semanticTokens.refreshSupport`) is asked to request the tokens again.
+   */
+  configurationChanged(): void;
 }
 
 /** Token types and modifiers by index, as advertised in `semanticTokensProvider.legend`. */
@@ -73,7 +86,12 @@ export class TokenResults {
  * `textDocument/semanticTokens/full`, `/full/delta` and `/range` (see
  * src/server/semanticTokens/classify.ts).
  */
-export function register(connection: Connection, documents: TextDocuments<TextDocument>, deps: SemanticTokensDeps): void {
+export function register(
+  connection: Connection,
+  documents: TextDocuments<TextDocument>,
+  deps: SemanticTokensDeps,
+  refreshSupport: boolean,
+): SemanticTokensFeature {
   const results = new TokenResults();
   documents.onDidClose(({ document }) => {
     results.delete(document.uri);
@@ -85,41 +103,60 @@ export function register(connection: Connection, documents: TextDocuments<TextDo
     return { data: [] };
   };
   /** Pushes the tokens of `document`; synchronous, so a cancellation can only arrive after the response. */
-  const filler = (document: TextDocument, range?: Range) => (sink: TokenSink): void => {
+  const filler = (document: TextDocument, classifier: Library, range?: Range) => (sink: TokenSink): void => {
     const offsets = range && { start: document.offsetAt(range.start), end: document.offsetAt(range.end) };
-    pushTokens(sink, classifyNames(deps.cache.get(document)), (offset) => document.positionAt(offset), offsets);
+    pushTokens(sink, classifyNames(deps.cache.get(document), classifier), (offset) => document.positionAt(offset), offsets);
+  };
+  /**
+   * The open document and the library of its runtime, read before the synchronous part of
+   * a request; `undefined` when the document is gone or the request was cancelled meanwhile.
+   */
+  const prepare = async (uri: string, cancelled: () => boolean): Promise<{ document: TextDocument; classifier: Library } | undefined> => {
+    if (!documents.get(uri) || cancelled()) return undefined;
+    const { runtime } = await deps.settings.get(uri);
+    const document = documents.get(uri);
+    return document && !cancelled() ? { document, classifier: library(runtime.lua) } : undefined;
   };
 
-  connection.languages.semanticTokens.on(({ textDocument }, token): SemanticTokens => {
+  connection.languages.semanticTokens.on(async ({ textDocument }, token): Promise<SemanticTokens> => {
     try {
-      const document = documents.get(textDocument.uri);
-      if (!document || token.isCancellationRequested) return { data: [] };
-      return results.full(document.uri, filler(document));
+      const ready = await prepare(textDocument.uri, () => token.isCancellationRequested);
+      if (!ready) return { data: [] };
+      return results.full(ready.document.uri, filler(ready.document, ready.classifier));
     } catch (error) {
       return failed(textDocument.uri, error);
     }
   });
 
-  connection.languages.semanticTokens.onDelta(({ textDocument, previousResultId }, token): SemanticTokens | SemanticTokensDelta => {
+  connection.languages.semanticTokens.onDelta(async ({ textDocument, previousResultId }, token): Promise<SemanticTokens | SemanticTokensDelta> => {
     try {
-      const document = documents.get(textDocument.uri);
-      if (!document || token.isCancellationRequested) return { data: [] };
-      return results.delta(document.uri, previousResultId, filler(document));
+      const ready = await prepare(textDocument.uri, () => token.isCancellationRequested);
+      if (!ready) return { data: [] };
+      return results.delta(ready.document.uri, previousResultId, filler(ready.document, ready.classifier));
     } catch (error) {
       return failed(textDocument.uri, error);
     }
   });
 
-  connection.languages.semanticTokens.onRange(({ textDocument, range }, token): SemanticTokens => {
+  connection.languages.semanticTokens.onRange(async ({ textDocument, range }, token): Promise<SemanticTokens> => {
     try {
-      const document = documents.get(textDocument.uri);
-      if (!document || token.isCancellationRequested) return { data: [] };
+      const ready = await prepare(textDocument.uri, () => token.isCancellationRequested);
+      if (!ready) return { data: [] };
       // A range result is never diffed against: it does not touch the document's last result.
       const builder = new SemanticTokensBuilder();
-      filler(document, range)(builder);
+      filler(ready.document, ready.classifier, range)(builder);
       return builder.build();
     } catch (error) {
       return failed(textDocument.uri, error);
     }
   });
+
+  return {
+    configurationChanged: () => {
+      if (!refreshSupport) return;
+      connection.languages.semanticTokens.refresh().catch((error: unknown) => {
+        connection.console.warn(`Asking the client to refresh semantic tokens failed: ${String(error)}`);
+      });
+    },
+  };
 }

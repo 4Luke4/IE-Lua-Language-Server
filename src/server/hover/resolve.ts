@@ -9,10 +9,12 @@
 //      document's own definition wins over the libraries (an EEex-Docs link is
 //      still given, since a link makes no claim about behaviour).
 //   2. Replaced by the engine (`print`): a note instead of the manual text.
-//   3. In the manual (basic functions and the module tables string, table,
-//      math, bit32, debug), then EEex-Docs.
+//   3. In the libraries of the runtime (`Library`, knowledge.ts: the Lua 5.2
+//      manual's basic functions and module tables string, table, math, bit32,
+//      debug; with LuaJIT, all of them but bit32, plus bit and jit), then EEex-Docs.
 //   4. Otherwise just a global, without documentation: also io, os, require
-//      and coroutine, which the engine does not provide.
+//      and coroutine, which the engine does not provide (LuaJIT does, but they
+//      are not documented here, as plan.md scopes the help text).
 // - A field or method name: library and EEex-Docs names only (`string.format`,
 //   `_G.string.format`, `("x"):rep()`, `C:AddGold()`, `EEex_Options_Option.new`).
 //   Fields of anything else (locals, tables built in Lua) have no hover. As for
@@ -31,7 +33,7 @@ import { memberAt, type MemberOccurrence } from '../syntax/members.ts';
 import { targetAt, type TargetHit } from '../syntax/navigation.ts';
 import type { Declaration } from '../syntax/scope.ts';
 import { declarationSite, type DeclarationSite } from '../syntax/signatures.ts';
-import { engineReplacement, externalEntry, manualEntry, type EngineReplacement, type ExternalEntry, type ManualEntry } from './knowledge.ts';
+import { engineReplacement, externalEntry, LUA52, type EngineReplacement, type ExternalEntry, type Library, type ManualEntry } from './knowledge.ts';
 
 export type HoverTarget =
   /** `doc`: the doc comment of its declaration; `param`: the `@param` entry of a parameter (docComments/attach.ts). */
@@ -77,25 +79,25 @@ function firstWrite(document: ParsedDocument, name: string): Ast.Identifier | un
 }
 
 /** A global that is not assigned in the document, looked up in what the server knows. */
-function knownGlobal(name: string): HoverTarget | undefined {
+function knownGlobal(name: string, library: Library): HoverTarget | undefined {
   const replacement = engineReplacement(name);
-  if (replacement) return { kind: 'engineReplaced', replacement, entry: manualEntry(name) };
-  const entry = manualEntry(name);
+  if (replacement) return { kind: 'engineReplaced', replacement, entry: library.global(name) };
+  const entry = library.global(name);
   if (entry) return { kind: 'library', entry };
   const external = externalEntry(name);
   return external && { kind: 'external', entry: external };
 }
 
-function globalTarget(document: ParsedDocument, name: string): HoverTarget {
+function globalTarget(document: ParsedDocument, name: string, library: Library): HoverTarget {
   const write = firstWrite(document, name);
   if (write) {
     return { kind: 'global', name, site: declarationSite(document, write), doc: docCommentFor(document, write), link: externalEntry(name) };
   }
-  return knownGlobal(name) ?? { kind: 'global', name, site: undefined, doc: undefined, link: undefined };
+  return knownGlobal(name, library) ?? { kind: 'global', name, site: undefined, doc: undefined, link: undefined };
 }
 
 /** What to describe for a variable occurrence (see `targetAt`), or `undefined` when there is nothing to say. */
-export function variableTarget(document: ParsedDocument, { target }: TargetHit): HoverTarget | undefined {
+export function variableTarget(document: ParsedDocument, { target }: TargetHit, library: Library = LUA52): HoverTarget | undefined {
   if (target.kind === 'local') {
     const declaring = target.declaration.identifier;
     return {
@@ -107,23 +109,23 @@ export function variableTarget(document: ParsedDocument, { target }: TargetHit):
     };
   }
   // `targetAt` never returns `_ENV` or a field of a local `_ENV` table.
-  return globalTarget(document, target.name);
+  return globalTarget(document, target.name, library);
 }
 
 /** The manual's entry for the library member `dotted` (`string.format`), unless the document defines that member itself. */
-function libraryMember(document: ParsedDocument, dotted: string): ManualEntry | undefined {
-  return fieldWrites(document).has(dotted) ? undefined : manualEntry(dotted);
+function libraryMember(document: ParsedDocument, dotted: string, library: Library): ManualEntry | undefined {
+  return fieldWrites(document).has(dotted) ? undefined : library.global(dotted);
 }
 
 const isStringLiteral = (expression: Ast.Expression): boolean =>
   expression.kind === 'StringLiteral' || (expression.kind === 'ParenthesizedExpression' && isStringLiteral(expression.expression));
 
 /** What to describe for a field or method name (see `memberIndex`), or `undefined` when there is nothing to say. */
-export function memberTarget(document: ParsedDocument, { node, chunkIndex }: MemberOccurrence): HoverTarget | undefined {
+export function memberTarget(document: ParsedDocument, { node, chunkIndex }: MemberOccurrence, library: Library = LUA52): HoverTarget | undefined {
   if (node.kind === 'MethodCallExpression') {
     // Strings have the string table as their metatable's __index (manual §6.4).
     if (isStringLiteral(node.base)) {
-      const entry = libraryMember(document, `string.${node.method.name}`);
+      const entry = fieldWrites(document).has(`string.${node.method.name}`) ? undefined : library.method('string', node.method.name);
       return entry && { kind: 'library', entry };
     }
     const path = globalPath(document, chunkIndex, node.base);
@@ -135,30 +137,30 @@ export function memberTarget(document: ParsedDocument, { node, chunkIndex }: Mem
   const names = withoutG([...path, node.member.name]);
   const [head = ''] = names;
   if (names.length === 1) {
-    return globalTarget(document, head);
+    return globalTarget(document, head, library);
   }
   const dotted = names.join('.');
   // Library members are documented one level deep (`string.format`); a module
   // table the document assigns itself is not the library's.
-  const library = names.length === 2 && !firstWrite(document, head) ? libraryMember(document, dotted) : undefined;
-  if (library) return { kind: 'library', entry: library };
+  const entry = names.length === 2 && !firstWrite(document, head) ? libraryMember(document, dotted, library) : undefined;
+  if (entry) return { kind: 'library', entry };
   // EEex-Docs documents methods of game objects as `C:AddGold`; `C.AddGold` is the same function.
   const external = externalEntry(dotted) ?? (names.length === 2 ? externalEntry(names.join(':')) : undefined);
   return external && { kind: 'external', entry: external };
 }
 
 /** What to describe for the name at `offset`, or `undefined` when there is nothing to say. */
-export function hoverTargetAt(document: ParsedDocument, offset: number): HoverHit | undefined {
+export function hoverTargetAt(document: ParsedDocument, offset: number, library: Library = LUA52): HoverHit | undefined {
   // A variable and a member name never touch (a `.` or `:` separates them),
   // so at most one of them is at `offset`.
   const member = memberAt(document, offset);
   if (member) {
-    const target = memberTarget(document, member);
+    const target = memberTarget(document, member, library);
     return target && { target, identifier: member.identifier };
   }
   const variable = targetAt(document, offset);
   if (variable) {
-    const target = variableTarget(document, variable);
+    const target = variableTarget(document, variable, library);
     return target && { target, identifier: variable.identifier };
   }
   return undefined;

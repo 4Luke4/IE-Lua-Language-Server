@@ -126,8 +126,9 @@ GitHub; GitHub does not say who downloads, so maintainers' own downloads are inc
 | --- | --- | --- |
 | `ieLua.validate.mode` | `save` | When files are checked: `manual` (only with the command below), `save`, `type` (while typing), or `saveAndType`. |
 | `ieLua.validate.debounce` | `300` | Milliseconds to wait after the last change before checking, in `type` and `saveAndType` modes. |
+| `ieLua.runtime.lua` | `lua52` | The Lua the game runs: `lua52` (the game's own), or `luajit` if you installed EEex's experimental *Use LuaJIT* component. With `luajit`, hover and completion describe LuaJIT's libraries (`bit`, `jit`, `ffi`, `string.buffer`, `table.new`, `table.clear`) and no longer `bit32`, which LuaJIT does not have. Syntax is still checked by the Lua 5.2 compiler. |
 
-Both settings can be set per workspace folder.
+All settings can be set per workspace folder.
 
 ## Commands
 

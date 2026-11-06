@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { parseDocument } from '../../../../src/server/syntax/document.ts';
+import { LUA52, LUAJIT, type Library } from '../../../../src/server/hover/knowledge.ts';
 import { hoverTargetAt, type HoverTarget } from '../../../../src/server/hover/resolve.ts';
 
 /** A compact description of a hover target, for comparison. */
@@ -22,13 +23,17 @@ function summary(target: HoverTarget): string {
  * Hover at the `occurrence`-th `needle` of `text`, `offset` characters into it:
  * `name -> summary`, or `undefined` when there is no hover.
  */
-function hover(text: string, needle: string, { occurrence = 0, offset = 0, kind = 'lua' }: { occurrence?: number; offset?: number; kind?: 'lua' | 'menu' } = {}): string | undefined {
+function hover(
+  text: string,
+  needle: string,
+  { occurrence = 0, offset = 0, kind = 'lua', library = LUA52 }: { occurrence?: number; offset?: number; kind?: 'lua' | 'menu'; library?: Library } = {},
+): string | undefined {
   let at = -1;
   for (let i = 0; i <= occurrence; i++) {
     at = text.indexOf(needle, at + 1);
     assert.ok(at >= 0, `"${needle}" #${String(i)} not found`);
   }
-  const hit = hoverTargetAt(parseDocument(text, kind), at + offset);
+  const hit = hoverTargetAt(parseDocument(text, kind), at + offset, library);
   return hit && `${hit.identifier.name} -> ${summary(hit.target)}`;
 }
 
@@ -157,5 +162,25 @@ describe('server/hover/resolve', () => {
       assert.equal(hover(text, needle), undefined, text);
     }
     assert.equal(hover('menu { name "print" }', 'name', { kind: 'menu' }), undefined);
+  });
+
+  describe('runtimes', () => {
+    it('describes the LuaJIT libraries with LuaJIT, and bit32 only with Lua 5.2', () => {
+      assert.equal(hover('bit.band(1, 2)', 'band', { library: LUAJIT }), 'band -> library bit.band');
+      assert.equal(hover('jit.off()', 'jit', { library: LUAJIT }), 'jit -> library jit');
+      assert.equal(hover('bit.band(1, 2)', 'band'), undefined);
+      assert.equal(hover('bit32.band(1, 2)', 'band'), 'band -> library bit32.band');
+      assert.equal(hover('bit32.band(1, 2)', 'band', { library: LUAJIT }), undefined);
+    });
+
+    it('keeps the Lua 5.2 text of the functions LuaJIT provides, and the engine replacement of print', () => {
+      assert.equal(hover('string.format("x")', 'format', { library: LUAJIT }), 'format -> library string.format');
+      assert.equal(hover('print(1)', 'print', { library: LUAJIT }), 'print -> engine print');
+    });
+
+    it('describes neither modules nor functions that only require reaches', () => {
+      assert.equal(hover('ffi.new("int")', 'new', { library: LUAJIT }), undefined);
+      assert.equal(hover('table.new(1, 0)', 'new', { library: LUAJIT }), undefined);
+    });
   });
 });

@@ -29,7 +29,7 @@ describe('server/features/completion', () => {
       const { isIncomplete, items } = toCompletionList(candidates, insert, replace, options({ defaultEditRange: true }), english);
       assert.equal(isIncomplete, false);
       assert.deepEqual(items, [
-        { label: 'pairs', kind: CompletionItemKind.Function, sortText: '2', detail: 'pairs (t)', data: { source: 'manual', name: 'pairs' } },
+        { label: 'pairs', kind: CompletionItemKind.Function, sortText: '2', detail: 'pairs (t)', data: { source: 'manual', name: 'pairs', runtime: 'lua52' } },
         { label: 'AddGold', kind: CompletionItemKind.Method, sortText: '3', detail: 'C:AddGold', data: { source: 'external', name: 'C:AddGold' } },
         { label: 'field', kind: CompletionItemKind.Field, sortText: '1' },
         { label: 'while', kind: CompletionItemKind.Keyword, sortText: '4' },
