@@ -2,6 +2,8 @@
   "hover.kind.parameter": "Parameter",
   "hover.kind.forVariable": "for-Variable",
   "hover.kind.global": "global",
+  "hover.kind.method": "Methode",
+  "hover.kind.field": "Feld",
   "hover.engineReplaced": "Die Spiel-Engine ersetzt {0} durch eine eigene Funktion, daher gilt die Beschreibung im Lua 5.2-Handbuch nicht. Siehe {1}.",
   "codeAction.quote": "In Anführungszeichen setzen",
   "codeAction.insertSpace": "Leerzeichen vor dem schließenden Backtick einfügen",

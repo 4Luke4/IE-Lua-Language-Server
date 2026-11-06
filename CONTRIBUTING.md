@@ -33,7 +33,7 @@ server (port 6009).
 | `src/client/` | VS Code extension host code: activation, command, settings, language client |
 | `src/server/` | Language server (separate Node process; no `vscode` import) |
 | `src/server/validation/` | Pure validation logic, unit-tested without LSP or VS Code |
-| `src/server/hover/` | What a hover describes and its text (pure; library data from `data/lua52/` and `data/eeex/`) |
+| `src/server/hover/` | What a hover describes and its text: library knowledge per runtime, what a method call's receiver provably is (`receiver.ts`), rendering (pure; library data from `data/lua52/`, `data/luajit/` and `data/eeex/`) |
 | `src/server/completion/` | What completion offers at the cursor (pure; reuses the hover's knowledge and text) |
 | `src/server/semanticTokens/` | What each name is, for semantic highlighting (pure; follows the hover's rules) |
 | `src/server/docComments/` | LuaCATS doc comments: parsing, what each block documents, rendering and problems (pure) |

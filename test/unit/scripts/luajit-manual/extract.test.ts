@@ -135,11 +135,11 @@ describe('scripts/luajit-manual/extract', () => {
 
     it('makes one entry per documented name, merging the headings that document it', () => {
       const { entries, omitted } = extractEntries(PAGES, [{ name: 'string.buffer', page: 'ext_x', section: 'intro' }], new Set(['table.insert']), registrations);
-      const summary = entries.map((e) => `${e.kind} ${e.name} ${e.require ?? '-'} #${e.anchor} ${JSON.stringify(e.heading)} ${e.markdown}`);
+      const summary = entries.map((e) => `${e.kind} ${e.name} ${e.require ?? '-'}${e.returns ? ` -> ${e.returns}` : ''} #${e.anchor} ${JSON.stringify(e.heading)} ${e.markdown}`);
       assert.deepEqual(summary, [
         'module string.buffer string.buffer # "string.buffer" Intro.',
-        'function string.buffer.new string.buffer #new "local buf = buffer.new()" Creates.',
-        'method string.buffer:put string.buffer #put "buf = buf:put(x)" Appends.',
+        'function string.buffer.new string.buffer -> string.buffer #new "local buf = buffer.new()" Creates.',
+        'method string.buffer:put string.buffer -> string.buffer #put "buf = buf:put(x)" Appends.',
         'function jit.on - #onoff "jit.on()\\njit.off()\\njit.on(func)" Turns.\n\nPer function.',
         'function jit.off - #onoff "jit.on()\\njit.off()" Turns.',
         'value jit.version - #v "jit.version" Version.',

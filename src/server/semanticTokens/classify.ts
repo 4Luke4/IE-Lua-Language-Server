@@ -98,6 +98,8 @@ function documentedKind(target: HoverTarget): Kind | undefined {
       return { type: 'function', modifiers: ['defaultLibrary'] };
     case 'external':
       return externalKind(target.entry);
+    case 'member':
+      return { type: target.definition.method ? 'method' : 'function', modifiers: [] };
     case 'local':
       return undefined;
   }

@@ -87,4 +87,14 @@ suite('Hover', () => {
       await restore();
     }
   });
+
+  test('documents method calls by what the receiver provably is', async () => {
+    const upper = await hoverAt('methods.lua', 'upper');
+    assert.ok(upper, 'no hover');
+    assert.ok(upper.startsWith('```lua\nstring.upper (s)\n```'), upper);
+    assert.ok(upper.endsWith('(https://www.lua.org/manual/5.2/manual.html#pdf-string.upper)'), upper);
+    assert.equal(await hoverAt('methods.lua', 'bump', 1), '```lua\n(method) function Counter:bump(step)\n```\n\n---\n\nAdds one and returns the new count.');
+    assert.match(await hoverAt('methods.lua', 'CheckIfPaused') ?? '', /^```lua\nworldScreen:CheckIfPaused\n```\n\n---\n\n\[EE Game Lua Functions\]/);
+  });
 });
+

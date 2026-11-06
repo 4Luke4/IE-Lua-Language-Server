@@ -248,6 +248,12 @@ export interface LuaJitEntry {
   readonly plaintext: string;
   /** The module name to `require` for this entry, when it is not a global (`ffi`, `string.buffer`, `table.new`). */
   readonly require?: string;
+  /**
+   * The type of object the function or method returns, when its heading says so:
+   * `string.buffer` for a heading line `buf = …` or `local buf = …` that documents it, as
+   * ext_buffer.html writes `buf` for "an individual buffer object" (`buf = buf:put(…)`).
+   */
+  readonly returns?: string;
 }
 
 const textOf = (html: string): string =>
@@ -364,6 +370,7 @@ export function extractEntries(
       const headingText = [...section.headingHtml.matchAll(/<tt>([\s\S]*?)<\/tt>/g)].map(([, code = '']) => textOf(code)).join('\n');
       const lines = headingText.split('\n');
       const names = new Map<string, boolean>();
+      const returnsBuffer = new Set<string>();
       for (const line of lines) {
         for (const match of line.matchAll(DOCUMENTED_NAME)) {
           const [written = '', prefix = '', rest = ''] = match;
@@ -382,6 +389,7 @@ export function extractEntries(
             continue;
           }
           names.set(name, (names.get(name) ?? false) || isFunction);
+          if (/^(?:local )?buf = /.test(line) && name.startsWith('string.buffer')) returnsBuffer.add(name);
         }
       }
       if (names.size === 0) continue;
@@ -401,7 +409,17 @@ export function extractEntries(
         const kind: LuaJitEntry['kind'] = method ? 'method' : isFunction ? 'function' : 'value';
         const require = requireFor(name);
         byName.set(name, {
-          entry: { name, kind, page: page.id, anchor: section.id ?? '', heading: '', markdown: '', plaintext: '', ...(require === undefined ? {} : { require }) },
+          entry: {
+            name,
+            kind,
+            page: page.id,
+            anchor: section.id ?? '',
+            heading: '',
+            markdown: '',
+            plaintext: '',
+            ...(require === undefined ? {} : { require }),
+            ...(returnsBuffer.has(name) ? { returns: 'string.buffer' } : {}),
+          },
           headings: [headingText],
           markdown: [markdown],
           plaintext: [plaintext],

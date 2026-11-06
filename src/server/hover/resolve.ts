@@ -15,11 +15,22 @@
 //   4. Otherwise just a global, without documentation: also io, os, require
 //      and coroutine, which the engine does not provide (LuaJIT does, but they
 //      are not documented here, as plan.md scopes the help text).
-// - A field or method name: library and EEex-Docs names only (`string.format`,
-//   `_G.string.format`, `("x"):rep()`, `C:AddGold()`, `EEex_Options_Option.new`).
-//   Fields of anything else (locals, tables built in Lua) have no hover. As for
-//   globals, a library member the document defines itself (`string.format = f`,
-//   `function string.trim()`) is not described by the manual.
+// - A field or method name, by what its receiver provably is (receiver.ts):
+//   - a global path, also through a local that aliases one (`local s = string`):
+//     library and EEex-Docs names (`string.format`, `_G.string.format`,
+//     `C:AddGold()`, `EEex_Options_Option.new`), then the functions the document
+//     stores in that table;
+//   - a string (`("x"):rep()`, `s:upper()` for a string local): the string
+//     library, as a method (manual §6.4), also as `s.upper`;
+//   - a LuaJIT object or module (`buf:put()`, `ffi.new` after
+//     `local ffi = require("ffi")`): the LuaJIT documentation;
+//   - a table the document defines functions in (`function Obj:m()`, `self:m()`
+//     inside a method of `Obj`, a `---@type Obj` value of a `---@class Obj`): that
+//     function, with its doc comment.
+//   Anything else has no hover. As for globals, a library member the document
+//   defines itself (`string.format = f`, `function string.trim()`) is not
+//   described by the manual. The names of definitions (`m` in `function Obj:m()`)
+//   are described like their uses.
 //
 // Names resolved through a local `_ENV` are fields of that table, so they get
 // no hover. Without type inference that is the only safe answer.
@@ -34,6 +45,7 @@ import { targetAt, type TargetHit } from '../syntax/navigation.ts';
 import type { Declaration } from '../syntax/scope.ts';
 import { declarationSite, type DeclarationSite } from '../syntax/signatures.ts';
 import { engineReplacement, externalEntry, LUA52, type EngineReplacement, type ExternalEntry, type Library, type ManualEntry } from './knowledge.ts';
+import { definitionAt, memberOf, Types, type MemberDefinition, type TableRef } from './receiver.ts';
 
 export type HoverTarget =
   /** `doc`: the doc comment of its declaration; `param`: the `@param` entry of a parameter (docComments/attach.ts). */
@@ -45,7 +57,9 @@ export type HoverTarget =
   | { readonly kind: 'global'; readonly name: string; readonly site: DeclarationSite | undefined; readonly doc: DocComment | undefined; readonly link: ExternalEntry | undefined }
   | { readonly kind: 'library'; readonly entry: ManualEntry }
   | { readonly kind: 'engineReplaced'; readonly replacement: EngineReplacement; readonly entry: ManualEntry | undefined }
-  | { readonly kind: 'external'; readonly entry: ExternalEntry };
+  | { readonly kind: 'external'; readonly entry: ExternalEntry }
+  /** A function the document stores in a table (`function Obj:m()`), see receiver.ts. */
+  | { readonly kind: 'member'; readonly definition: MemberDefinition };
 
 export interface HoverHit {
   readonly target: HoverTarget;
@@ -117,24 +131,16 @@ function libraryMember(document: ParsedDocument, dotted: string, library: Librar
   return fieldWrites(document).has(dotted) ? undefined : library.global(dotted);
 }
 
-const isStringLiteral = (expression: Ast.Expression): boolean =>
-  expression.kind === 'StringLiteral' || (expression.kind === 'ParenthesizedExpression' && isStringLiteral(expression.expression));
-
-/** What to describe for a field or method name (see `memberIndex`), or `undefined` when there is nothing to say. */
-export function memberTarget(document: ParsedDocument, { node, chunkIndex }: MemberOccurrence, library: Library = LUA52): HoverTarget | undefined {
-  if (node.kind === 'MethodCallExpression') {
-    // Strings have the string table as their metatable's __index (manual §6.4).
-    if (isStringLiteral(node.base)) {
-      const entry = fieldWrites(document).has(`string.${node.method.name}`) ? undefined : library.method('string', node.method.name);
-      return entry && { kind: 'library', entry };
-    }
-    const path = globalPath(document, chunkIndex, node.base);
-    const entry = path?.length === 1 ? externalEntry(`${path.join('.')}:${node.method.name}`) : undefined;
-    return entry && { kind: 'external', entry };
+/** What to describe for member `name` of the global path `path` (`string.format`, `C:AddGold`, `Obj:m`). */
+function globalMemberTarget(document: ParsedDocument, path: readonly string[], name: string, method: boolean, library: Library): HoverTarget | undefined {
+  if (method) {
+    const names = withoutG([...path]);
+    const external = names.length === 1 ? externalEntry(`${names.join('.')}:${name}`) : undefined;
+    if (external) return { kind: 'external', entry: external };
+    const own = memberOf(document, library, { root: 'global', path: names }, name);
+    return own && { kind: 'member', definition: own };
   }
-  const path = globalPath(document, chunkIndex, node.base);
-  if (!path) return undefined;
-  const names = withoutG([...path, node.member.name]);
+  const names = withoutG([...path, name]);
   const [head = ''] = names;
   if (names.length === 1) {
     return globalTarget(document, head, library);
@@ -146,7 +152,50 @@ export function memberTarget(document: ParsedDocument, { node, chunkIndex }: Mem
   if (entry) return { kind: 'library', entry };
   // EEex-Docs documents methods of game objects as `C:AddGold`; `C.AddGold` is the same function.
   const external = externalEntry(dotted) ?? (names.length === 2 ? externalEntry(names.join(':')) : undefined);
-  return external && { kind: 'external', entry: external };
+  if (external) return { kind: 'external', entry: external };
+  const own = memberOf(document, library, { root: 'global', path: names.slice(0, -1) }, name);
+  return own && { kind: 'member', definition: own };
+}
+
+/** What to describe for member `name` of a table the code names (see receiver.ts). */
+function tableMemberTarget(document: ParsedDocument, table: TableRef, name: string, method: boolean, library: Library): HoverTarget | undefined {
+  if (table.root === 'global') return globalMemberTarget(document, table.path, name, method, library);
+  const own = memberOf(document, library, table, name);
+  return own && { kind: 'member', definition: own };
+}
+
+/** What to describe for a field or method name (see `memberIndex`), or `undefined` when there is nothing to say. */
+export function memberTarget(document: ParsedDocument, { node, chunkIndex }: MemberOccurrence, library: Library = LUA52): HoverTarget | undefined {
+  const method = node.kind === 'MethodCallExpression';
+  const name = method ? node.method.name : node.member.name;
+  // A chain of globals as written (`_G.string.format`) keeps the rules of globals above.
+  const path = globalPath(document, chunkIndex, node.base);
+  if (path) return globalMemberTarget(document, path, name, method, library);
+  const type = new Types(document, library).of(chunkIndex, node.base);
+  switch (type?.kind) {
+    case 'string': {
+      // Strings have the string table as their metatable's __index (manual §6.4), so a
+      // `string.x` the document defines is what `s:x()` calls.
+      if (fieldWrites(document).has(`string.${name}`)) {
+        const own = memberOf(document, library, { root: 'global', path: ['string'] }, name);
+        return own && { kind: 'member', definition: own };
+      }
+      const entry = library.method('string', name);
+      return entry && { kind: 'library', entry };
+    }
+    case 'object': {
+      const entry = library.method(type.type, name);
+      return entry && { kind: 'library', entry };
+    }
+    case 'module': {
+      const entry = method ? undefined : library.requiredMember(type.module, name);
+      return entry && { kind: 'library', entry };
+    }
+    case 'table':
+      return tableMemberTarget(document, type.table, name, method, library);
+    case undefined:
+      return undefined;
+  }
 }
 
 /** What to describe for the name at `offset`, or `undefined` when there is nothing to say. */
@@ -158,6 +207,8 @@ export function hoverTargetAt(document: ParsedDocument, offset: number, library:
     const target = memberTarget(document, member, library);
     return target && { target, identifier: member.identifier };
   }
+  const definition = definitionAt(document, library, offset);
+  if (definition) return { target: { kind: 'member', definition: definition.definition }, identifier: definition.identifier };
   const variable = targetAt(document, offset);
   if (variable) {
     const target = variableTarget(document, variable, library);

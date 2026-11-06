@@ -22,6 +22,14 @@
 //   after `.`, `C:AddGold` after `:`).
 // - `("…"):`: the string library (strings have it as their `__index`, manual
 //   §6.4), except members the document defines.
+// - `x.` and `x:` on a local, by what the local provably is (hover/receiver.ts):
+//   a string offers the string library; a LuaJIT object (`buf:`) its methods; a
+//   module `require` returned (`ffi.`) its members; a table the functions the
+//   document stores in it (`obj:` for `function Obj:m()`, `self:` in a method), and
+//   a local that aliases a global path (`local s = worldScreen`) what that path
+//   offers. A local of no provable type offers nothing.
+// - The functions the document stores in a global table (`Obj:`) come with their
+//   definition, as hover describes them.
 //
 // The library data covers only the libraries the engine opens (with LuaJIT, the
 // documented ones), so `io`, `os`, `require` and `coroutine` are never offered.
@@ -46,6 +54,7 @@ import { fieldWrites, withoutG } from '../syntax/globalPaths.ts';
 import { KEYWORDS } from '../syntax/lexer.ts';
 import { definitions } from '../syntax/navigation.ts';
 import { visibleAt, type Declaration } from '../syntax/scope.ts';
+import { membersOf, Types, type MemberDefinition, type TableRef } from '../hover/receiver.ts';
 import { declarationSite, type DeclarationSite } from '../syntax/signatures.ts';
 
 export type CandidateKind = 'function' | 'variable' | 'module' | 'field' | 'method' | 'keyword';
@@ -210,10 +219,69 @@ function externalMembers(dotted: string, operator: '.' | ':'): Candidate[] {
     .map((entry) => ({ label: lastName(entry.name), kind: operator === ':' ? 'method' : 'function', group: CandidateGroup.External, target: { kind: 'external', entry } }));
 }
 
-/** Whether a local named `name` is visible at `offset` in the chunk. */
-function hasVisibleLocal(document: ParsedDocument, chunkIndex: number, offset: number, name: string): boolean {
+/** The local named `name` visible at `offset` in the chunk (the innermost), if any. */
+function visibleLocal(document: ParsedDocument, chunkIndex: number, offset: number, name: string): Declaration | undefined {
   const scopes = document.chunks[chunkIndex]?.scopes;
-  return scopes !== undefined && visibleAt(scopes, offset).some((declaration) => declaration.name === name);
+  return scopes && visibleAt(scopes, offset).find((declaration) => declaration.name === name);
+}
+
+/** The functions the document stores in `table`, as hover describes them. */
+function memberCandidates(document: ParsedDocument, library: Library, table: TableRef, operator: '.' | ':'): Candidate[] {
+  return membersOf(document, library, table).map((definition: MemberDefinition) => ({
+    label: definition.name,
+    kind: operator === ':' || definition.method ? 'method' : 'function',
+    group: CandidateGroup.Document,
+    target: { kind: 'member', definition },
+  }));
+}
+
+/** The members of a global path (`string.`, `Obj:`, `C:`, `_G.`), by the rules of hover. */
+function globalPathCandidates(document: ParsedDocument, names: readonly string[], operator: '.' | ':', library: Library, found: Map<string, Candidate>): void {
+  const dotted = names.join('.');
+  if (operator === '.' && dotted === '_G') {
+    globalCandidates(document, found, library);
+    return;
+  }
+  addFirst(found, memberCandidates(document, library, { root: 'global', path: names }, operator));
+  if (names.length === 1) {
+    addFirst(found, documentFields(document, dotted, operator === ':' ? 'method' : 'field'));
+    // A module table the document assigns itself is not the library's.
+    if (operator === '.' && !definitions(document, { kind: 'global', name: dotted }).length) addFirst(found, libraryMembers(document, dotted, library));
+  }
+  addFirst(found, externalMembers(dotted, operator));
+}
+
+/** The members of what the local `declaration`, then `fields` of it, provably is (see hover/receiver.ts). */
+function localCandidates(document: ParsedDocument, chunkIndex: number, declaration: Declaration, fields: readonly string[], operator: '.' | ':', library: Library): Candidate[] {
+  let type = new Types(document, library).ofDeclaration(chunkIndex, declaration);
+  for (const field of fields) {
+    if (type?.kind !== 'table') return [];
+    const { table } = type;
+    type = { kind: 'table', table: table.root === 'global' ? { root: 'global', path: [...table.path, field] } : { ...table, fields: [...table.fields, field] } };
+  }
+  const found = new Map<string, Candidate>();
+  const fromLibrary = (entries: readonly ManualEntry[], kind: CandidateKind): Candidate[] =>
+    entries.map((entry) => ({ label: lastName(entry.name), kind, group: CandidateGroup.Library, target: libraryTarget(entry) }));
+  switch (type?.kind) {
+    case 'string': {
+      const defined = fieldWrites(document);
+      addFirst(found, fromLibrary(library.methods('string').filter((entry) => !defined.has(entry.name)), operator === ':' ? 'method' : 'function'));
+      break;
+    }
+    case 'object':
+      addFirst(found, fromLibrary(library.methods(type.type), operator === ':' ? 'method' : 'function'));
+      break;
+    case 'module':
+      if (operator === '.') addFirst(found, library.requiredMembers(type.module).map((entry) => ({ label: lastName(entry.name), kind: libraryKind(entry, true), group: CandidateGroup.Library, target: libraryTarget(entry) })));
+      break;
+    case 'table':
+      if (type.table.root === 'global') globalPathCandidates(document, withoutG(type.table.path), operator, library, found);
+      else addFirst(found, memberCandidates(document, library, type.table, operator));
+      break;
+    case undefined:
+      break;
+  }
+  return [...found.values()];
 }
 
 /** The candidates at a completion site, in group order, each label once. */
@@ -229,6 +297,7 @@ export function completionCandidates(document: ParsedDocument, site: CompletionS
     return [...found.values()];
   }
   if (context.kind === 'stringMethod') {
+    addFirst(found, memberCandidates(document, library, { root: 'global', path: ['string'] }, ':'));
     addFirst(found, documentFields(document, 'string', 'method'));
     const defined = fieldWrites(document);
     addFirst(
@@ -240,20 +309,11 @@ export function completionCandidates(document: ParsedDocument, site: CompletionS
     );
     return [...found.values()];
   }
-  const [head = ''] = context.path;
-  if (hasVisibleLocal(document, chunkIndex, start, head) || hasVisibleLocal(document, chunkIndex, start, '_ENV')) return [];
-  const names = withoutG(context.path);
-  const dotted = names.join('.');
-  if (context.operator === '.' && dotted === '_G') {
-    globalCandidates(document, found, library);
-    return [...found.values()];
-  }
-  if (names.length === 1) {
-    addFirst(found, documentFields(document, dotted, context.operator === ':' ? 'method' : 'field'));
-    // A module table the document assigns itself is not the library's.
-    if (context.operator === '.' && !definitions(document, { kind: 'global', name: dotted }).length) addFirst(found, libraryMembers(document, dotted, library));
-  }
-  addFirst(found, externalMembers(dotted, context.operator));
+  const [head = '', ...fields] = context.path;
+  const local = visibleLocal(document, chunkIndex, start, head);
+  if (local) return localCandidates(document, chunkIndex, local, fields, context.operator, library);
+  if (visibleLocal(document, chunkIndex, start, '_ENV')) return [];
+  globalPathCandidates(document, withoutG(context.path), context.operator, library, found);
   return [...found.values()];
 }
 

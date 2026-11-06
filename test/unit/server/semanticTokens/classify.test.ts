@@ -114,7 +114,8 @@ describe('server/semanticTokens/classify', () => {
     });
 
     it('does not describe library members the document defines itself', () => {
-      assert.equal(token('function string.trim() end string.trim()', 'trim', 1), 'trim property');
+      // The document's own function, as hover describes it.
+      assert.equal(token('function string.trim() end string.trim()', 'trim', 1), 'trim function');
       assert.equal(token('string = {} string.format()', 'format'), 'format property');
       assert.equal(token('string.format = nil string.format()', 'format', 1), 'format property');
     });
@@ -180,5 +181,12 @@ describe('server/semanticTokens/classify', () => {
     const document = parseDocument('bit32.bnot(1)', 'lua');
     assert.notEqual(classifyNames(document, LUA52), classifyNames(document, LUAJIT));
     assert.equal(classifyNames(document, LUAJIT), classifyNames(document, LUAJIT));
+  });
+
+  it('classifies method calls by what the receiver provably is', () => {
+    assert.equal(token('local s = "x" s:upper()', 'upper'), 'upper method defaultLibrary');
+    assert.equal(token('local M = {} function M.f() end M.f()', 'f', 1), 'f function');
+    assert.equal(token('local M = {} function M:m() end M:m()', 'm', 1), 'm method');
+    assert.equal(tokens('local b = require("string.buffer").new() b:put(1)', 'lua', LUAJIT).at(-1), 'put method defaultLibrary');
   });
 });

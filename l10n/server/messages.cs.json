@@ -2,6 +2,8 @@
   "hover.kind.parameter": "parametr",
   "hover.kind.forVariable": "proměnná for",
   "hover.kind.global": "globální",
+  "hover.kind.method": "metoda",
+  "hover.kind.field": "pole",
   "hover.engineReplaced": "Herní engine nahrazuje {0} vlastní funkcí, takže popis v příručce Lua 5.2 neplatí. Viz {1}.",
   "codeAction.quote": "Uzavřít do uvozovek",
   "codeAction.insertSpace": "Vložit mezeru před uzavírací zpětný apostrof",

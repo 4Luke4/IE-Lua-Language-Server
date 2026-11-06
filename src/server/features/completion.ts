@@ -49,7 +49,10 @@ const markup = (value: string, format: HoverFormat): MarkupContent => ({ kind: f
  * with a doc comment pay for this.
  */
 function documentDocumentation(target: HoverTarget | undefined, format: HoverFormat, messages: Messages): MarkupContent | undefined {
-  const documented = (target?.kind === 'local' && (target.doc !== undefined || target.param !== undefined)) || (target?.kind === 'global' && target.doc !== undefined);
+  const documented =
+    (target?.kind === 'local' && (target.doc !== undefined || target.param !== undefined)) ||
+    (target?.kind === 'global' && target.doc !== undefined) ||
+    (target?.kind === 'member' && target.definition.doc !== undefined);
   const value = documented ? renderDocumentation(target, format, messages) : undefined;
   return value === undefined ? undefined : markup(value, format);
 }

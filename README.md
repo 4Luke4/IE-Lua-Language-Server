@@ -40,7 +40,12 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
   comments, and every `{ … }` block and Lua script of a `.menu` file.
 - **Documentation on hover.** Lua functions such as `string.format` show their description from
   the [Lua 5.2 manual](https://www.lua.org/manual/5.2/manual.html), word for word, with a link to
-  it. Only the libraries the game provides are documented (`io`, `os`, `require` and coroutines
+  it, and so do method calls such as `name:upper()` when `name` is surely a string (a string
+  literal, a local that keeps one, or a value annotated `---@type string`). Your own methods
+  (`obj:greet()`, `self:greet()`) show how you defined them and their doc comment, and with the
+  `luajit` runtime the [LuaJIT documentation](https://luajit.org/) covers `bit`, `jit`, `ffi` and
+  string buffers (`buf:put()`). Where the type of a value is not certain, nothing is shown
+  rather than a guess. Only the libraries the game provides are documented (`io`, `os`, `require` and coroutines
   are not), and `print` tells you that the game replaces it. EEex and game functions such as
   `Infinity_DisplayString` or `C:AddGold` link to the
   [EEex documentation](https://eeex-docs.readthedocs.io/en/latest/), and your own variables show
@@ -48,6 +53,9 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
 - **Code completion** for the variables in scope, the globals your file defines, the Lua functions
   the game provides (`string.` lists the string library), and EEex and game functions
   (`Infinity_…`, `EEex_…`, and methods after `C:`), with the same documentation as on hover.
+  After `:` or `.` on a local, it offers what that value surely has: the string library after a
+  string, your own methods after a table that defines them, LuaJIT's methods after a string
+  buffer.
   Nothing the game lacks is suggested (`io`, `os`, `require`, coroutines). In `.menu` files,
   completion works inside the Lua only.
 - **Colors that show what each name is.** Parameters, local and global variables, functions,

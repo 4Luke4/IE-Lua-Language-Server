@@ -65,6 +65,34 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   document and runtime, and a settings change sends `workspace/semanticTokens/refresh` when the
   client supports it. Syntax validation is unchanged (Lua 5.2 compiler). The LuaJIT and Lua BitOp
   licenses, recorded verbatim in the data, are added to `THIRD_PARTY_NOTICES.md`.
+- Method syntax in hover, completion and semantic tokens (`src/server/hover/receiver.ts`, through
+  `memberTarget` in `src/server/hover/resolve.ts`). A receiver is typed only when the code or a
+  LuaCATS annotation proves it; anything else gets nothing:
+  - strings: a string literal (parenthesized or not), a local declared from one and never
+    assigned again (aliases followed), or a local or parameter annotated `---@type string` /
+    `---@param x string`. `s:m()` and `s.m` are `string.m` (manual §6.4; LuaJIT's lib_string.c
+    sets the same `__index`). A `string.m` the document defines is described by that definition.
+  - tables: global paths (also through locals that alias them: `local w = worldScreen`,
+    `local str = string`, `local g = _G`), locals declared from a table constructor and never
+    assigned again, fields of them, the implicit `self` of `function T:m()` (as `T`), and values
+    annotated `---@type Name` / `---@param x Name` for a `---@class Name` attached to
+    `local Name = …` or `Name = …`. Members are the library and EEex-Docs names as before, then the
+    functions the document stores in the table: `function T:m()`, `function T.f()`,
+    `T.f = function`, and `{ f = function }` in the constructor of a local. They are a new hover
+    target, `member`, rendered as `(method) function T:m(a)` / `(field) function T.f(a)` (labels
+    localized in `l10n/server/`) with the doc comment above the definition
+    (`functionDoc` in `src/server/docComments/attach.ts`); hovering the name in the definition
+    shows the same. Semantic tokens type them `method` or `function`.
+  - LuaJIT: `require("name")` with a literal name, when `require` is the global the document
+    never assigns, is the module the library documents (`ffi`, `string.buffer`); its documented
+    functions and methods that return a buffer object (`returns`, derived from the page's
+    `buf = …` headings) make `buffer.new()` and chained calls typed.
+  - Completion after `x:` / `x.` on a local offers by the same types; a local of no provable type
+    still offers nothing.
+  - `---@class` names are now parsed (`DocComment.className`; still not rendered). Same document
+    only: definitions in other files are not followed (as for global hover). EEex game structures
+    (`CGameSprite`, …) are documented by EEex-Docs as types without members, so `---@type
+    CGameSprite` gives no member documentation.
 - `scripts/lua-manual/convert.mts` accepts the LuaJIT documentation's HTML with
   `{ luajit: true }` (`</p>`, `<tt>`, `<i>`, `<br>`, tables, links to other pages, the
   external-link marker, colored code); the Lua 5.2 output is unchanged.

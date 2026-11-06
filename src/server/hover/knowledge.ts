@@ -43,6 +43,8 @@ export interface ManualEntry {
    * when it is not reachable from the globals.
    */
   readonly require?: string;
+  /** The type of object the function or method returns (`string.buffer` for `buffer.new`, `buf:put`), when documented. */
+  readonly returns?: string;
 }
 
 export const MANUAL_TITLE: string = manual.title;
@@ -85,6 +87,7 @@ const luajitEntries: readonly ManualEntry[] = (() => {
       url: entry.anchor === '' ? page.url : `${page.url}#${encodeURI(entry.anchor)}`,
       linkText: page.title,
       ...('require' in entry && typeof entry.require === 'string' ? { require: entry.require } : {}),
+      ...('returns' in entry && typeof entry.returns === 'string' ? { returns: entry.returns } : {}),
     };
   });
 })();

@@ -96,8 +96,14 @@ through `workspace/configuration` (your guide says whether it does), you can add
 Only folders on the local disk are scanned.
 
 Hover shows the [Lua 5.2 manual](https://www.lua.org/manual/5.2/manual.html) text for the
-libraries the game provides, a link to the EEex documentation for EEex and game functions, and
-how your own variables are declared. Editors that render Markdown get code blocks and links;
+libraries the game provides (with `runtime.lua` set to `luajit`, also the
+[LuaJIT](https://luajit.org/) documentation), a link to the EEex documentation for EEex and game
+functions, and how your own variables and functions are declared. Method calls are described by
+what their receiver provably is: `s:upper()` like `string.upper` when `s` is a string literal, a
+local never reassigned that holds one, or a value annotated `---@type string`; `obj:m()` by the
+`function Obj:m()` it calls (also `self:m()` inside a method, and values annotated with a
+`---@class`); `w:CheckIfPaused()` through `local w = worldScreen`; and with LuaJIT, `buf:put()` and
+`ffi.new()` through `require`. A receiver of unknown type gets no hover rather than a guess. Editors that render Markdown get code blocks and links;
 others get plain text with the links written out. The few words of the server's own (such as
 `parameter`) are translated when the editor sends a `locale` the extension supports (one of the
 14 VS Code display languages, or its language alone: `de-AT` uses German); otherwise English.

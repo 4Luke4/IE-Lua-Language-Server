@@ -271,7 +271,8 @@
       "heading": "local buf = buffer.new([size [,options]])\nlocal buf = buffer.new([options])",
       "markdown": "Creates a new buffer object.\n\nThe optional `size` argument ensures a minimum initial buffer size. This is strictly an optimization when the required buffer size is known beforehand. The buffer space will grow as needed, in any case.\n\nThe optional table `options` sets various [serialization options](https://luajit.org/ext_buffer.html#serialize_options).",
       "plaintext": "Creates a new buffer object.\n\nThe optional size argument ensures a minimum initial buffer size. This is strictly an optimization when the required buffer size is known beforehand. The buffer space will grow as needed, in any case.\n\nThe optional table options sets various serialization options (https://luajit.org/ext_buffer.html#serialize_options).",
-      "require": "string.buffer"
+      "require": "string.buffer",
+      "returns": "string.buffer"
     },
     {
       "name": "string.buffer:reset",
@@ -281,7 +282,8 @@
       "heading": "buf = buf:reset()",
       "markdown": "Reset (empty) the buffer. The allocated buffer space is not freed and may be reused.",
       "plaintext": "Reset (empty) the buffer. The allocated buffer space is not freed and may be reused.",
-      "require": "string.buffer"
+      "require": "string.buffer",
+      "returns": "string.buffer"
     },
     {
       "name": "string.buffer:free",
@@ -291,7 +293,8 @@
       "heading": "buf = buf:free()",
       "markdown": "The buffer space of the buffer object is freed. The object itself remains intact, empty and may be reused.\n\nNote: you normally don't need to use this method. The garbage collector automatically frees the buffer space, when the buffer object is collected. Use this method, if you need to free the associated memory immediately.",
       "plaintext": "The buffer space of the buffer object is freed. The object itself remains intact, empty and may be reused.\n\nNote: you normally don't need to use this method. The garbage collector automatically frees the buffer space, when the buffer object is collected. Use this method, if you need to free the associated memory immediately.",
-      "require": "string.buffer"
+      "require": "string.buffer",
+      "returns": "string.buffer"
     },
     {
       "name": "string.buffer:put",
@@ -301,7 +304,8 @@
       "heading": "buf = buf:put([str|num|obj] [,…])",
       "markdown": "Appends a string `str`, a number `num` or any object `obj` with a `__tostring` metamethod to the buffer. Multiple arguments are appended in the given order.\n\nAppending a buffer to a buffer is possible and short-circuited internally. But it still involves a copy. Better combine the buffer writes to use a single buffer.",
       "plaintext": "Appends a string str, a number num or any object obj with a __tostring metamethod to the buffer. Multiple arguments are appended in the given order.\n\nAppending a buffer to a buffer is possible and short-circuited internally. But it still involves a copy. Better combine the buffer writes to use a single buffer.",
-      "require": "string.buffer"
+      "require": "string.buffer",
+      "returns": "string.buffer"
     },
     {
       "name": "string.buffer:putf",
@@ -311,7 +315,8 @@
       "heading": "buf = buf:putf(format, …)",
       "markdown": "Appends the formatted arguments to the buffer. The `format` string supports the same options as `string.format()`.",
       "plaintext": "Appends the formatted arguments to the buffer. The format string supports the same options as string.format().",
-      "require": "string.buffer"
+      "require": "string.buffer",
+      "returns": "string.buffer"
     },
     {
       "name": "string.buffer:putcdata",
@@ -321,7 +326,8 @@
       "heading": "buf = buf:putcdata(cdata, len)",
       "markdown": "Appends the given `len` number of bytes from the memory pointed to by the FFI `cdata` object to the buffer. The object needs to be convertible to a (constant) pointer.",
       "plaintext": "Appends the given len number of bytes from the memory pointed to by the FFI cdata object to the buffer. The object needs to be convertible to a (constant) pointer.",
-      "require": "string.buffer"
+      "require": "string.buffer",
+      "returns": "string.buffer"
     },
     {
       "name": "string.buffer:set",
@@ -331,7 +337,8 @@
       "heading": "buf = buf:set(str)\nbuf = buf:set(cdata, len)",
       "markdown": "This method allows zero-copy consumption of a string or an FFI cdata object as a buffer. It stores a reference to the passed string `str` or the FFI `cdata` object in the buffer. Any buffer space originally allocated is freed. This is *not* an append operation, unlike the `buf:put*()` methods.\n\nAfter calling this method, the buffer behaves as if `buf:free():put(str)` or `buf:free():put(cdata, len)` had been called. However, the data is only referenced and not copied, as long as the buffer is only consumed.\n\nIn case the buffer is written to later on, the referenced data is copied and the object reference is removed (copy-on-write semantics).\n\nThe stored reference is an anchor for the garbage collector and keeps the originally passed string or FFI cdata object alive.",
       "plaintext": "This method allows zero-copy consumption of a string or an FFI cdata object as a buffer. It stores a reference to the passed string str or the FFI cdata object in the buffer. Any buffer space originally allocated is freed. This is not an append operation, unlike the buf:put*() methods.\n\nAfter calling this method, the buffer behaves as if buf:free():put(str) or buf:free():put(cdata, len) had been called. However, the data is only referenced and not copied, as long as the buffer is only consumed.\n\nIn case the buffer is written to later on, the referenced data is copied and the object reference is removed (copy-on-write semantics).\n\nThe stored reference is an anchor for the garbage collector and keeps the originally passed string or FFI cdata object alive.",
-      "require": "string.buffer"
+      "require": "string.buffer",
+      "returns": "string.buffer"
     },
     {
       "name": "string.buffer:reserve",
@@ -351,7 +358,8 @@
       "heading": "ptr, len = buf:reserve(size)\nbuf = buf:commit(used)",
       "markdown": "The `reserve` method reserves at least `size` bytes of write space in the buffer. It returns an `uint8_t *` FFI cdata pointer `ptr` that points to this space.\n\nThe available length in bytes is returned in `len`. This is at least `size` bytes, but may be more to facilitate efficient buffer growth. You can either make use of the additional space or ignore `len` and only use `size` bytes.\n\nThe `commit` method appends the `used` bytes of the previously returned write space to the buffer data.\n\nThis pair of methods allows zero-copy use of C read-style APIs:\n\n```\nlocal MIN_SIZE = 65536\nrepeat\n  local ptr, len = buf:reserve(MIN_SIZE)\n  local n = C.read(fd, ptr, len)\n  if n == 0 then break end -- EOF.\n  if n < 0 then error(\"read error\") end\n  buf:commit(n)\nuntil false\n```\n\nThe reserved write space is *not* initialized. At least the `used` bytes **must** be written to before calling the `commit` method. There's no need to call the `commit` method, if nothing is added to the buffer (e.g. on error).",
       "plaintext": "The reserve method reserves at least size bytes of write space in the buffer. It returns an uint8_t * FFI cdata pointer ptr that points to this space.\n\nThe available length in bytes is returned in len. This is at least size bytes, but may be more to facilitate efficient buffer growth. You can either make use of the additional space or ignore len and only use size bytes.\n\nThe commit method appends the used bytes of the previously returned write space to the buffer data.\n\nThis pair of methods allows zero-copy use of C read-style APIs:\n\nlocal MIN_SIZE = 65536\nrepeat\n  local ptr, len = buf:reserve(MIN_SIZE)\n  local n = C.read(fd, ptr, len)\n  if n == 0 then break end -- EOF.\n  if n < 0 then error(\"read error\") end\n  buf:commit(n)\nuntil false\n\nThe reserved write space is not initialized. At least the used bytes must be written to before calling the commit method. There's no need to call the commit method, if nothing is added to the buffer (e.g. on error).",
-      "require": "string.buffer"
+      "require": "string.buffer",
+      "returns": "string.buffer"
     },
     {
       "name": "string.buffer:skip",
@@ -361,7 +369,8 @@
       "heading": "buf = buf:skip(len)",
       "markdown": "Skips (consumes) `len` bytes from the buffer up to the current length of the buffer data.",
       "plaintext": "Skips (consumes) len bytes from the buffer up to the current length of the buffer data.",
-      "require": "string.buffer"
+      "require": "string.buffer",
+      "returns": "string.buffer"
     },
     {
       "name": "string.buffer:get",
@@ -411,7 +420,8 @@
       "heading": "str = buffer.encode(obj)\nbuf = buf:encode(obj)",
       "markdown": "Serializes (encodes) the Lua object `obj`. The stand-alone function returns a string `str`. The buffer method appends the encoding to the buffer.\n\n`obj` can be any of the supported Lua types — it doesn't need to be a Lua table.\n\nThis function may throw an error when attempting to serialize unsupported object types, circular references or deeply nested tables.",
       "plaintext": "Serializes (encodes) the Lua object obj. The stand-alone function returns a string str. The buffer method appends the encoding to the buffer.\n\nobj can be any of the supported Lua types — it doesn't need to be a Lua table.\n\nThis function may throw an error when attempting to serialize unsupported object types, circular references or deeply nested tables.",
-      "require": "string.buffer"
+      "require": "string.buffer",
+      "returns": "string.buffer"
     },
     {
       "name": "string.buffer.decode",

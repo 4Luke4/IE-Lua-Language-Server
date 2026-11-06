@@ -19,6 +19,14 @@ versions with an **even** middle number (for example 1.**2**.0) are stable relea
   and hover and completion describe LuaJIT's libraries, quoted from the LuaJIT documentation:
   `bit`, `jit`, `ffi`, `string.buffer`, `table.new` and `table.clear`. `bit32`, which LuaJIT does
   not have, is then no longer offered. Syntax is still checked by the Lua 5.2 compiler.
+- **Documentation for method calls.** `name:upper()` now shows the description of `string.upper`
+  when `name` is surely a string: a string literal, a local that keeps one, or a value annotated
+  `---@type string`. Your own methods, called as `obj:greet()` or `self:greet()`, show how you
+  defined them and their doc comment, and so does hovering their name where you define them.
+  EEex and game objects work through local names (`local w = worldScreen` then
+  `w:CheckIfPaused()`), and with LuaJIT so do `buf:put()` and `ffi.new()`. Completion after `:`
+  and `.` offers the same names. When the type of a value is not certain, nothing is shown rather
+  than a guess.
 
 ## [1.0.0] - 2026-11-05
 
