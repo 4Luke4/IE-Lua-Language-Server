@@ -172,6 +172,21 @@ InfinityLoader, update `INFINITY_LOADER_COMMIT`, `LUAJIT_COMMIT` and the hashes,
 generator. It stops with a message that names the file and the line whenever the sources use
 something it does not model.
 
+## The extension icon
+
+`images/icon.png` (128×128, transparent) is rendered by `scripts/assets/icon.py` with
+[Blender](https://www.blender.org/) (checked with Blender 5.2.3 LTS) using Cycles on the GPU:
+
+```sh
+blender --background --factory-startup --python scripts/assets/icon.py
+```
+
+The script renders at 512×512 and downscales. It stops with an error when Blender finds no OptiX,
+CUDA, HIP, oneAPI or Metal device, instead of rendering slowly on the CPU. The artwork is
+original: a twenty-sided die with gold edges and a glowing "20", set in the Inter font that
+Blender bundles (SIL Open Font License 1.1, which places no restriction on rendered images).
+Commit the PNG together with any change to the script.
+
 ## Releases
 
 Releases are private: VSIX files are attached to [GitHub Releases](https://github.com/4Luke4/IE-Lua-Language-Server/releases).

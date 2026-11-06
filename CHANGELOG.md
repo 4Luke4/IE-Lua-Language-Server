@@ -97,6 +97,14 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
   `{ luajit: true }` (`</p>`, `<tt>`, `<i>`, `<br>`, tables, links to other pages, the
   external-link marker, colored code); the Lua 5.2 output is unchanged.
 
+### Changed
+
+- New extension icon, `images/icon.png`: a d20 (a regular icosahedron) in the previous navy and
+  gold palette, with a glowing "20" on the face toward the viewer. It is rendered by the rewritten
+  `scripts/assets/icon.py` (Cycles on the GPU, seeded, 512 → 128 px) using Blender's bundled Inter
+  font (OFL-1.1). The script now sets `use_nodes` only on Blender versions that need it, because
+  Blender 5.2 deprecates it. CONTRIBUTING.md › The extension icon documents how to regenerate it.
+
 ## [1.0.0] - 2026-11-05
 
 ### Added

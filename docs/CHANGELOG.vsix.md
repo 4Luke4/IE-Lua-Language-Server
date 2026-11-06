@@ -28,6 +28,10 @@ versions with an **even** middle number (for example 1.**2**.0) are stable relea
   and `.` offers the same names. When the type of a value is not certain, nothing is shown rather
   than a guess.
 
+### Changed
+
+- **A new icon:** a twenty-sided die.
+
 ## [1.0.0] - 2026-11-05
 
 ### Added
