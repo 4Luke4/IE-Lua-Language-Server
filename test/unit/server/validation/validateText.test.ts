@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import type { LuaChecker } from '../../../../src/server/validation/checker.ts';
 import { loadLua52 } from '../../../../src/server/validation/lua52.ts';
+import { loadLuaJit } from '../../../../src/server/validation/luajit.ts';
 import { documentKind, validateText, type DocumentKind } from '../../../../src/server/validation/validateText.ts';
 
 /** [code, problem text, message] — easier to read than raw offsets. */
@@ -120,6 +121,27 @@ describe('server/validation/validateText (official Lua 5.2.4 compiler)', () => {
     it('includes extractor problems', () => {
       assert.deepEqual(problems('action "x()', 'menu', lua).map(([code]) => code), ['menu-unterminated-string']);
     });
+  });
+});
+
+describe('server/validation/validateText (LuaJIT front end)', () => {
+  let luajit: LuaChecker;
+  before(async () => {
+    luajit = await loadLuaJit();
+  });
+
+  it('accepts LuaJIT syntax in a Lua file and in every compiled form of a .menu chunk', () => {
+    assert.deepEqual(problems('local n = 1LL\n', 'lua', luajit), []);
+    assert.deepEqual(problems('`x = 0x10ULL `\nmenu { name "M" enabled "n == 2i" }\n', 'menu', luajit), []);
+  });
+
+  it('maps a quoted <eof> to the end of the chunk', () => {
+    const text = 'action "if x then"';
+    const [problem] = validateText(text, 'menu', luajit);
+    assert.ok(problem);
+    assert.equal(problem.start, text.indexOf('then') + 'then'.length);
+    assert.equal(problem.end, problem.start);
+    assert.match(problem.message, /near '<eof>'$/);
   });
 });
 

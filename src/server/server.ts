@@ -13,6 +13,7 @@ import {
   WatchKind,
 } from 'vscode-languageserver/node';
 import { TextDocument } from 'vscode-languageserver-textdocument';
+import type { Runtime } from '../shared/settings.ts';
 import { ParsedDocumentCache } from './documentCache.ts';
 import * as codeActions from './features/codeActions.ts';
 import * as completion from './features/completion.ts';
@@ -30,7 +31,9 @@ import { analyzeFile, type IndexedFileFacts } from './features/workspaceFiles.ts
 import * as workspaceSymbols from './features/workspaceSymbols.ts';
 import { createMessages } from './l10n.ts';
 import { SettingsStore } from './settingsStore.ts';
+import type { LuaChecker } from './validation/checker.ts';
 import { loadLua52 } from './validation/lua52.ts';
+import { loadLuaJit } from './validation/luajit.ts';
 import { nodeFileSystem } from './workspace/nodeFileSystem.ts';
 import { WorkspaceIndex } from './workspace/workspaceIndex.ts';
 
@@ -42,10 +45,22 @@ documents.onDidClose(({ document }) => {
   parsed.delete(document.uri);
 });
 
-const lua = loadLua52();
-lua.catch((error: unknown) => {
+/** Lua 5.2, the default, is loaded at once; LuaJIT on first use (`ieLua.runtime.lua: luajit`). */
+const lua52 = loadLua52();
+lua52.catch((error: unknown) => {
   connection.console.error(`Loading the Lua 5.2 compiler failed; syntax diagnostics are unavailable: ${String(error)}`);
 });
+let luajit: Promise<LuaChecker> | undefined;
+const checker = (runtime: Runtime): Promise<LuaChecker> => {
+  if (runtime === 'lua52') return lua52;
+  if (!luajit) {
+    luajit = loadLuaJit();
+    luajit.catch((error: unknown) => {
+      connection.console.error(`Loading the LuaJIT parser failed; syntax diagnostics are unavailable with ieLua.runtime.lua "luajit": ${String(error)}`);
+    });
+  }
+  return luajit;
+};
 
 let configurationPull = false;
 let watchedFilesRegistration = false;
@@ -92,7 +107,7 @@ connection.onInitialize((params) => {
   /** One store for every feature, so that a settings change drops each cached value once. */
   const settings = new SettingsStore(connection, configurationPull, params.initializationOptions);
   const diagnosticsFeature = diagnostics.register(connection, documents, {
-    lua,
+    checker,
     cache: parsed,
     messages,
     settings,
