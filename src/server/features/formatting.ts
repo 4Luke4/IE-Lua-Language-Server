@@ -10,6 +10,7 @@ import type {
 import { DocumentFormattingRequest, DocumentOnTypeFormattingRequest, DocumentRangeFormattingRequest } from 'vscode-languageserver/node';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { DOCUMENT_SCHEMES } from '../../shared/protocol.ts';
+import type { Runtime } from '../../shared/settings.ts';
 import type { ParsedDocumentCache } from '../documentCache.ts';
 import {
   formatDocument,
@@ -25,9 +26,11 @@ import {
 import { formatMenuDocument, formatMenuOnType, formatMenuRange, type MenuFormatResult } from '../formatting/menuFormat.ts';
 import type * as Ast from '../syntax/ast.ts';
 import type { ParsedDocument } from '../syntax/document.ts';
+import { openDocument, type RuntimeSettings } from './openDocument.ts';
 
 export interface FormattingDeps {
   readonly cache: ParsedDocumentCache;
+  readonly settings: RuntimeSettings;
 }
 
 /**
@@ -118,17 +121,19 @@ export interface Formatters {
 }
 
 /**
- * Runs the formatter for the kind of `document` and converts its result to LSP edits.
+ * Runs the formatter for the kind of `document`, parsed for `runtime`
+ * (`ieLua.runtime.lua`), and converts its result to LSP edits.
  * `null` for refused requests and failures, which are logged.
  */
 export function formattingEdits(
   document: TextDocument,
   cache: ParsedDocumentCache,
+  runtime: Runtime,
   formatters: Formatters,
   log: FormattingLog,
   refusalLevel: 'debug' | 'info' = 'info',
 ): TextEdit[] | null {
-  const parsed = cache.get(document);
+  const parsed = cache.get(document, runtime);
   let result: FormatResult | MenuFormatResult;
   if (parsed.kind === 'lua') {
     const chunk = parsed.chunks[0];
@@ -169,16 +174,16 @@ export function register(connection: Connection, documents: TextDocuments<TextDo
     else connection.console.error(message);
   };
   /** Shared by the three handlers: synchronous after the lookup, so a cancellation can only arrive after the response. */
-  const answer = (
+  const answer = async (
     uri: string,
-    cancelled: boolean,
+    cancelled: () => boolean,
     formatters: (document: TextDocument) => Formatters,
     refusalLevel: 'debug' | 'info' = 'info',
-  ): TextEdit[] | null => {
+  ): Promise<TextEdit[] | null> => {
     try {
-      const document = documents.get(uri);
-      if (!document || cancelled) return null;
-      return formattingEdits(document, deps.cache, formatters(document), log, refusalLevel);
+      const open = await openDocument(documents, uri, deps.settings, cancelled);
+      if (!open) return null;
+      return formattingEdits(open.document, deps.cache, open.runtime, formatters(open.document), log, refusalLevel);
     } catch (error) {
       connection.console.error(`Formatting ${uri} failed: ${error instanceof Error ? (error.stack ?? error.message) : String(error)}`);
       return null;
@@ -187,14 +192,14 @@ export function register(connection: Connection, documents: TextDocuments<TextDo
 
   connection.onDocumentFormatting(({ textDocument, options }, token) => {
     const formatting = formatterOptions(options);
-    return answer(textDocument.uri, token.isCancellationRequested, () => ({
+    return answer(textDocument.uri, () => token.isCancellationRequested, () => ({
       lua: (text, tree) => formatDocument(text, tree, formatting),
       menu: (parsed) => formatMenuDocument(parsed, formatting),
     }));
   });
   connection.onDocumentRangeFormatting(({ textDocument, range, options }, token) => {
     const formatting = formatterOptions(options);
-    return answer(textDocument.uri, token.isCancellationRequested, (document) => {
+    return answer(textDocument.uri, () => token.isCancellationRequested, (document) => {
       const start = document.offsetAt(range.start);
       const end = document.offsetAt(range.end);
       return {
@@ -207,7 +212,7 @@ export function register(connection: Connection, documents: TextDocuments<TextDo
     const formatting = formatterOptions(options);
     return answer(
       textDocument.uri,
-      token.isCancellationRequested,
+      () => token.isCancellationRequested,
       (document) => {
         const offset = document.offsetAt(position);
         return {

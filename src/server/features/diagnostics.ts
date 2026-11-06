@@ -56,7 +56,7 @@ export function register(connection: Connection, documents: TextDocuments<TextDo
     if (!document || token?.isCancellationRequested) {
       return { validated: false, diagnosticCount: 0 };
     }
-    const problems = [...validateText(document.getText(), documentKind(uri, document.languageId), lua), ...checkDocComments(deps.cache.get(document), deps.messages)];
+    const problems = [...validateText(document.getText(), documentKind(uri, document.languageId), lua), ...checkDocComments(deps.cache.get(document, runtime.lua), deps.messages)];
     const diagnostics: Diagnostic[] = problems.map((problem) => ({
       range: { start: document.positionAt(problem.start), end: document.positionAt(problem.end) },
       severity: problem.severity === 'warning' ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error,

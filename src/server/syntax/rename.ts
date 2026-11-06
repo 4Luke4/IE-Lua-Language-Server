@@ -154,6 +154,6 @@ export function rename(document: ParsedDocument, text: string, offset: number, n
     last = edit.end;
   }
   renamedText += text.slice(last);
-  const renamed = parseDocument(renamedText, document.kind);
+  const renamed = parseDocument(renamedText, document.kind, document.runtime);
   return checkBindings(document, renamed, edits, oldName, newName) ? { ok: true, value: edits } : refuse('conflict');
 }

@@ -13,7 +13,7 @@ import {
   WatchKind,
 } from 'vscode-languageserver/node';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import type { Runtime } from '../shared/settings.ts';
+import { DEFAULT_SETTINGS, type Runtime } from '../shared/settings.ts';
 import { ParsedDocumentCache } from './documentCache.ts';
 import * as codeActions from './features/codeActions.ts';
 import * as completion from './features/completion.ts';
@@ -70,11 +70,16 @@ let formattingRegistration: formatting.FormattingRegistration = { document: fals
 /** Workspace folder URIs, kept up to date from `workspace/didChangeWorkspaceFolders`. */
 let folders: string[] = [];
 
+/** Per-resource settings, created in `initialize` (the index reads them only after `initialized`). */
+let settingsStore: SettingsStore | undefined;
+
 /** Lua and .menu files of the workspace folders, for workspace symbols, definitions and references. */
-const index = new WorkspaceIndex<IndexedFileFacts>({
+const index = new WorkspaceIndex<IndexedFileFacts, Runtime>({
   fs: nodeFileSystem,
   path,
   analyze: analyzeFile,
+  // Files that are not open are parsed for the `ieLua.runtime.lua` of their folder.
+  analysisOptions: async (folderUri) => (settingsStore ? (await settingsStore.get(folderUri)).runtime.lua : DEFAULT_SETTINGS.runtime.lua),
   filesExclude: async (folderUri) => {
     if (!configurationPull) return undefined;
     try {
@@ -106,6 +111,7 @@ connection.onInitialize((params) => {
   const messages = createMessages(params.locale);
   /** One store for every feature, so that a settings change drops each cached value once. */
   const settings = new SettingsStore(connection, configurationPull, params.initializationOptions);
+  settingsStore = settings;
   const diagnosticsFeature = diagnostics.register(connection, documents, {
     checker,
     cache: parsed,
@@ -115,30 +121,32 @@ connection.onInitialize((params) => {
   });
   documentSymbols.register(connection, documents, {
     cache: parsed,
+    settings,
     hierarchical: params.capabilities.textDocument?.documentSymbol?.hierarchicalDocumentSymbolSupport === true,
   });
   const folding = params.capabilities.textDocument?.foldingRange;
   foldingRanges.register(connection, documents, {
     cache: parsed,
+    settings,
     rangeLimit: folding?.rangeLimit,
     kinds: folding?.foldingRangeKind?.valueSet,
   });
-  definition.register(connection, documents, { cache: parsed, index });
-  references.register(connection, documents, { cache: parsed, index });
+  definition.register(connection, documents, { cache: parsed, settings, index });
+  references.register(connection, documents, { cache: parsed, settings, index });
   const documentChanges = workspace?.workspaceEdit?.documentChanges === true;
-  rename.register(connection, documents, { cache: parsed, documentChanges });
+  rename.register(connection, documents, { cache: parsed, settings, documentChanges });
   const codeActionLiterals = codeActions.supportsCodeActionLiterals(params.capabilities.textDocument?.codeAction?.codeActionLiteralSupport);
   if (codeActionLiterals) {
     codeActions.register(connection, documents, { messages, documentChanges });
   }
-  workspaceSymbols.register(connection, documents, { cache: parsed, index });
+  workspaceSymbols.register(connection, documents, { cache: parsed, settings, index });
   const semanticTokensFeature = semanticTokens.register(
     connection,
     documents,
     { cache: parsed, settings },
     workspace?.semanticTokens?.refreshSupport === true,
   );
-  formatting.register(connection, documents, { cache: parsed });
+  formatting.register(connection, documents, { cache: parsed, settings });
   formattingRegistration = formatting.dynamicRegistration(params.capabilities.textDocument);
   hover.register(connection, documents, {
     cache: parsed,

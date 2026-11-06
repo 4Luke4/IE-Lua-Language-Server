@@ -4,9 +4,11 @@ import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { RENAME_REFUSAL_MESSAGES, type RenameRefusal } from '../../shared/protocol.ts';
 import type { ParsedDocumentCache } from '../documentCache.ts';
 import { prepareRename, rename } from '../syntax/rename.ts';
+import { openDocument, type RuntimeSettings } from './openDocument.ts';
 
 export interface RenameDeps {
   readonly cache: ParsedDocumentCache;
+  readonly settings: RuntimeSettings;
   /** `workspace.workspaceEdit.documentChanges` of the client: send versioned edits. */
   readonly documentChanges: boolean;
 }
@@ -33,14 +35,15 @@ export function register(connection: Connection, documents: TextDocuments<TextDo
     return null;
   };
 
-  connection.onPrepareRename(({ textDocument, position }, token): PrepareRenameResult | ResponseError | null => {
+  connection.onPrepareRename(async ({ textDocument, position }, token): Promise<PrepareRenameResult | ResponseError | null> => {
     try {
-      const document = documents.get(textDocument.uri);
-      if (!document || token.isCancellationRequested) {
+      const open = await openDocument(documents, textDocument.uri, deps.settings, () => token.isCancellationRequested);
+      if (!open) {
         return null;
       }
+      const { document, runtime } = open;
       // Synchronous from here on: a cancellation can only arrive after the response.
-      const result = prepareRename(deps.cache.get(document), document.offsetAt(position));
+      const result = prepareRename(deps.cache.get(document, runtime), document.offsetAt(position));
       if (!result.ok) {
         return refusalError(result.refusal);
       }
@@ -51,14 +54,15 @@ export function register(connection: Connection, documents: TextDocuments<TextDo
     }
   });
 
-  connection.onRenameRequest(({ textDocument, position, newName }, token): WorkspaceEdit | ResponseError | null => {
+  connection.onRenameRequest(async ({ textDocument, position, newName }, token): Promise<WorkspaceEdit | ResponseError | null> => {
     try {
-      const document = documents.get(textDocument.uri);
-      if (!document || token.isCancellationRequested) {
+      const open = await openDocument(documents, textDocument.uri, deps.settings, () => token.isCancellationRequested);
+      if (!open) {
         return null;
       }
+      const { document, runtime } = open;
       // Synchronous from here on: a cancellation can only arrive after the response.
-      const result = rename(deps.cache.get(document), document.getText(), document.offsetAt(position), newName);
+      const result = rename(deps.cache.get(document, runtime), document.getText(), document.offsetAt(position), newName);
       if (!result.ok) {
         return refusalError(result.refusal);
       }

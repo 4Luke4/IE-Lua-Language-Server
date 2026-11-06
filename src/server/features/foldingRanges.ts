@@ -3,6 +3,7 @@ import { FoldingRangeKind } from 'vscode-languageserver/node';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import type { ParsedDocumentCache } from '../documentCache.ts';
 import { foldingRanges, type Fold } from '../syntax/folding.ts';
+import { openDocument, type RuntimeSettings } from './openDocument.ts';
 
 export interface FoldingClientOptions {
   /** `textDocument.foldingRange.rangeLimit` of the client: a hint, honored by keeping the first ranges. */
@@ -13,6 +14,7 @@ export interface FoldingClientOptions {
 
 export interface FoldingRangesDeps extends FoldingClientOptions {
   readonly cache: ParsedDocumentCache;
+  readonly settings: RuntimeSettings;
 }
 
 /** LSP folding ranges for a client. Ranges are whole lines, so `lineFoldingOnly` clients are served as is. */
@@ -28,14 +30,15 @@ export function toLspFoldingRanges(folds: readonly Fold[], options: FoldingClien
 
 /** `textDocument/foldingRange` (see src/server/syntax/folding.ts). */
 export function register(connection: Connection, documents: TextDocuments<TextDocument>, deps: FoldingRangesDeps): void {
-  connection.onFoldingRanges(({ textDocument }, token): FoldingRange[] | null => {
+  connection.onFoldingRanges(async ({ textDocument }, token): Promise<FoldingRange[] | null> => {
     try {
-      const document = documents.get(textDocument.uri);
-      if (!document || token.isCancellationRequested) {
+      const open = await openDocument(documents, textDocument.uri, deps.settings, () => token.isCancellationRequested);
+      if (!open) {
         return null;
       }
+      const { document, runtime } = open;
       // Synchronous from here on: a cancellation can only arrive after the response.
-      const folds = foldingRanges(deps.cache.get(document), document.getText(), (offset) => document.positionAt(offset).line);
+      const folds = foldingRanges(deps.cache.get(document, runtime), document.getText(), (offset) => document.positionAt(offset).line);
       return toLspFoldingRanges(folds, deps);
     } catch (error) {
       connection.console.error(`Folding ranges for ${textDocument.uri} failed: ${error instanceof Error ? (error.stack ?? error.message) : String(error)}`);

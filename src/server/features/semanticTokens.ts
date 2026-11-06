@@ -3,8 +3,16 @@ import { SemanticTokensBuilder } from 'vscode-languageserver/node';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import type { ParsedDocumentCache } from '../documentCache.ts';
 import { library, type Library } from '../hover/knowledge.ts';
+import type { Runtime } from '../../shared/settings.ts';
 import type { SettingsStore } from '../settingsStore.ts';
 import { classifyNames, TOKEN_MODIFIERS, TOKEN_TYPES, type NameToken, type TokenModifier, type TokenType } from '../semanticTokens/classify.ts';
+
+/** What a request needs before its synchronous part: the open document, its runtime and the library of that runtime. */
+interface Prepared {
+  readonly document: TextDocument;
+  readonly runtime: Runtime;
+  readonly classifier: Library;
+}
 
 export interface SemanticTokensDeps {
   readonly cache: ParsedDocumentCache;
@@ -103,26 +111,26 @@ export function register(
     return { data: [] };
   };
   /** Pushes the tokens of `document`; synchronous, so a cancellation can only arrive after the response. */
-  const filler = (document: TextDocument, classifier: Library, range?: Range) => (sink: TokenSink): void => {
+  const filler = ({ document, runtime, classifier }: Prepared, range?: Range) => (sink: TokenSink): void => {
     const offsets = range && { start: document.offsetAt(range.start), end: document.offsetAt(range.end) };
-    pushTokens(sink, classifyNames(deps.cache.get(document), classifier), (offset) => document.positionAt(offset), offsets);
+    pushTokens(sink, classifyNames(deps.cache.get(document, runtime), classifier), (offset) => document.positionAt(offset), offsets);
   };
   /**
    * The open document and the library of its runtime, read before the synchronous part of
    * a request; `undefined` when the document is gone or the request was cancelled meanwhile.
    */
-  const prepare = async (uri: string, cancelled: () => boolean): Promise<{ document: TextDocument; classifier: Library } | undefined> => {
+  const prepare = async (uri: string, cancelled: () => boolean): Promise<Prepared | undefined> => {
     if (!documents.get(uri) || cancelled()) return undefined;
     const { runtime } = await deps.settings.get(uri);
     const document = documents.get(uri);
-    return document && !cancelled() ? { document, classifier: library(runtime.lua) } : undefined;
+    return document && !cancelled() ? { document, runtime: runtime.lua, classifier: library(runtime.lua) } : undefined;
   };
 
   connection.languages.semanticTokens.on(async ({ textDocument }, token): Promise<SemanticTokens> => {
     try {
       const ready = await prepare(textDocument.uri, () => token.isCancellationRequested);
       if (!ready) return { data: [] };
-      return results.full(ready.document.uri, filler(ready.document, ready.classifier));
+      return results.full(ready.document.uri, filler(ready));
     } catch (error) {
       return failed(textDocument.uri, error);
     }
@@ -132,7 +140,7 @@ export function register(
     try {
       const ready = await prepare(textDocument.uri, () => token.isCancellationRequested);
       if (!ready) return { data: [] };
-      return results.delta(ready.document.uri, previousResultId, filler(ready.document, ready.classifier));
+      return results.delta(ready.document.uri, previousResultId, filler(ready));
     } catch (error) {
       return failed(textDocument.uri, error);
     }
@@ -144,7 +152,7 @@ export function register(
       if (!ready) return { data: [] };
       // A range result is never diffed against: it does not touch the document's last result.
       const builder = new SemanticTokensBuilder();
-      filler(ready.document, ready.classifier, range)(builder);
+      filler(ready, range)(builder);
       return builder.build();
     } catch (error) {
       return failed(textDocument.uri, error);

@@ -109,14 +109,15 @@ export function register(connection: Connection, documents: TextDocuments<TextDo
       if (!documents.get(textDocument.uri) || cancelled()) {
         return null;
       }
-      const library = libraryOf((await deps.settings.get(textDocument.uri)).runtime.lua);
+      const { runtime } = await deps.settings.get(textDocument.uri);
+      const library = libraryOf(runtime.lua);
       // The document may have changed or closed meanwhile: use it as it is now. Synchronous from
       // here on, so a cancellation can only arrive after the response.
       const document = documents.get(textDocument.uri);
       if (!document || cancelled()) {
         return null;
       }
-      const parsed = deps.cache.get(document);
+      const parsed = deps.cache.get(document, runtime.lua);
       const offset = document.offsetAt(position);
       const site = completionSiteAt(parsed, document.getText(), offset);
       if (!site) {

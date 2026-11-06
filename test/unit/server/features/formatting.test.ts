@@ -24,7 +24,7 @@ function run(uri: string, languageId: string, text: string, refusalLevel?: 'debu
   const logged: string[] = [];
   const log: FormattingLog = (level, message) => logged.push(`${level}: ${message}`);
   const document = TextDocument.create(uri, languageId, 1, text);
-  const edits = formattingEdits(document, new ParsedDocumentCache(), formatters(), log, refusalLevel);
+  const edits = formattingEdits(document, new ParsedDocumentCache(), 'lua52', formatters(), log, refusalLevel);
   return { edits, logged };
 }
 
@@ -68,6 +68,7 @@ describe('server/features/formatting', () => {
     const edits = formattingEdits(
       document,
       new ParsedDocumentCache(),
+      'lua52',
       formatters({ tabSize: 0, insertSpaces: true }),
       (level, message) => logged.push(`${level}: ${message}`),
       'debug',

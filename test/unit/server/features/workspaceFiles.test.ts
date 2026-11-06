@@ -11,6 +11,7 @@ import {
 } from '../../../../src/server/features/workspaceFiles.ts';
 import { globalRanges, type FileGlobals } from '../../../../src/server/syntax/fileGlobals.ts';
 import type { IndexedFile } from '../../../../src/server/workspace/workspaceIndex.ts';
+import { DEFAULT_SETTINGS, type IeLuaSettings, type Runtime } from '../../../../src/shared/settings.ts';
 
 /** `line:character` of each use of `name`, with `=` for assignments; `undefined` when the file has none. */
 function where(globals: FileGlobals, name: string): string[] | undefined {
@@ -23,7 +24,7 @@ function where(globals: FileGlobals, name: string): string[] | undefined {
 describe('server/features/workspaceFiles', () => {
   describe('analyzeFile', () => {
     it('lists the flat outline of a file with positions and containers', () => {
-      const { symbols } = analyzeFile('local M = {}\nfunction M.open()\nend\n', 'file:///w/a.lua');
+      const { symbols } = analyzeFile('local M = {}\nfunction M.open()\nend\n', 'file:///w/a.lua', 'lua52');
       assert.deepEqual(
         symbols.map((s) => [s.name, s.containerName ?? '', s.location.uri, s.location.range.start.line]),
         [
@@ -34,12 +35,12 @@ describe('server/features/workspaceFiles', () => {
     });
 
     it('recognizes .menu files by their extension, in any letter case', () => {
-      const { symbols } = analyzeFile('menu\n{\n\tname "MAIN"\n\tonOpen "x = 1"\n}\n`\nfunction ready() end\n`\n', 'file:///w/UI.MENU');
+      const { symbols } = analyzeFile('menu\n{\n\tname "MAIN"\n\tonOpen "x = 1"\n}\n`\nfunction ready() end\n`\n', 'file:///w/UI.MENU', 'lua52');
       assert.deepEqual(symbols.map((s) => s.name), ['MAIN', 'ready']);
     });
 
     it('lists where a Lua file names each global, with its assignments', () => {
-      const { globals } = analyzeFile('local x = 1\nTotal = x\nfunction Add(n)\n\tTotal = Total + n\nend\nprint(Total)\n', 'file:///w/a.lua');
+      const { globals } = analyzeFile('local x = 1\nTotal = x\nfunction Add(n)\n\tTotal = Total + n\nend\nprint(Total)\n', 'file:///w/a.lua', 'lua52');
       assert.deepEqual([...globals.slots.keys()].sort(), ['Add', 'Total', 'print']);
       assert.deepEqual(where(globals, 'Total'), ['1:0=', '3:1=', '3:9', '5:6']);
       assert.deepEqual(where(globals, 'Add'), ['2:9=']);
@@ -48,20 +49,20 @@ describe('server/features/workspaceFiles', () => {
 
     it('collects the globals of every Lua chunk of a .menu file, in document order', () => {
       const text = '`\nshown = 0\n`\nmenu\n{\n\tname "MAIN"\n\tonOpen "shown = shown + 1"\n\tlabel { enabled "shown > 0" }\n}\n';
-      assert.deepEqual(where(analyzeFile(text, 'file:///w/UI.menu').globals, 'shown'), ['1:0=', '6:9=', '6:17', '7:18']);
+      assert.deepEqual(where(analyzeFile(text, 'file:///w/UI.menu', 'lua52').globals, 'shown'), ['1:0=', '6:9=', '6:17', '7:18']);
     });
 
     it('leaves out _ENV and the names resolved through a local _ENV', () => {
-      const { globals } = analyzeFile('local _ENV = { y = 1 }\nz = y\n', 'file:///w/env.lua');
+      const { globals } = analyzeFile('local _ENV = { y = 1 }\nz = y\n', 'file:///w/env.lua', 'lua52');
       assert.deepEqual([...globals.slots.keys()], []);
-      const free = analyzeFile('_ENV.a = 1\nb = 2\n', 'file:///w/free.lua').globals;
+      const free = analyzeFile('_ENV.a = 1\nb = 2\n', 'file:///w/free.lua', 'lua52').globals;
       assert.deepEqual([...free.slots.keys()], ['b']);
     });
   });
 
   describe('collectGlobalLocations', () => {
     /** An indexed file analyzed from `text`, keyed by its path. */
-    const indexed = (path: string, text: string): IndexedFile<IndexedFileFacts> => ({ uri: `file://${path}`, key: path, value: analyzeFile(text, `file://${path}`) });
+    const indexed = (path: string, text: string): IndexedFile<IndexedFileFacts> => ({ uri: `file://${path}`, key: path, value: analyzeFile(text, `file://${path}`, 'lua52') });
     const all = (): boolean => true;
     const writes = (isWrite: boolean): boolean => isWrite;
     const show = (locations: Location[] | undefined): string[] | undefined =>
@@ -78,9 +79,9 @@ describe('server/features/workspaceFiles', () => {
       const saved = indexed('/w/a.lua', 'G = 1\n');
       const reads: string[] = [];
       const open = [
-        { uri: 'file:///w/a.lua', key: '/w/a.lua', globals: () => (reads.push('a'), analyzeFile('\n\nG = 1\n', 'file:///w/a.lua').globals) },
-        { uri: 'untitled:Untitled-1', key: 'untitled:Untitled-1', globals: () => (reads.push('untitled'), analyzeFile('x = G\n', 'untitled:Untitled-1').globals) },
-        { uri: 'file:///w/a.lua', key: '/w/a.lua', globals: () => (reads.push('again'), analyzeFile('', 'file:///w/a.lua').globals) },
+        { uri: 'file:///w/a.lua', key: '/w/a.lua', globals: () => (reads.push('a'), analyzeFile('\n\nG = 1\n', 'file:///w/a.lua', 'lua52').globals) },
+        { uri: 'untitled:Untitled-1', key: 'untitled:Untitled-1', globals: () => (reads.push('untitled'), analyzeFile('x = G\n', 'untitled:Untitled-1', 'lua52').globals) },
+        { uri: 'file:///w/a.lua', key: '/w/a.lua', globals: () => (reads.push('again'), analyzeFile('', 'file:///w/a.lua', 'lua52').globals) },
       ];
       const found = collectGlobalLocations('G', all, '/w/self.lua', open, [saved], () => false);
       assert.deepEqual(found?.map(({ uri, range }) => `${uri} ${String(range.start.line)}`), ['file:///w/a.lua 2', 'untitled:Untitled-1 0']);
@@ -101,9 +102,25 @@ describe('server/features/workspaceFiles', () => {
     });
     const deps = (entries: IndexedFile<IndexedFileFacts>[], ready: Promise<void> = Promise.resolve()): CrossFileDeps => ({
       cache: new ParsedDocumentCache(),
+      settings: { get: () => Promise.resolve(DEFAULT_SETTINGS) },
       index: { ready: () => ready, pathKey: (uri) => (uri.startsWith('file://') ? uri.slice('file://'.length) : undefined), entries: () => entries.values() },
     });
-    const saved: IndexedFile<IndexedFileFacts> = { uri: 'file:///w/b.lua', key: '/w/b.lua', value: analyzeFile('G = 1\n', 'file:///w/b.lua') };
+    const saved: IndexedFile<IndexedFileFacts> = { uri: 'file:///w/b.lua', key: '/w/b.lua', value: analyzeFile('G = 1\n', 'file:///w/b.lua', 'lua52') };
+
+    it('parses each open document for its own runtime', async () => {
+      const current = TextDocument.create('file:///w/a.lua', 'lua', 1, 'print(G)\n');
+      const other = TextDocument.create('file:///w/jit.lua', 'lua', 1, 'G = 0b101 + 1LL\n');
+      const runtimeOf = (uri: string): Runtime => (uri === other.uri ? 'luajit' : 'lua52');
+      const cache = new ParsedDocumentCache();
+      const settings = { get: (uri: string): Promise<IeLuaSettings> => Promise.resolve({ ...DEFAULT_SETTINGS, runtime: { lua: runtimeOf(uri) } }) };
+      const found = await otherFileLocations(openDocuments(current, other), current, 'G', () => true, { ...deps([]), cache, settings }, new CancellationTokenSource().token);
+      assert.ok(Array.isArray(found));
+      assert.deepEqual(found.map(({ uri }) => uri), ['file:///w/jit.lua']);
+      const parsed = cache.get(other, 'luajit');
+      assert.equal(parsed.chunks[0]?.tree.errors.length, 0);
+      // Parsed once, for LuaJIT: the request's parse is the one the cache returns.
+      assert.equal(cache.get(other, 'luajit'), parsed);
+    });
 
     it('finds the uses in the open documents and the indexed files', async () => {
       const current = TextDocument.create('file:///w/a.lua', 'lua', 1, 'print(G)\n');

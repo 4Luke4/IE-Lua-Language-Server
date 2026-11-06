@@ -13,7 +13,11 @@
 // (LUAI_MAXCCALLS). Checks that are NOT done (code-generation limits and goto
 // semantics): labels (duplicates, visibility, jumps into the scope of a local),
 // and the limits on locals (200), upvalues (255), registers and constants.
+//
+// With `runtime: 'luajit'` the lexer accepts LuaJIT's number literals and `\u{…}`
+// escapes (see lexer.ts); the grammar is Lua 5.2's either way.
 
+import type { Runtime } from '../../shared/settings.ts';
 import type * as Ast from './ast.ts';
 import { lex, type ParseError, type Token } from './lexer.ts';
 
@@ -34,6 +38,8 @@ export interface ParseOptions {
    * enclosing `function` statement). Default `false`: a top-level chunk.
    */
   readonly functionBody?: boolean;
+  /** `ieLua.runtime.lua`: whose lexical rules apply (see lexer.ts). Default `lua52`. */
+  readonly runtime?: Runtime;
 }
 
 /** lparser.c `priority`: [left, right]; right < left means right-associative. */
@@ -628,9 +634,10 @@ class Parser {
 export function parseChunk(source: string, options: ParseOptions = {}): Ast.Chunk {
   const from = options.from ?? 0;
   const to = options.to ?? source.length;
-  const { tokens, comments, errors: lexErrors } = lex(source, from, to);
+  const runtime = options.runtime ?? 'lua52';
+  const { tokens, comments, errors: lexErrors } = lex(source, from, to, runtime);
   const parser = new Parser(source, tokens, from, to, options.functionBody ?? false);
   const body = options.mode === 'expression' ? parser.expressionChunk(from) : parser.chunk(from);
   const errors = [...lexErrors, ...parser.errors].sort((a, b) => a.start - b.start);
-  return { kind: 'Chunk', body, comments, errors, statementStarts: parser.statementStarts, start: from, end: to };
+  return { kind: 'Chunk', body, comments, errors, statementStarts: parser.statementStarts, runtime, start: from, end: to };
 }
