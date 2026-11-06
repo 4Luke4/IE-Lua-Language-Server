@@ -1,21 +1,20 @@
 import createLua52, { type Lua52Module } from '../../../third_party/lua52/dist/lua52.js';
+import type { LuaChecker } from './checker.ts';
 import { CHUNK_NAME } from './luaError.ts';
-
-/** Syntax checker backed by the official Lua 5.2.4 compiler (WebAssembly). */
-export interface Lua52Checker {
-  /** Returns `undefined` when `source` compiles, otherwise the raw compiler message. */
-  check(source: string): string | undefined;
-}
 
 const encoder = new TextEncoder();
 
-/** Instantiates the WebAssembly module. Call once and reuse the checker. */
-export async function loadLua52(): Promise<Lua52Checker> {
+/**
+ * Instantiates the official Lua 5.2.4 compiler (WebAssembly). Call once and reuse the
+ * checker.
+ */
+export async function loadLua52(): Promise<LuaChecker> {
   const wasm: Lua52Module = await createLua52();
   const chunkName = encoder.encode(`${CHUNK_NAME}\0`);
   const chunkNamePointer = wasm._malloc(chunkName.length);
   wasm.HEAPU8.set(chunkName, chunkNamePointer);
   return {
+    dialect: 'lua52',
     check(source: string): string | undefined {
       const bytes = encoder.encode(source);
       // malloc(0) may return NULL; always allocate at least one byte.

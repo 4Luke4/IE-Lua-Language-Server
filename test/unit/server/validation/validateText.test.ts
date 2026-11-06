@@ -1,14 +1,15 @@
 import assert from 'node:assert/strict';
-import { loadLua52, type Lua52Checker } from '../../../../src/server/validation/lua52.ts';
+import type { LuaChecker } from '../../../../src/server/validation/checker.ts';
+import { loadLua52 } from '../../../../src/server/validation/lua52.ts';
 import { documentKind, validateText, type DocumentKind } from '../../../../src/server/validation/validateText.ts';
 
 /** [code, problem text, message] — easier to read than raw offsets. */
-function problems(text: string, kind: DocumentKind, lua: Lua52Checker): [string, string, string][] {
+function problems(text: string, kind: DocumentKind, lua: LuaChecker): [string, string, string][] {
   return validateText(text, kind, lua).map((p) => [p.code, text.slice(p.start, p.end), p.message]);
 }
 
 describe('server/validation/validateText (official Lua 5.2.4 compiler)', () => {
-  let lua: Lua52Checker;
+  let lua: LuaChecker;
   before(async () => {
     lua = await loadLua52();
   });

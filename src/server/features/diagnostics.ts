@@ -8,11 +8,11 @@ import type { ParsedDocumentCache } from '../documentCache.ts';
 import type { Messages } from '../l10n.ts';
 import type { SettingsStore } from '../settingsStore.ts';
 import { Debouncer, type Timers } from '../validation/debouncer.ts';
-import type { Lua52Checker } from '../validation/lua52.ts';
+import type { LuaChecker } from '../validation/checker.ts';
 import { documentKind, validateText } from '../validation/validateText.ts';
 
 export interface DiagnosticsDeps {
-  readonly lua: Promise<Lua52Checker>;
+  readonly lua: Promise<LuaChecker>;
   /** Parse results, for the doc-comment checks. */
   readonly cache: ParsedDocumentCache;
   /** Messages in the client's locale (doc-comment problems). */
