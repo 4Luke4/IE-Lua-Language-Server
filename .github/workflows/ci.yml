@@ -34,6 +34,7 @@ jobs:
       code: ${{ steps.diff.outputs.code }}
       wasm: ${{ steps.diff.outputs.wasm }}
       manual: ${{ steps.diff.outputs.manual }}
+      luajit: ${{ steps.diff.outputs.luajit }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -51,6 +52,7 @@ jobs:
             echo "code=true" >> "$GITHUB_OUTPUT"
             echo "wasm=true" >> "$GITHUB_OUTPUT"
             echo "manual=true" >> "$GITHUB_OUTPUT"
+            echo "luajit=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           changed="$(git diff --name-only "$BASE" HEAD)"
@@ -70,6 +72,12 @@ jobs:
             echo "manual=true" >> "$GITHUB_OUTPUT"
           else
             echo "manual=false" >> "$GITHUB_OUTPUT"
+          fi
+          # The LuaJIT generator shares the HTML converter and the tarball helper, and reads the Lua 5.2 data.
+          if printf '%s\n' "$changed" | grep -qE '^(scripts/luajit-manual/|scripts/lua-manual/convert\.mts$|data/luajit/|data/lua52/|third_party/lua52/tarball\.mts$|\.github/workflows/ci\.yml$)'; then
+            echo "luajit=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "luajit=false" >> "$GITHUB_OUTPUT"
           fi
 
   checks:
@@ -244,3 +252,26 @@ jobs:
           key: lua-src-${{ hashFiles('third_party/lua52/tarball.mts') }}
       - name: Regenerate and compare
         run: npm run lua-manual -- --check
+
+  luajit:
+    name: LuaJIT manual data is current
+    needs: changes
+    if: needs.changes.outputs.luajit == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # No `npm ci`: the generator uses only Node built-ins and `tar`.
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      # The pinned files never change at their commits; the key changes when the pins do.
+      - name: Cache the pinned LuaJIT sources
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .cache/luajit
+          key: luajit-src-${{ hashFiles('scripts/luajit-manual/generate.mts') }}
+      - name: Regenerate and compare
+        run: npm run luajit-manual -- --check

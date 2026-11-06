@@ -11,7 +11,8 @@ import { renderDocComment, renderParam } from '../docComments/render.ts';
 import type { Messages } from '../l10n.ts';
 import type * as Ast from '../syntax/ast.ts';
 import { parameterList, type DeclarationSite } from '../syntax/signatures.ts';
-import { MANUAL_TITLE, type ExternalEntry, type ManualEntry } from './knowledge.ts';
+import type { ExternalEntry, ManualEntry } from './knowledge.ts';
+import type { MemberDefinition } from './receiver.ts';
 import type { HoverTarget } from './resolve.ts';
 
 export type HoverFormat = 'markdown' | 'plaintext';
@@ -36,6 +37,12 @@ function localSignature(target: Extract<HoverTarget, { kind: 'local' }>, message
   }
 }
 
+/** `(method) function Obj:m(a)` or `(field) function Obj.f(a)`: how the document defines it. */
+function memberSignature(definition: MemberDefinition, messages: Messages): string {
+  const label = `(${messages.t(definition.method ? 'hover.kind.method' : 'hover.kind.field')})`;
+  return `${label} function ${definition.owner}${definition.method ? ':' : '.'}${definition.name}${parameterList(definition.func)}`;
+}
+
 function globalSignature(name: string, site: DeclarationSite | undefined, messages: Messages): string {
   const label = `(${messages.t('hover.kind.global')})`;
   if (site?.kind === 'functionDeclaration') return `${label} function ${name}${parameterList(site.func)}`;
@@ -48,7 +55,7 @@ interface Link {
   readonly url: string;
 }
 
-const manualLink = (entry: ManualEntry): Link => ({ text: `${MANUAL_TITLE}, §${entry.section.number} – ${entry.section.title}`, url: entry.url });
+const manualLink = (entry: ManualEntry): Link => ({ text: entry.linkText, url: entry.url });
 const externalLink = (entry: ExternalEntry): Link => ({ text: entry.sourceTitle, url: entry.url });
 
 /** The parts of a hover, before formatting: code, documentation paragraphs (already in the format), source link. */
@@ -83,6 +90,10 @@ function parts(target: HoverTarget, format: HoverFormat, messages: Messages): Pa
     }
     case 'external':
       return { code: target.entry.name, link: externalLink(target.entry) };
+    case 'member': {
+      const documentation = target.definition.doc && renderDocComment(target.definition.doc, format);
+      return { code: memberSignature(target.definition, messages), ...(documentation === undefined ? {} : { documentation }) };
+    }
   }
 }
 

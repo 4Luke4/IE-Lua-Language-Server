@@ -10,5 +10,8 @@
   "configuration.validate.mode.type": "Valider pendant la saisie, après `#ieLua.validate.debounce#` millisecondes sans modification.",
   "configuration.validate.mode.saveAndType": "Valider pendant la saisie et lors de l'enregistrement d'un fichier.",
   "configuration.validate.debounce.description": "Délai en millisecondes après la dernière modification avant la validation, quand `#ieLua.validate.mode#` a la valeur `type` ou `saveAndType`.",
+  "configuration.runtime.lua.description": "Le Lua exécuté par le jeu, qui détermine ce que décrivent le pointage, la saisie semi-automatique et la coloration sémantique. Choisissez `luajit` lorsque le composant expérimental *Use LuaJIT* d'EEex est installé : les bibliothèques LuaJIT `bit`, `jit`, `ffi` et `string.buffer`, ainsi que `table.new` et `table.clear`, sont alors documentées, et `bit32`, absent de LuaJIT, ne l'est pas. Les erreurs de syntaxe sont toujours signalées par le compilateur Lua 5.2.",
+  "configuration.runtime.lua.lua52": "Le Lua 5.2 propre au jeu.",
+  "configuration.runtime.lua.luajit": "LuaJIT, installé par le composant *Use LuaJIT* d'EEex.",
   "semanticTokenModifiers.global.description": "Une variable globale (un champ de l'environnement global), par opposition à une variable locale."
 }

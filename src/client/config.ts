@@ -11,6 +11,9 @@ export function readSettings(scope?: vscode.ConfigurationScope): IeLuaSettings {
       mode: config.get<unknown>('validate.mode'),
       debounce: config.get<unknown>('validate.debounce'),
     },
+    runtime: {
+      lua: config.get<unknown>('runtime.lua'),
+    },
   });
 }
 

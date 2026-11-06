@@ -74,9 +74,44 @@ suite('Formatting', () => {
     assert.equal(applied(document, edits).split('\n')[5], '  else');
   });
 
-  test('offers no formatter for .menu files', async () => {
-    const document = await open('OUTLINE.MENU');
+  test('formats a .menu document: its blocks and the Lua inside it', async () => {
+    const document = await open('FORMAT.MENU');
     const edits = await vscode.commands.executeCommand<vscode.TextEdit[] | undefined>('vscode.executeFormatDocumentProvider', document.uri, OPTIONS);
-    assert.ok(edits === undefined || edits.length === 0, `unexpected edits: ${JSON.stringify(edits)}`);
+    assert.ok(edits && edits.length > 0, 'no formatting provider answered');
+    assert.equal(
+      applied(document, edits),
+      [
+        '-- Original fixture: formatting. Deliberately unformatted.',
+        '`',
+        'function fmtMenuHelper(n)',
+        '  return n * 2',
+        'end',
+        '`',
+        'menu',
+        '{',
+        '  name   "FORMAT_MAIN"',
+        '  button',
+        '  {',
+        '    enabled "fmtMenuHelper(1) > 1"',
+        '    action',
+        '    "',
+        '      if fmtMenuHelper(2) > 3 then',
+        "        Infinity_DisplayString('x')",
+        '      end',
+        '    "',
+        '  }',
+        '}',
+        '',
+      ].join('\n'),
+    );
+  });
+
+  test('formats only the lines of a range in a .menu document', async () => {
+    const document = await open('FORMAT.MENU');
+    const range = new vscode.Range(9, 0, 9, 3);
+    const edits = await vscode.commands.executeCommand<vscode.TextEdit[] | undefined>('vscode.executeFormatRangeProvider', document.uri, range, OPTIONS);
+    assert.ok(edits && edits.length > 0, 'no range formatting provider answered');
+    assert.deepEqual(new Set(edits.map((edit) => edit.range.start.line)), new Set([9]));
+    assert.equal(applied(document, edits).split('\n')[9], '  button');
   });
 });

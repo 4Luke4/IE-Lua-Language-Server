@@ -1,6 +1,6 @@
 import * as assert from 'node:assert/strict';
 import * as vscode from 'vscode';
-import { activateExtension, closeAllEditors, openFixture } from './helpers.ts';
+import { activateExtension, closeAllEditors, openFixture, withSetting } from './helpers.ts';
 
 /**
  * The hover text at the `occurrence`-th (0-based) `needle` of a fixture, or
@@ -74,4 +74,27 @@ suite('Hover', () => {
     assert.ok(value, 'no hover');
     assert.ok(value.startsWith('```lua\nstring.rep (s, n [, sep])\n```'), value);
   });
+
+  test('describes the LuaJIT libraries when ieLua.runtime.lua is luajit', async () => {
+    // Set before the fixture is first opened, so the server reads the new value for it.
+    const restore = await withSetting('runtime.lua', 'luajit');
+    try {
+      const value = await hoverAt('runtime.lua', 'band');
+      assert.ok(value, 'no hover');
+      assert.ok(value.startsWith('```lua\ny = bit.bor(x1 [,x2...])\ny = bit.band(x1 [,x2...])'), value);
+      assert.ok(value.endsWith('[BitOp: API Functions](https://bitop.luajit.org/api.html#bor)'), value);
+    } finally {
+      await restore();
+    }
+  });
+
+  test('documents method calls by what the receiver provably is', async () => {
+    const upper = await hoverAt('methods.lua', 'upper');
+    assert.ok(upper, 'no hover');
+    assert.ok(upper.startsWith('```lua\nstring.upper (s)\n```'), upper);
+    assert.ok(upper.endsWith('(https://www.lua.org/manual/5.2/manual.html#pdf-string.upper)'), upper);
+    assert.equal(await hoverAt('methods.lua', 'bump', 1), '```lua\n(method) function Counter:bump(step)\n```\n\n---\n\nAdds one and returns the new count.');
+    assert.match(await hoverAt('methods.lua', 'CheckIfPaused') ?? '', /^```lua\nworldScreen:CheckIfPaused\n```\n\n---\n\n\[EE Game Lua Functions\]/);
+  });
 });
+

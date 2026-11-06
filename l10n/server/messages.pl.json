@@ -2,6 +2,8 @@
   "hover.kind.parameter": "parametr",
   "hover.kind.forVariable": "zmienna for",
   "hover.kind.global": "globalna",
+  "hover.kind.method": "metoda",
+  "hover.kind.field": "pole",
   "hover.engineReplaced": "Silnik gry zastępuje {0} własną funkcją, więc opis z podręcznika Lua 5.2 nie ma zastosowania. Zobacz {1}.",
   "codeAction.quote": "Ujmij w cudzysłów",
   "codeAction.insertSpace": "Wstaw spację przed zamykającym grawisem",

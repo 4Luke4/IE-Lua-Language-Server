@@ -10,5 +10,8 @@
   "configuration.validate.mode.type": "Sprawdzaj poprawność podczas pisania, po `#ieLua.validate.debounce#` ms bez zmian.",
   "configuration.validate.mode.saveAndType": "Sprawdzaj poprawność podczas pisania i zapisywania pliku.",
   "configuration.validate.debounce.description": "Opóźnienie w milisekundach od ostatniej zmiany do sprawdzenia poprawności, gdy ustawienie `#ieLua.validate.mode#` ma wartość `type` lub `saveAndType`.",
+  "configuration.runtime.lua.description": "Lua uruchamiane przez grę, które decyduje, co opisują etykietki po najechaniu, uzupełnianie i wyróżnianie semantyczne. Wybierz `luajit`, gdy jest zainstalowany eksperymentalny składnik EEex *Use LuaJIT*: wtedy dokumentowane są biblioteki LuaJIT `bit`, `jit`, `ffi` i `string.buffer` oraz `table.new` i `table.clear`, a `bit32`, którego LuaJIT nie ma, nie jest. Błędy składni zawsze zgłasza kompilator Lua 5.2.",
+  "configuration.runtime.lua.lua52": "Własne Lua 5.2 gry.",
+  "configuration.runtime.lua.luajit": "LuaJIT instalowane przez składnik EEex *Use LuaJIT*.",
   "semanticTokenModifiers.global.description": "Zmienna globalna (pole środowiska globalnego), w odróżnieniu od zmiennej lokalnej."
 }

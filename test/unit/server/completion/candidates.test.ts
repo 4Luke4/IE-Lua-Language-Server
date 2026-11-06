@@ -1,17 +1,18 @@
 import assert from 'node:assert/strict';
 import { completionCandidates, documentationSource, documentationTarget, type Candidate } from '../../../../src/server/completion/candidates.ts';
+import { LUA52, LUAJIT, type Library } from '../../../../src/server/hover/knowledge.ts';
 import { completionSiteAt } from '../../../../src/server/syntax/completionContext.ts';
 import { parseDocument } from '../../../../src/server/syntax/document.ts';
 
 /** The candidates where `|` is in `marked` (the marker is removed first). */
-function candidates(marked: string, kind: 'lua' | 'menu' = 'lua'): Candidate[] {
+function candidates(marked: string, kind: 'lua' | 'menu' = 'lua', library: Library = LUA52): Candidate[] {
   const offset = marked.indexOf('|');
   assert.ok(offset >= 0 && marked.indexOf('|', offset + 1) < 0, 'exactly one marker');
   const text = marked.slice(0, offset) + marked.slice(offset + 1);
   const document = parseDocument(text, kind);
   const site = completionSiteAt(document, text, offset);
   assert.ok(site, 'no completion site');
-  return completionCandidates(document, site);
+  return completionCandidates(document, site, library);
 }
 
 const labels = (marked: string, kind: 'lua' | 'menu' = 'lua'): string[] => candidates(marked, kind).map((candidate) => candidate.label);
@@ -27,6 +28,7 @@ function candidate(marked: string, label: string): string | undefined {
   else if (target?.kind === 'library') what = `library ${target.entry.name}`;
   else if (target?.kind === 'engineReplaced') what = `engine ${target.replacement.name}`;
   else if (target?.kind === 'external') what = `external ${target.entry.name}`;
+  else if (target?.kind === 'member') what = `member ${target.definition.owner}${target.definition.method ? ':' : '.'}${target.definition.name}`;
   return `${found.kind} ${String(found.group)} ${what}`;
 }
 
@@ -121,7 +123,7 @@ describe('server/completion/candidates', () => {
       assert.ok(all.includes('trim'));
       assert.equal(candidate('string.format = f string.|', 'format'), 'field 1 -');
       assert.equal(candidate('t.a = 1 function t:m() end t.|', 'a'), 'field 1 -');
-      assert.equal(candidate('t.a = 1 function t:m() end t:|', 'm'), 'method 1 -');
+      assert.equal(candidate('t.a = 1 function t:m() end t:|', 'm'), 'method 1 member t:m');
     });
 
     it('offers no library members of a module table the document assigns', () => {
@@ -152,7 +154,7 @@ describe('server/completion/candidates', () => {
       const all = labels('x = ("x"):|');
       assert.ok(all.includes('rep'));
       assert.equal(candidate('x = ("x"):|', 'rep'), 'method 2 library string.rep');
-      assert.equal(candidate('function string:rep() end x = ("x"):|', 'rep'), 'method 1 -');
+      assert.equal(candidate('function string:rep() end x = ("x"):|', 'rep'), 'method 1 member string:rep');
     });
   });
 
@@ -164,9 +166,9 @@ describe('server/completion/candidates', () => {
         return found;
       };
       for (const [marked, label, expected] of [
-        ['|', 'pairs', { source: 'manual', name: 'pairs' }],
-        ['string.|', 'format', { source: 'manual', name: 'string.format' }],
-        ['|', 'print', { source: 'engineReplaced', name: 'print' }],
+        ['|', 'pairs', { source: 'manual', name: 'pairs', runtime: 'lua52' }],
+        ['string.|', 'format', { source: 'manual', name: 'string.format', runtime: 'lua52' }],
+        ['|', 'print', { source: 'engineReplaced', name: 'print', runtime: 'lua52' }],
         ['C:|', 'AddGold', { source: 'external', name: 'C:AddGold' }],
         ['Infinity_DisplayString = f |', 'Infinity_DisplayString', { source: 'external', name: 'Infinity_DisplayString' }],
       ] as const) {
@@ -182,6 +184,55 @@ describe('server/completion/candidates', () => {
       for (const value of [undefined, null, 1, 'pairs', {}, { source: 'manual' }, { source: 'manual', name: 'io.open' }, { source: 'file', name: 'pairs' }, { source: 'external', name: 'pairs' }]) {
         assert.equal(documentationTarget(value), undefined, JSON.stringify(value));
       }
+    });
+  });
+
+  describe('runtimes', () => {
+    const luajit = (marked: string): string[] => candidates(marked, 'lua', LUAJIT).map((c) => c.label);
+
+    it('offers the LuaJIT globals and their members with LuaJIT, and bit32 only with Lua 5.2', () => {
+      assert.ok(luajit('|').includes('bit') && luajit('|').includes('jit'));
+      assert.ok(!luajit('|').includes('bit32') && !luajit('|').includes('ffi'));
+      assert.ok(labels('|').includes('bit32') && !labels('|').includes('bit'));
+      assert.deepEqual(luajit('bit.|').slice(0, 3), ['tobit', 'tohex', 'bnot']);
+      assert.ok(!luajit('table.|').includes('new'), 'table.new is reached through require("table.new")');
+    });
+
+    it('records the runtime in the documentation source, and finds the entry in that runtime', () => {
+      const band = candidates('bit.|', 'lua', LUAJIT).find((c) => c.label === 'band');
+      assert.ok(band);
+      const source = documentationSource(band.target, LUAJIT);
+      assert.deepEqual(source, { source: 'manual', name: 'bit.band', runtime: 'luajit' });
+      assert.equal(documentationTarget(source)?.kind, 'library');
+      assert.equal(documentationTarget({ source: 'manual', name: 'bit.band' }), undefined, 'without a runtime: Lua 5.2');
+      assert.equal(documentationTarget({ source: 'manual', name: 'bit.band', runtime: 'lua51' }), undefined);
+    });
+  });
+
+  describe('method syntax', () => {
+    const luajit = (marked: string): string[] => candidates(marked, 'lua', LUAJIT).map((c) => c.label);
+
+    it('offers the string library on a local that is provably a string', () => {
+      assert.ok(labels('local s = "x" s:|').includes('upper'));
+      assert.equal(candidate('local s = "x" s:|', 'upper'), 'method 2 library string.upper');
+      assert.deepEqual(labels('local s = f() s:|'), []);
+      assert.deepEqual(labels('local function f(x) x:| end'), []);
+    });
+
+    it('offers the functions a table holds, also through self and aliases', () => {
+      assert.equal(candidate('Obj = {} function Obj:greet() end Obj:|', 'greet'), 'method 1 member Obj:greet');
+      assert.equal(candidate('local M = {} function M:m() end local x = M x:|', 'm'), 'method 1 member M:m');
+      assert.ok(labels('local M = {} function M:a() self:| end function M:b() end').includes('b'));
+      assert.ok(labels('local w = worldScreen w:|').includes('CheckIfPaused'));
+      assert.ok(labels('local str = string str.|').includes('format'));
+    });
+
+    it('offers LuaJIT modules and objects with LuaJIT', () => {
+      const buffer = 'local buffer = require("string.buffer") local b = buffer.new() ';
+      assert.ok(luajit(`${buffer}b:|`).includes('put') && luajit(`${buffer}b:|`).includes('tostring'));
+      assert.ok(luajit('local buffer = require("string.buffer") buffer.|').includes('new'));
+      assert.ok(luajit('local ffi = require("ffi") ffi.|').includes('cast'));
+      assert.deepEqual(labels('local ffi = require("ffi") ffi.|'), []);
     });
   });
 });

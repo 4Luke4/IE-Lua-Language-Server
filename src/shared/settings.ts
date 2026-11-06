@@ -7,6 +7,13 @@ export const SETTINGS_SECTION = 'ieLua';
 export const VALIDATE_MODES = ['manual', 'save', 'type', 'saveAndType'] as const;
 export type ValidateMode = (typeof VALIDATE_MODES)[number];
 
+/**
+ * The Lua the game runs: the engine's own Lua 5.2, or the LuaJIT that EEex's
+ * experimental "Use LuaJIT" component installs (see scripts/luajit-manual/).
+ */
+export const RUNTIMES = ['lua52', 'luajit'] as const;
+export type Runtime = (typeof RUNTIMES)[number];
+
 export const DEBOUNCE_MIN_MS = 0;
 export const DEBOUNCE_MAX_MS = 10_000;
 
@@ -17,10 +24,15 @@ export interface IeLuaSettings {
     /** Delay in milliseconds after the last edit before validating in `type` modes. */
     readonly debounce: number;
   };
+  readonly runtime: {
+    /** Which libraries hover, completion and semantic tokens describe. */
+    readonly lua: Runtime;
+  };
 }
 
 export const DEFAULT_SETTINGS: IeLuaSettings = {
   validate: { mode: 'save', debounce: 300 },
+  runtime: { lua: 'lua52' },
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -29,6 +41,10 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function isValidateMode(value: unknown): value is ValidateMode {
   return typeof value === 'string' && (VALIDATE_MODES as readonly string[]).includes(value);
+}
+
+function isRuntime(value: unknown): value is Runtime {
+  return typeof value === 'string' && (RUNTIMES as readonly string[]).includes(value);
 }
 
 /**
@@ -45,7 +61,9 @@ export function normalizeSettings(raw: unknown): IeLuaSettings {
     typeof rawDebounce === 'number' && Number.isFinite(rawDebounce)
       ? Math.min(DEBOUNCE_MAX_MS, Math.max(DEBOUNCE_MIN_MS, Math.round(rawDebounce)))
       : DEFAULT_SETTINGS.validate.debounce;
-  return { validate: { mode, debounce } };
+  const runtime = isRecord(raw) && isRecord(raw['runtime']) ? raw['runtime'] : {};
+  const lua = isRuntime(runtime['lua']) ? runtime['lua'] : DEFAULT_SETTINGS.runtime.lua;
+  return { validate: { mode, debounce }, runtime: { lua } };
 }
 
 export function validatesOnType(mode: ValidateMode): boolean {

@@ -68,6 +68,11 @@ export interface DocComment {
   /** The rendered tags in source order (`@param`, `@return`, `@type`, `@deprecated`, `@see`). */
   readonly tags: readonly DocTag[];
   readonly params: readonly DocParam[];
+  /**
+   * The name of the first `---@class <name>[: <parents>]` line, which declares that the
+   * documented table is the class (used to know what a `---@type <name>` value is; not rendered).
+   */
+  readonly className: string | undefined;
   readonly malformed: readonly MalformedTag[];
 }
 
@@ -162,6 +167,7 @@ export function parseDocComment(lines: readonly DocLine[]): DocComment {
   const tags: DocTag[] = [];
   const params: DocParam[] = [];
   const malformed: MalformedTag[] = [];
+  let className: string | undefined;
   for (const { text, start } of lines) {
     if (text.startsWith('|')) continue;
     if (!text.startsWith('@')) {
@@ -219,6 +225,12 @@ export function parseDocComment(lines: readonly DocLine[]): DocComment {
       case 'deprecated':
         tags.push({ tag: 'deprecated' });
         break;
+      case 'class': {
+        // `---@class [(exact)] <name>[: <parent>[, <parent>...]]`: the name is a dotted Lua-like name.
+        const name = /^\s+(?:\(exact\)\s+)?([A-Za-z_][\w.]*)/.exec(text.slice(afterTag))?.[1];
+        className ??= name;
+        break;
+      }
       case 'see': {
         const symbol = text.slice(afterTag).trim();
         if (symbol) tags.push({ tag: 'see', symbol });
@@ -229,7 +241,7 @@ export function parseDocComment(lines: readonly DocLine[]): DocComment {
         break;
     }
   }
-  return { description: trimBlankLines(description).join('\n'), tags, params, malformed };
+  return { description: trimBlankLines(description).join('\n'), tags, params, className, malformed };
 }
 
 /** `lines` without leading and trailing empty lines. */

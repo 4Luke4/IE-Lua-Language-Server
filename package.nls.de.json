@@ -10,5 +10,8 @@
   "configuration.validate.mode.type": "Während der Eingabe überprüfen, nachdem `#ieLua.validate.debounce#` Millisekunden lang keine Änderungen erfolgt sind.",
   "configuration.validate.mode.saveAndType": "Während der Eingabe und beim Speichern einer Datei überprüfen.",
   "configuration.validate.debounce.description": "Verzögerung in Millisekunden nach der letzten Änderung vor der Überprüfung, wenn `#ieLua.validate.mode#` auf `type` oder `saveAndType` festgelegt ist.",
+  "configuration.runtime.lua.description": "Das Lua, das das Spiel ausführt; bestimmt, was Hover, Vervollständigung und semantische Hervorhebung beschreiben. Wählen Sie `luajit`, wenn die experimentelle EEex-Komponente *Use LuaJIT* installiert ist: Dann werden die LuaJIT-Bibliotheken `bit`, `jit`, `ffi` und `string.buffer` sowie `table.new` und `table.clear` dokumentiert, `bit32`, das LuaJIT fehlt, dagegen nicht. Syntaxfehler meldet immer der Lua 5.2-Compiler.",
+  "configuration.runtime.lua.lua52": "Das eigene Lua 5.2 des Spiels.",
+  "configuration.runtime.lua.luajit": "LuaJIT, installiert durch die EEex-Komponente *Use LuaJIT*.",
   "semanticTokenModifiers.global.description": "Eine globale Variable (ein Feld der globalen Umgebung), im Gegensatz zu einer lokalen Variable."
 }

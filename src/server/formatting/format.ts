@@ -65,7 +65,8 @@ export type FormatResult =
 export const MIN_TAB_SIZE = 1;
 export const MAX_TAB_SIZE = 100;
 
-const validOptions = (options: FormattingOptions): boolean =>
+/** Whether the options are ones the formatter accepts (see `MIN_TAB_SIZE`). */
+export const validOptions = (options: FormattingOptions): boolean =>
   !options.insertSpaces || (Number.isInteger(options.tabSize) && options.tabSize >= MIN_TAB_SIZE && options.tabSize <= MAX_TAB_SIZE);
 
 /** Characters after which clients ask for on-type formatting. */
@@ -160,7 +161,7 @@ function tokenFacts(tokens: readonly Token[], tree: Ast.Chunk): TokenFacts {
 }
 
 /** Line start offsets as LSP counts lines (`\r\n`, `\r` and `\n` each end one). */
-function lineStarts(text: string): number[] {
+export function lineStarts(text: string): number[] {
   const starts = [0];
   for (let i = 0; i < text.length; i++) {
     const c = text[i];
@@ -175,7 +176,7 @@ function lineStarts(text: string): number[] {
 }
 
 /** Zero-based line of `offset`. */
-function lineAt(starts: readonly number[], offset: number): number {
+export function lineAt(starts: readonly number[], offset: number): number {
   let low = 0;
   let high = starts.length - 1;
   while (low < high) {
@@ -259,10 +260,29 @@ interface Edits {
 }
 
 /**
- * The edits of the document up to `limit` (edits may extend past it), without the
- * safety check. Edits are line-local, disjoint and in order.
+ * A chunk embedded in a larger text (a .menu file) rather than a whole file:
+ * `baseLevel` is the indentation level of its outermost lines. The white space
+ * before its first item on the line where the chunk starts, and after its last
+ * item on the line where it ends, belongs to the embedding text and is not
+ * changed; the other lines are formatted as in a file, `baseLevel` deeper.
  */
-function allEdits(text: string, tree: Ast.Chunk, options: FormattingOptions, finalNewlines: boolean, limit = tree.end): Edits {
+interface Embedding {
+  readonly baseLevel: number;
+}
+
+/**
+ * The edits of the chunk up to `limit` (edits may extend past it), without the
+ * safety check. Edits are line-local, disjoint and in order. `finalNewlines`:
+ * apply `insertFinalNewline` and `trimFinalNewlines` (whole files only).
+ */
+function allEdits(
+  text: string,
+  tree: Ast.Chunk,
+  options: FormattingOptions,
+  finalNewlines: boolean,
+  limit = tree.end,
+  embedding?: Embedding,
+): Edits {
   const lexed = lex(text, tree.start, tree.end);
   const { tokens, comments } = lexed;
   const items: Item[] = [
@@ -277,18 +297,19 @@ function allEdits(text: string, tree: Ast.Chunk, options: FormattingOptions, fin
     if (text.slice(start, end) !== newText) edits.push({ start, end, newText });
   };
 
+  const baseLevel = embedding?.baseLevel ?? 0;
   const stack: Frame[] = [];
-  const innerLevel = (): number => stack.at(-1)?.inner ?? 0;
+  const innerLevel = (): number => stack.at(-1)?.inner ?? baseLevel;
   /** Closes the innermost construct when `token` is a closer; returns the level of the line that opened it. */
   const close = (token: Token | undefined): number | undefined => {
     if (token === undefined || token.type === 'string' || !CLOSERS.has(token.value)) return undefined;
     const frame = stack.pop();
     // No frame: a closer too many, only possible after a syntax error.
-    return frame === undefined ? 0 : frame.inner - 1;
+    return frame === undefined ? baseLevel : frame.inner - 1;
   };
   /** Indentation level of the current line, and that level without the continuation level. */
-  let level = 0;
-  let statementLevel = 0;
+  let level = baseLevel;
+  let statementLevel = baseLevel;
   /**
    * Opens a construct when `token` is an opener. `then` and `do` end the head of their
    * statement, so their block is indented from the statement even on a continuation line.
@@ -317,6 +338,8 @@ function allEdits(text: string, tree: Ast.Chunk, options: FormattingOptions, fin
     } else {
       // First item of a line: trailing white space and blank lines before it become empty.
       const runs = horizontalRuns(text, previous?.end ?? tree.start, item.start);
+      // An embedded chunk's first item on the line where the chunk starts: that line belongs to the embedding text.
+      const embeddedFirstLine = embedding !== undefined && previous === undefined && runs.length === 1;
       for (const run of runs.slice(0, -1)) replace(run.start, run.end, '');
       // Closers that lead the line give it the level of the line that opened the last of them.
       let j = i;
@@ -338,7 +361,7 @@ function allEdits(text: string, tree: Ast.Chunk, options: FormattingOptions, fin
       level = statementLevel + (leading === undefined && continuation ? 1 : 0);
       // `horizontalRuns` always returns at least one run.
       const indentation = runs.at(-1) as { start: number; end: number };
-      replace(indentation.start, indentation.end, unit.repeat(level));
+      if (!embeddedFirstLine) replace(indentation.start, indentation.end, unit.repeat(level));
       if (j === i) {
         open(token);
       } else {
@@ -359,7 +382,10 @@ function allEdits(text: string, tree: Ast.Chunk, options: FormattingOptions, fin
   // After the last item.
   const lastEnd = items.at(-1)?.end ?? tree.start;
   const runs = horizontalRuns(text, lastEnd, tree.end);
-  if (!finalNewlines || items.length === 0) {
+  if (embedding !== undefined) {
+    // The white space after the last line break starts the embedding text's line.
+    for (const run of runs.slice(0, -1)) replace(run.start, run.end, '');
+  } else if (!finalNewlines || items.length === 0) {
     for (const run of runs) replace(run.start, run.end, '');
   } else if (runs.length === 1) {
     // No line break after the last item.
@@ -375,11 +401,12 @@ function allEdits(text: string, tree: Ast.Chunk, options: FormattingOptions, fin
 }
 
 /** The first line break of the text, or `\n` when it has none. */
-function endOfLine(text: string): string {
+export function endOfLine(text: string): string {
   return /\r\n|\r|\n/.exec(text)?.[0] ?? '\n';
 }
 
-function applyEdits(text: string, edits: readonly OffsetEdit[]): string {
+/** Applies disjoint edits given in document order. */
+export function applyEdits(text: string, edits: readonly OffsetEdit[]): string {
   let result = '';
   let position = 0;
   for (const edit of edits) {
@@ -392,11 +419,22 @@ function applyEdits(text: string, edits: readonly OffsetEdit[]): string {
 /**
  * The safety check: the edited text lexes to the same tokens, comments and errors,
  * with as many line breaks before its last token or comment.
+ *
+ * Every edit lies within the chunk (`allEdits` changes only the white space between its
+ * items, and inserts a final newline at its end), so only the chunk's text is compared:
+ * for a .menu file with thousands of chunks, rebuilding the whole document for each one
+ * would cost the document's length every time. An edit outside the chunk fails the check.
  */
 function preservesTokens(text: string, edits: readonly OffsetEdit[], before: LexResult, tree: Ast.Chunk): boolean {
-  const formatted = applyEdits(text, edits);
-  const delta = formatted.length - text.length;
-  const after = lex(formatted, tree.start, tree.end + delta);
+  if (edits.some((edit) => edit.start < tree.start || edit.end > tree.end)) return false;
+  const original = text.slice(tree.start, tree.end);
+  const formatted = applyEdits(
+    original,
+    edits.map((edit) => ({ start: edit.start - tree.start, end: edit.end - tree.start, newText: edit.newText })),
+  );
+  // The lexer reads only `[from, to)` and has no rule for the start of the input, so the
+  // chunk's text alone lexes like the chunk in place, its offsets shifted by `tree.start`.
+  const after = lex(formatted);
   const sameTokens =
     before.tokens.length === after.tokens.length &&
     before.tokens.every((token, i) => {
@@ -414,10 +452,10 @@ function preservesTokens(text: string, edits: readonly OffsetEdit[], before: Lex
       return other !== undefined && other.long === comment.long && commentText(text, comment) === commentText(formatted, other);
     });
   // Line breaks after the last token or comment are the final newlines that the options may change.
-  const contentEnd = (result: LexResult): number =>
-    Math.max(result.tokens.at(-2)?.end ?? 0, result.comments.at(-1)?.end ?? 0);
+  const contentEnd = (result: LexResult, origin: number): number =>
+    Math.max(origin, result.tokens.at(-2)?.end ?? origin, result.comments.at(-1)?.end ?? origin) - origin;
   const sameLines =
-    lineStarts(text.slice(0, contentEnd(before))).length === lineStarts(formatted.slice(0, contentEnd(after))).length;
+    lineStarts(original.slice(0, contentEnd(before, tree.start))).length === lineStarts(formatted.slice(0, contentEnd(after, 0))).length;
   return sameTokens && sameComments && sameLines && after.errors.length === before.errors.length;
 }
 
@@ -433,6 +471,20 @@ export function formatDocument(text: string, tree: Ast.Chunk, options: Formattin
   if (!validOptions(options)) return { ok: false, reason: 'invalid-options' };
   if (tree.errors.length > 0) return { ok: false, reason: 'syntax-error' };
   const { edits, lexed } = allEdits(text, tree, options, true);
+  return checked(text, tree, edits, lexed);
+}
+
+/**
+ * Formats a chunk embedded in a larger text (the Lua of a .menu file), its lines
+ * indented `baseLevel` levels deeper than in a file. The line where the chunk
+ * starts keeps the white space before its first item, and the line where it ends
+ * the white space after its last item: both belong to the embedding text. Final
+ * newlines are not changed. Refused when the chunk has any lexical or syntax error.
+ */
+export function formatEmbedded(text: string, tree: Ast.Chunk, options: FormattingOptions, baseLevel: number): FormatResult {
+  if (!validOptions(options)) return { ok: false, reason: 'invalid-options' };
+  if (tree.errors.length > 0) return { ok: false, reason: 'syntax-error' };
+  const { edits, lexed } = allEdits(text, tree, options, false, tree.end, { baseLevel });
   return checked(text, tree, edits, lexed);
 }
 
@@ -486,21 +538,31 @@ export function formatOnType(text: string, tree: Ast.Chunk, options: FormattingO
     const blank = text.slice(lineStart, lineEnd).trim() === '';
     return formatSpan(text, tree, options, { from: starts[line - 1] ?? 0, to: lineEnd, keep: (edit) => !(blank && edit.start >= lineStart) });
   }
-  if (!ON_TYPE_MORE_TRIGGERS.includes(character)) return { ok: true, edits: [] };
+  const closer = typedCloser(text, tree, lineStart, offset, character);
+  if (closer === undefined) return { ok: true, edits: [] };
+  // Up to the end of the closer, which must not be an error itself (an `end` too many).
+  // A keyword or symbol has no edits inside, so only the indentation is kept.
+  return formatSpan(text, tree, options, { from: lineStart, to: closer });
+}
+
+/**
+ * When typing `character` just completed a closer (`end`, `else`, `elseif`, `until`,
+ * `)`, `]`, `}`) of `tree` that ends at `offset` and is the first token of the line
+ * starting at `lineStart`: the end offset of that closer. Otherwise `undefined`.
+ */
+export function typedCloser(text: string, tree: Ast.Chunk, lineStart: number, offset: number, character: string): number | undefined {
+  if (!ON_TYPE_MORE_TRIGGERS.includes(character)) return undefined;
   // Cheap test first: these characters are typed inside any word (`field`, `self`), and lexing
   // the document for each of them would cost a full pass. The lexer then confirms the closer
   // is a token, not part of a string, a comment or a longer name.
   const typed = text.slice(lineStart, offset).trim();
-  if (!CLOSERS.has(typed) || !typed.endsWith(character)) return { ok: true, edits: [] };
+  if (!CLOSERS.has(typed) || !typed.endsWith(character)) return undefined;
   const { tokens } = lex(text, tree.start, tree.end);
   const index = tokens.findIndex((token) => token.end === offset && token.type !== 'string');
   const token = tokens[index];
   const before = tokens[index - 1];
-  if (token === undefined || !CLOSERS.has(token.value) || !token.value.endsWith(character)) return { ok: true, edits: [] };
+  if (token === undefined || !CLOSERS.has(token.value) || !token.value.endsWith(character)) return undefined;
   // The closer must be the first token of its line, and no comment may come before it there.
   const firstOnLine = (before === undefined || before.end <= lineStart) && text.slice(lineStart, token.start).trim() === '';
-  if (!firstOnLine) return { ok: true, edits: [] };
-  // Up to the end of the closer, which must not be an error itself (an `end` too many).
-  // A keyword or symbol has no edits inside, so only the indentation is kept.
-  return formatSpan(text, tree, options, { from: lineStart, to: token.end });
+  return firstOnLine ? token.end : undefined;
 }

@@ -27,7 +27,7 @@
 
 import type * as Ast from '../syntax/ast.ts';
 import type { ParsedDocument } from '../syntax/document.ts';
-import type { ExternalEntry, ManualEntry } from '../hover/knowledge.ts';
+import { LUA52, type ExternalEntry, type Library, type ManualEntry } from '../hover/knowledge.ts';
 import { memberTarget, variableTarget, type HoverTarget } from '../hover/resolve.ts';
 import { globalPath, withoutG } from '../syntax/globalPaths.ts';
 import { memberIndex } from '../syntax/members.ts';
@@ -57,7 +57,7 @@ const ENGINE_SOURCE = 'EE Game Lua Functions';
 type Kind = Pick<NameToken, 'type' | 'modifiers'>;
 
 function manualKind(entry: ManualEntry): Kind {
-  const type: TokenType = entry.kind === 'module' ? 'namespace' : entry.kind === 'function' ? 'function' : 'variable';
+  const type: TokenType = entry.kind === 'module' ? 'namespace' : entry.kind === 'function' ? 'function' : entry.kind === 'method' ? 'method' : 'variable';
   return { type, modifiers: ['defaultLibrary'] };
 }
 
@@ -98,25 +98,32 @@ function documentedKind(target: HoverTarget): Kind | undefined {
       return { type: 'function', modifiers: ['defaultLibrary'] };
     case 'external':
       return externalKind(target.entry);
+    case 'member':
+      return { type: target.definition.method ? 'method' : 'function', modifiers: [] };
     case 'local':
       return undefined;
   }
 }
 
-/** Classified names of each document; dropped with the document. */
-const caches = new WeakMap<ParsedDocument, readonly NameToken[]>();
+/** Classified names of each document, per library; dropped with the document. */
+const caches = new WeakMap<ParsedDocument, Map<Library, readonly NameToken[]>>();
 
-/** Every name of the document with its classification, sorted by offset. Never throws. */
-export function classifyNames(document: ParsedDocument): readonly NameToken[] {
-  let tokens = caches.get(document);
+/** Every name of the document with its classification by `library`, sorted by offset. Never throws. */
+export function classifyNames(document: ParsedDocument, library: Library = LUA52): readonly NameToken[] {
+  let byLibrary = caches.get(document);
+  if (!byLibrary) {
+    byLibrary = new Map();
+    caches.set(document, byLibrary);
+  }
+  let tokens = byLibrary.get(library);
   if (!tokens) {
-    tokens = classify(document);
-    caches.set(document, tokens);
+    tokens = classify(document, library);
+    byLibrary.set(library, tokens);
   }
   return tokens;
 }
 
-function classify(document: ParsedDocument): NameToken[] {
+function classify(document: ParsedDocument, library: Library): NameToken[] {
   const tokens: NameToken[] = [];
   const add = (identifier: Ast.Identifier, type: TokenType, ...modifiers: (TokenModifier | false)[]): void => {
     tokens.push({ start: identifier.start, end: identifier.end, type, modifiers: modifiers.filter((modifier) => modifier !== false) });
@@ -140,7 +147,7 @@ function classify(document: ParsedDocument): NameToken[] {
     }
     let kind = globals.get(identifier.name);
     if (!kind) {
-      const target = variableTarget(document, { identifier, chunkIndex, target: { kind: 'global', name: identifier.name } });
+      const target = variableTarget(document, { identifier, chunkIndex, target: { kind: 'global', name: identifier.name } }, library);
       kind = (target && documentedKind(target)) ?? { type: 'variable', modifiers: [] };
       globals.set(identifier.name, kind);
     }
@@ -184,7 +191,7 @@ function classify(document: ParsedDocument): NameToken[] {
 
   for (const occurrence of memberIndex(document)) {
     const { identifier, node, chunkIndex } = occurrence;
-    const target = memberTarget(document, occurrence);
+    const target = memberTarget(document, occurrence, library);
     const modification = assigned.has(identifier) && 'modification';
     // Only library and EEex-Docs members, and globals named through `_G.x`, are documented.
     const documented = target && documentedKind(target);

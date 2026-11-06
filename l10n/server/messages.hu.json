@@ -2,6 +2,8 @@
   "hover.kind.parameter": "paraméter",
   "hover.kind.forVariable": "for-változó",
   "hover.kind.global": "globális",
+  "hover.kind.method": "metódus",
+  "hover.kind.field": "mező",
   "hover.engineReplaced": "A játékmotor saját függvényre cseréli a(z) {0} függvényt, ezért a Lua 5.2 kézikönyv leírása nem érvényes. Lásd: {1}.",
   "codeAction.quote": "Idézőjelek közé tétel",
   "codeAction.insertSpace": "Szóköz beszúrása a záró fordított aposztróf elé",

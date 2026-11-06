@@ -15,7 +15,11 @@
 // `function G()` with one name and `G = …` with one target. Parameters take their
 // `@param` entry from a block above any statement whose function the parser
 // sees, which also includes `function M.f(a)`, `function M:m(a)` and
-// `M.f = function(a) … end`.
+// `M.f = function(a) … end`; the same block documents that function, which is how
+// a method or field function is described (`functionDoc`).
+//
+// A `---@class Name` block documents a table: the one its statement declares or
+// assigns (`local M = {}`, `M = {}`), which is then what `---@type Name` names.
 
 import type * as Ast from '../syntax/ast.ts';
 import type { ParsedDocument } from '../syntax/document.ts';
@@ -42,6 +46,10 @@ export interface DocumentDocs {
   readonly names: ReadonlyMap<Ast.Identifier, DocComment>;
   /** The `@param` entry of each documented parameter (the first, when one is documented twice). */
   readonly parameters: ReadonlyMap<Ast.Identifier, DocParam>;
+  /** The doc comment of each function a documented statement defines. */
+  readonly functions: ReadonlyMap<Ast.FunctionExpression, DocComment>;
+  /** The declaring or assigned identifier of each `---@class` (the first, when a name is declared twice). */
+  readonly classes: ReadonlyMap<string, Ast.Identifier>;
 }
 
 /** `\r\n`, `\n` or `\r` and then only white space: the next line, with no blank line in between. */
@@ -103,6 +111,8 @@ function analyze(document: ParsedDocument): DocumentDocs {
   const blocks: DocBlock[] = [];
   const names = new Map<Ast.Identifier, DocComment>();
   const parameters = new Map<Ast.Identifier, DocParam>();
+  const functions = new Map<Ast.FunctionExpression, DocComment>();
+  const classes = new Map<string, Ast.Identifier>();
   for (const { tree } of document.chunks) {
     // Runs of doc lines on consecutive lines.
     const runs: { start: number; end: number; lines: DocLine[] }[] = [];
@@ -134,13 +144,15 @@ function analyze(document: ParsedDocument): DocumentDocs {
       if (!statement) continue;
       const name = documentedName(statement);
       if (name) names.set(name, doc);
+      if (func) functions.set(func, doc);
+      if (name && doc.className !== undefined && !classes.has(doc.className)) classes.set(doc.className, name);
       for (const parameter of func?.parameters ?? []) {
         const entry = doc.params.find((param) => param.name === parameter.name);
         if (entry) parameters.set(parameter, entry);
       }
     }
   }
-  return { blocks, names, parameters };
+  return { blocks, names, parameters, functions, classes };
 }
 
 const STATEMENT_KINDS: ReadonlySet<string> = new Set<Ast.Statement['kind']>([
@@ -167,6 +179,16 @@ export function documentDocs(document: ParsedDocument): DocumentDocs {
 /** The doc comment of a declaring or assigned identifier (`local function f`, `G = …`), if it has one. */
 export function docCommentFor(document: ParsedDocument, identifier: Ast.Identifier): DocComment | undefined {
   return documentDocs(document).names.get(identifier);
+}
+
+/** The doc comment of the statement that defines `func` (`function M:m()`, `M.f = function …`), if it has one. */
+export function functionDoc(document: ParsedDocument, func: Ast.FunctionExpression): DocComment | undefined {
+  return documentDocs(document).functions.get(func);
+}
+
+/** The identifier declared or assigned under `---@class name` (`M` in `local M = {}`), if any. */
+export function classDeclaration(document: ParsedDocument, name: string): Ast.Identifier | undefined {
+  return documentDocs(document).classes.get(name);
 }
 
 /** The `@param` entry of a declared parameter, if its function's doc block has one. */

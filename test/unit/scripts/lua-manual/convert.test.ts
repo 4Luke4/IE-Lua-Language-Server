@@ -94,4 +94,48 @@ describe('scripts/lua-manual/convert', () => {
     assert.throws(() => convert('<em>open'), /Missing <\/em>/);
     assert.throws(() => convert('a < b'), /Unparsed markup/);
   });
+
+  describe('LuaJIT mode', () => {
+    const PAGE = 'https://luajit.org/ext_buffer.html';
+    const luajit = (html: string): { markdown: string; plaintext: string } => convertFragment(html, PAGE, { luajit: true });
+
+    it('accepts the LuaJIT elements only when asked to', () => {
+      for (const html of ['<p>a</p>', '<p><tt>x</tt>', '<p>a<br>b', '<p><i>x</i>', '<p><a href="x.html">x</a>', '<table><tr><td>a</td></tr></table>']) {
+        assert.throws(() => convert(html), UnsupportedHtmlError, html);
+        assert.doesNotThrow(() => luajit(html), html);
+      }
+      assert.throws(() => decodeEntities('&mdash;'), UnsupportedHtmlError);
+      assert.equal(decodeEntities('&mdash; &plusmn; &raquo;', { luajit: true }), '\u2014 \u00b1 \u00bb');
+    });
+
+    it('closes paragraphs at </p> and renders <tt> and <i> like <code> and <em>', () => {
+      assert.deepEqual(luajit('<p>\nUse <tt>buf:put()</tt>, <i>not</i> this.\n</p>\n<p>\nNext.\n</p>'), {
+        markdown: 'Use `buf:put()`, *not* this.\n\nNext.',
+        plaintext: 'Use buf:put(), not this.\n\nNext.',
+      });
+    });
+
+    it('renders <br> as a line break without the spaces around it', () => {
+      assert.deepEqual(luajit('<p>one <br>\ntwo</p>'), { markdown: 'one\\\ntwo', plaintext: 'one\ntwo' });
+    });
+
+    it('resolves links to other pages against the page URL', () => {
+      assert.equal(luajit('<p><a href="ext_ffi.html#x">FFI</a></p>').markdown, '[FFI](https://luajit.org/ext_ffi.html#x)');
+      assert.equal(luajit('<p><a href="#serialize">s</a></p>').markdown, '[s](https://luajit.org/ext_buffer.html#serialize)');
+      assert.equal(luajit('<p><a href="https://luajit.org/x.html"><span class="ext">&raquo;</span>&nbsp;x</a></p>').plaintext, '»\u00a0x (https://luajit.org/x.html)');
+    });
+
+    it('renders tables with their first row as the header', () => {
+      assert.deepEqual(luajit('<table>\n<tr><td>A</td><td>B</td></tr>\n<tr><td><tt>x</tt></td><td>y|z</td></tr>\n</table>'), {
+        markdown: '| A | B |\n| --- | --- |\n| `x` | y\\|z |',
+        plaintext: 'A\tB\nx\ty|z',
+      });
+    });
+
+    it('keeps a bare `>` and the text of colored code in <pre>, and still refuses a stray `<`', () => {
+      assert.equal(luajit('<pre class="code">\nuntil n >= len\n<span style="color:#00a000;">int a;</span>\n</pre>').plaintext, 'until n >= len\nint a;');
+      assert.throws(() => luajit('<p>a < b</p>'), UnsupportedHtmlError);
+      assert.throws(() => luajit('<p><span class="other">x</span></p>'), UnsupportedHtmlError);
+    });
+  });
 });

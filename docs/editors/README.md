@@ -46,7 +46,7 @@ node /path/to/server.js --stdio
   (`workspace/configuration`) or as *initialization options*; each guide shows which.
 
   ```json
-  { "ieLua": { "validate": { "mode": "saveAndType", "debounce": 300 } } }
+  { "ieLua": { "validate": { "mode": "saveAndType", "debounce": 300 }, "runtime": { "lua": "lua52" } } }
   ```
 
   | `validate.mode` | Diagnostics are updated |
@@ -57,6 +57,15 @@ node /path/to/server.js --stdio
   | `saveAndType` | both |
 
   Outside VS Code there is no "Validate Current File" command, so prefer `type` or `saveAndType`.
+
+  | `runtime.lua` | Hover, completion and semantic tokens describe |
+  | --- | --- |
+  | `lua52` (default) | the libraries of the game's own Lua 5.2 |
+  | `luajit` | the libraries of the LuaJIT that EEex's experimental *Use LuaJIT* component installs: everything but `bit32`, plus `bit`, `jit`, and `ffi`, `string.buffer`, `table.new` and `table.clear` through `require` |
+
+  Syntax errors always come from the Lua 5.2 compiler. When the editor reports a settings change
+  (`workspace/didChangeConfiguration`), the next request uses the new value, and an editor that
+  supports `workspace/semanticTokens/refresh` is asked to re-color the open files.
 
 ## 4. What you get
 
@@ -87,8 +96,14 @@ through `workspace/configuration` (your guide says whether it does), you can add
 Only folders on the local disk are scanned.
 
 Hover shows the [Lua 5.2 manual](https://www.lua.org/manual/5.2/manual.html) text for the
-libraries the game provides, a link to the EEex documentation for EEex and game functions, and
-how your own variables are declared. Editors that render Markdown get code blocks and links;
+libraries the game provides (with `runtime.lua` set to `luajit`, also the
+[LuaJIT](https://luajit.org/) documentation), a link to the EEex documentation for EEex and game
+functions, and how your own variables and functions are declared. Method calls are described by
+what their receiver provably is: `s:upper()` like `string.upper` when `s` is a string literal, a
+local never reassigned that holds one, or a value annotated `---@type string`; `obj:m()` by the
+`function Obj:m()` it calls (also `self:m()` inside a method, and values annotated with a
+`---@class`); `w:CheckIfPaused()` through `local w = worldScreen`; and with LuaJIT, `buf:put()` and
+`ffi.new()` through `require`. A receiver of unknown type gets no hover rather than a guess. Editors that render Markdown get code blocks and links;
 others get plain text with the links written out. The few words of the server's own (such as
 `parameter`) are translated when the editor sends a `locale` the extension supports (one of the
 14 VS Code display languages, or its language alone: `de-AT` uses German); otherwise English.
@@ -115,9 +130,13 @@ when the editor sends them. A file with a syntax error is not formatted (the rea
 server log). On-type formatting re-indents a line when you type the last character of `end`,
 `else`, `elseif`, `until`, `)`, `]` or `}` at its start, and formats the line you leave with
 Enter, if your editor sends on-type formatting requests (some send them only when an option is
-turned on; see its documentation). When the editor supports dynamic registration, formatting is
-offered for Lua documents only (language `lua`, or `*.lua` in any letter case), so `.menu` files
-have no formatter; other editors get no edits for `.menu` files.
+turned on; see its documentation). Formatting is offered for Lua documents (language `lua`, or
+`*.lua` in any letter case) and `.menu` documents (language `ie-menu`, or `*.menu` in any letter
+case). In a `.menu` file, each line is indented by the `{ … }` blocks open at its start and the
+embedded Lua is formatted one level deeper than the line it starts on (`` ` `` blocks outside any
+block stay at level 0); strings that are not Lua, the spacing between `.menu` words and every
+line break are kept. A Lua script with a syntax error is left as written while the rest of the
+file is formatted; a file with an unterminated string or `` ` `` block is not formatted.
 
 Quick fixes cover three `.menu` diagnostics, with the remedy IESDP gives:
 `menu-unquoted-underscore` and `menu-word-too-long` put the text in `"…"`, and

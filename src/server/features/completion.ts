@@ -3,9 +3,11 @@ import { CompletionItemKind, InsertReplaceEdit, MarkupKind, TextEdit } from 'vsc
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { completionCandidates, documentationSource, documentationTarget, type Candidate, type CandidateKind } from '../completion/candidates.ts';
 import type { ParsedDocumentCache } from '../documentCache.ts';
+import { library as libraryOf, LUA52, type Library } from '../hover/knowledge.ts';
 import { renderDocumentation, renderSignature, type HoverFormat } from '../hover/render.ts';
 import type { HoverTarget } from '../hover/resolve.ts';
 import type { Messages } from '../l10n.ts';
+import type { SettingsStore } from '../settingsStore.ts';
 import { completionSiteAt } from '../syntax/completionContext.ts';
 
 /** What the client supports, from `textDocument.completion` and `completionList` of its capabilities. */
@@ -20,6 +22,8 @@ export interface CompletionClientOptions {
 
 export interface CompletionDeps extends CompletionClientOptions {
   readonly cache: ParsedDocumentCache;
+  /** `ieLua.runtime.lua` decides which libraries are offered. */
+  readonly settings: SettingsStore;
   /** Messages in the client's locale. */
   readonly messages: Messages;
 }
@@ -45,7 +49,10 @@ const markup = (value: string, format: HoverFormat): MarkupContent => ({ kind: f
  * with a doc comment pay for this.
  */
 function documentDocumentation(target: HoverTarget | undefined, format: HoverFormat, messages: Messages): MarkupContent | undefined {
-  const documented = (target?.kind === 'local' && (target.doc !== undefined || target.param !== undefined)) || (target?.kind === 'global' && target.doc !== undefined);
+  const documented =
+    (target?.kind === 'local' && (target.doc !== undefined || target.param !== undefined)) ||
+    (target?.kind === 'global' && target.doc !== undefined) ||
+    (target?.kind === 'member' && target.definition.doc !== undefined);
   const value = documented ? renderDocumentation(target, format, messages) : undefined;
   return value === undefined ? undefined : markup(value, format);
 }
@@ -55,12 +62,19 @@ function documentDocumentation(target: HoverTarget | undefined, format: HoverFor
  * `replace` the whole name around it; clients without insert/replace support
  * get `insert`, which leaves the text after the cursor as it is.
  */
-export function toCompletionList(candidates: readonly Candidate[], insert: Range, replace: Range, options: CompletionClientOptions, messages: Messages): CompletionList {
+export function toCompletionList(
+  candidates: readonly Candidate[],
+  insert: Range,
+  replace: Range,
+  options: CompletionClientOptions,
+  messages: Messages,
+  library: Library = LUA52,
+): CompletionList {
   const editRange = options.insertReplace ? { insert, replace } : insert;
   const items = candidates.map((candidate): CompletionItem => {
     const documentation = documentDocumentation(candidate.target, options.format, messages);
     // Documentation sent now needs nothing to resolve.
-    const data = documentation ? undefined : documentationSource(candidate.target);
+    const data = documentation ? undefined : documentationSource(candidate.target, library);
     let textEdit: TextEdit | InsertReplaceEdit | undefined;
     if (!options.defaultEditRange) {
       textEdit = options.insertReplace ? InsertReplaceEdit.create(candidate.label, insert, replace) : TextEdit.replace(insert, candidate.label);
@@ -88,13 +102,20 @@ export function resolveCompletionItem(item: CompletionItem, format: HoverFormat,
 
 /** `textDocument/completion` and `completionItem/resolve` (see src/server/completion/). */
 export function register(connection: Connection, documents: TextDocuments<TextDocument>, deps: CompletionDeps): void {
-  connection.onCompletion(({ textDocument, position }, token): CompletionList | null => {
+  connection.onCompletion(async ({ textDocument, position }, token): Promise<CompletionList | null> => {
     try {
-      const document = documents.get(textDocument.uri);
-      if (!document || token.isCancellationRequested) {
+      // A function, so that the check after `await` reads the token again.
+      const cancelled = (): boolean => token.isCancellationRequested;
+      if (!documents.get(textDocument.uri) || cancelled()) {
         return null;
       }
-      // Synchronous from here on: a cancellation can only arrive after the response.
+      const library = libraryOf((await deps.settings.get(textDocument.uri)).runtime.lua);
+      // The document may have changed or closed meanwhile: use it as it is now. Synchronous from
+      // here on, so a cancellation can only arrive after the response.
+      const document = documents.get(textDocument.uri);
+      if (!document || cancelled()) {
+        return null;
+      }
       const parsed = deps.cache.get(document);
       const offset = document.offsetAt(position);
       const site = completionSiteAt(parsed, document.getText(), offset);
@@ -103,7 +124,7 @@ export function register(connection: Connection, documents: TextDocuments<TextDo
       }
       const start = document.positionAt(site.start);
       const insert = { start, end: document.positionAt(offset) };
-      return toCompletionList(completionCandidates(parsed, site), insert, { start, end: document.positionAt(site.end) }, deps, deps.messages);
+      return toCompletionList(completionCandidates(parsed, site, library), insert, { start, end: document.positionAt(site.end) }, deps, deps.messages, library);
     } catch (error) {
       connection.console.error(`Completion for ${textDocument.uri} failed: ${error instanceof Error ? (error.stack ?? error.message) : String(error)}`);
       return null;

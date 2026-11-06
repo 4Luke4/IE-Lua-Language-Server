@@ -1,6 +1,7 @@
 // Converts the HTML of the Lua 5.2 reference manual's library entries into
 // Markdown and plain text, keeping the manual's wording and formatting.
-// Pure: no I/O. Used by generate.mts.
+// Pure: no I/O. Used by generate.mts, and by scripts/luajit-manual/ for the
+// LuaJIT documentation (with `ConvertOptions.luajit`).
 //
 // The manual (lua-5.2.4/doc/manual.html) is hand-written HTML 4 with a small
 // vocabulary. This converter accepts exactly the subset the library entries
@@ -20,9 +21,37 @@
 //
 // Entities: only those the entries use, plus &amp; and &quot; (and &copy;, for
 // the copyright line).
+//
+// The LuaJIT documentation (luajit.org, bitop.luajit.org) is XHTML with a few more
+// elements, accepted only with `ConvertOptions.luajit`, so that the Lua manual stays
+// held to its own subset:
+//
+//   </p>                       closes a paragraph
+//   <tt> <i>                   code span and emphasis, like <code> and <em>
+//   <br>                       a line break inside a paragraph
+//   <table><tr><td>            a table; its first row is the header
+//   <a href="page.html#x">     links to other pages, resolved against the page's URL
+//   <span class="ext">         the external-link marker (`»`), kept as text
+//   <span style="…"> in <pre>  colored code, kept without its color (Markdown code blocks
+//                              cannot show it; ffi.cdef's text refers to "the part in green")
+//   &mdash; &plusmn; &raquo;   more entities
+//   a bare `>` in text         (HTML allows it; a `<` that starts no tag is still refused)
 
 /** Thrown for HTML outside the supported subset; the message says what and where. */
 export class UnsupportedHtmlError extends Error {}
+
+/** How a fragment is converted. */
+export interface ConvertOptions {
+  /** Accept the LuaJIT documentation's elements (see above). */
+  readonly luajit?: boolean;
+}
+
+/** Entities only the LuaJIT documentation uses. */
+const LUAJIT_ENTITIES: Readonly<Record<string, string>> = {
+  mdash: '\u2014',
+  plusmn: '\u00b1',
+  raquo: '\u00bb',
+};
 
 const ENTITIES: Readonly<Record<string, string>> = {
   amp: '&',
@@ -47,9 +76,9 @@ const SUPERSCRIPTS: Readonly<Record<string, string>> = {
 };
 
 /** Replaces the supported character entities; throws on any other `&…;`. */
-export function decodeEntities(text: string): string {
+export function decodeEntities(text: string, options: ConvertOptions = {}): string {
   return text.replace(/&([a-zA-Z0-9#]+);/g, (match, name: string) => {
-    const decoded = ENTITIES[name];
+    const decoded = ENTITIES[name] ?? (options.luajit === true ? LUAJIT_ENTITIES[name] : undefined);
     if (decoded === undefined) {
       throw new UnsupportedHtmlError(`Unsupported HTML entity ${match}.`);
     }
@@ -64,7 +93,7 @@ type Token =
   | { readonly type: 'open'; readonly name: string; readonly attributes: Readonly<Record<string, string>>; readonly source: string }
   | { readonly type: 'close'; readonly name: string; readonly source: string };
 
-function tokenize(html: string): Token[] {
+function tokenize(html: string, options: ConvertOptions): Token[] {
   const tokens: Token[] = [];
   const tag = /<(\/?)([a-zA-Z][a-zA-Z0-9]*)((?:\s+[a-zA-Z]+="[^"]*")*)\s*>/g;
   let last = 0;
@@ -83,7 +112,8 @@ function tokenize(html: string): Token[] {
   }
   if (last < html.length) tokens.push({ type: 'text', text: html.slice(last) });
   for (const token of tokens) {
-    if (token.type === 'text' && /[<>]/.test(token.text)) {
+    // HTML allows a bare `>` in text, which the LuaJIT documentation uses (`until n >= len`).
+    if (token.type === 'text' && (options.luajit === true ? /</ : /[<>]/).test(token.text)) {
       throw new UnsupportedHtmlError(`Unparsed markup in text: ${JSON.stringify(token.text.trim().slice(0, 60))}.`);
     }
   }
@@ -97,18 +127,32 @@ type Inline =
   /** Code; `emphasized` parts are placeholders (`%<em>d</em>` in `string.gsub`). */
   | { readonly kind: 'code'; readonly parts: readonly { readonly text: string; readonly emphasized: boolean }[] }
   | { readonly kind: 'em' | 'strong' | 'sup'; readonly children: readonly Inline[] }
-  | { readonly kind: 'link'; readonly fragment: string; readonly children: readonly Inline[] };
+  /** `href` as written: `#fragment` (into the same page) or a relative or absolute URL. */
+  | { readonly kind: 'link'; readonly href: string; readonly children: readonly Inline[] }
+  | { readonly kind: 'break' };
 
 type Block =
   | { readonly kind: 'paragraph'; readonly children: readonly Inline[] }
   | { readonly kind: 'pre'; readonly text: string }
-  | { readonly kind: 'list'; readonly items: readonly (readonly Block[])[] };
+  | { readonly kind: 'list'; readonly items: readonly (readonly Block[])[] }
+  /** Rows of cells; the first row is the header. */
+  | { readonly kind: 'table'; readonly rows: readonly (readonly (readonly Inline[])[])[] };
 
 class Parser {
   private index = 0;
   private readonly tokens: readonly Token[];
-  constructor(tokens: readonly Token[]) {
+  private readonly options: ConvertOptions;
+  constructor(tokens: readonly Token[], options: ConvertOptions) {
     this.tokens = tokens;
+    this.options = options;
+  }
+
+  private get luajit(): boolean {
+    return this.options.luajit === true;
+  }
+
+  private decode(text: string): string {
+    return decodeEntities(text, this.options);
   }
 
   /** Blocks until the end of input, or until `</until>` (consumed). */
@@ -134,6 +178,13 @@ class Parser {
       if (token.type === 'open' && token.name === 'p') {
         this.index++;
         flush();
+      } else if (this.luajit && token.type === 'close' && token.name === 'p') {
+        this.index++;
+        flush();
+      } else if (this.luajit && token.type === 'open' && token.name === 'table') {
+        this.index++;
+        flush();
+        blocks.push({ kind: 'table', rows: this.tableRows() });
       } else if (token.type === 'open' && token.name === 'pre') {
         this.index++;
         flush();
@@ -162,10 +213,11 @@ class Parser {
       if (token?.type === 'close' && token.name === 'pre') break;
       if (token?.type === 'text') {
         text += token.text;
-      } else if (token?.type === 'open' && token.name === 'em') {
+      } else if ((token?.type === 'open' && token.name === 'em') || (this.luajit && token?.type === 'open' && token.name === 'span' && token.attributes['style'] !== undefined)) {
+        // `<span style="color:…">` (LuaJIT): colored code, shown without its color like `<em>`.
         const [inner, close] = [this.tokens[this.index], this.tokens[this.index + 1]];
-        if (inner?.type !== 'text' || close?.type !== 'close' || close.name !== 'em') {
-          throw new UnsupportedHtmlError('<em> in <pre> must contain only text.');
+        if (inner?.type !== 'text' || close?.type !== 'close' || close.name !== token.name) {
+          throw new UnsupportedHtmlError(`<${token.name}> in <pre> must contain only text.`);
         }
         text += inner.text;
         this.index += 2;
@@ -174,7 +226,29 @@ class Parser {
       }
     }
     // HTML ignores a newline right after <pre>; the one before </pre> ends the last line.
-    return decodeEntities(text).replace(/^\r?\n/, '').replace(/\r?\n$/, '');
+    return this.decode(text).replace(/^\r?\n/, '').replace(/\r?\n$/, '');
+  }
+
+  /** The rows of a `<table>` (LuaJIT only): `<tr>` elements of `<td>` cells holding inline content. */
+  private tableRows(): Inline[][][] {
+    const rows: Inline[][][] = [];
+    for (;;) {
+      const token = this.tokens[this.index++];
+      if (!token) throw new UnsupportedHtmlError('Missing </table>.');
+      if (token.type === 'text' && token.text.trim() === '') continue;
+      if (token.type === 'close' && token.name === 'table') return rows;
+      if (token.type !== 'open' || token.name !== 'tr') throw new UnsupportedHtmlError(`Unexpected ${describe(token)} in <table>.`);
+      const cells: Inline[][] = [];
+      for (;;) {
+        const cell = this.tokens[this.index++];
+        if (!cell) throw new UnsupportedHtmlError('Missing </tr>.');
+        if (cell.type === 'text' && cell.text.trim() === '') continue;
+        if (cell.type === 'close' && cell.name === 'tr') break;
+        if (cell.type !== 'open' || cell.name !== 'td') throw new UnsupportedHtmlError(`Unexpected ${describe(cell)} in <tr>.`);
+        cells.push(this.inlines('td'));
+      }
+      rows.push(cells);
+    }
   }
 
   private listItems(): Block[][] {
@@ -198,11 +272,17 @@ class Parser {
   /** One inline element; an anchor (`<a name>`) yields its children. */
   private inline(token: Token): Inline[] {
     this.index++;
-    if (token.type === 'text') return [{ kind: 'text', text: decodeEntities(token.text) }];
+    if (token.type === 'text') return [{ kind: 'text', text: this.decode(token.text) }];
     if (token.type === 'close') throw new UnsupportedHtmlError(`Unexpected ${token.source}.`);
-    switch (token.name) {
+    switch (token.name === 'tt' && this.luajit ? 'code' : token.name === 'i' && this.luajit ? 'em' : token.name) {
+      case 'br':
+        if (!this.luajit) throw new UnsupportedHtmlError(`Unsupported tag ${token.source}.`);
+        return [{ kind: 'break' }];
+      case 'span':
+        if (!this.luajit || token.attributes['class'] !== 'ext') throw new UnsupportedHtmlError(`Unsupported tag ${token.source}.`);
+        return this.inlines('span');
       case 'code': {
-        const parts = this.inlines('code').map((child) => {
+        const parts = this.inlines(token.name).map((child) => {
           if (child.kind === 'text') return { text: child.text, emphasized: false };
           const [only] = child.kind === 'em' ? child.children : [];
           if (child.kind === 'em' && child.children.length === 1 && only?.kind === 'text') return { text: only.text, emphasized: true };
@@ -211,7 +291,7 @@ class Parser {
         return [{ kind: 'code', parts }];
       }
       case 'em':
-        return [{ kind: 'em', children: this.inlines('em') }];
+        return [{ kind: 'em', children: this.inlines(token.name) }];
       case 'b':
         return [{ kind: 'strong', children: this.inlines('b') }];
       case 'sup':
@@ -219,8 +299,10 @@ class Parser {
       case 'a': {
         const { href, name } = token.attributes;
         if (href !== undefined) {
-          if (!href.startsWith('#') || href.length === 1) throw new UnsupportedHtmlError(`Only links into the manual are supported, found href="${href}".`);
-          return [{ kind: 'link', fragment: href.slice(1), children: this.inlines('a') }];
+          if (!this.luajit && (!href.startsWith('#') || href.length === 1)) {
+            throw new UnsupportedHtmlError(`Only links into the manual are supported, found href="${href}".`);
+          }
+          return [{ kind: 'link', href, children: this.inlines('a') }];
         }
         if (name !== undefined) {
           // An anchor only marks a position; its content is ordinary text.
@@ -242,7 +324,7 @@ class Parser {
         this.index++;
         return children;
       }
-      if (token.type === 'open' && ['p', 'pre', 'ul', 'li'].includes(token.name)) {
+      if (token.type === 'open' && ['p', 'pre', 'ul', 'li', 'table'].includes(token.name)) {
         throw new UnsupportedHtmlError(`Block ${token.source} inside <${until}>.`);
       }
       children.push(...this.inline(token));
@@ -263,6 +345,18 @@ export interface Converted {
 
 /** HTML collapses runs of ASCII whitespace; U+00A0 (&nbsp;) is not whitespace. */
 const collapse = (text: string): string => text.replace(/[ \t\r\n]+/g, ' ');
+
+/**
+ * Stands for a `<br>` until a paragraph's white space is collapsed (a line break would be
+ * collapsed with it); U+0000 never occurs in the documentation's text.
+ */
+const BREAK = '\u0000';
+
+/** The URL a link points to: a `#fragment` into the page at `baseUrl`, or a URL resolved against it. */
+function linkUrl(href: string, baseUrl: string, encode: boolean): string {
+  if (href.startsWith('#')) return `${baseUrl}#${encode ? encodeURI(href.slice(1)) : href.slice(1)}`;
+  return new URL(href, baseUrl).href;
+}
 
 /**
  * Backslash-escapes the characters that Markdown (CommonMark + GFM) would
@@ -307,7 +401,9 @@ function plainInlines(children: readonly Inline[], baseUrl: string): string {
       case 'sup':
         return superscript(plainInlines(child.children, baseUrl));
       case 'link':
-        return `${plainInlines(child.children, baseUrl)} (${baseUrl}#${child.fragment})`;
+        return `${plainInlines(child.children, baseUrl)} (${linkUrl(child.href, baseUrl, false)})`;
+      case 'break':
+        return BREAK;
     }
   }).join('');
 }
@@ -334,7 +430,9 @@ function markdownInlines(children: readonly Inline[], baseUrl: string): string {
       case 'sup':
         return superscript(plainInlines(child.children, baseUrl));
       case 'link':
-        return `[${markdownInlines(child.children, baseUrl)}](${baseUrl}#${encodeURI(child.fragment)})`;
+        return `[${markdownInlines(child.children, baseUrl)}](${linkUrl(child.href, baseUrl, true)})`;
+      case 'break':
+        return BREAK;
     }
   }).join('');
 }
@@ -353,7 +451,18 @@ function render(blocks: readonly Block[], baseUrl: string, markdown: boolean): s
       case 'paragraph': {
         // HTML also collapses whitespace across element boundaries (`<b>x: </b>\nmore`).
         const text = collapse(markdown ? markdownInlines(block.children, baseUrl) : plainInlines(block.children, baseUrl)).trim();
-        return markdown ? escapeLineStart(text) : text;
+        // A `<br>`: a hard line break (a backslash at the end of the line in Markdown), without the spaces around it.
+        const lines = text.split(new RegExp(` ?${BREAK} ?`)).map((line) => (markdown ? escapeLineStart(line) : line));
+        return lines.join(markdown ? '\\\n' : '\n');
+      }
+      case 'table': {
+        const cell = (inlines: readonly Inline[]): string =>
+          collapse(markdown ? markdownInlines(inlines, baseUrl) : plainInlines(inlines, baseUrl)).trim();
+        const rows = block.rows.map((row) => row.map(cell));
+        if (!markdown) return rows.map((row) => row.join('\t')).join('\n');
+        // GitHub-flavored Markdown table; `|` in a cell is already escaped by `escapeMarkdown`.
+        const [header = [], ...body] = rows;
+        return [header, header.map(() => '---'), ...body].map((row) => `| ${row.join(' | ')} |`).join('\n');
       }
       case 'pre':
         return markdown ? fenced(block.text) : block.text;
@@ -375,7 +484,7 @@ function render(blocks: readonly Block[], baseUrl: string, markdown: boolean): s
  * entry's heading and the next one). `baseUrl` makes `#fragment` links absolute.
  * Throws `UnsupportedHtmlError` for anything outside the supported subset.
  */
-export function convertFragment(html: string, baseUrl: string): Converted {
-  const blocks = new Parser(tokenize(html)).blocks();
+export function convertFragment(html: string, baseUrl: string, options: ConvertOptions = {}): Converted {
+  const blocks = new Parser(tokenize(html, options), options).blocks();
   return { markdown: render(blocks, baseUrl, true), plaintext: render(blocks, baseUrl, false) };
 }

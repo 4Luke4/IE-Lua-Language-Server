@@ -2,16 +2,21 @@
 
     blender --background --factory-startup --python scripts/assets/icon.py
 
-Original artwork: a carved hexagonal rune stone with a glowing crescent moon
-("lua" is Portuguese for moon) and a gold rim. Rendered with Cycles on the GPU;
-the script stops with an error when no GPU device is available instead of
-silently falling back to the CPU.
+Original artwork: a twenty-sided die (a regular icosahedron) in dark navy stone with
+gold edges, its front face showing a glowing blue "20". Rendered with Cycles on the GPU;
+the script stops with an error when no GPU device is available instead of silently
+falling back to the CPU.
+
+The "20" is set in Inter, the font Blender bundles (datafiles/fonts/Inter.woff2; SIL Open
+Font License 1.1, as Blender's license/license.md lists it). The OFL does not restrict
+images made with the font, so the rendered PNG carries no font notice.
 """
 import math
 import pathlib
 import sys
 
 import bpy
+from mathutils import Matrix, Vector
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / "images" / "icon.png"
@@ -46,7 +51,9 @@ def enable_gpu(scene):
 
 def material(name, color, metallic=0.0, roughness=0.5, emission=None, strength=0.0):
     mat = bpy.data.materials.new(name)
-    mat.use_nodes = True
+    # Blender 5.2 gives new materials a node tree and deprecates `use_nodes`; older versions need it.
+    if mat.node_tree is None:
+        mat.use_nodes = True
     bsdf = mat.node_tree.nodes["Principled BSDF"]
     bsdf.inputs["Base Color"].default_value = (*color, 1.0)
     bsdf.inputs["Metallic"].default_value = metallic
@@ -66,29 +73,61 @@ def bevel(obj, width, segments=4):
     bpy.ops.object.shade_smooth_by_angle()
 
 
-def hexagon(name, radius, depth, z, mat):
-    bpy.ops.mesh.primitive_cylinder_add(vertices=6, radius=radius, depth=depth, location=(0, 0, z), rotation=(0, 0, math.pi / 6))
-    obj = bpy.context.object
-    obj.name = name
-    obj.data.materials.append(mat)
-    return obj
+def icosahedron(mat):
+    """A regular icosahedron of circumradius 1, turned so that one face looks at the camera
+    (+Z) with a corner pointing up (+Y), as a die rests on the table showing that face."""
+    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1, radius=1.0, location=(0, 0, 0))
+    die = bpy.context.object
+    die.name = "Die"
+    mesh = die.data
+    front = max(mesh.polygons, key=lambda polygon: polygon.normal.z)
+    align = front.normal.rotation_difference(Vector((0, 0, 1))).to_matrix().to_4x4()
+    mesh.transform(align)
+    mesh.update()
+    front = mesh.polygons[front.index]
+    # Turn about Z so the corner of the front face that is highest points straight up.
+    corner = max((mesh.vertices[i].co for i in front.vertices), key=lambda co: co.y)
+    mesh.transform(Matrix.Rotation(math.pi / 2 - math.atan2(corner.y, corner.x), 4, "Z"))
+    mesh.update()
+    die.data.materials.append(mat)
+    return die, mesh.polygons[front.index].center.z
 
 
-def crescent(mat):
-    bpy.ops.mesh.primitive_cylinder_add(vertices=128, radius=0.62, depth=0.12, location=(-0.06, 0, 0.36))
-    moon = bpy.context.object
-    moon.name = "Crescent"
-    bpy.ops.mesh.primitive_cylinder_add(vertices=128, radius=0.52, depth=0.4, location=(0.2, 0.12, 0.36))
-    cutter = bpy.context.object
-    boolean = moon.modifiers.new("Cut", "BOOLEAN")
-    boolean.operation = "DIFFERENCE"
-    boolean.object = cutter
-    bpy.context.view_layer.objects.active = moon
-    bpy.ops.object.modifier_apply(modifier="Cut")
-    bpy.data.objects.remove(cutter, do_unlink=True)
-    moon.data.materials.append(mat)
-    bevel(moon, 0.02, 3)
-    return moon
+def edges(die, mat, thickness):
+    """Gold edges: a wireframe copy of the die, its struts slightly outside the faces."""
+    rim = die.copy()
+    rim.data = die.data.copy()
+    rim.name = "Edges"
+    bpy.context.collection.objects.link(rim)
+    rim.data.materials.clear()
+    rim.data.materials.append(mat)
+    wire = rim.modifiers.new("Wire", "WIREFRAME")
+    wire.thickness = thickness
+    wire.offset = 0.0
+    wire.use_even_offset = True
+    wire.use_relative_offset = False
+    bevel(rim, thickness / 4, 2)
+    return rim
+
+
+def number(text, mat, z, size):
+    """`text` centered on the front face, raised just above it."""
+    font_path = pathlib.Path(bpy.utils.system_resource("DATAFILES")) / "fonts" / "Inter.woff2"
+    if not font_path.is_file():
+        fail(f"Blender's bundled font {font_path} was not found.")
+    bpy.ops.object.text_add(location=(0, 0, z + 0.004))
+    label = bpy.context.object
+    label.name = "Number"
+    label.data.body = text
+    label.data.font = bpy.data.fonts.load(str(font_path))
+    label.data.align_x = "CENTER"
+    label.data.align_y = "CENTER"
+    label.data.size = size
+    label.data.extrude = 0.01
+    # A slightly thicker outline, so the digits stay legible at 16 to 32 pixels.
+    label.data.offset = 0.008
+    label.data.materials.append(mat)
+    return label
 
 
 def main():
@@ -106,20 +145,19 @@ def main():
     scene.view_settings.view_transform = "AgX"
 
     world = bpy.data.worlds.new("World")
-    world.use_nodes = True
+    if world.node_tree is None:  # as for materials, above
+        world.use_nodes = True
     world.node_tree.nodes["Background"].inputs["Color"].default_value = (0.02, 0.025, 0.04, 1.0)
     world.node_tree.nodes["Background"].inputs["Strength"].default_value = 0.25
     scene.world = world
 
     gold = material("Gold", (0.83, 0.62, 0.25), metallic=1.0, roughness=0.28)
     stone = material("Stone", (0.02, 0.045, 0.13), roughness=0.4)
-    glow = material("Moon", (0.75, 0.88, 1.0), roughness=0.3, emission=(0.55, 0.8, 1.0), strength=6.0)
+    glow = material("Glow", (0.75, 0.88, 1.0), roughness=0.3, emission=(0.55, 0.8, 1.0), strength=6.0)
 
-    rim = hexagon("Rim", 1.0, 0.3, 0.0, gold)
-    bevel(rim, 0.05)
-    face = hexagon("Stone", 0.86, 0.46, 0.06, stone)
-    bevel(face, 0.06)
-    crescent(glow)
+    die, front_z = icosahedron(stone)
+    edges(die, gold, 0.09)
+    number("20", glow, front_z, 0.5)
 
     bpy.ops.object.light_add(type="AREA", location=(-2.2, -2.4, 3.6))
     key = bpy.context.object
@@ -132,10 +170,13 @@ def main():
     fill.data.size = 3.0
     fill.rotation_euler = (math.radians(-45), math.radians(40), 0)
 
-    bpy.ops.object.camera_add(location=(0, -0.55, 6.0), rotation=(math.radians(5), 0, 0))
+    # Seen from slightly below the front face's normal, so the upper faces show their depth.
+    tilt = math.radians(8)
+    bpy.ops.object.camera_add(location=(0, -6.0 * math.sin(tilt), 6.0 * math.cos(tilt)), rotation=(tilt, 0, 0))
     camera = bpy.context.object
     camera.data.type = "ORTHO"
-    camera.data.ortho_scale = 2.3
+    # The silhouette of the die seen face-on spans its circumradius-1 corners; a small margin.
+    camera.data.ortho_scale = 2.15
     scene.camera = camera
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)

@@ -5,6 +5,7 @@ import {
   DEBOUNCE_MIN_MS,
   DEFAULT_SETTINGS,
   normalizeSettings,
+  RUNTIMES,
   VALIDATE_MODES,
   validatesOnSave,
   validatesOnType,
@@ -37,18 +38,27 @@ describe('shared/settings', () => {
       assert.equal(debounce.minimum, DEBOUNCE_MIN_MS);
       assert.equal(debounce.maximum, DEBOUNCE_MAX_MS);
     });
+
+
+    it('declares the same runtimes and default', () => {
+      const runtime = properties['ieLua.runtime.lua'];
+      assert.ok(runtime);
+      assert.deepEqual(runtime.enum, [...RUNTIMES]);
+      assert.equal(runtime.default, DEFAULT_SETTINGS.runtime.lua);
+    });
   });
 
   describe('normalizeSettings', () => {
     it('returns the defaults for missing or malformed input', () => {
-      for (const raw of [undefined, null, 42, 'save', {}, { validate: null }, { validate: [] }]) {
+      for (const raw of [undefined, null, 42, 'save', {}, { validate: null }, { validate: [] }, { runtime: 'luajit' }, { runtime: { lua: 'lua51' } }]) {
         assert.deepEqual(normalizeSettings(raw), DEFAULT_SETTINGS);
       }
     });
 
     it('keeps valid values', () => {
-      assert.deepEqual(normalizeSettings({ validate: { mode: 'saveAndType', debounce: 750 } }), {
+      assert.deepEqual(normalizeSettings({ validate: { mode: 'saveAndType', debounce: 750 }, runtime: { lua: 'luajit' } }), {
         validate: { mode: 'saveAndType', debounce: 750 },
+        runtime: { lua: 'luajit' },
       });
     });
 

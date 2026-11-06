@@ -10,5 +10,8 @@
   "configuration.validate.mode.type": "在輸入時驗證，於 `#ieLua.validate.debounce#` 毫秒內沒有變更後進行。",
   "configuration.validate.mode.saveAndType": "在輸入時及儲存檔案時驗證。",
   "configuration.validate.debounce.description": "當 `#ieLua.validate.mode#` 為 `type` 或 `saveAndType` 時，最後一次變更到開始驗證之間的延遲時間 (毫秒)。",
+  "configuration.runtime.lua.description": "遊戲執行的 Lua，決定暫留、完成和語意醒目提示所描述的內容。安裝了 EEex 的實驗性元件 *Use LuaJIT* 時，請選擇 `luajit`：此時會說明 LuaJIT 程式庫 `bit`、`jit`、`ffi` 和 `string.buffer` 以及 `table.new` 和 `table.clear`，而不說明 LuaJIT 中沒有的 `bit32`。語法錯誤一律由 Lua 5.2 編譯器回報。",
+  "configuration.runtime.lua.lua52": "遊戲本身的 Lua 5.2。",
+  "configuration.runtime.lua.luajit": "由 EEex 的 *Use LuaJIT* 元件安裝的 LuaJIT。",
   "semanticTokenModifiers.global.description": "全域變數（全域環境中的欄位），與區域變數相對。"
 }

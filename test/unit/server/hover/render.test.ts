@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { createMessages } from '../../../../src/server/l10n.ts';
+import { LUA52, LUAJIT } from '../../../../src/server/hover/knowledge.ts';
 import { renderDocumentation, renderHover, renderSignature, type HoverFormat } from '../../../../src/server/hover/render.ts';
 import { hoverTargetAt } from '../../../../src/server/hover/resolve.ts';
 import { parseDocument } from '../../../../src/server/syntax/document.ts';
@@ -7,10 +8,15 @@ import { parseDocument } from '../../../../src/server/syntax/document.ts';
 const english = createMessages(undefined);
 
 /** The hover text at the first `needle` of `text`, `offset` characters into it. */
-function render(text: string, needle: string, format: HoverFormat = 'markdown', { offset = 0, locale = undefined as string | undefined } = {}): string {
+function render(
+  text: string,
+  needle: string,
+  format: HoverFormat = 'markdown',
+  { offset = 0, locale = undefined as string | undefined, library = LUA52 } = {},
+): string {
   const at = text.indexOf(needle);
   assert.ok(at >= 0, needle);
-  const hit = hoverTargetAt(parseDocument(text, 'lua'), at + offset);
+  const hit = hoverTargetAt(parseDocument(text, 'lua'), at + offset, library);
   assert.ok(hit, `no hover at "${needle}"`);
   return renderHover(hit.target, format, locale === undefined ? english : createMessages(locale));
 }
@@ -168,6 +174,25 @@ describe('server/hover/render', () => {
       const target = hit('local function f(a) end', 'f(');
       assert.equal(renderSignature(target, english), 'local function f(a)');
       assert.equal(renderDocumentation(target, 'markdown', english), undefined);
+    });
+  });
+
+  describe('method syntax', () => {
+    it('describes a string method like the library function', () => {
+      assert.equal(render('local s = "x" s:upper()', 'upper'), render('string.upper("x")', 'upper'));
+    });
+
+    it('shows how the document defines a method or a field function, with its doc comment', () => {
+      const text = 'Obj = {}\n---Says hello.\n---@param name string Who.\nfunction Obj:greet(name) end\nObj:greet("a")\nfunction Obj.make(a, ...) end\nObj.make(1)';
+      assert.equal(render(text, 'greet("a")'), `${fence('(method) function Obj:greet(name)')}\n\n---\n\nSays hello.\n\n*@param* \`name\` \`string\` — Who.`);
+      assert.equal(render(text, 'make(1)'), fence('(field) function Obj.make(a, ...)'));
+      assert.equal(render(text, 'make(1)', 'markdown', { locale: 'de' }), fence('(Feld) function Obj.make(a, ...)'));
+    });
+
+    it('links LuaJIT entries to their page, with the page title', () => {
+      const value = render('local buffer = require("string.buffer")\nlocal b = buffer.new()\nb:put("x")', 'put(', 'markdown', { library: LUAJIT });
+      assert.ok(value.startsWith(fence('buf = buf:put([str|num|obj] [,…])')), value);
+      assert.ok(value.endsWith('[LuaJIT: String Buffer Library](https://luajit.org/ext_buffer.html#buffer_put)'), value);
     });
   });
 });

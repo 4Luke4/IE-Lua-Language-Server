@@ -1,0 +1,20 @@
+-- Original fixture: formatting. Deliberately unformatted.
+`
+function fmtMenuHelper( n )
+return n*2
+end
+`
+menu
+{
+      name   "FORMAT_MAIN"
+button
+{
+enabled "fmtMenuHelper(1)>1"
+    action
+"
+if fmtMenuHelper(2)>3 then
+Infinity_DisplayString('x')   
+end
+"
+}
+}

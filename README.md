@@ -14,11 +14,10 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
 
 > [!NOTE]
 > This is an early version. It currently provides **syntax diagnostics**, **hover**,
-> **completion**, **semantic highlighting**, **formatting** (Lua files), **document symbols**,
+> **completion**, **semantic highlighting**, **formatting** (Lua and `.menu` files), **document symbols**,
 > **workspace symbols**, **folding**, **quick fixes** (`.menu` files), **LuaCATS doc comments**
 > in hover, completion and diagnostics, **go to definition** and **find references** across
-> the files of your workspace, and **rename** within a file; formatting of `.menu`
-> files and more are planned.
+> the files of your workspace, and **rename** within a file; more is planned.
 
 ## Features
 
@@ -41,7 +40,12 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
   comments, and every `{ … }` block and Lua script of a `.menu` file.
 - **Documentation on hover.** Lua functions such as `string.format` show their description from
   the [Lua 5.2 manual](https://www.lua.org/manual/5.2/manual.html), word for word, with a link to
-  it. Only the libraries the game provides are documented (`io`, `os`, `require` and coroutines
+  it, and so do method calls such as `name:upper()` when `name` is surely a string (a string
+  literal, a local that keeps one, or a value annotated `---@type string`). Your own methods
+  (`obj:greet()`, `self:greet()`) show how you defined them and their doc comment, and with the
+  `luajit` runtime the [LuaJIT documentation](https://luajit.org/) covers `bit`, `jit`, `ffi` and
+  string buffers (`buf:put()`). Where the type of a value is not certain, nothing is shown
+  rather than a guess. Only the libraries the game provides are documented (`io`, `os`, `require` and coroutines
   are not), and `print` tells you that the game replaces it. EEex and game functions such as
   `Infinity_DisplayString` or `C:AddGold` link to the
   [EEex documentation](https://eeex-docs.readthedocs.io/en/latest/), and your own variables show
@@ -49,6 +53,9 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
 - **Code completion** for the variables in scope, the globals your file defines, the Lua functions
   the game provides (`string.` lists the string library), and EEex and game functions
   (`Infinity_…`, `EEex_…`, and methods after `C:`), with the same documentation as on hover.
+  After `:` or `.` on a local, it offers what that value surely has: the string library after a
+  string, your own methods after a table that defines them, LuaJIT's methods after a string
+  buffer.
   Nothing the game lacks is suggested (`io`, `os`, `require`, coroutines). In `.menu` files,
   completion works inside the Lua only.
 - **Colors that show what each name is.** Parameters, local and global variables, functions,
@@ -62,12 +69,16 @@ Lua language support for the **Infinity Engine Enhanced Edition** games and the
     "rules": { "*.global": { "bold": true } }
   }
   ```
-- **Format Document and Format Selection** for Lua files: indentation, spacing within a line and
+- **Format Document and Format Selection** for Lua and `.menu` files: indentation, spacing within a line and
   trailing white space are fixed, while your line breaks stay where they are and strings and
   comments are never changed (apart from trailing white space after a `--` comment). Tabs or spaces follow your editor settings (*Editor: Tab Size*,
   *Editor: Insert Spaces*). Turn on *Editor: Format On Type* to have `end`, `else` and closing
   brackets re-indented as you type them, or *Editor: Format On Save*. Files with a syntax error
-  are left unchanged. `.menu` files are not formatted yet.
+  are left unchanged. In `.menu` files, each line is indented by the `{ … }` blocks around it and
+  the Lua inside is formatted one level deeper than the line it starts on (the Lua of a
+  `` ` `` block outside any menu stays at the left margin, as in a Lua file); text the game reads
+  as a string, the spacing between `.menu` words and every line break stay exactly as written.
+  A Lua script with a syntax error is left as it is, and the rest of the file is still formatted.
 - **Go to Definition and Find All References** for variables. Locals follow Lua's scoping rules.
   Globals are followed across every Lua and `.menu` file of your workspace, even files you
   haven't opened, because the game runs all of its Lua in
@@ -123,8 +134,9 @@ GitHub; GitHub does not say who downloads, so maintainers' own downloads are inc
 | --- | --- | --- |
 | `ieLua.validate.mode` | `save` | When files are checked: `manual` (only with the command below), `save`, `type` (while typing), or `saveAndType`. |
 | `ieLua.validate.debounce` | `300` | Milliseconds to wait after the last change before checking, in `type` and `saveAndType` modes. |
+| `ieLua.runtime.lua` | `lua52` | The Lua the game runs: `lua52` (the game's own), or `luajit` if you installed EEex's experimental *Use LuaJIT* component. With `luajit`, hover and completion describe LuaJIT's libraries (`bit`, `jit`, `ffi`, `string.buffer`, `table.new`, `table.clear`) and no longer `bit32`, which LuaJIT does not have. Syntax is still checked by the Lua 5.2 compiler. |
 
-Both settings can be set per workspace folder.
+All settings can be set per workspace folder.
 
 ## Commands
 

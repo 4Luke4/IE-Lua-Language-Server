@@ -50,7 +50,7 @@ lua.catch((error: unknown) => {
 let configurationPull = false;
 let watchedFilesRegistration = false;
 let workspaceFolderChanges = false;
-/** Formatting requests registered in `initialized`, for .lua documents only. */
+/** Formatting requests registered in `initialized`, for Lua and .menu documents. */
 let formattingRegistration: formatting.FormattingRegistration = { document: false, range: false, onType: false };
 /** Workspace folder URIs, kept up to date from `workspace/didChangeWorkspaceFolders`. */
 let folders: string[] = [];
@@ -89,11 +89,13 @@ connection.onInitialize((params) => {
   folders = params.workspaceFolders?.map((folder) => folder.uri) ?? [];
   /** The server's messages in the client's display language. */
   const messages = createMessages(params.locale);
+  /** One store for every feature, so that a settings change drops each cached value once. */
+  const settings = new SettingsStore(connection, configurationPull, params.initializationOptions);
   const diagnosticsFeature = diagnostics.register(connection, documents, {
     lua,
     cache: parsed,
     messages,
-    settings: new SettingsStore(connection, configurationPull, params.initializationOptions),
+    settings,
     timers: { setTimeout, clearTimeout: (handle) => { clearTimeout(handle as NodeJS.Timeout); } },
   });
   documentSymbols.register(connection, documents, {
@@ -115,17 +117,24 @@ connection.onInitialize((params) => {
     codeActions.register(connection, documents, { messages, documentChanges });
   }
   workspaceSymbols.register(connection, documents, { cache: parsed, index });
-  semanticTokens.register(connection, documents, { cache: parsed });
+  const semanticTokensFeature = semanticTokens.register(
+    connection,
+    documents,
+    { cache: parsed, settings },
+    workspace?.semanticTokens?.refreshSupport === true,
+  );
   formatting.register(connection, documents, { cache: parsed });
   formattingRegistration = formatting.dynamicRegistration(params.capabilities.textDocument);
   hover.register(connection, documents, {
     cache: parsed,
+    settings,
     format: markupFormat(params.capabilities.textDocument?.hover?.contentFormat),
     messages,
   });
   const completionCapabilities = params.capabilities.textDocument?.completion;
   completion.register(connection, documents, {
     cache: parsed,
+    settings,
     format: markupFormat(completionCapabilities?.completionItem?.documentationFormat),
     insertReplace: completionCapabilities?.completionItem?.insertReplaceSupport === true,
     defaultEditRange: completionCapabilities?.completionList?.itemDefaults?.includes('editRange') === true,
@@ -133,8 +142,10 @@ connection.onInitialize((params) => {
   });
   // One handler per notification: settings changes go to every feature that needs them.
   connection.onDidChangeConfiguration(({ settings }) => {
+    // Diagnostics first: it drops the shared store's cached settings (SettingsStore.changed).
     diagnosticsFeature.configurationChanged(settings);
     index.settingsChanged();
+    semanticTokensFeature.configurationChanged();
   });
   const prepareRename = params.capabilities.textDocument?.rename?.prepareSupport === true;
   return {

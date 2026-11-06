@@ -2,6 +2,8 @@
   "hover.kind.parameter": "parametro",
   "hover.kind.forVariable": "variabile for",
   "hover.kind.global": "globale",
+  "hover.kind.method": "metodo",
+  "hover.kind.field": "campo",
   "hover.engineReplaced": "Il motore di gioco sostituisce {0} con una propria funzione, quindi la descrizione del manuale di Lua 5.2 non si applica. Vedere {1}.",
   "codeAction.quote": "Racchiudi tra virgolette",
   "codeAction.insertSpace": "Inserisci uno spazio prima dell'apice inverso di chiusura",

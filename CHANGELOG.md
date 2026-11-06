@@ -13,6 +13,98 @@ the extension live in [`docs/CHANGELOG.vsix.md`](docs/CHANGELOG.vsix.md).
 
 ## [Unreleased]
 
+### Added
+
+- Formatting of `.menu` files (`textDocument/formatting`, `/rangeFormatting` and
+  `/onTypeFormatting`; `src/server/formatting/menuFormat.ts`), layout-preserving like Lua
+  formatting. The formatting selector (`FORMAT_SELECTOR`, formerly `LUA_SELECTOR`) adds the
+  `ie-menu` language and `**/*.[mM][eE][nN][uU]`.
+  - Only white space the engine's lexer skips changes (IESDP, MENU file format, Lexical
+    structure). Each line is indented by the `{ … }` blocks open at its start; a line that starts
+    with `}` is indented like the line that opened the block. Trailing white space is removed and
+    blank lines are emptied. The spacing within a line is kept, and the lines of a string that is
+    not Lua (`text "…"`) are never touched.
+  - Each Lua chunk is formatted by the Lua rules (`formatEmbedded`, new in
+    `src/server/formatting/format.ts`), its lines one level deeper than the line where it starts
+    (`action "`, or a `"` on its own line). `` ` `` blocks outside any `{ … }` block hold a file's
+    top-level Lua and stay at level 0. A line that starts with the closing backtick or quote is
+    indented like the line where the chunk starts. The white space before the first Lua item on
+    the opening line, and after the last one on the closing line, is kept.
+  - The character before a closing backtick, which the engine drops, stays white space or is
+    not touched. A chunk with a Lua syntax error (including Lua the engine sees cut short by
+    that dropped character) is left as written, the rest of the file is formatted, and the count
+    is logged.
+  - A file with an unterminated string or `` ` `` block is not formatted (logged). The result is
+    lexed and extracted again and must give the same menu tokens, Lua chunks, Lua tokens and
+    comments, problems and lines, or nothing is changed.
+  - Range formatting keeps the edits of the touched lines. On-type formatting uses the Lua
+    triggers: a line break formats the line it ended; the last character of a Lua closer, or a
+    `}` of the menu, that starts its line re-indents that line. `insertFinalNewline` and
+    `trimFinalNewlines` are honored for document formatting.
+- `data/luajit/manual.json` and its generator `scripts/luajit-manual/` (`npm run luajit-manual`,
+  `-- --check` in the new CI job `luajit`, run when the generator, the shared converter or either
+  data file changes; pinned sources cached by key). The data describes the LuaJIT that EEex's
+  "Use LuaJIT" component installs: `LuaJIT/VERSION.TXT` of Bubb13/InfinityLoader (pinned commit)
+  names the LuaJIT commit, and the text comes from that commit's documentation (`extensions.html`,
+  `ext_buffer.html`, `ext_jit.html`, `ext_ffi_api.html`) and from Lua BitOp 1.0.4 `doc/api.html`
+  for `bit.*`, word for word. What exists comes from the build's own sources: `lib_init.c`
+  (libraries opened as globals and preloaded for `require`) and the `lib_*.c` registrations,
+  with the feature flags of `msvcbuild.bat` (`LUAJIT_ENABLE_LUA52COMPAT`) as `lj_arch.h` derives
+  them. Every documented name must be registered, and every Lua 5.2 manual entry that the build
+  lacks is listed (only `bit32` and its functions). Every file is verified by SHA-256; anything
+  the generator does not model stops it with the file and line.
+- Setting `ieLua.runtime.lua` (`lua52` (default) | `luajit`, `resource` scope, localized in every
+  manifest locale), read per document through the server's one `SettingsStore`, now shared by
+  diagnostics, hover, completion and semantic tokens. With `luajit`, the libraries described
+  (`Library` in `src/server/hover/knowledge.ts`) are the Lua 5.2 manual's minus the entries
+  `data/luajit/manual.json` lists as unavailable (`bit32`), plus the LuaJIT globals `bit` and `jit`;
+  `ffi`, `string.buffer`, `table.new` and `table.clear` are known as `require` targets. Hover and
+  completion handlers read the setting before answering (then re-check the document and the
+  cancellation); completion items carry the runtime in `data`, so `completionItem/resolve` uses
+  the same library (items without it resolve with Lua 5.2); semantic tokens are cached per
+  document and runtime, and a settings change sends `workspace/semanticTokens/refresh` when the
+  client supports it. Syntax validation is unchanged (Lua 5.2 compiler). The LuaJIT and Lua BitOp
+  licenses, recorded verbatim in the data, are added to `THIRD_PARTY_NOTICES.md`.
+- Method syntax in hover, completion and semantic tokens (`src/server/hover/receiver.ts`, through
+  `memberTarget` in `src/server/hover/resolve.ts`). A receiver is typed only when the code or a
+  LuaCATS annotation proves it; anything else gets nothing:
+  - strings: a string literal (parenthesized or not), a local declared from one and never
+    assigned again (aliases followed), or a local or parameter annotated `---@type string` /
+    `---@param x string`. `s:m()` and `s.m` are `string.m` (manual §6.4; LuaJIT's lib_string.c
+    sets the same `__index`). A `string.m` the document defines is described by that definition.
+  - tables: global paths (also through locals that alias them: `local w = worldScreen`,
+    `local str = string`, `local g = _G`), locals declared from a table constructor and never
+    assigned again, fields of them, the implicit `self` of `function T:m()` (as `T`), and values
+    annotated `---@type Name` / `---@param x Name` for a `---@class Name` attached to
+    `local Name = …` or `Name = …`. Members are the library and EEex-Docs names as before, then the
+    functions the document stores in the table: `function T:m()`, `function T.f()`,
+    `T.f = function`, and `{ f = function }` in the constructor of a local. They are a new hover
+    target, `member`, rendered as `(method) function T:m(a)` / `(field) function T.f(a)` (labels
+    localized in `l10n/server/`) with the doc comment above the definition
+    (`functionDoc` in `src/server/docComments/attach.ts`); hovering the name in the definition
+    shows the same. Semantic tokens type them `method` or `function`.
+  - LuaJIT: `require("name")` with a literal name, when `require` is the global the document
+    never assigns, is the module the library documents (`ffi`, `string.buffer`); its documented
+    functions and methods that return a buffer object (`returns`, derived from the page's
+    `buf = …` headings) make `buffer.new()` and chained calls typed.
+  - Completion after `x:` / `x.` on a local offers by the same types; a local of no provable type
+    still offers nothing.
+  - `---@class` names are now parsed (`DocComment.className`; still not rendered). Same document
+    only: definitions in other files are not followed (as for global hover). EEex game structures
+    (`CGameSprite`, …) are documented by EEex-Docs as types without members, so `---@type
+    CGameSprite` gives no member documentation.
+- `scripts/lua-manual/convert.mts` accepts the LuaJIT documentation's HTML with
+  `{ luajit: true }` (`</p>`, `<tt>`, `<i>`, `<br>`, tables, links to other pages, the
+  external-link marker, colored code); the Lua 5.2 output is unchanged.
+
+### Changed
+
+- New extension icon, `images/icon.png`: a d20 (a regular icosahedron) in the previous navy and
+  gold palette, with a glowing "20" on the face toward the viewer. It is rendered by the rewritten
+  `scripts/assets/icon.py` (Cycles on the GPU, seeded, 512 → 128 px) using Blender's bundled Inter
+  font (OFL-1.1). The script now sets `use_nodes` only on Blender versions that need it, because
+  Blender 5.2 deprecates it. CONTRIBUTING.md › The extension icon documents how to regenerate it.
+
 ## [1.0.0] - 2026-11-05
 
 ### Added

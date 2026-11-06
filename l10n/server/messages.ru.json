@@ -2,6 +2,8 @@
   "hover.kind.parameter": "параметр",
   "hover.kind.forVariable": "переменная for",
   "hover.kind.global": "глобальная",
+  "hover.kind.method": "метод",
+  "hover.kind.field": "поле",
   "hover.engineReplaced": "Игровой движок заменяет {0} собственной функцией, поэтому описание из руководства по Lua 5.2 не применимо. См. {1}.",
   "codeAction.quote": "Заключить в кавычки",
   "codeAction.insertSpace": "Вставить пробел перед закрывающим обратным апострофом",

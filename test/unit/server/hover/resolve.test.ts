@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { parseDocument } from '../../../../src/server/syntax/document.ts';
+import { LUA52, LUAJIT, type Library } from '../../../../src/server/hover/knowledge.ts';
 import { hoverTargetAt, type HoverTarget } from '../../../../src/server/hover/resolve.ts';
 
 /** A compact description of a hover target, for comparison. */
@@ -15,6 +16,8 @@ function summary(target: HoverTarget): string {
       return `engine ${target.replacement.name}`;
     case 'external':
       return `external ${target.entry.name}`;
+    case 'member':
+      return `member ${target.definition.owner}${target.definition.method ? ':' : '.'}${target.definition.name}`;
   }
 }
 
@@ -22,13 +25,17 @@ function summary(target: HoverTarget): string {
  * Hover at the `occurrence`-th `needle` of `text`, `offset` characters into it:
  * `name -> summary`, or `undefined` when there is no hover.
  */
-function hover(text: string, needle: string, { occurrence = 0, offset = 0, kind = 'lua' }: { occurrence?: number; offset?: number; kind?: 'lua' | 'menu' } = {}): string | undefined {
+function hover(
+  text: string,
+  needle: string,
+  { occurrence = 0, offset = 0, kind = 'lua', library = LUA52 }: { occurrence?: number; offset?: number; kind?: 'lua' | 'menu'; library?: Library } = {},
+): string | undefined {
   let at = -1;
   for (let i = 0; i <= occurrence; i++) {
     at = text.indexOf(needle, at + 1);
     assert.ok(at >= 0, `"${needle}" #${String(i)} not found`);
   }
-  const hit = hoverTargetAt(parseDocument(text, kind), at + offset);
+  const hit = hoverTargetAt(parseDocument(text, kind), at + offset, library);
   return hit && `${hit.identifier.name} -> ${summary(hit.target)}`;
 }
 
@@ -114,8 +121,9 @@ describe('server/hover/resolve', () => {
     it('lets the document\'s own definition of a library member win over the manual', () => {
       assert.equal(hover('string.format = nil string.format()', 'format', { occurrence: 1 }), undefined);
       assert.equal(hover('_G.string.format = nil string.format()', 'format', { occurrence: 1 }), undefined);
-      assert.equal(hover('function string.format() end string.format()', 'format', { occurrence: 1 }), undefined);
-      assert.equal(hover('function string:rep() end ("x"):rep()', 'rep', { occurrence: 1 }), undefined);
+      // A function the document defines there is described by its definition instead.
+      assert.equal(hover('function string.format() end string.format()', 'format', { occurrence: 1 }), 'format -> member string.format');
+      assert.equal(hover('function string:rep() end ("x"):rep()', 'rep', { occurrence: 1 }), 'rep -> member string:rep');
       // Only that member, and only on the global table.
       assert.equal(hover('string.format = nil string.rep()', 'rep'), 'rep -> library string.rep');
       assert.equal(hover('local string = {} string.format = nil', 'format'), undefined);
@@ -131,7 +139,6 @@ describe('server/hover/resolve', () => {
 
     it('gives no hover for members of locals, unknown tables or other libraries', () => {
       assert.equal(hover('local string = {} string.format()', 'format'), undefined);
-      assert.equal(hover('local s = "" s:rep(2)', 'rep'), undefined);
       assert.equal(hover('io.write("x")', 'write'), undefined);
       assert.equal(hover('os.time()', 'time'), undefined);
       assert.equal(hover('t.x = 1', 'x'), undefined);
@@ -157,5 +164,118 @@ describe('server/hover/resolve', () => {
       assert.equal(hover(text, needle), undefined, text);
     }
     assert.equal(hover('menu { name "print" }', 'name', { kind: 'menu' }), undefined);
+  });
+
+  describe('runtimes', () => {
+    it('describes the LuaJIT libraries with LuaJIT, and bit32 only with Lua 5.2', () => {
+      assert.equal(hover('bit.band(1, 2)', 'band', { library: LUAJIT }), 'band -> library bit.band');
+      assert.equal(hover('jit.off()', 'jit', { library: LUAJIT }), 'jit -> library jit');
+      assert.equal(hover('bit.band(1, 2)', 'band'), undefined);
+      assert.equal(hover('bit32.band(1, 2)', 'band'), 'band -> library bit32.band');
+      assert.equal(hover('bit32.band(1, 2)', 'band', { library: LUAJIT }), undefined);
+    });
+
+    it('keeps the Lua 5.2 text of the functions LuaJIT provides, and the engine replacement of print', () => {
+      assert.equal(hover('string.format("x")', 'format', { library: LUAJIT }), 'format -> library string.format');
+      assert.equal(hover('print(1)', 'print', { library: LUAJIT }), 'print -> engine print');
+    });
+
+    it('describes neither modules nor functions that only require reaches', () => {
+      assert.equal(hover('ffi.new("int")', 'new', { library: LUAJIT }), undefined);
+      assert.equal(hover('table.new(1, 0)', 'new', { library: LUAJIT }), undefined);
+    });
+  });
+
+  describe('method syntax', () => {
+    describe('strings', () => {
+      it('describes string methods on locals that provably hold a string', () => {
+        assert.equal(hover('local s = "x" s:upper()', 'upper'), 'upper -> library string.upper');
+        assert.equal(hover('local s = ("x") local t = s t:rep(2)', 'rep'), 'rep -> library string.rep');
+        assert.equal(hover('local s = [[x]] s.upper(s)', 'upper'), 'upper -> library string.upper');
+        assert.equal(hover('---@type string\nlocal s = f()\ns:upper()', 'upper'), 'upper -> library string.upper');
+        assert.equal(hover('---@param s string\nlocal function f(s) return s:upper() end', 'upper'), 'upper -> library string.upper');
+        // The string library is the strings' __index, whatever a local named `string` holds.
+        assert.equal(hover('local string = {} local s = "x" s:upper()', 'upper'), 'upper -> library string.upper');
+      });
+
+      it('describes nothing when the value is not provably a string', () => {
+        assert.equal(hover('local s = "x" s = 1 s:upper()', 'upper'), undefined);
+        assert.equal(hover('local function f(s) return s:upper() end', 'upper'), undefined);
+        assert.equal(hover('local s = f() s:upper()', 'upper'), undefined);
+        assert.equal(hover('S = "x" S:upper()', 'upper'), undefined);
+        assert.equal(hover('local s = "x" s:nope()', 'nope'), undefined);
+        assert.equal(hover('---@type number\nlocal s = "x"\ns:upper()', 'upper'), undefined);
+      });
+    });
+
+    describe('the document\'s own tables', () => {
+      it('describes the functions a table holds, with their definition', () => {
+        assert.equal(hover('Obj = {} function Obj:greet(name) end Obj:greet("a")', 'greet', { occurrence: 1 }), 'greet -> member Obj:greet');
+        assert.equal(hover('local M = {} function M.new(a) end M.new(1)', 'new', { occurrence: 1 }), 'new -> member M.new');
+        assert.equal(hover('local M = { f = function(x) end } M.f(1)', 'M.f', { offset: 2 }), 'f -> member M.f');
+        assert.equal(hover('local M = {} M.g = function() end M.g()', 'g', { occurrence: 1 }), 'g -> member M.g');
+        assert.equal(hover('A = {} A.b = {} function A.b:c() end A.b:c()', 'c', { occurrence: 1 }), 'c -> member A.b:c');
+        assert.equal(hover('local M = {} local N = M function M:m() end N:m()', 'm', { occurrence: 1 }), 'm -> member M:m');
+      });
+
+      it('reads self in a method as the method\'s table', () => {
+        const text = 'local M = {} function M:a() self:b() end function M:b() end';
+        assert.equal(hover(text, 'b'), 'b -> member M:b');
+        assert.equal(hover('Obj = {} function Obj:a() return self.b() end function Obj.b() end', 'self.b', { offset: 5 }), 'b -> member Obj.b');
+      });
+
+      it('follows ---@class and ---@type, ---@param', () => {
+        const account = '---@class Account\nlocal Account = {}\nfunction Account:deposit(v) end\n';
+        assert.equal(hover(`${account}---@type Account\nlocal a = make()\na:deposit(1)`, 'deposit', { occurrence: 1 }), 'deposit -> member Account:deposit');
+        assert.equal(hover(`${account}---@param acct Account\nlocal function pay(acct) acct:deposit(1) end`, 'deposit', { occurrence: 1 }), 'deposit -> member Account:deposit');
+        assert.equal(hover('---@class (exact) G: Base\nG = {}\nfunction G.f() end\n---@type G\nlocal g = x\ng.f()', 'f', { occurrence: 1 }), 'f -> member G.f');
+        assert.equal(hover('---@type Unknown\nlocal a = x\na:deposit(1)', 'deposit'), undefined);
+      });
+
+      it('describes the names of definitions like their uses', () => {
+        assert.equal(hover('Obj = {} function Obj:greet(name) end', 'greet'), 'greet -> member Obj:greet');
+        assert.equal(hover('local M = { f = function() end }', 'f'), 'f -> member M.f');
+      });
+
+      it('describes nothing for tables that may hold something else', () => {
+        assert.equal(hover('local M = {} M = other function M:m() end M:m()', 'm', { occurrence: 1 }), undefined);
+        assert.equal(hover('local M = {} function M:m() end local x = f() x:m()', 'm', { occurrence: 1 }), undefined);
+        assert.equal(hover('local M = {} M:m()', 'm'), undefined);
+      });
+    });
+
+    describe('EEex and game objects', () => {
+      it('follows locals that alias a documented global', () => {
+        assert.equal(hover('local w = worldScreen w:CheckIfPaused()', 'CheckIfPaused'), 'CheckIfPaused -> external worldScreen:CheckIfPaused');
+        assert.equal(hover('local c = C c.AddGold(c, 1)', 'AddGold'), 'AddGold -> external C:AddGold');
+        assert.equal(hover('local str = string str.format("x")', 'format'), 'format -> library string.format');
+        assert.equal(hover('local g = _G g.print(1)', 'print'), 'print -> engine print');
+        assert.equal(hover('local w = worldScreen w = nil w:CheckIfPaused()', 'CheckIfPaused'), undefined);
+      });
+    });
+
+    describe('LuaJIT', () => {
+      const luajit = { library: LUAJIT };
+      const buffer = 'local buffer = require("string.buffer")\nlocal buf = buffer.new()\n';
+
+      it('describes what require returns, and the objects its functions return', () => {
+        assert.equal(hover(`${buffer}buf:put("x")`, 'put', luajit), 'put -> library string.buffer:put');
+        assert.equal(hover(`${buffer}buf:put("x"):reset()`, 'reset', luajit), 'reset -> library string.buffer:reset');
+        assert.equal(hover(buffer, 'new', luajit), 'new -> library string.buffer.new');
+        assert.equal(hover('local ffi = require "ffi"\nffi.new("int")', 'new', luajit), 'new -> library ffi.new');
+        assert.equal(hover('local ffi = require([[ffi]])\nffi.C.puts("x")', 'C', luajit), 'C -> library ffi.C');
+        assert.equal(hover(`${buffer}local s = buf:tostring()\ns:upper()`, 'upper', luajit), undefined, 'no structured return type for strings');
+        assert.equal(hover('local s = "x" s:upper()', 'upper', luajit), 'upper -> library string.upper');
+      });
+
+      it('requires the global require, a literal name and LuaJIT', () => {
+        assert.equal(hover('local ffi = require("ffi")\nffi.new("int")', 'new'), undefined, 'Lua 5.2 has no ffi');
+        assert.equal(hover('require = nil\nlocal ffi = require("ffi")\nffi.new("int")', 'new', luajit), undefined);
+        assert.equal(hover('local require = f\nlocal ffi = require("ffi")\nffi.new("int")', 'new', luajit), undefined);
+        assert.equal(hover('local name = "ffi"\nlocal ffi = require(name)\nffi.new("int")', 'new', luajit), undefined);
+        assert.equal(hover('local ffi = require("ffi")\nffi:new("int")', 'new', luajit), undefined);
+        assert.equal(hover('local t = require("table.new")\nt.x()', 'x', luajit), undefined, 'table.new is a function');
+      });
+    });
   });
 });
